@@ -32,4 +32,12 @@ if (window.devToolsExtension) {
 
 const store = createStore(reducer, compose(...enhancers))
 
+if (module.hot) {
+  module.hot.accept('./reducers', () => {
+    // eslint-disable-next-line global-require
+    const nextReducer = require('./reducers').default
+    store.replaceReducer(nextReducer)
+  })
+}
+
 export default store
