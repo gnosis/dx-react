@@ -25,10 +25,10 @@ const enhancers = [
   ),
 ]
 
-/* global window */
+/* global window
 if (window.devToolsExtension) {
   enhancers.push(window.devToolsExtension())
-}
+}*/
 
 const store = createStore(reducer, compose(...enhancers))
 
