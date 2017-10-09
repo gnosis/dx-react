@@ -1,0 +1,56 @@
+@import url('../../less/vars.less');
+
+@outcome-bar-height: 15px;
+@outcome-bar-height-leading: 30px;
+
+.outcomes.outcomes--categorical {
+  .outcomes--categorical {
+    &--top-6 {
+      margin-top: 6px;
+    }
+  }
+  .outcome {
+    &__bar {
+      display: inline-block;
+      position: relative;
+      width: 30%;
+      margin: 5px 0;
+
+      &--inner {
+        height: @outcome-bar-height;
+        position: relative;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        transition: width 1s ease;
+      }
+
+      &--value {
+        line-height: @outcome-bar-height;
+        vertical-align: middle;
+        padding-left: 5px;
+        display: inline;
+        min-width: 30px;
+        color: @font-color-muted;
+        font-size: 10px;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+      }
+
+      &--label {
+        margin-left: 100%;
+        padding-left: 5px;
+        line-height: @outcome-bar-height;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: .5px;
+      }
+    }
+
+    &__label {
+      display: inline-block;
+    }
+  }
+}

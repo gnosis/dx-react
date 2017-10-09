@@ -1,0 +1,32 @@
+.backdrop {
+    &__filter {
+        height: 100vh;
+
+        filter: blur(0px);
+        filter: none;
+        transition: filter 1s ease;
+
+        &--visible {
+            filter: blur(20px);
+
+            // disable text selection
+            user-select: none;
+
+            // disable buttons
+            pointer-events: none;
+        }
+    }
+
+    &__above {
+        z-index: 100;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        &:empty {
+            display: none;
+        }
+    }    
+}

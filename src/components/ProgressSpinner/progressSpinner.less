@@ -1,0 +1,59 @@
+@import url('../../less/vars.less');
+
+.progressSpinner {
+  position: relative;
+  
+  &--success {
+    #bar {
+      stroke: @active-highlight-success;
+    }
+  }
+
+  &--error {
+    #bar {
+      stroke: @active-highlight-error;
+    }
+  }
+
+  &--spinning {
+    .progressSpinner__svg {
+      animation: spin 5s linear infinite;
+    }
+  }
+
+  #inner {
+    transform-origin: 50%;
+    fill: transparent;
+    stroke: darken(@bg-color-muted, 10%);
+  } 
+
+  #bar {
+    transform: rotate(-90deg);
+    transform-origin: 50%;
+    fill: transparent;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 3s ease, stroke 5s ease;
+    transition-delay: stroke 3s;
+  }
+
+  &__label {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__labelInner {
+    font-size: 42px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) };
+  100% { transform: Rotate(360deg) };
+}

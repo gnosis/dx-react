@@ -1,0 +1,92 @@
+@import url('../../less/vars.less');
+
+@indexWidth: 36px;
+@groupWidth: 20%;
+
+.marketMyShares {
+  &__shareTable {
+    margin-top: 20px;
+    table-layout: fixed;
+  }
+
+  &__tableHeading {
+    font-weight: 400;
+    text-transform: uppercase;
+    color: @font-color-muted;
+    border-bottom: none !important;
+
+    &--group {
+      width: @groupWidth;
+    }
+
+    &--index {
+      width: @indexWidth;
+
+      border-bottom: 0 !important;
+    }
+  }
+
+  &__diff {
+    &--positive {
+      color: @active-highlight-success !important;
+    }
+
+    &--negative {
+      color: @active-highlight-error !important;
+    }
+  }
+  &__sellButton {
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  &__sellView {
+    td {
+      border-top: 0 !important;
+    }
+  }
+
+  &__sellContainer {
+    padding-left: @indexWidth;
+  }
+
+  &__sellColumn {
+    padding: 0 8px;
+  }
+
+  &__sellRow {
+    margin: 0;
+  }
+
+  &__errorColumn {
+    text-align: right;
+    padding: 10px 0;
+  }
+}
+
+.shareOutcome {
+  &__color {
+    display: inline-block;
+    vertical-align: middle;
+
+    width: 20px;
+    height: 20px;
+
+    border-radius: 4px;
+  }
+}
+
+.marketMySharesSellAmount {
+  &__input {
+    font-size: 14px;
+    border-bottom-color: darken(@bg-color-muted, 10%) !important;
+  }
+}
+
+.marketMySharesSellButton {
+  display: inline-block;
+  margin-right: 10px;
+  &__input {
+    background-color: darken(@bg-color-muted, 10%) !important;
+  }
+}

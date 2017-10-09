@@ -1,0 +1,63 @@
+@import url("../../less/vars.less");
+
+@outcome-bar-height: 15px;
+
+.outcome__bar {
+  &--not-first {
+    margin-top: 10px;      
+  }  
+}
+
+.formBarRadioButton {
+  &--error {
+    .barRadioButton__text {
+      color: @active-highlight-error !important;
+    }
+  }
+
+  .barRadioButton {
+
+    &__text {
+      text-transform: none;
+      display: table-cell;
+      font-weight: normal;
+      font-size: 14px;
+      margin: 20px 0 6px 0;
+      color: @font-color-light;
+      line-height: 16px;
+      vertical-align: middle;
+      padding-left: 6px;
+    }
+    
+    &__input[type="radio"] {
+      margin: 0;
+      appearance: none;
+      display: table-cell;
+      height: @outcome-bar-height;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;      
+      background-color: @bg-color-muted;
+      border: 0px solid @bg-color-muted;      
+
+      // for use with currentColor:
+      color: @active-highlight;
+
+      transition: background-color 0.2s ease, border 0.2s ease;
+
+      // current color is highlight color
+      &:checked {
+        background-color: currentColor;
+        border-width: 4px;
+      }
+
+      &:checked+.barRadioButton__text {
+        font-weight: 800;
+      }
+
+      &:checked, &:hover, &:focus {
+        outline: none;
+        box-shadow: 0 0 4px 1px currentColor;
+      }
+    }
+  }
+}

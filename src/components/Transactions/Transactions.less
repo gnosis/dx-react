@@ -1,0 +1,91 @@
+@import url('../../less/vars.less');
+
+.transactionsPage {
+  padding-top: 50px;
+
+  &__heading {
+    text-transform: uppercase;
+    font-size: 24px;
+  }
+
+  &__headingIcon {
+    margin-top: -8px;
+    background: @btn-gradient;
+    float: left;
+    line-height: 48px;
+    height: 48px;
+    margin-right: 12px;
+    border-radius: 100%;
+
+    .icon {
+      width: 48px;
+      height: 48px;
+      background: white;
+    }
+  }
+}
+
+.transaction {
+  display: flex;
+  align-items: stretch;
+  margin: @page-heading-margins;
+
+  &__heading {
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    position: relative;
+    left: 37px;
+  }
+
+  &__icon {
+    .icon {
+      width: 48px;
+      height: 48px;
+      top: 50%;
+      margin-top: -24px;
+    }
+  }
+
+  &__details {
+    margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &__detailLabel {
+    color: @font-color-light;
+  }
+
+  &__detail {
+    color: @font-color-muted;
+    position: relative;
+    width: 200px;
+    font-size: 12px;
+    text-transform: uppercase;
+
+    .icon {
+      float: left;
+      width: 32px;
+      height: 32px;
+      margin-bottom: -6px;
+      margin-right: 5px;
+    }
+
+    &::after {
+      content: '';
+      display: table;
+      clear: both;
+    }
+  }
+
+  &__message {
+    margin-top: 5px;
+    position: relative;
+    left: 37px;
+  }
+
+  &__content {
+    margin-left: 24px;
+  }
+}

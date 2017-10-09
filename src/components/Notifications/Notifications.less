@@ -1,0 +1,52 @@
+@import url('../../less/vars.less');
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(400px)
+  }
+
+  100% {
+    transform: translateX(0)
+  }
+}
+
+.notification {
+  animation: 1s ease-out 0s 1 slideInFromRight; 
+  background-color: @bg-color;
+
+  padding: 4px;
+  position: relative;
+
+  color: @font-color-light;
+
+  &:hover {
+    color: @active-highlight;
+  }
+
+  &__title {
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: inherit;
+    padding-left: 24px;
+  }
+
+  &__message {
+    color: inherit;
+    padding-left: 24px;
+  }
+
+  &__icon {
+    position: absolute;
+    height: 100%;
+    vertical-align: middle;
+    top: 0;
+    left: 0;
+    margin-left: 4px;
+    width: 16px;
+
+    .icon {
+      top: 50%;
+      margin-top: -8px;
+    }
+  }
+}

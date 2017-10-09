@@ -1,0 +1,53 @@
+@import url('../../less/vars.less');
+
+.formOutcomeList {
+  display: block;
+  margin-bottom: 8px;
+
+  .entry {
+    &__color {
+      vertical-align: middle;
+      display: inline-block;
+      margin-right: 5px;
+      margin-top: 0;
+      width: 20px;
+      height: 20px;
+
+      border-radius: 4px;
+    }
+
+    .inputField {
+      display: inline-block;
+    }
+
+    &__delete {
+      line-height: 24px;
+      margin-left: 10px;
+      color: @font-color-muted;
+
+      &:hover {
+        color: @font-color-light;
+      }
+
+      &--hidden {
+        display: none;
+      }
+    }
+  }
+
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+.formOutcomeListInput {
+  display: inline-block !important;
+  width: auto !important;
+  margin-bottom: 8px;
+
+  &__input {
+    .inputStyles();
+  }
+}

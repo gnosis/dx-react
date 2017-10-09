@@ -1,0 +1,67 @@
+@import "../../less/vars.less";
+
+.appContainer {
+  background-color: @bg-color;
+  height: 100vh;
+
+  & > .loader-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
+.page-transition-enter {
+  opacity: 0;
+}
+
+.page-transition-enter.page-transition-enter-active {
+  opacity: 1;
+  transition: opacity .2s ease-in-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity .2s ease-in-out;
+}
+
+
+.ReactModalPortal > div {
+    opacity: 0;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+  transition: opacity 200ms ease-in-out;
+  background: rgba(0, 0, 0, 0.15);
+  &--after-open {
+    opacity: 1;
+  }
+  &--before-close {
+      opacity: 0;
+  }
+}
+
+.page-transition-enter {
+  opacity: 0;
+}
+
+.page-transition-enter.page-transition-enter-active {
+  opacity: 1;
+  transition: opacity .2s ease-in-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity .2s ease-in-out;
+}

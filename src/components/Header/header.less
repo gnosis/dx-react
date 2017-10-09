@@ -1,0 +1,124 @@
+@import "../../less/vars.less";
+
+@navbarHeight: 40px;
+
+.headerContainer {
+  vertical-align: middle;
+  padding: 30px 0 40px;
+
+  &__inner {
+    position: relative;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.headerContainer__navLink {
+  margin-left: 15px;
+  line-height: @navbarHeight;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding-bottom: 2px;
+  letter-spacing: .5px;
+  border-bottom: 2px solid transparent;
+  color: black !important;
+  font-size: 11px;
+
+  @media(min-width: @screen-sm) {
+    font-size: 14px;
+    margin-left: 20px;
+  }
+
+  &:hover,
+  &--active {
+    border-color: @link-color;
+  }
+}
+
+.headerContainer__group {
+  &--version {
+    line-height: @navbarHeight;
+    color: white !important;
+    font-size: 12px;
+    display: none;
+    letter-spacing: .5px;
+  }
+
+  &&--right {
+    margin-left: auto;
+  }
+
+  &--logo {
+    width: 70px;
+    padding-right: 0;
+    height: @navbarHeight;
+
+    @media(min-width: @screen-sm) {
+      width: 200px;
+      padding-right: 70px;
+      position: relative;
+      height: @navbarHeight;
+    }
+  }
+
+  &.account {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.headerLogo {
+  display: inline-block;
+  height: 25px;
+  width: 70px;
+  background-image: url('../../assets/img/gnosis_logo_icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+
+  @media(min-width: @screen-sm) {
+    height: 40px;
+    width: 130px;
+    background-image: url('../../assets/img/gnosis_logo.svg');
+  }
+}
+
+.headerIcon {
+  height: 60px;
+  width: 70px;
+  margin: auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+
+  &--metamask {
+    background-image: url('../../assets/img/icons/icon_metamask.svg');
+  }
+
+  &--parity {
+    background-image: url('../../assets/img/icons/icon_parity.svg');
+  }
+
+  &--default {
+    background-image: url('../../assets/img/icons/icon_etherTokens.svg');
+  }
+}
+
+.headerContainer__account {
+  display: inline-block;
+
+  &--text {
+    line-height: 40px;
+    font-weight: 500;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    letter-spacing: .5px;
+  }
+
+  img {
+    margin-left: 10px;
+  }
+}

@@ -1,0 +1,155 @@
+@import url('../../less/vars.less');
+
+.marketCreateReviewPage {
+  &__header {
+    margin: @page-heading-margins;
+  }
+}
+
+.marketReviewHeading {
+  line-height: 64px;
+  position: relative;
+
+  &__checkmark {
+    height: 64px;
+    width: 64px;
+    background: @btn-gradient;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 24px;
+    border-radius: 9999px;
+
+    .marketReviewHeading__icon {
+      height: 64px;
+      width: 64px;
+      background-color: @bg-color;
+      background-image: none;
+    }
+  }
+}
+
+.marketReviewDetails {
+  // magic number :( amount of pixels before the description part starts
+  // padding-top: 67px;
+
+  &__label {
+    text-transform: uppercase;
+    color: @font-color-dark;
+  }
+
+  &__value {
+    margin-bottom: 50px;
+  }
+}
+
+.marketCreateCheckout {
+  background-color: @bg-color-muted;
+  padding-top: 50px;
+}
+
+.checkout {
+  padding-bottom: 200px;
+
+  &__disclaimer {
+    font-weight: 300;
+    padding-bottom: 70px;
+  }
+
+  &__header {
+    margin-bottom: 30px !important;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+
+  &__listItem {
+    text-align: right;
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    display: block;
+
+    &--total {
+      font-size: 24px;
+    }
+  }
+
+  &__seperator {
+    border-bottom: 2px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+.listItem {
+  &__label {
+    float: left;
+  }
+
+  &__value {
+    display: inline-block;
+    font-weight: 800;
+  }
+}
+
+.paymentCheckbox {
+  &__input {
+    background-color: darken(@bg-color-muted, 10%) !important;
+    display: block;
+    float: left;
+  }
+}
+
+.paymentCheckbox__disclaimer {
+  text-transform: uppercase;
+  float: left;
+  width: 90%;
+}
+
+.outcomeCategorical,
+.resolutionDate {
+  &__header {
+    text-transform: uppercase;
+    color: @font-color-muted;
+    font-size: 16px;
+    margin-top: 50px;
+  }
+}
+
+.resolutionDate {
+  &__header + .marketReviewDetails__value {
+    margin-top: 5px;
+  }
+}
+
+.outcomes__categorical,
+.outcomes__scalar {
+  margin-top: 50px;
+
+  & > h3 {
+    text-transform: uppercase;
+  }
+}
+
+.outcomeCategorical {
+  &__color {
+    height: 16px;
+    width: 16px;
+    float: left;
+    border-radius: 4px;
+    margin: 10px 5px 10px 0;
+  }
+
+  &__label {
+    float: left;
+    margin-top: 10px;
+    line-height: 16px;
+  }
+
+  clear: both;
+}

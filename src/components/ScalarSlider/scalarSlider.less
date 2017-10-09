@@ -1,0 +1,89 @@
+@import url('../../less/vars.less');
+
+@slider-stroke-size: 2px;
+@slider-handle-size: 16px;
+@slider-handle-text-width: 200px;
+
+.slider {
+  margin-top: 100px;
+  &__bar {
+    display: table-cell;
+    vertical-align: middle;
+    width: 60%;
+    position: relative;
+    height: 100%;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      border: @slider-stroke-size solid @font-color-dark;
+      border-radius: 20px;
+      height: 0;
+    }
+  }
+
+  &__handle {
+    position: absolute;
+    height: 100%;
+    cursor: not-allowed;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -(((@slider-handle-size / 2) - @slider-stroke-size));
+
+      background-color: @font-color-muted;
+      border-radius: 100%;
+      width: @slider-handle-size;
+      height: @slider-handle-size;
+      z-index: 2;
+    }
+
+    &--below {
+      .slider__handleText {
+        top: 100%;
+      }
+    }
+
+    &Text {
+      position: absolute;
+      top: -100%;
+      text-align: center;
+      left: (@slider-handle-size / 2);
+      width: @slider-handle-text-width;
+      margin-left: -((@slider-handle-text-width/2));
+      margin-top: -20px;
+    }
+
+    &TextLabel {
+      text-transform: uppercase;
+      font-size: 12px;
+      color: @font-color-dark;
+      white-space: nowrap;
+    }
+  }
+
+  &__lowerBound {
+    text-align: right;
+  }
+
+  &__upperBound {
+    &Label {
+      text-align: right;
+    }
+  }
+
+  &__lowerBound, &__upperBound {
+    display: table-cell;
+    width: 20%;
+    padding: 0 12px;
+
+    &Label {
+      text-transform: uppercase;
+      font-size: 12px;
+      color: @font-color-dark;
+      white-space: nowrap;
+    }
+  }
+}
