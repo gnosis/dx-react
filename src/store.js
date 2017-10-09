@@ -19,18 +19,13 @@ const middlewares = [
   CrashReporter,
 ]
 
-const enhancers = [
-  applyMiddleware(
-    ...middlewares,
-  ),
-]
+// eslint-disable-next-line no-underscore-dangle
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const enhancer = composeEnhancers(
+  applyMiddleware(...middlewares),
+)
 
-/* global window
-if (window.devToolsExtension) {
-  enhancers.push(window.devToolsExtension())
-}*/
-
-const store = createStore(reducer, compose(...enhancers))
+const store = createStore(reducer, enhancer)
 
 if (module.hot) {
   module.hot.accept('./reducers', () => {
