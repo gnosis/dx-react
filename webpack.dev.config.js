@@ -90,6 +90,8 @@ module.exports = {
     disableHostCheck: true,
     historyApiFallback: true,
     port: 5000,
+    clientLogLevel: 'info',
+    hot: true,
     proxy: {
       '/api': {
         target: gnosisDbUrl,
@@ -101,6 +103,8 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new FaviconsWebpackPlugin({
       logo: 'assets/img/gnosis_logo_favicon.png',
       // Generate a cache file with control hashes and

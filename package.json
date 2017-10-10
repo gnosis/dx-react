@@ -8,7 +8,7 @@
         "build-prod": "cross-env NODE_ENV=production webpack -p --config webpack.prod.config.js",
         "build": "if test \"$NODE_ENV\" = \"production\" ; then npm run build-prod; else npm run build-dev; fi ",
         "clean": "rm -rf dist",
-        "start-dev": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --client-log-level info --config webpack.dev.config.js",
+        "start-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js",
         "start-prod": "cross-env NODE_ENV=production webpack-dev-server --host 0.0.0.0 --client-log-level info --config webpack.prod.config.js",
         "start": "if test \"$NODE_ENV\" = \"production\" ; then npm run start-prod; else npm run start-dev; fi ",
         "lint": "eslint ./src --quiet",
@@ -40,11 +40,11 @@
         "react": "15.6.1",
         "react-autosize-textarea": "^0.4.7",
         "react-autosuggest": "^9.0.0",
-        "react-modal": "^2.3.2",
         "react-custom-scroll": "2.0.1",
         "react-datetime": "^2.10.1",
         "react-dom": "15.6.1",
         "react-intl": "2.4.0",
+        "react-modal": "^2.3.2",
         "react-portal": "^3.0.0",
         "react-redux": "^4.4.6",
         "react-router": "3.0.2",
@@ -59,7 +59,8 @@
         "sha1": "^1.1.1",
         "truffle-contract": "^3.0.0",
         "uuid": "^3.1.0",
-        "web3": "0.18.4"
+        "web3": "0.18.4",
+        "whatwg-fetch": "^2.0.3"
     },
     "devDependencies": {
         "autoprefixer": "7.1.4",
