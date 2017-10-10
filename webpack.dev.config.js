@@ -39,7 +39,9 @@ module.exports = {
     symlinks: false,
     modules: [
       `${__dirname}/src`,
+      'node_modules',
     ],
+    extensions: ['.js', '.jsx'],
   },
   module: {
     rules: [
