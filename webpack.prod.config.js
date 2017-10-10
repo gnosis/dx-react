@@ -1,6 +1,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const NameAllModulesPlugin = require('name-all-modules-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -31,17 +32,16 @@ module.exports = {
   entry: ['bootstrap-loader', 'index.js'],
   output: {
     path: `${__dirname}/dist`,
-    filename: 'bundle.js',
+    chunkFilename: '[name].[chunkhash].js',
+    filename: '[name].[chunkhash].js',
   },
   resolve: {
     symlinks: false,
     modules: [
       `${__dirname}/src`,
-      `${__dirname}/package.json`,
       'node_modules',
-      `${__dirname}/../gnosis.js`,
-      `${__dirname}/../gnosis.js/node_modules`,
     ],
+    extensions: ['.js', '.jsx'],
   },
   module: {
     rules: [
@@ -78,7 +78,28 @@ module.exports = {
       ignored: /node_modules/,
     },
   },
+  recordsPath: path.join(__dirname, 'records.json'),
   plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name
+      }
+      return chunk.modules.map(m => path.relative(m.context, m.request)).join('_')
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: ({ resource }) => (
+        resource &&
+        resource.indexOf('node_modules') >= 0 &&
+        resource.match(/\.jsx?$/)
+      ),
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity,
+    }),
+    new NameAllModulesPlugin(),
     new ExtractTextPlugin('styles.css'),
     new FaviconsWebpackPlugin({
       logo: 'assets/img/gnosis_logo_favicon.png',
