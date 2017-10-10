@@ -16,7 +16,7 @@ class AppRouter extends Component {
     const { history } = this.props
 
     return (
-        // TODO - ask about Math.random()
+      // Math.random key = HMR router reload issue
       <Router key={Math.random()} history={history}>
         <Route path="/" component={App} />
       </Router>
