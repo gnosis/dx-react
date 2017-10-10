@@ -1,12 +1,58 @@
 {
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
   "parser": "babel-eslint",
-  "plugins": ["jest"],
+  "plugins": [
+    "jest"
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack.dev.config.js"
+      }
+    },
+    "import/extensions": [
+      ".js",
+      ".jsx"
+    ],
+    "import/ignore": [
+      "\\.(s?css|less|styl|svg|json)$"
+    ]
+  },
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/forbid-prop-types": [1, { "forbid": ["object", "any"] }],
+    "import/no-unresolved": [
+      2,
+      {
+        "commonjs": true,
+        "amd": true
+      }
+    ],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "react/forbid-prop-types": [
+      1,
+      {
+        "forbid": [
+          "object",
+          "any"
+        ]
+      }
+    ],
     "class-methods-use-this": 0,
-    "semi": ["error", "never"],
+    "semi": [
+      "error",
+      "never"
+    ],
     "max-len": [
       "error",
       120,
@@ -18,11 +64,7 @@
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
       }
-    ],
-    "import/no-unresolved": 0,
-    "import/no-extraneous-dependencies": 0,
-    "import/extensions": 0,
-    "import/prefer-default-export": 0
+    ]
   },
   "env": {
     "jest/globals": true,
