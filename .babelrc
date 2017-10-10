@@ -17,7 +17,13 @@
   "env": {
     "production": {
       "plugins": [
-        "transform-react-remove-prop-types"
+        [
+          "transform-react-remove-prop-types",
+          {
+            "mode": "remove",
+            "removeImport": true
+          }
+        ]
       ]
     }
   }
