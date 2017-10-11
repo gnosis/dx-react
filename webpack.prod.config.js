@@ -49,7 +49,14 @@ module.exports = {
       { test: /\.(js|jsx)$/, exclude: /(node_modules)/, use: 'babel-loader' },
       {
         test: /\.(jpe?g|png|svg)$/i,
-        loader: 'file-loader?hash=sha512&digest=hex&name=img/[hash].[ext]',
+        use: {
+          loader: 'file-loader',
+          options: {
+            hash: 'sha512',
+            digest: 'hex',
+            name: 'img/[hash].[ext]',
+          },
+        },
       },
       {
         test: /\.(less|css)$/,
@@ -64,7 +71,12 @@ module.exports = {
       },
       {
         test: /\.(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file-loader?name=fonts/[name].[ext]',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]',
+          },
+        },
       },
     ],
   },
@@ -135,6 +147,6 @@ module.exports = {
         WHITELIST: whitelist,
       },
     }),
-    // new BabiliPlugin(),
+    new BabiliPlugin(),
   ],
 }
