@@ -5,7 +5,8 @@ import {
   Route,
 } from 'react-router'
 
-import App from 'containers/App'
+// import App from 'containers/App'
+import DavidTest from 'containers/_DavidTest'
 
 class AppRouter extends Component {
   static propTypes = {
@@ -18,7 +19,7 @@ class AppRouter extends Component {
     return (
       // Math.random key = HMR router reload issue
       <Router key={Math.random()} history={history}>
-        <Route path="/" component={App} />
+        <Route path="/" component={DavidTest} />
       </Router>
     )
   }

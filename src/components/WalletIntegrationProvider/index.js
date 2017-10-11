@@ -25,9 +25,11 @@ export default class WalletIntegrationProvider extends Component {
       // Get selected provider
       const selectedProvider = getSelectedProvider(reactStore.getState())
       // get Gnosis options
-      const opts = this.getGnosisOptions(selectedProvider)
-      // init Gnosis connection
-      reactStore.dispatch(initGnosis(opts)).then(() => reactStore.dispatch(connectBlockchain()))
+      // const opts = this.getGnosisOptions(selectedProvider)
+      /* init Gnosis connection
+      reactStore.dispatch( initGnosis(opts) )
+        .then( () => reactStore.dispatch(connectBlockchain()) )
+      */  
       return null
     }
 
