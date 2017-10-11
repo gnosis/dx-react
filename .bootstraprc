@@ -1,15 +1,17 @@
 {
   "useFlexbox": true,
 
-  "styleLoaders": ["style-loader", "css-loader", "sass-loader"],
-
   "styles": true,
 
   "scripts": false,
   "bootstrapVersion": 3,
   "env": {
+    "development": {
+      "styleLoaders": ["style-loader", "css-loader", "sass-loader"]
+    },
     "production": {
-      "extractStyles": true
+      "extractStyles": true,
+      "styleLoaders": ["style-loader", "css-loader", "sass-loader?sourceMap=false"]
     }
   }
 }
