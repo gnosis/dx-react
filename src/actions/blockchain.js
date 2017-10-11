@@ -1,18 +1,3 @@
-import {
-  initGnosisConnection,
-  getCurrentBalance,
-  getCurrentAccount,
-  calcMarketGasCost,
-  calcBuySharesGasCost,
-  calcSellSharesGasCost,
-  calcCategoricalEventGasCost,
-  calcScalarEventGasCost,
-  calcCentralizedOracleGasCost,
-  calcFundingGasCost,
-  getGasPrice,
-  getEtherTokens,
-} from 'api'
-
 import { hexWithPrefix, timeoutCondition } from 'utils/helpers'
 import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
