@@ -94,18 +94,19 @@ module.exports = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: ({ resource }) => (
-        resource &&
-        resource.indexOf('node_modules') >= 0 &&
-        resource.match(/\.jsx?$/)
-      ),
+      minChunks: ({ resource, context }) => {
+        if (resource && (/^.*\.(css|scss|sass|less)$/).test(resource)) {
+          return false
+        }
+        return context && context.indexOf('node_modules') !== -1
+      },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       minChunks: Infinity,
     }),
     new NameAllModulesPlugin(),
-    new ExtractTextPlugin('styles.css'),
+    new ExtractTextPlugin('[name].[contenthash].css'),
     new FaviconsWebpackPlugin({
       logo: 'assets/img/gnosis_logo_favicon.png',
       // Generate a cache file with control hashes and
