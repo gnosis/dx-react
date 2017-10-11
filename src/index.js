@@ -11,12 +11,12 @@ import { AppContainer } from 'react-hot-loader'
 import 'less/style.less'
 
 import AppRouter from 'router'
-import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
+// import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
 import store from 'store'
-import * as walletIntegrations from 'integrations'
-import { setMomentRelativeTime } from './setup'
+// import * as walletIntegrations from 'integrations'
+// import { setMomentRelativeTime } from './setup'
 
-setMomentRelativeTime()
+// setMomentRelativeTime()
 
 // load data from localstorage
 store.dispatch({ type: 'INIT' })
@@ -32,9 +32,9 @@ const render = (App) => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <WalletIntegrationProvider store={store} integrations={walletIntegrations}>
-            <App history={history} />
-        </WalletIntegrationProvider>
+        {/* <WalletIntegrationProvider store={store} integrations={walletIntegrations}> */}
+        <App history={history} />
+        {/* </WalletIntegrationProvider> */}
       </Provider>
     </AppContainer>,
     rootElement,
@@ -45,6 +45,7 @@ render(AppRouter)
 
 if (module.hot) {
   module.hot.accept('./router', () =>
+    // eslint-disable-next-line global-require
     render(require('./router').default),
   )
 }
