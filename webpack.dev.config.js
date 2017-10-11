@@ -97,6 +97,7 @@ module.exports = {
     disableHostCheck: true,
     historyApiFallback: true,
     port: 5000,
+    host: '0.0.0.0',
     clientLogLevel: 'info',
     hot: true,
     proxy: {
