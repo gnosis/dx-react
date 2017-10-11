@@ -1,8 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
+/* eslint-enable import/no-extraneous-dependencies */
+
 const pkg = require('./package.json')
 
 const nodeEnv = process.env.NODE_ENV || 'development'
