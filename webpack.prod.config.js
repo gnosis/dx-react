@@ -56,10 +56,8 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-            },
+            { loader: 'css-loader', options: { minimize: true } },
+            { loader: 'postcss-loader' },
             { loader: 'less-loader', options: { strictMath: true } },
           ],
         }),
@@ -137,6 +135,6 @@ module.exports = {
         WHITELIST: whitelist,
       },
     }),
-    new BabiliPlugin(),
+    // new BabiliPlugin(),
   ],
 }

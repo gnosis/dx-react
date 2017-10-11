@@ -11,7 +11,7 @@
     },
     "production": {
       "extractStyles": true,
-      "styleLoaders": ["style-loader", "css-loader", "sass-loader?sourceMap=false"]
+      "styleLoaders": ["style-loader", "css-loader?minimize", "sass-loader?sourceMap=false"]
     }
   }
 }
