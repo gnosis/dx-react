@@ -70,6 +70,9 @@ module.exports = {
       },
     ],
   },
+  stats: {
+    children: false,
+  },
   devServer: {
     disableHostCheck: true,
     contentBase: false,
