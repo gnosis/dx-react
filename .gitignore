@@ -33,3 +33,4 @@ chrome-user-data
 yarn-error.log
 package-lock.json
 records.json
+stats.json

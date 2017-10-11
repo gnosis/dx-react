@@ -13,7 +13,8 @@
         "start": "if test \"$NODE_ENV\" = \"production\" ; then npm run start-prod; else npm run start-dev; fi ",
         "lint": "eslint ./src --quiet",
         "lint:fix": "eslint ./src --fix",
-        "test": "jest"
+        "test": "jest",
+        "stats": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --profile --json > stats.json"
     },
     "repository": {
         "type": "git",
