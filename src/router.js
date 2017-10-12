@@ -6,10 +6,13 @@ import {
 } from 'react-router'
 
 // import App from 'containers/App'
+import BalanceButton from 'contract-fe-test/containers/BalanceButton'
 
 const TempApp = () => (
   <div>
-    <h2>Hello World!</h2>
+    <h1>Truffle + React/Redux</h1>
+    <h2>Connect testRPC via a terminal first...</h2>
+    <BalanceButton />
   </div>
 )
 
