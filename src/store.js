@@ -1,4 +1,4 @@
-import { routerMiddleware } from 'react-router-redux'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
@@ -23,13 +23,13 @@ export default function (history) {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
   const enhancer = composeEnhancers(applyMiddleware(...middlewares))
 
-  const store = createStore(reducer, enhancer)
+  const store = createStore(connectRouter(history)(reducer), enhancer)
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
       // eslint-disable-next-line global-require
       const nextReducer = require('./reducers').default
-      store.replaceReducer(nextReducer)
+      store.replaceReducer(connectRouter(history)(nextReducer))
     })
   }
 
