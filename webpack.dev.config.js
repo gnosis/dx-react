@@ -72,9 +72,15 @@ module.exports = {
         use: [
           {
             loader: 'style-loader',
+            options: {
+              sourceMap: true,
+            },
           },
           {
             loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
           },
           {
             loader: 'postcss-loader',
@@ -82,7 +88,13 @@ module.exports = {
               sourceMap: true,
             },
           },
-          { loader: 'less-loader', options: { strictMath: true } },
+          {
+            loader: 'less-loader',
+            options: {
+              strictMath: true,
+              sourceMap: true,
+            },
+          },
         ],
       },
       {
