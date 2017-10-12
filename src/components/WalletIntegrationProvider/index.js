@@ -1,9 +1,9 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connectBlockchain, initGnosis } from 'actions/blockchain'
-import { getSelectedProvider } from 'selectors/blockchain'
-import { WALLET_PROVIDER } from 'integrations/constants'
-import Web3 from 'web3'
+// import { connectBlockchain, initGnosis } from 'actions/blockchain'
+// import { getSelectedProvider } from 'selectors/blockchain'
+// import { WALLET_PROVIDER } from 'integrations/constants'
+// import Web3 from 'web3'
 
 
 export default class WalletIntegrationProvider extends Component {
@@ -21,37 +21,28 @@ export default class WalletIntegrationProvider extends Component {
           () => init(funcs.slice(1), reactStore),
         )
       }
-      // Gnosis initialization needed after providers init
-      // Get selected provider
-      const selectedProvider = getSelectedProvider(reactStore.getState())
-      // get Gnosis options
-      // const opts = this.getGnosisOptions(selectedProvider)
-      /* init Gnosis connection
-      reactStore.dispatch( initGnosis(opts) )
-        .then( () => reactStore.dispatch(connectBlockchain()) )
-      */  
       return null
     }
 
     window.addEventListener('load', () => init(initializers, store))
   }
 
-  getGnosisOptions(provider) {
-    const opts = {}
+  // getGnosisOptions(provider) {
+  //   const opts = {}
 
-    if (provider && provider.name === WALLET_PROVIDER.METAMASK) {
-      // Inject window.web3
-      opts.ethereum = window.web3.currentProvider
-    } else if (provider && provider === WALLET_PROVIDER.PARITY) {
-      // Inject window.web3
-      opts.ethereum = window.web3.currentProvider
-    } else {
-      // Default remote node
-      opts.ethereum = new Web3(new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`)).currentProvider
-    }
+  //   if (provider && provider.name === WALLET_PROVIDER.METAMASK) {
+  //     // Inject window.web3
+  //     opts.ethereum = window.web3.currentProvider
+  //   } else if (provider && provider === WALLET_PROVIDER.PARITY) {
+  //     // Inject window.web3
+  //     opts.ethereum = window.web3.currentProvider
+  //   } else {
+  //     // Default remote node
+  //     opts.ethereum = new Web3(new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`)).currentProvider
+  //   }
 
-    return opts
-  }
+  //   return opts
+  // }
 
   render() {
     const { children } = this.props

@@ -1,7 +1,7 @@
 import { WALLET_PROVIDER } from 'integrations/constants'
 import { registerProvider, updateProvider } from 'actions/blockchain'
 import InjectedWeb3 from 'integrations/injectedWeb3'
-import config from 'config'
+// import config from 'config'
 import Web3 from 'web3'
 
 class Remote extends InjectedWeb3 {

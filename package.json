@@ -8,7 +8,7 @@
         "build:prod": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
         "build": "npm run build:prod",
         "clean": "rimraf dist",
-        "contract-start:dev": "truffle networks --clean && truffle compile && truffle migrate && npm start",
+        "contract-start:dev": "truffle networks --clean && truffle build && truffle compile && truffle migrate && npm start",
         "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --progress",
         "start:prod": "cross-env NODE_ENV=production webpack-dev-server --config webpack.prod.config.js --progress",
         "start": "npm run start:dev",

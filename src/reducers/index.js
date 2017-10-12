@@ -7,6 +7,7 @@ import transactions from './transactions'
 import blockchain from './blockchain'
 import settings from './settings'
 import notifications from './notifications'
+import balance from 'contract-fe-test/reducers'
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -17,6 +18,7 @@ const reducers = combineReducers({
   blockchain,
   settings,
   notifications,
+  balance,
 })
 
 const rootReducer = (state, action) => {
