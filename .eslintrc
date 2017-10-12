@@ -1,8 +1,6 @@
 {
   "extends": [
-    "airbnb",
-    "plugin:import/errors",
-    "plugin:import/warnings"
+    "airbnb"
   ],
   "parser": "babel-eslint",
   "plugins": [
@@ -27,9 +25,13 @@
       2,
       {
         "commonjs": true,
-        "amd": true
+        "amd": true,
+        "caseSensitive": true
       }
     ],
+    "import/named": 2,
+    "import/default": 2,
+    "import/namespace": 2,
     "react/jsx-filename-extension": [
       1,
       {
