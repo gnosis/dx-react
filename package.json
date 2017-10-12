@@ -6,7 +6,7 @@
     "scripts": {
         "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
         "build:prod": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
-        "build": "if test \"$NODE_ENV\" = \"production\" ; then npm run build-prod; else npm run build-dev; fi ",
+        "build": "npm run build:prod",
         "clean": "rimraf dist",
         "contract-start:dev": "truffle networks --clean && truffle compile && truffle migrate && npm start",
         "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --progress",
