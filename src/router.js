@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { ConnectedRouter } from 'react-router-redux'
 import {
-  Router,
   Route,
-} from 'react-router'
+  NavLink,
+} from 'react-router-dom'
 
 // import App from 'containers/App'
 
@@ -13,23 +14,19 @@ const TempApp = () => (
   </div>
 )
 
-class AppRouter extends Component {
-  static propTypes = {
-    history: PropTypes.object,
-  }
+const AppRouter = ({ history }) => (
+  <ConnectedRouter history={history}>
+    <div>
+      <NavLink to="/">Home</NavLink>{' '}
+      <NavLink to="/someroute">Some Route</NavLink>
+      <Route exact path="/" component={TempApp} />
+      <Route path="/someroute" render={() => <h3>Some Route</h3>} />
+    </div>
+  </ConnectedRouter>
+)
 
-  render() {
-    const { history } = this.props
-
-    return (
-      // Math.random key = HMR router reload issue
-      <Router key={Math.random()} history={history}>
-        {/* <Route path="/" component={App} /> */}
-        <Route path="/" component={TempApp} />
-      </Router>
-    )
-  }
-
+AppRouter.propTypes = {
+  history: PropTypes.object.isRequired,
 }
 
 export default AppRouter
