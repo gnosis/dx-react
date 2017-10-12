@@ -1,0 +1,15 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "declaration-empty-line-before": ["always", {
+      except: [
+        "first-nested"
+      ],
+      ignore: [
+        "after-comment",
+        "inside-single-line-block",
+        "after-declaration"
+      ],
+    }]
+  }
+}
