@@ -1,5 +1,5 @@
-var Adoption = artifacts.require("./Adoption.sol");
+var Balance = artifacts.require("./Balance.sol");
 
 module.exports = function(deployer) {
-    deployer.deploy(Adoption);
+    deployer.deploy(Balance);
 };
