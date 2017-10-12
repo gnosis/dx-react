@@ -1,6 +1,7 @@
 {
   "extends": "stylelint-config-standard",
   "rules": {
+    "selector-list-comma-newline-after": null,
     "declaration-empty-line-before": ["always", {
       except: [
         "first-nested"
