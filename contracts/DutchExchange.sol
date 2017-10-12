@@ -1,5 +1,10 @@
+pragma solidity ^0.4.15;
+
+import "./Token.sol";
+
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
-/// @author Dominik Teiml - dominik.teiml@gnosis.pm
+/// @author Dominik Teiml - <dominik.teiml@gnosis.pm>
+
 contract DutchExchange {
     // This contract represents an exchange between two ERC20 tokens
 
@@ -71,20 +76,31 @@ contract DutchExchange {
 
     // Constructor
     function DutchExchange(
-        fraction initialClosingPrice,
+        uint256 initialClosingPriceNumerator,
+        uint256 initialClosingPriceDenominator,
         Token _sellToken,
         Token _buyToken,
         Token _DUTCHX
     ) public {
+        // Calculate initial price
+        fraction memory initialClosingPrice;
+        initialClosingPrice.numerator = initialClosingPriceNumerator;
+        initialClosingPrice.denominator = initialClosingPriceDenominator;
         closingPrices[0] = initialClosingPrice;
+
+        // Set variables
         sellToken = _sellToken;
         buyToken = _buyToken;
         DUTCHX = _DUTCHX;
     }
 
-    function clearAuction(fraction currentPrice) public returns (bool success) {
+    function clearAuction(uint256 currentPriceNumerator, uint256 currentPriceDenominator)
+        public 
+        returns (bool success) 
+    {
         // Update state variables
-        closingPrices[auctionIndex] = currentPrice;
+        closingPrices[auctionIndex].numerator = currentPriceNumerator;
+        closingPrices[auctionIndex].denominator = currentPriceDenominator;
         sellVolumeCurrent = sellVolumeNext;
         sellVolumeNext = 0;
         auctionIndex++;
@@ -118,11 +134,15 @@ contract DutchExchange {
         success = true;
     }
 
-    function postBuyOrder(uint256 amount, uint256 minBuyAmount) public auctionIsRunning returns (bool success) {
+    function postBuyOrder(uint256 amount, uint256 minBuyAmount) 
+        public 
+        auctionIsRunning 
+        returns (bool success) 
+    {
         // Get current price
-        fraction memory currentPrice = getCurrentPrice();
-        uint256 num = currentPrice.numerator;
-        uint256 den = currentPrice.denominator;
+        uint256 num;
+        uint256 den;
+        (num, den) = getCurrentPrice();
 
         // The user should enter minimum amount he is expecting to get from his buy order
         // This verifies that he will get at least that much
@@ -150,13 +170,17 @@ contract DutchExchange {
 
         // Clear auction
         if (overflow >= 0) {
-            clearAuction(currentPrice);
+            clearAuction(num, den);
         }
 
         success = true;
     }
 
-    function postBuyOrderAndClaim(uint256 amount, uint256 minBuyAmount) public auctionIsRunning returns (bool success) {
+    function postBuyOrderAndClaim(uint256 amount, uint256 minBuyAmount) 
+        public 
+        auctionIsRunning 
+        returns (bool success) 
+    {
         require(postBuyOrder(amount, minBuyAmount));
 
         claimBuyerFundsOfCurrentAuction(msg.sender);
@@ -192,9 +216,9 @@ contract DutchExchange {
             uint256 buyerBalance = buyerBalances[auctionIndex][claimer];
 
             // Get current price
-            fraction memory currentPrice = getCurrentPrice();
-            uint256 num = currentPrice.numerator;
-            uint256 den = currentPrice.denominator;
+            uint256 num;
+            uint256 den;
+            (num, den) = getCurrentPrice();
 
             // Get amount to return
             returned = buyerBalance * den / num - claimedAmounts[auctionIndex][claimer];
@@ -208,7 +232,11 @@ contract DutchExchange {
         }
     }
 
-    function claimBuyerFunds(address claimer, uint256 _auctionIndex) public returns (uint256 returned) {
+    function claimBuyerFunds(address claimer, uint256 _auctionIndex) 
+        public 
+        returns 
+        (uint256 returned) 
+    {
         uint256 buyerBalance = buyerBalances[_auctionIndex][claimer];
 
         // Checks if particular auction has cleared
@@ -229,7 +257,12 @@ contract DutchExchange {
         newBuyerFundsClaim(_auctionIndex, claimer, returned);
     }
 
-    function getCurrentPrice() public constant auctionIsRunning returns (fraction currentPrice) {
+    function getCurrentPrice()
+        public 
+        constant 
+        auctionIsRunning 
+        returns (uint256 numerator, uint256 denominator) 
+    {
         // Get last closing price
         fraction memory lastClosingPrice = closingPrices[auctionIndex - 1];
         uint256 num = lastClosingPrice.numerator;
@@ -237,7 +270,7 @@ contract DutchExchange {
 
         // The numbers 36k and 18k are chosen, so the initial price is double the last closing price
         // And after 5 hours (18000 s), the price is the same as last closing price
-        currentPrice.numerator = 36000 * num;
-        currentPrice.denominator = (now - auctionStart + 18000) * den;
+        numerator = 36000 * num;
+        denominator = (now - auctionStart + 18000) * den;
     }
 }
