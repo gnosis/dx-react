@@ -31,8 +31,8 @@ const ethereumUrl =
 
 module.exports = {
   context: path.join(__dirname, 'src'),
-  entry: ['react-hot-loader/patch', 'bootstrap-loader', 'index.js'],
-  devtool: 'eval',
+  entry: ['react-hot-loader/patch', 'bootstrap-loader', 'index.tsx'],
+  devtool: 'eval-source-map',
   output: {
     publicPath: '/',
     path: `${__dirname}/dist`,
@@ -44,17 +44,28 @@ module.exports = {
       `${__dirname}/src`,
       'node_modules',
     ],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.jsx?$/,
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
+          },
+        },
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'awesome-typescript-loader',
+          options: {
+            useBabel: true,
+            useCache: true,
           },
         },
       },

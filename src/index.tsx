@@ -25,23 +25,23 @@ store.dispatch({ type: 'INIT' })
 /* global document */
 const rootElement = document.getElementById('root')
 
-const render = (App) => {
-  ReactDOM.render(
-    <AppContainer>
-      <Provider store={store}>
-        {/* <WalletIntegrationProvider store={store} integrations={walletIntegrations}> */}
-        <App history={history} />
-        {/* </WalletIntegrationProvider> */}
-      </Provider>
-    </AppContainer>,
-    rootElement,
-  )
+const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
+    ReactDOM.render(
+        <AppContainer>
+            <Provider store={store}>
+                {/* <WalletIntegrationProvider store={store} integrations={walletIntegrations}> */}
+                <App history={history} />
+                {/* </WalletIntegrationProvider> */}
+            </Provider>
+        </AppContainer>,
+        rootElement,
+    )
 }
 
 render(AppRouter)
 
 if (module.hot) {
-  module.hot.accept('./router', () =>
-    // eslint-disable-next-line global-require
-    render(require('./router').default))
+    module.hot.accept('./router', () =>
+        // eslint-disable-next-line global-require
+        render(require('./router').default))
 }

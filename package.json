@@ -32,6 +32,14 @@
         ]
     },
     "dependencies": {
+        "@types/history": "^4.6.0",
+        "@types/prop-types": "^15.5.2",
+        "@types/react": "^16.0.10",
+        "@types/react-dom": "^16.0.1",
+        "@types/react-hot-loader": "^3.0.4",
+        "@types/react-redux": "^5.0.10",
+        "@types/react-router-dom": "^4.0.8",
+        "@types/redux": "^3.6.0",
         "await-delay": "^1.0.0",
         "babel-polyfill": "^6.23.0",
         "blockies": "0.0.2",
@@ -71,7 +79,9 @@
         "whatwg-fetch": "^2.0.3"
     },
     "devDependencies": {
+        "@types/webpack-env": "^1.13.1",
         "autoprefixer": "7.1.5",
+        "awesome-typescript-loader": "^3.2.3",
         "babel-core": "6.26.0",
         "babel-eslint": "8.0.1",
         "babel-loader": "7.1.2",
@@ -117,6 +127,8 @@
         "stylelint": "^8.2.0",
         "stylelint-config-standard": "^17.0.0",
         "truffle-hdwallet-provider": "0.0.3",
+        "tslib": "^1.8.0",
+        "typescript": "^2.5.3",
         "url-loader": "^0.6.2",
         "webpack": "3.7.1",
         "webpack-dev-server": "2.9.1"
