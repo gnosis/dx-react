@@ -9,7 +9,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  dispatchGetBalance: acct => dispatch(getBalance(acct)),
+  dispatchGetBalance: (c, a) => dispatch(getBalance(c, a)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BalanceButton)

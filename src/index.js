@@ -14,6 +14,8 @@ import AppRouter from 'router'
 import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
 import store from 'store'
 import * as walletIntegrations from 'integrations'
+
+// import contractInitialiser from 'utils/contractInitializer'
 // import { setMomentRelativeTime } from './setup'
 
 // setMomentRelativeTime()
@@ -27,6 +29,9 @@ const rootElement = document.getElementById('root')
 // changed to browserHistory because for some reason with hashHistory render() of App
 // component is triggered twice and this breaks page transition animations
 const history = syncHistoryWithStore(browserHistory, store)
+
+// Initialise Contracts ...
+// contractInitialiser()
 
 const render = (App) => {
   ReactDOM.render(

@@ -7,12 +7,13 @@ import {
 
 // import App from 'containers/App'
 import BalanceButton from 'contract-fe-test/containers/BalanceButton'
+import { getDutchXConnection } from 'contract-fe-test/api/dutchx'
 
 const TempApp = () => (
   <div>
     <h1>Truffle + React/Redux</h1>
     <h2>Connect testRPC via a terminal first...</h2>
-    <BalanceButton />
+    <BalanceButton dutchXInst={getDutchXConnection} />
   </div>
 )
 
