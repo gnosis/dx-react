@@ -1,6 +1,7 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.15;
 
 import "./Token.sol";
+// import "@gnosis.pm/gnosis-core-contracts/contracts/Tokens/Token.sol";
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik.teiml@gnosis.pm>
@@ -8,19 +9,13 @@ import "./Token.sol";
 contract DutchExchange {
     // This contract represents an exchange between two ERC20 tokens
 
-    // Types
-    enum DutchExchangeState {
-        // The only time buy orders are accepted. Also, sell orders are accepted for next auction
-        AUCTION_STATE_RUNNING,
-        // Auction has cleared, all parties can claim their tokens. A new auction is scheduled
-        // for the next starting time (every 6 hrs)
-        AUCTION_STATE_CLEARED
-    }
-
     // The price is a rational number, so we need a concept of a fraction:
     struct fraction {
-        uint256 numerator;
-        uint256 denominator;
+        // Numerator
+        uint256 num;
+
+        // Denominator
+        uint256 den;
     }
 
     // If DX is running, this is the start time of that auction
@@ -33,9 +28,6 @@ contract DutchExchange {
     Token public buyToken;
     // DUTCHX tokens, used to vote on new token proposals
     Token public DUTCHX;
-
-    // State of the auction
-    DutchExchangeState public exchangeState;
 
     // Index of the current auction. This is necessary to store closing prices (see next variable)
     uint256 public auctionIndex = 1;
@@ -68,52 +60,37 @@ contract DutchExchange {
     event newBuyerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
     event auctionCleared(uint256 _auctionIndex);
 
-    // Modifiers
-    modifier auctionIsRunning() {
-        require(exchangeState == DutchExchangeState.AUCTION_STATE_RUNNING);
-        _;
-    }
-
     // Constructor
     function DutchExchange(
-        uint256 initialClosingPriceNumerator,
-        uint256 initialClosingPriceDenominator,
+        uint256 initialClosingPriceNum,
+        uint256 initialClosingPriceDen,
         Token _sellToken,
         Token _buyToken,
         Token _DUTCHX
     ) public {
         // Calculate initial price
         fraction memory initialClosingPrice;
-        initialClosingPrice.numerator = initialClosingPriceNumerator;
-        initialClosingPrice.denominator = initialClosingPriceDenominator;
+        initialClosingPrice.num = initialClosingPriceNum;
+        initialClosingPrice.den = initialClosingPriceDen;
         closingPrices[0] = initialClosingPrice;
 
         // Set variables
         sellToken = _sellToken;
         buyToken = _buyToken;
         DUTCHX = _DUTCHX;
+        scheduleNextAuction();
     }
 
-    function clearAuction(uint256 currentPriceNumerator, uint256 currentPriceDenominator)
+    function clearAuction(uint256 currentPriceNum, uint256 currentPriceDen)
         public 
         returns (bool success) 
     {
         // Update state variables
-        closingPrices[auctionIndex].numerator = currentPriceNumerator;
-        closingPrices[auctionIndex].denominator = currentPriceDenominator;
+        closingPrices[auctionIndex].num = currentPriceNum;
+        closingPrices[auctionIndex].den = currentPriceDen;
         sellVolumeCurrent = sellVolumeNext;
         sellVolumeNext = 0;
         auctionIndex++;
-
-        // Change auction state
-        exchangeState = DutchExchangeState.AUCTION_STATE_CLEARED;
-
-        // Schedule next auction
-
-        // Number of elapsed 6-hour periods since 1/1/1970
-        uint256 elapsedPeriods = now / 1 hours / 6;
-        // Set start period to following one;
-        auctionStart = (elapsedPeriods + 1) * 6 * 1 hours;
 
         auctionCleared(auctionIndex - 1);
         success = true;
@@ -122,10 +99,12 @@ contract DutchExchange {
     function postSellOrder(uint256 amount) public returns (bool success) {
         require(sellToken.transferFrom(msg.sender, this, amount));
 
-        if (exchangeState == DutchExchangeState.AUCTION_STATE_RUNNING) {
+        if (auctionStart <= now) {
+            // There is an active auction, we add sell order to next auction
             sellerBalances[auctionIndex + 1][msg.sender] += amount;
             sellVolumeNext += amount;
-        } else if (exchangeState == DutchExchangeState.AUCTION_STATE_CLEARED) {
+        } else {
+            // No active auction, we add it to the scheduled auction
             sellerBalances[auctionIndex][msg.sender] += amount;
             sellVolumeCurrent += amount;
         }
@@ -134,58 +113,40 @@ contract DutchExchange {
         success = true;
     }
 
-    function postBuyOrder(uint256 amount, uint256 minBuyAmount) 
-        public 
-        auctionIsRunning 
-        returns (bool success) 
+    function postBuyOrder(uint256 amount, uint256 _auctionIndex) 
+        public
     {
-        // Get current price
+        // User inputs the current auction index, this is a fail-safe in case
+        // his/her transaction is mined after the auction clears
+        require(auctionIndex == _auctionIndex);
+        require(auctionStart <= now);
+
+        // Get current price to calculate overflow
         uint256 num;
         uint256 den;
-        (num, den) = getCurrentPrice();
+        (num, den) = getPrice(_auctionIndex);
 
-        // The user should enter minimum amount he is expecting to get from his buy order
-        // This verifies that he will get at least that much
-        // It will fail when the buy order is processed after the auction ends
-        require(amount * den / num >= minBuyAmount);
-
-        // The last buy order will very likely overflow
-        // If overflow is negative, auction isn't cleared yet
-        uint256 overflow = buyVolumes[auctionIndex] + amount - sellVolumeCurrent * num / den;
-        uint256 amountWithoutOverflow;
+        // Calculate if buy order overflows
+        int256 overflow = int256(buyVolumes[_auctionIndex] + amount - sellVolumeCurrent * num / den);
 
         // Calculate amount without overflow
         if (overflow > 0) {
-            amountWithoutOverflow = amount - overflow;
-        } else {
-            amountWithoutOverflow = amount;
+            uint256 overflowPositive = uint256(overflow);
+            amount -= overflowPositive;
         }
 
         // Perform transfer
-        require(buyToken.transferFrom(msg.sender, this, amountWithoutOverflow));
-        buyVolumes[auctionIndex] += amountWithoutOverflow;
-        buyerBalances[auctionIndex][msg.sender] += amountWithoutOverflow;
+        require(buyToken.transferFrom(msg.sender, this, amount));
+        buyVolumes[auctionIndex] += amount;
+        buyerBalances[auctionIndex][msg.sender] += amount;
 
-        newBuyOrder(auctionIndex, msg.sender, amountWithoutOverflow);
+        newBuyOrder(auctionIndex, msg.sender, amount);
 
         // Clear auction
         if (overflow >= 0) {
             clearAuction(num, den);
+            scheduleNextAuction();
         }
-
-        success = true;
-    }
-
-    function postBuyOrderAndClaim(uint256 amount, uint256 minBuyAmount) 
-        public 
-        auctionIsRunning 
-        returns (bool success) 
-    {
-        require(postBuyOrder(amount, minBuyAmount));
-
-        claimBuyerFundsOfCurrentAuction(msg.sender);
-
-        success = true;
     }
 
     function claimSellerFunds(uint256 _auctionIndex) public returns (uint256 returned) {
@@ -197,8 +158,8 @@ contract DutchExchange {
         
         // Get closing price for said auction
         fraction memory closingPrice = closingPrices[_auctionIndex];
-        uint256 num = closingPrice.numerator;
-        uint256 den = closingPrice.denominator;
+        uint256 num = closingPrice.num;
+        uint256 den = closingPrice.den;
 
         // Perform transfer
         returned = sellerBalance * num / den;
@@ -207,70 +168,70 @@ contract DutchExchange {
         newSellerFundsClaim(_auctionIndex, msg.sender, returned);
     }
 
-    // This allows a buyer to claim intermediate funds as many times as they like
-    function claimBuyerFundsOfCurrentAuction(address claimer) public returns (uint256 returned) {
-        // If an auction has already cleared, it is equivalent to calling claimBuyerFunds()
-        if (exchangeState == DutchExchangeState.AUCTION_STATE_CLEARED) {
-            returned = claimBuyerFunds(claimer, auctionIndex - 1);
-        } else {
-            uint256 buyerBalance = buyerBalances[auctionIndex][claimer];
-
-            // Get current price
-            uint256 num;
-            uint256 den;
-            (num, den) = getCurrentPrice();
-
-            // Get amount to return
-            returned = buyerBalance * den / num - claimedAmounts[auctionIndex][claimer];
-            require(returned > 0);
-
-            // Perform transfer
-            claimedAmounts[auctionIndex][claimer] += returned;
-            require(sellToken.transfer(claimer, returned));
-
-            newSellerFundsClaim(auctionIndex, claimer, returned);
-        }
-    }
-
-    function claimBuyerFunds(address claimer, uint256 _auctionIndex) 
+    function claimBuyerFunds(uint256 _auctionIndex) 
         public 
         returns 
         (uint256 returned) 
     {
-        uint256 buyerBalance = buyerBalances[_auctionIndex][claimer];
+        uint256 buyerBalance = buyerBalances[_auctionIndex][msg.sender];
 
-        // Checks if particular auction has cleared
-        require(auctionIndex > _auctionIndex);
+        // Checks if particular auction has ever run
+        require(auctionIndex >= _auctionIndex);
 
-        // Get closing price for said auction
-        fraction memory closingPrice = closingPrices[_auctionIndex];
-        uint256 num = closingPrice.numerator;
-        uint256 den = closingPrice.denominator;
+        uint256 num;
+        uint256 den;
+
+        // User has called a running auction
+        if (auctionIndex == _auctionIndex) {
+            (num, den) = getPrice(_auctionIndex);
+        } else {
+            // User has called a cleared auction, so we need its closing price:
+            fraction memory closingPrice = closingPrices[_auctionIndex];
+            num = closingPrice.num;
+            den = closingPrice.den;
+        }
 
         // Get amount to return
-        returned = buyerBalance * den / num - claimedAmounts[_auctionIndex][claimer];
+        returned = buyerBalance * den / num - claimedAmounts[_auctionIndex][msg.sender];
         require(returned > 0);
 
         // Perform transfer
-        buyerBalances[_auctionIndex][claimer] = 0;
-        require(sellToken.transfer(claimer, returned));
-        newBuyerFundsClaim(_auctionIndex, claimer, returned);
+        claimedAmounts[auctionIndex][msg.sender] += returned;
+        require(sellToken.transfer(msg.sender, returned));
+        newBuyerFundsClaim(_auctionIndex, msg.sender, returned);
     }
 
-    function getCurrentPrice()
-        public 
-        constant 
-        auctionIsRunning 
-        returns (uint256 numerator, uint256 denominator) 
+    function getPrice(uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256 num, uint256 den) 
     {
-        // Get last closing price
-        fraction memory lastClosingPrice = closingPrices[auctionIndex - 1];
-        uint256 num = lastClosingPrice.numerator;
-        uint256 den = lastClosingPrice.denominator;
+        // Checks if particular auction has ever run
+        require(auctionIndex >= _auctionIndex);
 
-        // The numbers 36k and 18k are chosen, so the initial price is double the last closing price
-        // And after 5 hours (18000 s), the price is the same as last closing price
-        numerator = 36000 * num;
-        denominator = (now - auctionStart + 18000) * den;
+        if (auctionIndex > _auctionIndex) {
+            // Auction has closed
+            fraction memory closingPrice = closingPrices[_auctionIndex];
+            num = closingPrice.num;
+            den = closingPrice.den;
+        } else {
+            // Auction is running, we need to calculate current price
+            // by first getting the last closing price
+            fraction memory lastClosingPrice = closingPrices[_auctionIndex - 1];
+            uint256 numOfLastClosingPrice = lastClosingPrice.num;
+            uint256 denOfLastClosingPrice = lastClosingPrice.den;
+
+            // The numbers 36k and 18k are chosen, so the initial price is double the last closing price
+            // And after 5 hours (18000 s), the price is the same as last closing price
+            num = 36000 * numOfLastClosingPrice;
+            den = (now - auctionStart + 18000) * denOfLastClosingPrice;
+        }  
+    }
+
+    function scheduleNextAuction() internal {
+        // Number of elapsed 6-hour periods since 1/1/1970
+        uint256 elapsedPeriods = now / 1 hours / 6;
+        // Set start period to following one
+        auctionStart = (elapsedPeriods + 1) * 6 * 1 hours;
     }
 }

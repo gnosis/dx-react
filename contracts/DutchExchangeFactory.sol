@@ -1,7 +1,8 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.15;
 
 import "./DutchExchange.sol";
 import "./Token.sol";
+// import "@gnosis.pm/gnosis-core-contracts/contracts/Tokens/Token.sol";
 
 /// @title Dutch Exchange Factory - propose new dutch exchanges
 /// @author Dominik Teiml - dominik.teiml@gnosis.pm
@@ -197,8 +198,8 @@ contract DutchExchangeFactory {
             && voteCounts[_proposalIndex].votesFor > voteCounts[_proposalIndex].votesAgainst) {
 
             // Calculate proposed price
-            uint256 proposedPriceNumerator = amountsSubmitted[_proposalIndex];
-            uint256 proposedPriceDenominator = proposedValues[_proposalIndex];
+            uint256 proposedPriceNumerator = proposedValues[_proposalIndex];
+            uint256 proposedPriceDenominator = amountsSubmitted[_proposalIndex];
 
             // Get proposed tokens
             Token sellToken = proposedTokenPair[_proposalIndex].sellToken;
@@ -210,7 +211,8 @@ contract DutchExchangeFactory {
                 proposedPriceDenominator,
                 sellToken,
                 buyToken,
-                DUTCHX);
+                DUTCHX
+            );
 
             // Update state variables
             exchangesCreated[_proposalIndex] = newExchange;
@@ -242,17 +244,20 @@ contract DutchExchangeFactory {
         bool transferSellTokens = false;
         bool transferCollateralTokens = false;
 
-        if (proposalStates[_proposalIndex] == ProposalState.SELL_TOKENS_CLAIMED) {
-            transferCollateralTokens = true;
-        }
+        // Require votes for to overweigh votes against
+        if (voteCounts[_proposalIndex].votesFor > voteCounts[_proposalIndex].votesAgainst) {
+            if (proposalStates[_proposalIndex] == ProposalState.SELL_TOKENS_CLAIMED) {
+                transferCollateralTokens = true;
+            }
 
-        if (proposalStates[_proposalIndex] == ProposalState.COLLATERAL_TOKENS_CLAIMED) {
-            transferSellTokens = true;
-        }
+            if (proposalStates[_proposalIndex] == ProposalState.COLLATERAL_TOKENS_CLAIMED) {
+                transferSellTokens = true;
+            }
 
-        if (proposalStates[_proposalIndex] == ProposalState.TOKENS_UNCLAIMED) {
-            transferSellTokens = true;
-            transferCollateralTokens = true;
+            if (proposalStates[_proposalIndex] == ProposalState.TOKENS_UNCLAIMED) {
+                transferSellTokens = true;
+                transferCollateralTokens = true;
+            }
         }
 
         // Transfer sell tokens
