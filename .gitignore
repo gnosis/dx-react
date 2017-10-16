@@ -35,3 +35,5 @@ package-lock.json
 records.json
 stats.json
 .awcache
+.eslintcache
+.stylelintcache
