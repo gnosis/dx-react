@@ -9,7 +9,7 @@ contract Balance {
     
     function Balance() {
         owner = msg.sender;
-        balances[tx.origin] = 10000;
+        balances[owner] = 1000000;
     }
 
     function sendMoneyz(address to, uint amount) {

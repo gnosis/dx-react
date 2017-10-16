@@ -1,12 +1,12 @@
 /* eslint no-console: 0 */
-import ReduxThunk from 'redux-thunk'
+// import thunk from 'redux-thunk'
 import { createAction } from 'redux-actions'
 import { getDutchXConnection } from 'contract-fe-test/api/dutchx'
 
-export const getBalanceBase = createAction('GET_CONTRACT_BALANCE')
+export const getBalanceBase: Function = createAction('GET_CONTRACT_BALANCE')
 
-export const getBalance = (contract, address = tx.origin) => async (dispatch) => {
-  console.log(contract)
+export const getBalance = (contract: string, address: string) => async (dispatch: Function) => {
+  // console.log(contract)
   let inst
   let dutchX
 

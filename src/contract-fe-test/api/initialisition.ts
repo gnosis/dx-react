@@ -2,9 +2,9 @@
  * Initialisation Class for connecting to Blockchain - Setting Provider - Migrating//Connecting Contracts
  */
 
-import Web3 from 'web3'
-import TruffleContract from 'truffle-contract'
-import _ from 'lodash'
+const Web3 = require('web3')
+const TruffleContract = require('truffle-contract')
+const _ = require('lodash')
 
 /** EVENT LISTENER: WINDOW:LOAD
  * Checks that window is loaded
@@ -34,7 +34,8 @@ const contractArtifacts = [
 ].map(name => require(`../../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
-
+  contracts: Object | any
+  web3: any
   constructor() {
     this.contracts = _.fromPairs(contractArtifacts.map((artifact) => {
       const c = TruffleContract(artifact)
@@ -50,7 +51,7 @@ class DutchExchangeInit {
    * @returns DutchExchangeInit INSTANCE
    * @memberof DutchExchangeInit
    */
-  static init(opts) {
+  static init(opts?: Object) {
     console.log(' ===> FIRING dutchX.init()') //eslint-disable-line
     const dutchX = new DutchExchangeInit()
     dutchX.fireUp(opts)
@@ -58,7 +59,7 @@ class DutchExchangeInit {
   }
 
   /* SET UP OPTS PARAM */
-  async fireUp(opts) {
+  async fireUp(opts?: Object | any) {
     await this.setWeb3Provider(opts.ethereum)
   }
   /** ASYNC Class Method: setWeb3Provider
@@ -66,14 +67,14 @@ class DutchExchangeInit {
    * @param {any} provider
    * @memberof DutchExchangeInit
    */
-  async setWeb3Provider(provider) {
+  async setWeb3Provider(provider: any) {
     if (provider == null) {
       // Prefer Web3 injected by the browser (Mist/MetaMask)
       // Window must be loaded first so that there isn't a race condition for resolving injected Web3 instance
       await windowLoaded
 
-      if (typeof web3 !== 'undefined') {
-        this.web3 = new Web3(web3.currentProvider)
+      if (typeof window.web3 !== 'undefined') {
+        this.web3 = new Web3(window.web3.currentProvider)
       } else {
         this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
       }
@@ -86,7 +87,7 @@ class DutchExchangeInit {
     }
 
     // Set providers for all Contracts
-    _.forOwn(this.contracts, (c) => { c.setProvider(this.web3.currentProvider) })
+    _.forOwn(this.contracts, (c: any) => { c.setProvider(this.web3.currentProvider) })
 
     // Attempt to attach all CONTRACT INSTANCES to Class
     await Promise.all([
@@ -100,7 +101,7 @@ class DutchExchangeInit {
    * @param {any} contract
    * @memberof DutchExchangeInit
   * */
-  async setupContractInstances(instanceName, contract) {
+  async setupContractInstances(instanceName: any, contract: any) {
     try {
       // Attach contract instance to Class and deploy
       console.log(`SUCCESS: Contract ${contract} successfully mounted to DutchExchangeInit instance`) // eslint-disable-line no-console

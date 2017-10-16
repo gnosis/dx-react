@@ -1,12 +1,12 @@
 import dutchX from './initialisition'
 
-let dutchXInst
+let dutchXInst: any
 
 /**
  * Initializes connection to DutchX
  * @param {*dictionary} DUTCHX_OPTIONS
  */
-export const initDutchX = async (DUTCHX_OPTIONS) => {
+export const initDutchX = async (DUTCHX_OPTIONS: any) => {
   console.log(' ===> FIRING initDutchX ACTION') //eslint-disable-line
   try {
     dutchXInst = await dutchX.init(DUTCHX_OPTIONS)
@@ -20,4 +20,4 @@ export const initDutchX = async (DUTCHX_OPTIONS) => {
 /**
  * Returns an instance of the connection to DutchX
  */
-export const getDutchXConnection = async () => dutchXInst
+export const getDutchXConnection: Function = async () => dutchXInst

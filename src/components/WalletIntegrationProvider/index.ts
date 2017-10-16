@@ -1,25 +1,36 @@
 import { Component } from 'react'
-import PropTypes from 'prop-types'
 import { /* connectBlockchain,*/ initDutchX } from 'contract-fe-test/api/dutchx'
 import { getSelectedProvider } from 'selectors/blockchain'
 import { WALLET_PROVIDER } from 'integrations/constants'
-import Web3 from 'web3'
 
+const Web3 = require('web3')
 
-export default class WalletIntegrationProvider extends Component {
+declare global {
+  interface Window { web3: any }
+}
+
+window.web3 = window.web3 || {}
+
+interface WalletIntegrationProps {
+  children: any,
+  integrations: any,
+  store: any
+}
+
+export default class WalletIntegrationProvider extends Component<WalletIntegrationProps, {}> {
   /**
    * Creates an instance of WalletIntegrationProvider.
    * @param {any} props 
    * @const {initializers} Takes <integrations> @prop typeof {Object} and returns VALUES into @const <initializers>
    * @memberof WalletIntegrationProvider
    */
-  constructor(props) {
+  constructor(props: any) {
     super(props)
     const { integrations, store } = props
     const initializers = Object.keys(integrations).map(integrationName => integrations[integrationName])
 
     // Execute providers initialization sequentially
-    const init = (funcs, reactStore) => {
+    const init = (funcs: any, reactStore?: any) => {
       if (funcs.length > 0) {
         return funcs[0].initialize(reactStore).then(
           () => init(funcs.slice(1), reactStore),
@@ -36,8 +47,9 @@ export default class WalletIntegrationProvider extends Component {
     window.addEventListener('load', () => init(initializers, store))
   }
 
-  getDutchXOptions(provider) {
-    const opts = {}
+  getDutchXOptions(provider: any) {
+    console.log('FIRING getDutchXOptions')
+    const opts: any = {}
 
     if (provider && provider.name === WALLET_PROVIDER.METAMASK) {
       // Inject window.web3
@@ -58,10 +70,4 @@ export default class WalletIntegrationProvider extends Component {
 
     return children
   }
-}
-
-WalletIntegrationProvider.propTypes = {
-  children: PropTypes.element,
-  integrations: PropTypes.object,
-  store: PropTypes.object,
 }

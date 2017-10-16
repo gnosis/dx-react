@@ -10,9 +10,9 @@ import { AppContainer } from 'react-hot-loader'
 import 'less/style.less'
 
 import AppRouter from 'router'
-import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
+import WalletIntegrationProvider from 'components/WalletIntegrationProvider/index'
 import createStoreWithHistory from 'store'
-import * as walletIntegrations from 'integrations'
+import * as walletIntegrations from 'integrations/'
 // import { setMomentRelativeTime } from './setup'
 
 // setMomentRelativeTime()
