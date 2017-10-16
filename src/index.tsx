@@ -10,9 +10,9 @@ import { AppContainer } from 'react-hot-loader'
 import 'less/style.less'
 
 import AppRouter from 'router'
-// import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
+import WalletIntegrationProvider from 'components/WalletIntegrationProvider'
 import createStoreWithHistory from 'store'
-// import * as walletIntegrations from 'integrations'
+import * as walletIntegrations from 'integrations'
 // import { setMomentRelativeTime } from './setup'
 
 // setMomentRelativeTime()
@@ -29,9 +29,9 @@ const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                {/* <WalletIntegrationProvider store={store} integrations={walletIntegrations}> */}
-                <App history={history} />
-                {/* </WalletIntegrationProvider> */}
+                <WalletIntegrationProvider store={store} integrations={walletIntegrations}>
+                    <App history={history} />
+                </WalletIntegrationProvider>
             </Provider>
         </AppContainer>,
         rootElement,

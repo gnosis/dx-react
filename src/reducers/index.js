@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
+import balance from 'contract-fe-test/reducers'
 import entities from './entities'
 import modal from './modal'
 import transactions from './transactions'
 import blockchain from './blockchain'
 import settings from './settings'
 import notifications from './notifications'
-import balance from 'contract-fe-test/reducers'
 
 const reducers = combineReducers({
   form: formReducer,
