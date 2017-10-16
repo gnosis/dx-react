@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
 import { reducer as formReducer } from 'redux-form'
 import entities from './entities'
 import modal from './modal'
@@ -10,7 +9,6 @@ import notifications from './notifications'
 import balance from 'contract-fe-test/reducers'
 
 const reducers = combineReducers({
-  routing: routerReducer,
   form: formReducer,
   modal,
   entities,

@@ -33,7 +33,7 @@ const ethereumUrl =
 
 module.exports = {
   context: path.join(__dirname, 'src'),
-  entry: ['bootstrap-loader', 'index.js'],
+  entry: ['bootstrap-loader', 'index.tsx'],
   output: {
     path: `${__dirname}/dist`,
     chunkFilename: '[name].[chunkhash].js',
@@ -45,11 +45,31 @@ module.exports = {
       `${__dirname}/src`,
       'node_modules',
     ],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   module: {
     rules: [
-      { test: /\.(js|jsx)$/, exclude: /(node_modules)/, use: 'babel-loader' },
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          },
+        },
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'awesome-typescript-loader',
+          options: {
+            useBabel: true,
+            useCache: true,
+          },
+        },
+      },
       {
         test: /\.(jpe?g|png|svg)$/i,
         use: {
@@ -66,7 +86,7 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            { loader: 'css-loader', options: { minimize: true } },
+            { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
             { loader: 'postcss-loader' },
             { loader: 'less-loader', options: { strictMath: true } },
           ],
