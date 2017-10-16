@@ -79,7 +79,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.(less|s?css)$/,
         use: [
           {
             loader: 'style-loader',
@@ -100,14 +100,26 @@ module.exports = {
               sourceMap: true,
             },
           },
-          {
-            loader: 'less-loader',
-            options: {
-              strictMath: true,
-              sourceMap: true,
-            },
-          },
         ],
+      },
+      {
+        test: /\.less$/,
+        use: {
+          loader: 'less-loader',
+          options: {
+            strictMath: true,
+            sourceMap: true,
+          },
+        },
+      },
+      {
+        test: /\.scss$/,
+        use: {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
+          },
+        },
       },
       {
         test: /\.(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,

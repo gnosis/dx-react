@@ -82,13 +82,34 @@ module.exports = {
         },
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
+            { loader: 'postcss-loader' },
+          ],
+        }),
+      },
+      {
+        test: /\.less$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
             { loader: 'postcss-loader' },
             { loader: 'less-loader', options: { strictMath: true } },
+          ],
+        }),
+      },
+      {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
+            { loader: 'postcss-loader' },
+            { loader: 'sass-loader' },
           ],
         }),
       },
