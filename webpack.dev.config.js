@@ -14,17 +14,7 @@ const build = process.env.BUILD_NUMBER || 'SNAPSHOT'
 
 const config = require('./src/config.json')
 
-let whitelist
-
-if (nodeEnv === 'development') {
-  whitelist = config.developmentWhitelist
-} else {
-  whitelist = config.productionWhitelist
-}
-
-
-const gnosisDbUrl =
-  process.env.GNOSISDB_URL || `${config.gnosisdb.protocol}://${config.gnosisdb.host}:${config.gnosisdb.port}`
+const whitelist = config.developmentWhitelist
 
 const ethereumUrl =
   process.env.ETHEREUM_URL || `${config.ethereum.protocol}://${config.ethereum.host}:${config.ethereum.port}`
@@ -79,7 +69,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.(less|s?css)$/,
         use: [
           {
             loader: 'style-loader',
@@ -100,14 +90,26 @@ module.exports = {
               sourceMap: true,
             },
           },
-          {
-            loader: 'less-loader',
-            options: {
-              strictMath: true,
-              sourceMap: true,
-            },
-          },
         ],
+      },
+      {
+        test: /\.less$/,
+        use: {
+          loader: 'less-loader',
+          options: {
+            strictMath: true,
+            sourceMap: true,
+          },
+        },
+      },
+      {
+        test: /\.scss$/,
+        use: {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true,
+          },
+        },
       },
       {
         test: /\.(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -127,12 +129,6 @@ module.exports = {
     host: '0.0.0.0',
     clientLogLevel: 'info',
     hot: true,
-    proxy: {
-      '/api': {
-        target: gnosisDbUrl,
-        secure: false,
-      },
-    },
     watchOptions: {
       ignored: /node_modules/,
     },
@@ -165,7 +161,6 @@ module.exports = {
       'process.env': {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
-        GNOSISDB_URL: JSON.stringify(gnosisDbUrl),
         ETHEREUM_URL: JSON.stringify(ethereumUrl),
         WHITELIST: JSON.stringify(whitelist),
       },

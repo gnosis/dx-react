@@ -17,16 +17,7 @@ const build = process.env.BUILD_NUMBER || 'SNAPSHOT'
 
 const config = require('./src/config.json')
 
-let whitelist
-
-if (nodeEnv === 'development') {
-  whitelist = config.developmentWhitelist
-} else {
-  whitelist = config.productionWhitelist
-}
-
-const gnosisDbUrl =
-  process.env.GNOSISDB_URL || `${config.gnosisdb.protocol}://${config.gnosisdb.host}:${config.gnosisdb.port}`
+const whitelist = config.productionWhitelist
 
 const ethereumUrl =
   process.env.ETHEREUM_URL || `${config.ethereum.protocol}://${config.ethereum.host}:${config.ethereum.port}`
@@ -82,13 +73,34 @@ module.exports = {
         },
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
+            { loader: 'postcss-loader' },
+          ],
+        }),
+      },
+      {
+        test: /\.less$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
             { loader: 'postcss-loader' },
             { loader: 'less-loader', options: { strictMath: true } },
+          ],
+        }),
+      },
+      {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { minimize: true, importLoaders: 1 } },
+            { loader: 'postcss-loader' },
+            { loader: 'sass-loader' },
           ],
         }),
       },
@@ -165,7 +177,6 @@ module.exports = {
       'process.env': {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
-        GNOSISDB_URL: JSON.stringify(gnosisDbUrl),
         ETHEREUM_URL: JSON.stringify(ethereumUrl),
         WHITELIST: whitelist,
       },

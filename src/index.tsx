@@ -10,7 +10,8 @@ import { AppContainer } from 'react-hot-loader'
 import 'less/style.less'
 
 import AppRouter from 'router'
-import WalletIntegrationProvider from 'components/WalletIntegrationProvider/index'
+// import WalletIntegrationProvider from 'components/WalletIntegrationProvider/index'
+import walletIntegrationCallback from 'contract-fe-test/integrations'
 import createStoreWithHistory from 'store'
 import * as walletIntegrations from 'integrations/'
 // import { setMomentRelativeTime } from './setup'
@@ -25,23 +26,25 @@ store.dispatch({ type: 'INIT' })
 /* global document */
 const rootElement = document.getElementById('root')
 
+const initialiser: any = () => new walletIntegrationCallback(walletIntegrations, store)
+
 const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                <WalletIntegrationProvider store={store} integrations={walletIntegrations}>
+                {/*<WalletIntegrationProvider store={store} integrations={walletIntegrations}>*/}
                     <App history={history} />
-                </WalletIntegrationProvider>
+                {/*</WalletIntegrationProvider>*/}
             </Provider>
         </AppContainer>,
         rootElement,
+        initialiser,
     )
 }
 
 render(AppRouter)
 
 if (module.hot) {
-    module.hot.accept('./router', () =>
-        // eslint-disable-next-line global-require
-        render(require('./router').default))
+  module.hot.accept('./router', () =>
+    render(require('./router').default))
 }
