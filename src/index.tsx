@@ -42,6 +42,5 @@ render(AppRouter)
 
 if (module.hot) {
   module.hot.accept('./router', () =>
-    // eslint-disable-next-line global-require
     render(require('./router').default))
 }
