@@ -1,4 +1,5 @@
 import { ETHEREUM_NETWORKS } from './constants'
+import { weiToEth } from 'utils/helpers'
 const autobind = require('autobind-decorator')
 
 class InjectedWeb3 {
@@ -6,16 +7,22 @@ class InjectedWeb3 {
   runProviderRegister: any
   watcherInterval: any
   web3: any
+  account: any
+  network: any
+  balance: any
+  walletEnabled: any
 
   constructor() {
     this.watcherInterval = setInterval(this.watcher, 1000)
 
-    this.watcherInterval = this.watcherInterval.bind(this)
+    // this.watcherInterval = this.watcherInterval.bind(this)
   }
 
   async initialize(opts?: any) {
-    this.runProviderUpdate = typeof opts.runProviderUpdate === 'function' ? opts.runProviderUpdate : this.runProviderUpdate
-    this.runProviderRegister = typeof opts.runProviderRegister === 'function' ? opts.runProviderRegister : this.runProviderRegister
+    this.runProviderUpdate = typeof opts.runProviderUpdate === 'function' ?
+      opts.runProviderUpdate : this.runProviderUpdate
+    this.runProviderRegister = typeof opts.runProviderRegister === 'function' ?
+      opts.runProviderRegister : this.runProviderRegister
   }
 
   async getNetwork() {
@@ -103,6 +110,24 @@ class InjectedWeb3 {
         await this.runProviderUpdate(this, { available: false })
       }
     }
+  }
+
+  /**
+   * Returns the balance for the current default account in Wei
+   * @async
+   * @returns {Promise<string>} - Accountbalance in WEI for current account
+   */
+  async getBalance() {
+    return new Promise((resolve, reject) => {
+      if (this.account) {
+        this.web3.eth.getBalance(
+          this.account,
+          (e: Error, balance: any) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
+        )
+      } else {
+        return reject(new Error('No Account available'))
+      }
+    })
   }
 
 }
