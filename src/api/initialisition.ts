@@ -31,7 +31,7 @@ const windowLoaded = new Promise((accept, reject) => {
  */
 const contractArtifacts = [
   'Balance',
-].map(name => require(`../../../build/contracts/${name}.json`))
+].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
   contracts: Object | any

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
-import balance from 'contract-fe-test/reducers'
+import balance from './balance'
 import entities from './entities'
 import modal from './modal'
 import transactions from './transactions'
