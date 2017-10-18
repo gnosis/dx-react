@@ -24,9 +24,9 @@ store.dispatch({ type: 'INIT' })
 /* global document */
 const rootElement = document.getElementById('root')
 
-const initialiser: any = () => new walletIntegrationCallback(walletIntegrations)
+const initializer: any = () => new walletIntegrationCallback(walletIntegrations, store)
 
-const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
+const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: any) => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
@@ -34,11 +34,11 @@ const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
             </Provider>
         </AppContainer>,
         rootElement,
-        initialiser,
+        cb,
     )
 }
 
-render(AppRouter)
+render(AppRouter, initializer)
 
 if (module.hot) {
   module.hot.accept('./router', () =>

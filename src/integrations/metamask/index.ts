@@ -26,6 +26,7 @@ class Metamask extends InjectedWeb3 {
   async initialize(opts: Object) {
     //run InjectedWeb3's initialise
     super.initialize(opts)
+    console.log('PAST super.initialize')
     this.runProviderRegister(this, { priority: Metamask.providerPriority })
 
     this.walletEnabled = false

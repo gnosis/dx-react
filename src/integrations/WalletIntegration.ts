@@ -1,8 +1,9 @@
 /** Wallet Integration - Replaces WalletIntegrationComponent
  * Called in ReactDOM.render(<comp>, <html>, CB?)
  */
-import autobind from 'autobind-decorator'
-import { registerProvider, updateProvider, initDutchX } from 'actions/blockchain'
+// import autobind from 'autobind-decorator'
+import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
+// import { map } from 'lodash'
 
 // declare global object
 declare global {
@@ -12,6 +13,7 @@ declare global {
 window.web3 = window.web3 || {}
 
 export default class WalletIntegrationProvider {
+  store: any
   /**
    * Creates an instance of WalletIntegrationProvider.
    * @param {any} integrations 
@@ -19,7 +21,10 @@ export default class WalletIntegrationProvider {
    * @const {initializers} Takes <integrations> @prop typeof {Object} and returns VALUES into @const <initializers>
    * @memberof WalletIntegrationProvider
    */
-  constructor(integrations: Object) {
+  constructor(integrations: any, store: any) {
+    this.store = store
+    this.handleProviderUpdate = this.handleProviderUpdate.bind(this)
+    this.handleProviderRegister = this.handleProviderRegister.bind(this)
 
     const providerOptions = {
       runProviderUpdate: this.handleProviderUpdate,
@@ -28,28 +33,28 @@ export default class WalletIntegrationProvider {
 
     // Execute providers initialization sequentially
     window.addEventListener('load', () => {
-        Promise.all(Object.keys(integrations).map(provider => integrations[provider].initialise(providerOptions)))
+        console.log('Window LOADED')
+        Promise.resolve(integrations.Metamask.initialize(providerOptions))
+        //Promise.all(map(integrations, (integration: any) => integration.initialize(providerOptions)))
         //THEN initialise DutchX contracts and class Instance
-        .then(initDutchX)
-        .catch(initDutchX)
+        .then(() => store.dispatch(initDutchX()))
+        .catch(() => store.dispatch(initDutchX()))
     })
   }
 
   // Fired by PROVIDER (e.g METAMASK) => DISPATCHES Action w/ Provider NAME && Provider DATA
-  @autobind
   async handleProviderUpdate(provider: any, data: any) {
-    await updateProvider({
+    await this.store.dispatch(updateProvider({
       provider: provider.constructor.providerName, 
       ...data,
-    })
+    }))
   }
 
   // Fired by PROVIDER (e.g METAMASK) => DISPATCHES Action w/ Provider NAME && Provider DATA
-  @autobind
   async handleProviderRegister(provider: any, data: any) {
-    await registerProvider({
+    await this.store.dispatch((registerProvider({
       provider: provider.constructor.providerName,
       ...data,
-    })
+    })))
   }
 }

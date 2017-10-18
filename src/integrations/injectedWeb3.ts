@@ -1,6 +1,6 @@
 import { ETHEREUM_NETWORKS } from './constants'
 import { weiToEth } from 'utils/helpers'
-const autobind = require('autobind-decorator')
+// const autobind = require('autobind-decorator')
 
 class InjectedWeb3 {
   runProviderUpdate: any
@@ -13,9 +13,10 @@ class InjectedWeb3 {
   walletEnabled: any
 
   constructor() {
+    console.log('INSIDE injectedWeb3 CONSTRUCTOR')
+    this.watcher = this.watcher.bind(this)
+    
     this.watcherInterval = setInterval(this.watcher, 1000)
-
-    // this.watcherInterval = this.watcherInterval.bind(this)
   }
 
   async initialize(opts?: any) {
@@ -79,7 +80,6 @@ class InjectedWeb3 {
    * Periodic updater to get all relevant information from this provider
    * @async
    */
-  @autobind
   async watcher() {
     try {
       const currentAccount = await this.getAccount()

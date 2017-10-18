@@ -1,5 +1,5 @@
 import { WALLET_PROVIDER } from 'integrations/constants'
-const Decimal = require('decimal.js')
+import Decimal from 'decimal.js'
 const Web3 = require('web3')
 
 export const getDutchXOptions = (provider: any) => {

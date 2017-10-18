@@ -26,6 +26,7 @@ export const setDutchXInitialized = createAction<{initialized?: boolean, error?:
 export const setConnectionStatus = createAction<{connected?: boolean}>('SET_CONNECTION_STATUS')
 export const setActiveProvider = createAction<{provider?: string}>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{provider?: string, data?: Object}>('REGISTER_PROVIDER')
+
 export const updateProvider = createAction<{provider?: string, data?: Object}>('UPDATE_PROVIDER')
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
@@ -43,7 +44,6 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
 
     // determine new provider
     const newProvider = findDefaultProvider(state)
-
     if (newProvider) {
       await dispatch(setActiveProvider(newProvider.name))
 
