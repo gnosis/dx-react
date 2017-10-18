@@ -10,13 +10,11 @@ import { AppContainer } from 'react-hot-loader'
 import 'less/style.less'
 
 import AppRouter from 'router'
-// import WalletIntegrationProvider from 'components/WalletIntegrationProvider/index'
-import walletIntegrationCallback from 'contract-fe-test/integrations'
+
+import walletIntegrationCallback from 'integrations/WalletIntegration'
 import createStoreWithHistory from 'store'
 import * as walletIntegrations from 'integrations/'
-// import { setMomentRelativeTime } from './setup'
 
-// setMomentRelativeTime()
 const history = createHistory()
 const store = createStoreWithHistory(history)
 
@@ -26,15 +24,13 @@ store.dispatch({ type: 'INIT' })
 /* global document */
 const rootElement = document.getElementById('root')
 
-const initialiser: any = () => new walletIntegrationCallback(walletIntegrations, store)
+const initialiser: any = () => new walletIntegrationCallback(walletIntegrations)
 
 const render = (App: React.SFC<any> | React.ComponentClass<any>) => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                {/*<WalletIntegrationProvider store={store} integrations={walletIntegrations}>*/}
-                    <App history={history} />
-                {/*</WalletIntegrationProvider>*/}
+                <App history={history} />
             </Provider>
         </AppContainer>,
         rootElement,

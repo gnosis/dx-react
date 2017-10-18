@@ -1,6 +1,6 @@
-import { WALLET_PROVIDER } from 'integrations/constants'
-import { registerProvider, updateProvider } from 'actions/blockchain'
-import InjectedWeb3 from 'integrations/injectedWeb3'
+import { WALLET_PROVIDER } from '../constants'
+import { registerProvider, updateProvider } from '../../actions/blockchain'
+import InjectedWeb3 from '../injectedWeb3'
 import Web3 from 'web3'
 
 class Parity extends InjectedWeb3 {

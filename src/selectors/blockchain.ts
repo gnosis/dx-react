@@ -1,3 +1,4 @@
+import { /* get, */ find, orderBy } from 'lodash'
 const Decimal = require('decimal.js')
 
 interface Providers {
@@ -21,6 +22,18 @@ interface State {
 }
 
 export const selector = (state: State) => state.blockchain
+
+/**
+ * Finds a default provider from all currently available providers. Determined by provider integrations `priority`
+ * @param {*} state - redux state
+ */
+export const findDefaultProvider = (state: State) => {
+  const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
+
+  return find(providers, {
+    loaded: true, available: true,
+  })
+}
 
 export const getSelectedProvider = (state: State): Providers | null => (
   selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null

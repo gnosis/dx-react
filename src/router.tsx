@@ -7,7 +7,7 @@ import {
 import { History } from 'history'
 
 // import App from 'containers/App'
-import BalanceButton from 'contract-fe-test/containers/BalanceButton/'
+import BalanceButton from './containers/BalanceButton/'
 // import { getDutchXConnection } from 'contract-fe-test/api/dutchx'
 
 const TempApp: React.SFC<any> = () => (
