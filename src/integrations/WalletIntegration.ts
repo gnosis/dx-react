@@ -33,8 +33,8 @@ export default class WalletIntegrationProvider {
 
     // Execute providers initialization sequentially
     window.addEventListener('load', () => {
-        console.log('Window LOADED')
-        Promise.resolve(integrations.Metamask.initialize(providerOptions))
+      console.log('Window LOADED')
+      Promise.resolve(integrations.Metamask.initialize(providerOptions))
         //Promise.all(map(integrations, (integration: any) => integration.initialize(providerOptions)))
         //THEN initialise DutchX contracts and class Instance
         .then(() => store.dispatch(initDutchX()))

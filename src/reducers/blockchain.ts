@@ -13,6 +13,15 @@ import {
 
 import { GAS_COST } from 'utils/constants'
 
+const INITIAL_PROVIDER_STATE: any = {
+  loaded: false,
+  available: false,
+  network: undefined,
+  account: undefined,
+  balance: undefined,
+  priority: 1,
+}
+
 const reducer = handleActions({
   [setConnectionStatus as any]: (state, action) => {
     const { connection } = action.payload
@@ -48,7 +57,7 @@ const reducer = handleActions({
         ...state.providers,
         [name]: {
           name,
-          loaded: false,
+          ...INITIAL_PROVIDER_STATE,
           ...provider,
         },
       },

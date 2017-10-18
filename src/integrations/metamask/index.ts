@@ -1,5 +1,4 @@
 import { WALLET_PROVIDER } from 'integrations/constants'
-// import { registerProvider, updateProvider } from 'actions/blockchain'
 import InjectedWeb3 from 'integrations/injectedWeb3'
 const Web3 = require('web3')
 
@@ -26,7 +25,6 @@ class Metamask extends InjectedWeb3 {
   async initialize(opts: Object) {
     //run InjectedWeb3's initialise
     super.initialize(opts)
-    console.log('PAST super.initialize')
     this.runProviderRegister(this, { priority: Metamask.providerPriority })
 
     this.walletEnabled = false

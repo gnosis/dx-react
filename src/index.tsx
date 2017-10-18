@@ -27,7 +27,7 @@ const rootElement = document.getElementById('root')
 const initializer: any = () => new walletIntegrationCallback(walletIntegrations, store)
 
 const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: any) => {
-    ReactDOM.render(
+  ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
                 <App history={history} />

@@ -31,7 +31,8 @@ export const findDefaultProvider = (state: State) => {
   const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
 
   return find(providers, {
-    loaded: true, available: true,
+    name: 'METAMASK',
+    // loaded: true, available: true,
   })
 }
 

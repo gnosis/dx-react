@@ -13,7 +13,6 @@ class InjectedWeb3 {
   walletEnabled: any
 
   constructor() {
-    console.log('INSIDE injectedWeb3 CONSTRUCTOR')
     this.watcher = this.watcher.bind(this)
     
     this.watcherInterval = setInterval(this.watcher, 1000)

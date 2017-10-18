@@ -1,7 +1,7 @@
 import { 
   getCurrentBalance,
   getCurrentAccount,
-  initDutchXConnection 
+  initDutchXConnection, 
 } from '../api/dutchx'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
@@ -10,15 +10,15 @@ import { createAction } from 'redux-actions'
 import { findDefaultProvider } from '../selectors/blockchain'
 
 export enum TypeKeys {
-  SET_GNOSIS_CONNECTION = "SET_GNOSIS_CONNECTION",
-  SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS",
-  SET_ACTIVE_PROVIDER = "SET_ACTIVE_PROVIDER",
-  SET_GAS_COST = "SET_GAS_COST",
-  SET_GAS_PRICE = "SET_GAS_PRICE",
-  REGISTER_PROVIDER = "REGISTER_PROVIDER",
-  UPDATE_PROVIDER = "UPDATE_PROVIDER",
-  SET_ETHER_TOKENS = "SET_ETHER_TOKENS",
-  OTHER_ACTIONS = "OTHER_ACTIONS",
+  SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
+  SET_CONNECTION_STATUS = 'SET_CONNECTION_STATUS',
+  SET_ACTIVE_PROVIDER = 'SET_ACTIVE_PROVIDER',
+  SET_GAS_COST = 'SET_GAS_COST',
+  SET_GAS_PRICE = 'SET_GAS_PRICE',
+  REGISTER_PROVIDER = 'REGISTER_PROVIDER',
+  UPDATE_PROVIDER = 'UPDATE_PROVIDER',
+  SET_ETHER_TOKENS = 'SET_ETHER_TOKENS',
+  OTHER_ACTIONS = 'OTHER_ACTIONS',
 }
 
 // TODO define reducer for GnosisStatus
