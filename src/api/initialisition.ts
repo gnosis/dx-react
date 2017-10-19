@@ -30,7 +30,10 @@ const windowLoaded = new Promise((accept, reject) => {
  * ^ that
  */
 const contractArtifacts = [
-  'Balance',
+  'DutchExchange',
+  'DutchExchangeFactory',
+  'Token',
+  'ERC20Interface',
 ].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {

@@ -2,7 +2,7 @@ import { ETHEREUM_NETWORKS } from './constants'
 import { weiToEth } from 'utils/helpers'
 // const autobind = require('autobind-decorator')
 
-const WATCHER_INTERVAL = 1000
+const WATCHER_INTERVAL = 10000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,
