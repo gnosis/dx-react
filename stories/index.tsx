@@ -16,8 +16,8 @@ import BalanceButton from '../src/containers/BalanceButton/'
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
 storiesOf('App/Button', module)
+  .addDecorator((story: any) => <Provider store={store as any}>{story()}</Provider>)
   .add('with text', () => <Button onClick={action('clicked')}>Hello Button</Button>)
   .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>)
   .add('some random button', () => <Button>Hello World</Button>)
-  .addDecorator((story: any) => <Provider store={store as any}>{story()}</Provider>)
   .add('BalanceButton Container', () => <BalanceButton>This is a Balance Button</BalanceButton>)

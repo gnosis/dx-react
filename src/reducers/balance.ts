@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-import { getBalanceBase } from '../actions/Balance'
+import { getBalanceBase } from 'actions/balance'
 
 export const reducer = handleActions({
   [getBalanceBase as any]: (state: any, action: any) => {

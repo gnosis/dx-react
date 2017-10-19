@@ -1,14 +1,19 @@
 import { connect } from 'react-redux'
 import BalanceButton from '../../components/BalanceButton'
 
-import { getBalance } from '../../actions/Balance'
+import { getBalance } from '../../actions/balance'
 
 interface State {
-  balance?: number,
-  provider?: Object
+  balance?: { currentBalance?: number },
+  blockchain?: { activeProvider?: string },
 }
 
-const mapStateToProps = (state: any):State => ({
+interface StateToProps {
+  currentBalance?: number,
+  activeProvider?: string,
+}
+
+const mapStateToProps = (state: State): Object => ({
   balance: state.balance.currentBalance,
   provider: state.blockchain.activeProvider ? state.blockchain.activeProvider : null,
 })
@@ -17,4 +22,4 @@ const mapDispatchToProps = {
   getBalance,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BalanceButton as any)
+export default connect< StateToProps, Object, React.SFC<any> >(mapStateToProps, mapDispatchToProps)(BalanceButton as React.SFC)
