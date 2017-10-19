@@ -13,7 +13,6 @@ import AppRouter from 'router'
 
 import walletIntegrationCallback from 'integrations/WalletIntegration'
 import createStoreWithHistory from 'store'
-import * as walletIntegrations from 'integrations/'
 
 const history = createHistory()
 const store = createStoreWithHistory(history)
@@ -24,18 +23,18 @@ store.dispatch({ type: 'INIT' })
 /* global document */
 const rootElement = document.getElementById('root')
 
-const initializer: any = () => new walletIntegrationCallback(walletIntegrations, store)
+const initializer = () => walletIntegrationCallback(store)
 
-const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: any) => {
+const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: () => {}) => {
   ReactDOM.render(
-        <AppContainer>
-            <Provider store={store}>
-                <App history={history} />
-            </Provider>
-        </AppContainer>,
-        rootElement,
-        cb,
-    )
+    <AppContainer>
+      <Provider store={store}>
+        <App history={history} />
+      </Provider>
+    </AppContainer>,
+    rootElement,
+    cb,
+  )
 }
 
 render(AppRouter, initializer)
