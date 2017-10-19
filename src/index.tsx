@@ -12,9 +12,9 @@ import 'less/style.less'
 import AppRouter from 'router'
 
 import walletIntegrationCallback from 'integrations/WalletIntegration'
-import createStoreWithHistory from 'store'
 import * as walletIntegrations from 'integrations/'
 
+import createStoreWithHistory from 'store'
 const history = createHistory()
 const store = createStoreWithHistory(history)
 
