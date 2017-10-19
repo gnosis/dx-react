@@ -8,17 +8,13 @@ interface State {
   provider?: Object
 }
 
-interface Dispatch {
-  dispatchGetBalance?: Function,
-}
-
 const mapStateToProps = (state: any):State => ({
   balance: state.balance.currentBalance,
-  provider: state.blockchain.providers.METAMASK ? state.blockchain.providers.METAMASK.account : null,
+  provider: state.blockchain.activeProvider ? state.blockchain.activeProvider : null,
 })
 
-const mapDispatchToProps = (dispatch: Function):Dispatch => ({
-  dispatchGetBalance: (c: string, a: string) => dispatch(getBalance(c, a)),
-})
+const mapDispatchToProps = {
+  getBalance
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(BalanceButton as any)

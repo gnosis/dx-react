@@ -81,7 +81,7 @@ const reducer = handleActions({
   },
   [setActiveProvider as any]: (state: any, action: any) => ({
     ...state,
-    activeProvider: action.payload
+    activeProvider: action.payload,
   }),
   // [setEtherTokens]: (state, action) => ({
   //   ...state,
@@ -90,7 +90,7 @@ const reducer = handleActions({
   //     [action.payload.account]: action.payload.etherTokens,
   //   },
   // }),
-}, {
+},                            {
   gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
   gasPrice: undefined,
   currentBalance: undefined,

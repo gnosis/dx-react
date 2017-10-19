@@ -9,14 +9,14 @@ interface Currency {
 
 interface BalanceButtonProps {
   balance: Currency,
-  dispatchGetBalance: Function,
+  getBalance: Function,
   provider: String,
 }
 
-const BalanceButton = ({ balance, dispatchGetBalance, provider }: BalanceButtonProps) => (
+const BalanceButton = ({ balance, getBalance, provider }: BalanceButtonProps) => (
   <div>
     <br />
-    <button onClick={() => dispatchGetBalance('Balance', provider)}>Click me for your balance!</button>
+    <button onClick={() => getBalance('Balance', provider)}>Click me for your balance!</button>
     <br />
     <br />
     <h3>Current Balance = {balance ? `${balance.e} Ether` : 'Unavailable'}</h3>

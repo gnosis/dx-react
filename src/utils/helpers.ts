@@ -8,8 +8,8 @@ export const getDutchXOptions = (provider: any) => {
 
   if (provider && provider.name === WALLET_PROVIDER.METAMASK) {
       // Inject window.web3
-      opts.ethereum = window.web3.currentProvider
-    } else if (provider && provider === WALLET_PROVIDER.PARITY) {
+    opts.ethereum = window.web3.currentProvider
+  } else if (provider && provider === WALLET_PROVIDER.PARITY) {
       // Inject window.web3
       opts.ethereum = window.web3.currentProvider
     } else {
