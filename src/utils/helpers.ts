@@ -11,11 +11,13 @@ export const getDutchXOptions = (provider: any) => {
     opts.ethereum = window.web3.currentProvider
   } else if (provider && provider === WALLET_PROVIDER.PARITY) {
       // Inject window.web3
-      opts.ethereum = window.web3.currentProvider
-    } else {
+    opts.ethereum = window.web3.currentProvider
+  } else {
       // Default remote node
-      opts.ethereum = new Web3(new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`)).currentProvider
-    }
+    opts.ethereum = new Web3(
+      new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`)
+    ).currentProvider
+  }
 
   return opts
 }

@@ -22,4 +22,4 @@ export const getBalance = (contract: string, address: string) => async (dispatch
   }
 }
 
-export const getEthBalance = () => ( window.alert(window.web3.eth.getBalance() ) )
+export const getEthBalance = () => (window.alert(window.web3.eth.getBalance()))

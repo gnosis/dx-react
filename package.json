@@ -21,7 +21,9 @@
     "lint:fix": "npm run lint:js:fix; npm run lint:ts:fix; npm run lint:css:fix",
     "test": "jest",
     "stats": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --profile --json > stats.json",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "lint-staged": {
     "src/**/*.js?(x)": [
@@ -155,6 +157,9 @@
     "typescript": "^2.5.3",
     "url-loader": "^0.6.2",
     "webpack": "3.7.1",
-    "webpack-dev-server": "2.9.1"
+    "webpack-dev-server": "2.9.1",
+    "@storybook/react": "^3.2.12",
+    "@storybook/addon-actions": "^3.2.12",
+    "@storybook/addon-links": "^3.2.12"
   }
 }

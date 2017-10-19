@@ -14,7 +14,7 @@ const mapStateToProps = (state: any):State => ({
 })
 
 const mapDispatchToProps = {
-  getBalance
+  getBalance,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BalanceButton as any)
