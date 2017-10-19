@@ -1,9 +1,10 @@
 /** Wallet Integration - Replaces WalletIntegrationComponent
  * Called in ReactDOM.render(<comp>, <html>, CB?)
  */
-// import autobind from 'autobind-decorator'
 import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
-// import { map } from 'lodash'
+
+import { Store } from 'redux'
+import * as walletIntegrations from 'integrations/'
 
 // declare global object
 declare global {
@@ -12,49 +13,28 @@ declare global {
 
 window.web3 = window.web3 || {}
 
-export default class WalletIntegrationProvider {
-  store: any
-  /**
-   * Creates an instance of WalletIntegrationProvider.
-   * @param {any} integrations 
-   * @param {any} store
-   * @const {initializers} Takes <integrations> @prop typeof {Object} and returns VALUES into @const <initializers>
-   * @memberof WalletIntegrationProvider
-   */
-  constructor(integrations: any, store: any) {
-    this.store = store
-    this.handleProviderUpdate = this.handleProviderUpdate.bind(this)
-    this.handleProviderRegister = this.handleProviderRegister.bind(this)
-
-    const providerOptions = {
-      runProviderUpdate: this.handleProviderUpdate,
-      runProviderRegister: this.handleProviderRegister,
-    }
-
-    // Execute providers initialization sequentially
-    window.addEventListener('load', () => {
-      console.log('Window LOADED')
-      Promise.resolve(integrations.Metamask.initialize(providerOptions))
-        //Promise.all(map(integrations, (integration: any) => integration.initialize(providerOptions)))
-        //THEN initialise DutchX contracts and class Instance
-        .then(() => store.dispatch(initDutchX()))
-        .catch(() => store.dispatch(initDutchX()))
-    })
-  }
-
-  // Fired by PROVIDER (e.g METAMASK) => DISPATCHES Action w/ Provider NAME && Provider DATA
-  async handleProviderUpdate(provider: any, data: any) {
-    await this.store.dispatch(updateProvider({
-      provider: provider.constructor.providerName, 
+export default async function walletIntegration(store: Store<any>) {
+  const { dispatch } = store
+  // wraps actionCreator in dispatch
+  const dispatchProviderAction = (actionCreator: any) =>
+    async (provider: any, data: any) => dispatch(actionCreator({
+      provider,
       ...data,
     }))
+
+  const providerOptions = {
+    updateProvider: dispatchProviderAction(updateProvider),
+    registerProvider: dispatchProviderAction(registerProvider),
   }
 
-  // Fired by PROVIDER (e.g METAMASK) => DISPATCHES Action w/ Provider NAME && Provider DATA
-  async handleProviderRegister(provider: any, data: any) {
-    await this.store.dispatch((registerProvider({
-      provider: provider.constructor.providerName,
-      ...data,
-    })))
+  const promisedInits = Object.keys(walletIntegrations)
+    .map(intgr => walletIntegrations[intgr].initialize(providerOptions))
+
+  try {
+    await Promise.all(promisedInits)
+  } catch (e) {
+
+  } finally {
+    dispatch(initDutchX())
   }
 }
