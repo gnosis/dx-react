@@ -112,7 +112,7 @@ export const Header = () => (
         </div>
       </i>
       {/*MENU AUCTIONS - REFACTOR INTO COMPONENT*/}
-      <i className="menuAuctions"><img src="/images/auction.svg" />
+      <i className="menuAuctions"><img src={require('assets/auction.svg')} />
         <strong>Your Auctions</strong>
         <div>
           <table>
@@ -144,7 +144,7 @@ export const Header = () => (
                       <tr>
               <td>ETH/GNO</td>
               <td>134.034 GNO</td>
-              <td><img src="images/claim.svg" /></td>
+              <td><img src={require('assets/claim.svg')} /></td>
             </tr>
             <tr>
               <td>ETH/GNO</td>
@@ -169,7 +169,7 @@ export const Header = () => (
                       <tr>
               <td>ETH/GNO</td>
               <td>134.034 GNO</td>
-              <td><img src="images/claim.svg" /></td>
+              <td><img src={require('assets/claim.svg')} /></td>
             </tr>
                       <tr>
               <td>ETH/GNO</td>
