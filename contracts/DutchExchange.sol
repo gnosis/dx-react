@@ -1,7 +1,6 @@
 pragma solidity 0.4.15;
 
 import "./Token.sol";
-// import "@gnosis.pm/gnosis-core-contracts/contracts/Tokens/Token.sol";
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik.teiml@gnosis.pm>
@@ -20,7 +19,7 @@ contract DutchExchange {
 
     // If DX is running, this is the start time of that auction
     // If DX is cleared, this is the scheduled time of the next auction
-    uint256 auctionStart;
+    uint256 public auctionStart;
 
     // Tokens that are being traded
     Token public sellToken;
@@ -50,23 +49,20 @@ contract DutchExchange {
     // Buyers can claim tokens while auction is running, so we need to store that
     mapping (uint256 => mapping (address => uint256)) public claimedAmounts;
 
-    // By the way, sum of buyer/seller balances need not equal buy/sell volumes for 
-    // a specific auction, because the former is reset when a user claims their funds
-
     // Events
-    event newSellOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
-    event newBuyOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
-    event newSellerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
-    event newBuyerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
-    event auctionCleared(uint256 _auctionIndex);
+    event NewSellOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
+    event NewBuyOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
+    event NewSellerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
+    event NewBuyerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
+    event AuctionCleared(uint256 _auctionIndex);
 
     // Constructor
     function DutchExchange(
         uint256 initialClosingPriceNum,
         uint256 initialClosingPriceDen,
-        Token _sellToken,
-        Token _buyToken,
-        Token _DUTCHX
+        address _sellToken,
+        address _buyToken,
+        address _DUTCHX
     ) public {
         // Calculate initial price
         fraction memory initialClosingPrice;
@@ -75,14 +71,14 @@ contract DutchExchange {
         closingPrices[0] = initialClosingPrice;
 
         // Set variables
-        sellToken = _sellToken;
-        buyToken = _buyToken;
-        DUTCHX = _DUTCHX;
+        sellToken = Token(_sellToken);
+        buyToken = Token(_buyToken);
+        DUTCHX = Token(_DUTCHX);
         scheduleNextAuction();
     }
 
     function clearAuction(uint256 currentPriceNum, uint256 currentPriceDen)
-        public 
+        internal
         returns (bool success) 
     {
         // Update state variables
@@ -92,7 +88,7 @@ contract DutchExchange {
         sellVolumeNext = 0;
         auctionIndex++;
 
-        auctionCleared(auctionIndex - 1);
+        AuctionCleared(auctionIndex - 1);
         success = true;
     }
 
@@ -109,7 +105,7 @@ contract DutchExchange {
             sellVolumeCurrent += amount;
         }
 
-        newSellOrder(auctionIndex, msg.sender, amount);
+        NewSellOrder(auctionIndex, msg.sender, amount);
         success = true;
     }
 
@@ -127,20 +123,23 @@ contract DutchExchange {
         (num, den) = getPrice(_auctionIndex);
 
         // Calculate if buy order overflows
+
         int256 overflow = int256(buyVolumes[_auctionIndex] + amount - sellVolumeCurrent * num / den);
 
-        // Calculate amount without overflow
-        if (overflow > 0) {
-            uint256 overflowPositive = uint256(overflow);
-            amount -= overflowPositive;
+        if (int256(amount) > overflow) {
+            // We must process the buy order
+            if (overflow > 0) {
+                // We have to adjust the amount
+                amount -= uint256(overflow);
+            }
+
+            // Perform transfer
+            require(buyToken.transferFrom(msg.sender, this, amount));
+            buyVolumes[auctionIndex] += amount;
+            buyerBalances[auctionIndex][msg.sender] += amount;
+
+            NewBuyOrder(auctionIndex, msg.sender, amount);
         }
-
-        // Perform transfer
-        require(buyToken.transferFrom(msg.sender, this, amount));
-        buyVolumes[auctionIndex] += amount;
-        buyerBalances[auctionIndex][msg.sender] += amount;
-
-        newBuyOrder(auctionIndex, msg.sender, amount);
 
         // Clear auction
         if (overflow >= 0) {
@@ -149,23 +148,32 @@ contract DutchExchange {
         }
     }
 
+    function postBuyOrderAndClaim(uint256 amount, uint256 _auctionIndex)
+        public 
+    {
+        postBuyOrder(amount, _auctionIndex);
+        claimBuyerFunds(_auctionIndex);
+    }
+
     function claimSellerFunds(uint256 _auctionIndex) public returns (uint256 returned) {
         uint256 sellerBalance = sellerBalances[_auctionIndex][msg.sender];
 
         // Checks if particular auction has cleared
         require(auctionIndex > _auctionIndex);
-        require(sellerBalance > 0);
         
         // Get closing price for said auction
         fraction memory closingPrice = closingPrices[_auctionIndex];
         uint256 num = closingPrice.num;
         uint256 den = closingPrice.den;
 
-        // Perform transfer
+        // Calculate return amount
         returned = sellerBalance * num / den;
+        require(returned > 0);
+
+        // Perform transfer
         sellerBalances[_auctionIndex][msg.sender] = 0;
         require(buyToken.transfer(msg.sender, returned));
-        newSellerFundsClaim(_auctionIndex, msg.sender, returned);
+        NewSellerFundsClaim(_auctionIndex, msg.sender, returned);
     }
 
     function claimBuyerFunds(uint256 _auctionIndex) 
@@ -196,9 +204,9 @@ contract DutchExchange {
         require(returned > 0);
 
         // Perform transfer
-        claimedAmounts[auctionIndex][msg.sender] += returned;
+        claimedAmounts[_auctionIndex][msg.sender] += returned;
         require(sellToken.transfer(msg.sender, returned));
-        newBuyerFundsClaim(_auctionIndex, msg.sender, returned);
+        NewBuyerFundsClaim(_auctionIndex, msg.sender, returned);
     }
 
     function getPrice(uint256 _auctionIndex)
@@ -206,7 +214,7 @@ contract DutchExchange {
         constant
         returns (uint256 num, uint256 den) 
     {
-        // Checks if particular auction has ever run
+        // Checks if particular auction has been initialised
         require(auctionIndex >= _auctionIndex);
 
         if (auctionIndex > _auctionIndex) {
@@ -215,11 +223,19 @@ contract DutchExchange {
             num = closingPrice.num;
             den = closingPrice.den;
         } else {
-            // Auction is running, we need to calculate current price
-            // by first getting the last closing price
+            // We need to check whether auction has begun:
+            require(auctionStart <= now);
+
+            // Next we calculate current price by first getting the last closing price
             fraction memory lastClosingPrice = closingPrices[_auctionIndex - 1];
             uint256 numOfLastClosingPrice = lastClosingPrice.num;
             uint256 denOfLastClosingPrice = lastClosingPrice.den;
+
+            // We need to make the numbers smaller to prevent overflow
+            if (numOfLastClosingPrice > 10**18 || denOfLastClosingPrice > 10**18) {
+                numOfLastClosingPrice = numOfLastClosingPrice / 10**9;
+                denOfLastClosingPrice = denOfLastClosingPrice / 10**9;
+            }
 
             // The numbers 36k and 18k are chosen, so the initial price is double the last closing price
             // And after 5 hours (18000 s), the price is the same as last closing price
@@ -234,4 +250,16 @@ contract DutchExchange {
         // Set start period to following one
         auctionStart = (elapsedPeriods + 1) * 6 * 1 hours;
     }
+
+    // --- For Testing only! ---
+
+    // uint256 public now = 1508473469;
+    // function increaseTimeBy(uint256 byHours, uint256 bySeconds) public {
+    //     now += byHours * 1 hours;
+    //     now += bySeconds;
+    // }
+
+    // function setTime(uint256 newTime) public {
+    //     now = newTime;
+    // }
 }

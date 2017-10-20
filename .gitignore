@@ -37,3 +37,4 @@ stats.json
 .awcache
 .eslintcache
 .stylelintcache
+build/
