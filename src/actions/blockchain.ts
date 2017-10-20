@@ -1,7 +1,9 @@
+// import { dispatch } from 'redux';
 import {
   getCurrentBalance,
   getCurrentAccount,
   initDutchXConnection,
+  // tokenPairSelect,
 } from '../api/dutchx'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
@@ -72,6 +74,23 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     return dispatch(setConnectionStatus({ connected: false }))
   }
 }
+
+export const getTokenPairs = async () => {
+  // const token1 = await grabTokenAddress1
+  // const token2 = await grabTokenAddress2
+  // const token = await getTokenPairs( 1, 2, token1, token2 ))
+}
+
+
+
+
+
+
+
+
+
+
+
 
 // export const requestGasPrice = () => async (dispatch: Function) => {
 //   const gasPrice = await getGasPrice()
