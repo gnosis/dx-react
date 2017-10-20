@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "truffle test",
+    "nodemon-test": "nodemon --exec truffle test"
   },
   "repository": {
     "type": "git",
@@ -19,4 +20,5 @@
     "url": "https://github.com/gnosis/dutch-exchange/issues"
   },
   "homepage": "https://github.com/gnosis/dutch-exchange#readme",
+  "dependencies": "@digix/tempo"
 }
