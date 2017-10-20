@@ -21,7 +21,7 @@ export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
 /**
  * Returns an instance of the connection to DutchX
  */
-export const getDutchXConnection: Function = async () => dutchXInst
+export const getDutchXConnection: any = async () => dutchXInst
 
 /**
  * Returns the default node account
@@ -42,4 +42,12 @@ export const getCurrentBalance = async (account: Object) => {
     account,
     (e: Object, balance: Object) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
   ))
+}
+
+export const tokenPairSelect = async (contract: string, token1: string, token2: string, amount: number, proposedVal: number) => {
+  const dutchX = await getDutchXConnection()
+  const dXFactory = await dutchX[contract]
+  
+  const token = await dXFactory.proposeExchange(dutchX.contracts.Token.at(token1), dutchX.contracts.Token.at(token2), amount, proposedVal)
+  console.log(token)
 }

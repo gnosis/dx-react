@@ -30,7 +30,9 @@ const windowLoaded = new Promise((accept, reject) => {
  * ^ that
  */
 const contractArtifacts = [
-  'Balance',
+  'DutchExchange',
+  'DutchExchangeFactory',
+  'Token'
 ].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
@@ -91,7 +93,8 @@ class DutchExchangeInit {
 
     // Attempt to attach all CONTRACT INSTANCES to Class
     await Promise.all([
-      this.setupContractInstances('Balance', this.contracts.Balance),
+      this.setupContractInstances('DutchExchange', this.contracts.DutchExchange),
+      this.setupContractInstances('DutchExchangeFactory', this.contracts.DutchExchangeFactory),
     ])
   }
 

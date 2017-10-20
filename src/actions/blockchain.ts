@@ -1,7 +1,9 @@
-import { 
+// import { dispatch } from 'redux';
+import {
   getCurrentBalance,
   getCurrentAccount,
-  initDutchXConnection, 
+  initDutchXConnection,
+  // tokenPairSelect,
 } from '../api/dutchx'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
@@ -22,12 +24,12 @@ export enum TypeKeys {
 }
 
 // TODO define reducer for GnosisStatus
-export const setDutchXInitialized = createAction<{initialized?: boolean, error?: any}>('SET_DUTCHX_CONNECTION')
-export const setConnectionStatus = createAction<{connected?: boolean}>('SET_CONNECTION_STATUS')
-export const setActiveProvider = createAction<{provider?: string}>('SET_ACTIVE_PROVIDER')
-export const registerProvider = createAction<{provider?: string, data?: Object}>('REGISTER_PROVIDER')
+export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
+export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
+export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
+export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 
-export const updateProvider = createAction<{provider?: string, data?: Object}>('UPDATE_PROVIDER')
+export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
 // export const setEtherTokens = createAction('SET_ETHER_TOKENS')
@@ -50,12 +52,12 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
       // init DutchX connection
       const opts = getDutchXOptions(newProvider)
       await initDutchXConnection(opts)
-      await dispatch(setDutchXInitialized({ initialized: true }))
+      dispatch(setDutchXInitialized({ initialized: true }))
       // await requestEtherTokens()
     }
   } catch (error) {
     console.warn(`DutchX initialization Error: ${error}`)
-    return await dispatch(setDutchXInitialized({ initialized: false, error }))
+    return dispatch(setDutchXInitialized({ error, initialized: false }))
   }
 
   // connect
@@ -66,12 +68,29 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
       await getCurrentBalance(account)
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
-    return await dispatch(setConnectionStatus({ connected: true }))
+    return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
     console.warn(`DutchX connection Error: ${error}`)
-    return await dispatch(setConnectionStatus({ connected: false }))
+    return dispatch(setConnectionStatus({ connected: false }))
   }
 }
+
+export const getTokenPairs = async () => {
+  // const token1 = await grabTokenAddress1
+  // const token2 = await grabTokenAddress2
+  // const token = await getTokenPairs( 1, 2, token1, token2 ))
+}
+
+
+
+
+
+
+
+
+
+
+
 
 // export const requestGasPrice = () => async (dispatch: Function) => {
 //   const gasPrice = await getGasPrice()
