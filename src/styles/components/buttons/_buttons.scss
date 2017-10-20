@@ -1,0 +1,94 @@
+.buttonCTA,
+a.buttonCTA {
+  background: $white;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 20px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 15px;
+  color: $darkBlue;
+  letter-spacing: 0;
+  line-height: 1;
+  vertical-align: middle;
+  will-change: box-shadow;
+  transition: box-shadow .25s ease-in-out;
+  cursor: pointer;
+  outline: 0;
+  margin: auto;
+
+    &:hover {
+      box-shadow: 0 6px 14px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.15);
+      // box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+
+    &.blue {
+      background: $blue;
+      color: $white;
+      padding: 18px;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    > i {
+      margin: 0 0 0 5px;
+      display: inline-block;
+      // width: 20px;
+      // height: 20px;
+      // vertical-align: middle;
+    }
+}
+
+.buttonExit {
+  display: block;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  height: 40px;
+  width: 40px;
+  font-size: 40px;
+  font-family: $arial;
+  color: $greyBorder;
+  background: 0;
+  border: 0;
+  cursor: pointer;
+  outline: 0;
+  will-change: color;
+  transition: color .25s ease;
+
+    &:hover {
+      color: $greyText;
+    }
+
+    &::after {
+      content: $x;
+      display: block;
+      font-family: inherit;
+      font-size: inherit;
+    }
+}
+
+.buttonPrev {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 15px;
+  height: 18px;
+  width: 24px;
+  border: 0;
+  cursor: pointer;
+  outline: 0;
+  opacity: .5;
+  will-change: opacity, transform;
+  transition: transform .25s ease-in-out, opacity .25s ease-in-out;
+  bottom: 0;
+  margin: auto;
+  background: url('#{$images}arrowPrev.svg') no-repeat center / contain;
+
+    &:hover {
+      opacity: 1;
+      transform: translateX(-1px);
+    }
+}

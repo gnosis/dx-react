@@ -1,0 +1,28 @@
+.icon {
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  margin: 0 0 0 5px;
+}
+
+[data-icon="ok"]::before {
+  content: " ";
+  display: inline-block;
+  margin: -2px 4px 0 0;
+  vertical-align: middle;
+  height: 14px;
+  width: 14px;
+  background: url('#{$images}ok.svg') no-repeat center / contain
+}
+
+.icon-walletUnlock {
+  background: url('#{$images}wallet-unlock.svg') no-repeat center / contain
+}
+
+.icon-walletOK {
+  background: url('#{$images}wallet-ok.svg') no-repeat center / contain;
+}
+
+.icon-arrowDown {
+  background: url('#{$images}arrowDown.svg') no-repeat center / contain;
+}

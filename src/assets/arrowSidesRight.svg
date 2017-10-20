@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="22px" viewBox="0 0 30 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46 (44423) - http://www.bohemiancoding.com/sketch -->
+    <title>arrowSides</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="arrowSides" fill-rule="nonzero" fill="#CED3DB">
+            <polygon id="Shape" transform="translate(15.027778, 10.857143) rotate(90.000000) translate(-15.027778, -10.857143) " points="15.027778 -4.115079 4.170635 6.746588 12.313492 6.746588 12.313492 25.829365 17.742064 25.829365 17.742064 6.746588 25.884921 6.746588"></polygon>
+        </g>
+    </g>
+</svg>

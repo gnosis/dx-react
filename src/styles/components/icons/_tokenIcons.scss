@@ -1,0 +1,45 @@
+$defaultTokenSize: 80px;
+$defaultTokenSize_mobile: 65px;
+
+[data-coin] {
+  border: 1px solid $greyBorder;
+  will-change: border;
+  transition: border .2s ease-in-out;
+  height: 150px;
+  width: 150px;
+  display: block;
+  border-radius: 150px;
+  margin: 20px auto;
+  background-size: $defaultTokenSize;
+
+    @media #{$mobile} {
+      border-radius: 90px;
+      height: 90px;
+      width: 90px;
+      background-size: $defaultTokenSize_mobile;
+    }
+}
+
+[data-coin="ETH"] {
+  background: url('#{$images}tokens/ETH.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="GNO"] {
+  background: url('#{$images}tokens/GNO.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="REP"] {
+  background: url('#{$images}tokens/REP.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="1ST"] {
+  background: url('#{$images}tokens/1ST.png') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="OMG"] {
+  background: url('#{$images}tokens/OMG.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="GNT"] {
+  background: url('#{$images}tokens/GNT.svg') no-repeat center / $defaultTokenSize;
+}

@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 import { AppContainer } from 'react-hot-loader'
-import 'less/style.less'
+import 'styles/global.scss'
 
 import AppRouter from 'router'
 

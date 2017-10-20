@@ -1,0 +1,127 @@
+//Helpers classes
+// .no-p {
+//   padding:0!important;
+// }
+
+// .no-m {
+//   margin: 0!important;
+// }
+
+// .full-width {
+//   width: 100%;
+// }
+
+// .text-center {
+//   text-align: center;
+// }
+
+// Helpers classes: Media Queries
+.hide-small {
+  @media #{$mobile} {
+    display: none !important;
+  }
+}
+
+// .hide-on-med-and-down {
+//   @media #{$mobile}, #{$tablet} {
+//     display: none !important;
+//   }
+// }
+
+.hide-on-med-and-up {
+  @media #{$medium-and-up} {
+    display: none !important;
+  }
+}
+
+// .hide-on-med-only {
+//   @media only screen and (min-width: $small-screen) and (max-width: $medium-screen) {
+//     display: none !important;
+//   }
+// }
+
+// .hide-on-large-only {
+//   @media #{$large-and-up} {
+//     display: none !important;
+//   }
+// }
+
+// .show-on-large {
+//   @media #{$large-and-up} {
+//     display: initial !important;
+//   }
+// }
+
+// .show-on-medium {
+//   @media only screen and (min-width: $small-screen) and (max-width: $medium-screen) {
+//     display: initial !important;
+//   }
+// }
+
+// .show-on-tablet {
+//    @media #{$tablet} {
+//     display: block !important;
+//   }
+// }
+
+// .show-on-small {
+//   @media #{$mobile} {
+//     display: initial !important;
+//   }
+// }
+
+// .show-on-medium-and-up {
+//   @media #{$medium-and-up} {
+//     display: initial !important;
+//   }
+// }
+
+// .show-on-medium-and-down {
+//   @media #{$medium-and-down} {
+//     display: initial !important;
+//   }
+// }
+
+// .left {
+//  float: left;
+// }
+
+// .right {
+//   float: right;
+// }
+
+// .show {
+//   display: block!important;
+// }
+
+.hide {
+  display: none!important;
+}
+
+// .clrfx:after,
+// .clrfx:before {
+//   content: " ";
+//   display: table;
+// }
+
+.visuallyhidden {
+  // position: absolute;
+  // left: -10000px;
+  // top: auto;
+  // width: 1px;
+  // height: 1px;
+  // overflow: hidden;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+}
+
+// .noScroll {
+//   height: 100%;
+//   overflow: hidden;
+//   position: fixed;
+// }

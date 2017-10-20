@@ -8,10 +8,12 @@ import { History } from 'history'
 
 // import App from 'containers/App'
 import BalanceButton from './containers/BalanceButton/'
+import Header from 'components/Header'
 // import { getDutchXConnection } from 'contract-fe-test/api/dutchx'
 
 const TempApp: React.SFC<any> = () => (
     <div>
+        <Header />
         <h1>Truffle + React/Redux</h1>
         <h2>Connect testRPC via a terminal first...</h2>
         <BalanceButton />

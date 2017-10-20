@@ -1,0 +1,602 @@
+$headerHeight: 58px;
+
+.auction {
+  max-width: $max-width;
+  // margin: 75px auto 0;
+  margin: 0 auto;
+  display: flex;
+  font-family: inherit;
+
+    a.buttonCTA > i {
+      height: 25px;
+      width: 25px;
+      margin: 0 0 0 10px;
+    }
+}
+
+.auctionContainer {
+  box-sizing: border-box;
+  border-radius: 3px;
+  background: $white;
+  width: 650px;
+  min-height: 250px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
+  padding: 0 0 40px;
+
+    &[data-screen="status"] {
+      padding: 0;
+    }
+
+  > p {
+    font-size: 15px;
+    color: $greyTextDark;
+    letter-spacing: 0;
+    line-height: 1.7;
+    padding: 0 100px;
+    margin: 0 auto 35px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .buttonCTA {
+    width: 70%;
+  }
+}
+
+.auctionHeader {
+    height: $headerHeight;
+    border-bottom: 1px solid $greyBorder;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    display: table;
+    position: relative;
+
+  > h2 {
+    vertical-align: middle;
+    line-height: $headerHeight;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 18px;
+    color: #1A4977;
+    letter-spacing: 0;
+
+      .auctionContainer[data-screen="status"] & {
+        font-size: 14px;
+      }
+  }
+
+  > h2 > a {
+    font-weight: normal;
+    color: $blue;
+  }
+}
+
+.auctionLastPrice {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 15px 0;
+  background: #f2f3f5;
+
+    // [data-screen="details"] {
+    //   display: flex;
+    //   flex-basis: 40%;
+    //   height: 160px;
+    //   flex-wrap: wrap;
+    //   justify-content: center;
+    //   align-items: center;
+    //   align-content: center;
+    //   box-sizing: border-box;
+    //   flex: 0 1 auto;
+    //   width: 40%;
+    // }
+
+    > small {
+      display: block;
+      font-size: 10px;
+      color: $greyText;
+      text-transform: uppercase;
+      line-height: 2;
+      letter-spacing: 1px;
+    }
+
+    > big {
+      font-size: 14px;
+      color: $darkBlue;
+      letter-spacing: 1px;
+      font-weight: bold;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+}
+
+.auctionAmounts {
+  background: $greyBorder;
+  width: 100%;
+  padding: 25px;
+  margin: 0 auto 35px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+
+    &::after {
+      content: " ";
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      border-right: 1px dashed $white;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+
+    > span {
+      flex: 0 1 auto;
+      text-align: center;
+      position: relative;
+    }
+
+    > span > input {
+      height: 38px;
+      box-sizing: border-box;
+      padding: 10px 7px 10px 10px;
+      background: $white;
+      border-radius: 2px;
+      border: 0;
+      outline: 0;
+      font-size: 13px;
+      color: #444951;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      text-align: right;
+
+        &[readonly] {
+          background: #f2f3f5;
+        }
+    }
+
+    > span > label {
+      text-align: center;
+      width: 100%;
+      display: block;
+      font-size: 11px;
+      color: $darkBlue;
+      letter-spacing: 1px;
+      line-height: 1;
+      margin: 0 auto 6px;
+      text-transform: uppercase;
+      position: relative;
+      font-weight: bold;
+    }
+
+    > span > label > a {
+      position: absolute;
+      left: -34px;
+      top: 32px;
+      text-decoration: underline;
+      font-weight: lighter;
+      font-family: inherit;
+      font-size: 10px;
+      color: $blue;
+    }
+
+    > span > small {
+    font-size: 11px;
+    color: $darkBlue;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin: 0;
+    font-weight: bold;
+    position: absolute;
+    right: -32px;
+    top: 31px;
+    text-align: left;
+    }
+}
+
+.auctionWalletSummmary {
+  display: flex;
+  width: 100%;
+  border-top: 1px solid $greyBorder;
+  border-bottom: 1px solid $greyBorder;
+  flex-wrap: nowrap;
+  margin: 0 auto 35px;
+
+  > span {
+    height: 125px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+  }
+
+  > span:first-child {
+    width: 32%;
+    border-right: 1px solid $greyBorder;
+    flex-basis: 32%;
+  }
+
+  > span:last-child {
+    width: 68%;
+    flex-basis: 68%;
+  }
+
+  > span > big {
+    font-size: 11px;
+    font-weight: bold;
+    color: $darkBlue;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-transform: uppercase;
+    width: 100%;
+    margin: 0 auto 10px;
+  }
+
+  > span > i {
+    font-size: 13px;
+    color: $blue;
+    margin: 0 auto 3px;
+    letter-spacing: 0;
+    line-height: 17px;
+    font-weight: bold;
+    font-style: normal;
+    display: block;
+    width: 100%;
+  }
+
+  > span > small {
+    font-size: 11;
+    color: $greyText;
+  }
+
+  > span > code {
+    background: #f2f3f5;
+    color: #e00000;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+    display: table;
+    font-family: monospace;
+  }
+}
+
+.auctionAmountSummary {
+  display: flex;
+  flex: 1;
+  height: 160px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  flex-basis: 100%;
+
+    &::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: url('#{$images}arrowSidesRight.svg') no-repeat center / contain;
+      top: 124px;
+    }
+}
+
+.tokenItemSummary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  flex: 0;
+  margin: 0;
+  flex-basis: 50%;
+  width: 50%;
+
+  > big {
+    font-size: 13px;
+    color: $darkBlue;
+    letter-spacing: 1px;
+    line-height: 1;
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto 5px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  > p {
+    margin: 0 auto;
+    width: 100%;
+    font-size: 13px;
+    color: $greyText;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-align: center;
+    font-weight: normal;
+  }
+
+  > [data-coin] {
+    height: 70px;
+    width: 70px;
+    background-size: 44px;
+    display: inline-block;
+    margin: 0 auto 10px;
+  }
+}
+
+.auctionStatus {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 275px;
+  align-items: center;
+
+    > span {
+      width: 50%;
+      flex-basis: 50%;
+      flex: 0 1 auto;
+      text-align: center;
+    }
+
+    > span > small {
+      font-size: 12px;
+      color: $greyText;
+      letter-spacing: 5px;
+      line-height: 1.6;
+      display: block;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    > span > big {
+      font-size: 26px;
+      color: $darkBlue;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    > span:nth-of-type(2) > big {
+      &[data-status="planned"],
+      &[data-status="initialising"] {
+        color: $orange;
+      }
+
+      &[data-status="active"] {
+        color: $darkBlue;
+      }
+
+      &[data-status="ended"] {
+        color: $green;
+      }
+    }
+
+    > span > h5 {
+      font-size: 12px;
+      color: $greyText;
+      letter-spacing: 1px;
+      line-height: 1;
+      font-weight: normal;
+      margin: 0 auto 8px;
+      text-align: center;
+      display: block;
+      font-weight: bold;
+    }
+
+    > span > i {
+      font-size: 15px;
+      color: $blue;
+      letter-spacing: 0;
+      line-height: 1;
+      font-style: normal;
+      margin: 0 auto;
+      text-align: center;
+      width: 100%;
+      display: block;
+    }
+
+    > span:last-of-type {
+      width: 100%;
+      flex-basis: 100%;
+    }
+}
+
+#claimToken {
+  background-color: #f2f3f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  overflow: hidden;
+  padding: 0;
+  height: 42px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border: 0;
+  position: relative;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 18px;
+  outline: 0;
+  will-change: box-shadow;
+  transition: box-shadow .25s ease-in-out;
+
+    &:hover {
+      box-shadow: 0 10px 10px rgba(0,0,0,.15);
+    }
+
+    > i {
+      font-style: normal;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0;
+      color: $orange;
+      line-height: 1;
+      vertical-align: middle;
+      margin: 0 16px;
+      display: inline-block;
+    }
+
+    > strong {
+      font-family: inherit;
+      color: $greyTextDark;
+      font-size: 18px;
+      font-weight: 400;
+      margin: 0;
+      display: inline-block;
+      flex: 0 1 auto;
+    }
+
+    > span {
+      background-color: $orange;
+      box-sizing: border-box;
+      margin: 0 0 0 16px;
+      flex: 1;
+      height: 42px;
+      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      width: 72px;
+      justify-content: center;
+    }
+
+    > span > img {
+      height: 30px;
+      width: 30px;
+    }
+}
+
+.auctionProgress {
+  display: flex;
+  width: 100%;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  height: 110px;
+  background: #F0F2F6;
+  align-content: center;
+
+    > span {
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+      justify-content: space-around;
+    }
+
+    > span > i {
+      flex: 0 1 auto;
+      align-self: center;
+      opacity: .55;
+      transition: opacity .3s ease-in-out;
+      will-change: opacity;
+      position: relative;
+
+        &.active {
+          opacity: 1;
+        }
+
+        &::before {
+          position: absolute;
+          right: 20px;
+        }
+    }
+
+    > span > i > img {
+      display: block;
+      margin: 0 auto 8px;
+      max-width: 25px;
+    }
+
+    > span > i > small {
+      font-size: 9px;
+      color: $greyTextDark;
+      letter-spacing: 1px;
+      font-style: normal;
+      font-weight: 400;
+      max-width: 105px;
+      display: block;
+      text-align: center;
+      line-height: 1.3;
+    }
+}
+
+// Progressbar
+
+.progress-bar {
+  background: $greyBorder;
+  margin: 0 auto 15px;
+  overflow: hidden;
+  position: relative;
+  width: 92%;
+  flex-basis: 92%;
+  height: 7px;
+  border-radius: 7px;
+
+    &::after {
+      content: " ";
+      display: block;
+      background: $greyText;
+      left: 0;
+      position: absolute;
+      top: 0;
+      height: inherit;
+      transition: width .3s ease-in-out;
+      will-change: width;
+    }
+
+      &[data-progress="1"]::after {
+        width: 13%;
+      }
+
+      &[data-progress="2"]::after {
+        width: 50%;
+      }
+
+      &[data-progress="3"]::after {
+        width: 100%;
+      }
+}
+
+.auctionFooter {
+  height: 90px;
+  background: #024D90;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  color: $white;
+  justify-content: space-around;
+  align-items: center;
+
+    > span > small {
+      opacity: .5;
+      letter-spacing: 1px;
+      font-size: 10px;
+      font-weight: normal;
+      display: block;
+      text-align: center;
+      line-height: 1;
+      padding: 0 0 10px;
+    }
+
+    > span > big {
+      font-size: 20px;
+      font-weight: normal;
+    }
+}
