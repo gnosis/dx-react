@@ -5,9 +5,9 @@ export const Header = () => (
   <header>
     <div>
       <a href="#" title="DutchX - Dutch Auction Exchange" className="logo"></a>
-
+      
+      {/*MENU WALLET - REFACTOR INTO COMPONENT*/}
       <i className="menuWallet">
-
         <span>
           <code>0xd79Ed64B47...</code>
           <small>0.1983 ETH</small>
@@ -111,7 +111,7 @@ export const Header = () => (
           </table>
         </div>
       </i>
-
+      {/*MENU AUCTIONS - REFACTOR INTO COMPONENT*/}
       <i className="menuAuctions"><img src="/images/auction.svg" />
         <strong>Your Auctions</strong>
         <div>
@@ -215,8 +215,9 @@ export const Header = () => (
         </div>
       </i>
 
+      {/*HAMBURGER BUTTON - REFACTOR INTO COMPONENT*/}
       <button className="hamburger"></button>
-
+      
       <nav>
         <button className="buttonExit"></button>
         <a href="#">How it works</a>
