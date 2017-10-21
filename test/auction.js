@@ -39,7 +39,7 @@ contract('Auction', async (accounts) => {
     dx = await DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address);
     dxa = dx.address;
 
-    dxFactory = await DutchExchangeFactory.new(DUTCHX.address)
+    dxFactory = await DutchExchangeFactory(DUTCHX.address)
   })
 
 
