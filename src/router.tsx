@@ -14,9 +14,11 @@ import Header from 'components/Header'
 const TempApp: React.SFC<any> = () => (
     <div>
         <Header />
-        <h1>Truffle + React/Redux</h1>
-        <h2>Connect testRPC via a terminal first...</h2>
-        <BalanceButton />
+        <div>
+          <h1>Truffle + React/Redux</h1>
+          <h2>Connect testRPC via a terminal first...</h2>
+          <BalanceButton />
+        </div>
     </div>
 )
 

@@ -12,6 +12,7 @@ const store = createStoreWithHistory(history)
 import { Provider } from 'react-redux'
 
 import BalanceButton from '../src/containers/BalanceButton/'
+import Header from '../src/components/Header'
 
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
@@ -21,3 +22,7 @@ storiesOf('App/Button', module)
   .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>)
   .add('some random button', () => <Button>Hello World</Button>)
   .add('BalanceButton Container', () => <BalanceButton>This is a Balance Button</BalanceButton>)
+
+storiesOf('Header', module)
+  .addDecorator((story: any) => <Provider store={store as any}>{story()}</Provider>)
+  .add('Dumb Header', () => <Header />)
