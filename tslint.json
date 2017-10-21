@@ -12,11 +12,12 @@
     ],
     "variable-name": false,
     "import-name": false,
-    "max-len": [
-      "error",
-      120,
-      2,
+    "max-line-length": false,
+    "ter-max-len": [
+      true,
       {
+        "code": 120,
+        "tabWidth": 2,
         "ignoreUrls": true,
         "ignoreComments": false,
         "ignoreRegExpLiterals": true,

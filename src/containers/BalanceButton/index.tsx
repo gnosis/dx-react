@@ -22,4 +22,6 @@ const mapDispatchToProps = {
   getBalance,
 }
 
-export default connect< StateToProps, Object, React.SFC<any> >(mapStateToProps, mapDispatchToProps)(BalanceButton as React.SFC)
+export default connect<StateToProps, Object, React.SFC<any>>(
+  mapStateToProps, mapDispatchToProps)(BalanceButton as React.SFC,
+)
