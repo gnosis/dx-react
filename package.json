@@ -19,7 +19,7 @@
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "lint": "npm run lint:js; npm run lint:ts; npm run lint:css",
     "lint:fix": "npm run lint:js:fix; npm run lint:ts:fix; npm run lint:css:fix",
-    "test": "jest",
+    "test": "jest --watch",
     "stats": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --profile --json > stats.json",
     "precommit": "lint-staged",
     "storybook": "start-storybook -s ./ -p 6006",
