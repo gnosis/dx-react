@@ -14,7 +14,7 @@ declare global {
 window.web3 = window.web3 || {}
 
 export default async function walletIntegration(store: Store<any>) {
-  const { dispatch } = store
+  const { dispatch, getState } = store
   // wraps actionCreator in dispatch
   const dispatchProviderAction = (actionCreator: any) =>
     async (provider: any, data: any) => dispatch(actionCreator({
@@ -23,6 +23,7 @@ export default async function walletIntegration(store: Store<any>) {
     }))
 
   const providerOptions = {
+    getState,
     updateProvider: dispatchProviderAction(updateProvider),
     registerProvider: dispatchProviderAction(registerProvider),
   }

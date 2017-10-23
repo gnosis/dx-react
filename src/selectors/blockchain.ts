@@ -5,7 +5,7 @@ interface Providers {
   [Providers: string]: any,
 }
 
-interface Blockchain {
+export interface Blockchain {
   providers?: Providers,
   activeProvider?: string,
   defaultAccount?: string,
