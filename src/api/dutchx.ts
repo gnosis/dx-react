@@ -68,20 +68,20 @@ export const tokenPairSelect = async (contract: string, token1: string, token2: 
   let initialiser = accts[0]
   
   let seller = accts[1]
-  const sellToken = await Contracts.Token.new({...defaults})
+  const sellToken = await Contracts.Token.new(defaults)
   console.log(sellToken)
-  await sellToken.approve(seller, 100, {...defaults})
-  await sellToken.transferFrom(initialiser, seller, 100, {...defaults});
+  await sellToken.approve(seller, 100, defaults)
+  await sellToken.transferFrom(initialiser, seller, 100, defaults);
 
   let buyer = accts[2]
-  const buyToken = await Contracts.Token.new({...defaults})
-  await buyToken.approve(buyer, 100, {...defaults})
-  await buyToken.transferFrom(initialiser, buyer, 1000, {...defaults});
+  const buyToken = await Contracts.Token.new(defaults)
+  await buyToken.approve(buyer, 100, defaults)
+  await buyToken.transferFrom(initialiser, buyer, 1000, defaults);
 
-  let DUTCHX = await Contracts.Token.new({...defaults});
+  let DUTCHX = await Contracts.Token.new(defaults);
   
   // create dx
-  let dx = await Contracts.DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address, {...defaults});
+  let dx = await Contracts.DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address, defaults);
   let dxa = dx.address;
 
   console.log(dxa)
