@@ -61,7 +61,7 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
         </span>
         <ul>
           {filteredTokens.map(code =>
-            <TokenItem name={code2tokenMap[code]} code={code} balance={tokenBalances[code]} />)}
+            <TokenItem name={code2tokenMap[code]} code={code} balance={tokenBalances[code]} key={code} />)}
         </ul>
       </div>
     )
