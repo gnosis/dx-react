@@ -85,5 +85,4 @@ export const tokenPairSelect = async (contract: string, token1: string, token2: 
   let dxa = dx.address;
 
   console.log(dxa)
-  // const token = await dXFactory.proposeExchange(dutchX.contracts.Token.at(token1), dutchX.contracts.Token.at(token2), amount, proposedVal)
 }
