@@ -28,6 +28,7 @@ contract('DutchExchange', function(accounts) {
 		// get seller set up
 		seller = accounts[1];
 		sellToken = await Token.new();
+		// console.log(' ====> SELL TOKEN = ', sellToken)
 		await sellToken.approve(seller, 100);
 		await sellToken.transferFrom(initialiser, seller, 100, {from: seller});
 

@@ -34,7 +34,7 @@ export default async function walletIntegration(store: Store<any>) {
   try {
     await Promise.all(promisedInits)
   } catch (e) {
-
+    
   } finally {
     dispatch(initDutchX())
   }

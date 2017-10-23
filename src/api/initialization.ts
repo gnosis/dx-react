@@ -75,7 +75,8 @@ class DutchExchangeInit {
       // Window must be loaded first so that there isn't a race condition for resolving injected Web3 instance
       await windowLoaded
 
-      if (typeof window.web3 !== 'undefined') {
+      // if (typeof window.web3 !== 'undefined') {
+      if (Object.keys(window.web3).length !== 0) {
         this.web3 = new Web3(window.web3.currentProvider)
       } else {
         this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
@@ -95,6 +96,7 @@ class DutchExchangeInit {
     await Promise.all([
       this.setupContractInstances('DutchExchange', this.contracts.DutchExchange),
       this.setupContractInstances('DutchExchangeFactory', this.contracts.DutchExchangeFactory),
+      // this.setupContractInstances('Token', this.contracts.Token),
     ])
   }
 

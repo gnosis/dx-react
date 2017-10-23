@@ -37,9 +37,7 @@ export default class Metamask extends InjectedWeb3 {
   public async getInitialState() {
     // Check if a Provider injected
     try {
-      if (typeof window.web3 !== 'undefined' &&
-        window.web3.currentProvider.constructor.name === 'MetamaskInpageProvider'
-      ) {
+      if (typeof window.web3 !== 'undefined' && window.web3.currentProvider.constructor.name === 'MetamaskInpageProvider') {
         this.web3 = new Web3(window.web3.currentProvider)
         this.walletEnabled = true
       } else {
