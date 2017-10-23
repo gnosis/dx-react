@@ -5,6 +5,7 @@ import JSXAddon from 'storybook-addon-jsx'
 import '../src/styles/global.scss'
 
 window.regeneratorRuntime = require('babel-runtime/regenerator')
+require('./extraTypings.ts')
 
 const req = require.context('../src/components', true, /\.stories\.tsx$/)
 
