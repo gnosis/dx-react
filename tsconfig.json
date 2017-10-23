@@ -30,6 +30,7 @@
     "src"
   ],
   "files": [
-    "src/index.tsx"
+    "src/index.tsx",
+    ".storybook/config.js"
   ]
 }
