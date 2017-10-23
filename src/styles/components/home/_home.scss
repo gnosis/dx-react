@@ -424,13 +424,15 @@
     > ul {
       display: flex;
       flex-wrap: wrap;
-      overflow-y: scroll;
+      overflow-y: auto;
       position: absolute;
       top: 80px;
       height: calc(100% - 80px);
       padding: 10px 5px 50px;
       box-sizing: border-box;
       align-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
     }
 
     > ul::-webkit-scrollbar-track {
@@ -476,6 +478,7 @@
   padding: 12px;
   border-radius: 2px;
   outline: 0;
+  box-sizing: border-box;
 
     &::placeholder {
       will-change: color;
