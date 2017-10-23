@@ -3,7 +3,7 @@ const DutchExchange = artifacts.require('./DutchExchange.sol');
 const DutchExchangeFactory = artifacts.require('./DutchExchangeFactory.sol');
 
 contract('Auction', async (accounts) => {
-  console.log(accounts);
+  // console.log(accounts);
 
   let initialiser;
   let seller;
@@ -44,16 +44,41 @@ contract('Auction', async (accounts) => {
 
 
 
-  // it('works', async () => {
-  //   // what tokenPairSelect does
+  it('seller can submit order to an auction', async () => {
+    // get a pair of tokens
+    const sellTokenAddress = sellToken.address
+    const buyTokenAddress = buyToken.address
 
-  //   const amount = 30
-  //   const proposedVal = 2
+    // we know there's a deployed contract somewhere
+    const dutchExchange = DutchExchange.at(dxa)
 
 
-  //   const res = await dXFactory.proposeExchange(sellToken.address, buyToken.address, amount, proposedVal)
-  //   // ReferenceError: dXFactory is not defined, as if I didn't require the artifact
+    const amount = 30
+    // allow the contract to move tokens
+    await sellToken.approve(dxa, amount, { from: seller });
 
-  //   assert.true(res)
-  // })
+    // currently in auction
+    const emptyAuctionVol = await dutchExchange.sellVolumeCurrent()
+    assert.equal(emptyAuctionVol.toNumber(), 0)
+
+    // seller submits order and returns transaction object
+    // that includes logs of events that fired during function execution
+    const { logs: [log] } = await dutchExchange.postSellOrder(amount, { from: seller })
+    const { _auctionIndex, _from, amount: submittedAmount } = log.args
+
+    // submitter is indeed the seller
+    assert.equal(_from, seller)
+    // amount is the same
+    assert.equal(submittedAmount.toNumber(), amount)
+
+    // currently in auction
+    const filledAuctionVol = await dutchExchange.sellVolumeCurrent()
+
+    // auction received the exact sum from the seller
+    assert.equal(filledAuctionVol.toNumber(), emptyAuctionVol.toNumber() + amount)
+
+    // seller is now assigned a balance
+    const sellerBalance = await dutchExchange.sellerBalances(_auctionIndex, seller)
+    assert.equal(sellerBalance.toNumber(), amount)
+  })
 })
