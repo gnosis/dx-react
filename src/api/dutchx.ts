@@ -59,21 +59,31 @@ export const tokenPairSelect = async (contract: string, token1: string, token2: 
 
   const dutchX = await getDutchXConnection()
 
+  // Accts to test with HttpProvider - if using Metamask you must check the testrpc accounts and add manually
   let accts = [...dutchX.web3.eth.accounts]
+  let defaults = {from: accts[0], gas: 4712388, gasPrice: 100000000000}
   console.log(accts)
 
   const Contracts = dutchX.contracts
   let initialiser = accts[0]
   
   let seller = accts[1]
-  const sellToken = await Contracts.Token.new({from: accts[0]})
-  await sellToken.approve(seller, 100)
-  await sellToken.transferFrom(initialiser, seller, 100, {from: seller});
+  const sellToken = await Contracts.Token.new({...defaults})
+  console.log(sellToken)
+  await sellToken.approve(seller, 100, {...defaults})
+  await sellToken.transferFrom(initialiser, seller, 100, {...defaults});
 
   let buyer = accts[2]
-  const buyToken = await Contracts.Token.new({from: accts[0]})
-  await buyToken.approve(buyer, 100)
-  await buyToken.transferFrom(initialiser, buyer, 1000, {from: buyer});
+  const buyToken = await Contracts.Token.new({...defaults})
+  await buyToken.approve(buyer, 100, {...defaults})
+  await buyToken.transferFrom(initialiser, buyer, 1000, {...defaults});
 
+  let DUTCHX = await Contracts.Token.new({...defaults});
+  
+  // create dx
+  let dx = await Contracts.DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address, {...defaults});
+  let dxa = dx.address;
+
+  console.log(dxa)
   // const token = await dXFactory.proposeExchange(dutchX.contracts.Token.at(token1), dutchX.contracts.Token.at(token2), amount, proposedVal)
 }
