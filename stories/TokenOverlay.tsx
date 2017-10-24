@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { array } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 
-import TokenOverlay from './index'
+import TokenOverlay from 'components/TokenOverlay'
 
 // import { Story } from '@storybook/react'
 

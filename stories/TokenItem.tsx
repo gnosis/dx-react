@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { text, number } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
-import TokenItem from './index'
+import TokenItem from 'components/TokenItem'
 
 const code2tokenMap = {
   ETH: 'ETHER',

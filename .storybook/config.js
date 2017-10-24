@@ -7,14 +7,13 @@ import '../src/styles/global.scss'
 window.regeneratorRuntime = require('babel-runtime/regenerator')
 require('./extraTypings.ts')
 
-const req = require.context('../src/components', true, /\.stories\.tsx$/)
+const req = require.context('../stories', true, /\.tsx$/)
 
 
 addDecorator(withKnobs)
 setAddon(JSXAddon)
 
 function loadStories() {
-  require('../stories/index.tsx')
   req.keys().forEach((filename) => req(filename))
 }
 
