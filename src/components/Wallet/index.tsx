@@ -12,8 +12,8 @@ export const Wallet: React.SFC<WalletProps> = ({account, balance}) => {
     <i className="menuWallet">
       {/* Wallet Info - Address && Balance */}
       <span>
-        <code>{`${account ? account.slice(0,14) : 'loading..'}...`}</code>
-        <small>{balance} ETH</small>
+        <code>{`${account ? account.slice(0,14) : 'loading...'}...`}</code>
+        <small>{balance ? balance : 'loading...'} ETH</small>
       </span>
 
       <div>
