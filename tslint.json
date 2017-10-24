@@ -13,6 +13,7 @@
     "variable-name": false,
     "import-name": false,
     "max-line-length": false,
+    "object-shorthand-properties-first": false,
     "ter-max-len": [
       true,
       {
