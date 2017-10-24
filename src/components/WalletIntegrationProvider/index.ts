@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { /* connectBlockchain,*/ initDutchX } from 'contract-fe-test/api/dutchx'
+import { /* connectBlockchain,*/ initDutchXConnection } from 'api/dutchx'
 import { getSelectedProvider } from 'selectors/blockchain'
 import { WALLET_PROVIDER } from 'integrations/constants'
 
@@ -38,8 +38,8 @@ export default class WalletIntegrationProvider extends Component<WalletIntegrati
       }
       const selectedProvider = getSelectedProvider(reactStore.getState())
       const opts = this.getDutchXOptions(selectedProvider)
-      console.log(' ===> FIRING WalletIntegration.dispatch(initDutchX)') //eslint-disable-line
-      reactStore.dispatch(initDutchX(opts)) // .then(() => reactStore.dispatch(connectBlockchain()))
+      console.log(' ===> FIRING WalletIntegration.dispatch(initDutchX)')
+      reactStore.dispatch(initDutchXConnection(opts)) // .then(() => reactStore.dispatch(connectBlockchain()))
 
       return null
     }

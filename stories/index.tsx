@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 
 const { storiesOf } = require('@storybook/react')
 const { action } = require('@storybook/addon-actions')
@@ -14,7 +14,7 @@ import { Provider } from 'react-redux'
 import BalanceButton from '../src/containers/BalanceButton/'
 import Header from '../src/components/Header'
 
-storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
+storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />)
 
 storiesOf('App/Button', module)
   .addDecorator((story: any) => <Provider store={store as any}>{story()}</Provider>)

@@ -8,12 +8,12 @@ let dutchXInst: any
  * @param {*dictionary} DUTCHX_OPTIONS
  */
 export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
-  console.log(' ===> FIRING initDutchX ACTION') //eslint-disable-line
+  console.log(' ===> FIRING initDutchX ACTION')
   try {
     dutchXInst = await dutchX.init(DUTCHX_OPTIONS)
-    console.log('SUCCESS CONNECTING TO DUTCHX INSTANCE', dutchXInst) // eslint-disable-line no-console
+    console.log('SUCCESS CONNECTING TO DUTCHX INSTANCE', dutchXInst)
   } catch (e) {
-    console.log('ERROR CONNECTING TO DUTCHX INSTANCE', e.message) // eslint-disable-line no-console
+    console.log('ERROR CONNECTING TO DUTCHX INSTANCE', e.message)
     throw (e)
   }
 }
@@ -36,7 +36,7 @@ export const getCurrentAccount = async () => {
 export const getAllAccounts = async () => {
   const dutchX = await getDutchXConnection()
 
-  const accounts = await new Promise( (resolve, reject) => dutchX.web3.eth.getAccounts((err: any, accts: any) => {
+  const accounts = await new Promise((resolve, reject) => dutchX.web3.eth.getAccounts((err: any, accts: any) => {
     err ? reject(err) : resolve(accts)
   }))
   console.log(accounts)
@@ -53,36 +53,38 @@ export const getCurrentBalance = async (account: Object) => {
   ))
 }
 
-export const tokenPairSelect = async (contract: string, token1: string, token2: string, amount: number, proposedVal: number) => {
-  
+export const tokenPairSelect = async (
+  contract: string, token1: string, token2: string, amount: number, proposedVal: number,
+) => {
+
   console.log(contract, token1, token2, amount, proposedVal)
 
   const dutchX = await getDutchXConnection()
 
   // Accts to test with HttpProvider - if using Metamask you must check the testrpc accounts and add manually
-  let accts = [...dutchX.web3.eth.accounts]
-  let defaults = {from: accts[0], gas: 4712388, gasPrice: 100000000000}
+  const accts = [...dutchX.web3.eth.accounts]
+  const defaults = { from: accts[0], gas: 4712388, gasPrice: 100000000000 }
   console.log(accts)
 
   const Contracts = dutchX.contracts
-  let initialiser = accts[0]
-  
-  let seller = accts[1]
+  const initialiser = accts[0]
+
+  const seller = accts[1]
   const sellToken = await Contracts.Token.new(defaults)
   console.log(sellToken)
   await sellToken.approve(seller, 100, defaults)
-  await sellToken.transferFrom(initialiser, seller, 100, defaults);
+  await sellToken.transferFrom(initialiser, seller, 100, defaults)
 
-  let buyer = accts[2]
+  const buyer = accts[2]
   const buyToken = await Contracts.Token.new(defaults)
   await buyToken.approve(buyer, 100, defaults)
-  await buyToken.transferFrom(initialiser, buyer, 1000, defaults);
+  await buyToken.transferFrom(initialiser, buyer, 1000, defaults)
 
-  let DUTCHX = await Contracts.Token.new(defaults);
-  
+  const DUTCHX = await Contracts.Token.new(defaults)
+
   // create dx
-  let dx = await Contracts.DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address, defaults);
-  let dxa = dx.address;
+  const dx = await Contracts.DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address, defaults)
+  const dxa = dx.address
 
   console.log(dxa)
 }

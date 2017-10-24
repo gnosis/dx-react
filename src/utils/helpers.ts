@@ -15,7 +15,7 @@ export const getDutchXOptions = (provider: any) => {
   } else {
       // Default remote node
     opts.ethereum = new Web3(
-      new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`)
+      new Web3.providers.HttpProvider(`${process.env.ETHEREUM_URL}`),
     ).currentProvider
   }
 

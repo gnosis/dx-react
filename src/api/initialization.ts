@@ -32,7 +32,7 @@ const windowLoaded = new Promise((accept, reject) => {
 const contractArtifacts = [
   'DutchExchange',
   'DutchExchangeFactory',
-  'Token'
+  'Token',
 ].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
@@ -54,7 +54,7 @@ class DutchExchangeInit {
    * @memberof DutchExchangeInit
    */
   static init(opts?: Object) {
-    console.log(' ===> FIRING dutchX.init()') //eslint-disable-line
+    console.log(' ===> FIRING dutchX.init()')
     const dutchX = new DutchExchangeInit()
     dutchX.fireUp(opts)
     return dutchX
@@ -109,7 +109,7 @@ class DutchExchangeInit {
   async setupContractInstances(instanceName: any, contract: any) {
     try {
       // Attach contract instance to Class and deploy
-      console.log(`SUCCESS: Contract ${contract} successfully mounted to DutchExchangeInit instance`) // eslint-disable-line no-console
+      console.log(`SUCCESS: Contract ${contract} successfully mounted to DutchExchangeInit instance`)
       this[instanceName] = await contract.deployed()
     } catch (e) {
       delete this[instanceName]

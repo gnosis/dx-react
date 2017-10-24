@@ -14,8 +14,8 @@ interface BalanceButtonProps {
 }
 
 // let accounts = window.web3
-let ether = '234'
-let gno = '123'
+const ether = '234'
+const gno = '123'
 
 const BalanceButton = ({ balance, getBalance, provider }: BalanceButtonProps) => (
   <div>
