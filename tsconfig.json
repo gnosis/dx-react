@@ -26,8 +26,14 @@
   },
   "exclude": [
     "node_modules",
-    "dist",
-    "src"
+    "dist"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".storybook/*.ts",
+    "stories/*.ts",
+    "stories/*.tsx"
   ],
   "files": [
     "src/index.tsx",

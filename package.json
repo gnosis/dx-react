@@ -15,7 +15,7 @@
     "lint:js:fix": "npm run lint:js -- --fix",
     "lint:css": "stylelint 'src/**/*.@(?(s)css|less)' --cache",
     "lint:css:fix": "npm run lint:css -- --fix",
-    "lint:ts": "tslint './src/**/*.ts?(x)' --project tsconfig.json",
+    "lint:ts": "tslint './@(src|stories|.storybook)/**/*.ts?(x)' --project tsconfig.json",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "lint": "npm run lint:js; npm run lint:ts; npm run lint:css",
     "lint:fix": "npm run lint:js:fix; npm run lint:ts:fix; npm run lint:css:fix",
