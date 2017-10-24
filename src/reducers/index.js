@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
-import balance from './balance'
 import entities from './entities'
 import modal from './modal'
 import transactions from './transactions'
@@ -16,7 +15,6 @@ const reducers = combineReducers({
   blockchain,
   settings,
   notifications,
-  balance,
 })
 
 const rootReducer = (state, action) => {

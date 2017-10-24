@@ -4,10 +4,12 @@ import {
   setActiveProvider,   
   setConnectionStatus, 
   setDutchXInitialized,
+  registerProvider, 
+  updateProvider,
+  setCurrentBalance,
+  setCurrentAccountAddress, 
   // setGasCost, 
   // setGasPrice, 
-  registerProvider, 
-  updateProvider, 
   // setEtherTokens,
 } from 'actions/blockchain'
 
@@ -38,17 +40,6 @@ const reducer = handleActions({
       dutchXInitialized: initialized,
     }
   },
-  // [setGasCost]: (state, action) => ({
-  //   ...state,
-  //   [action.payload.entityType]: {
-  //     ...state[action.payload.entityType],
-  //     [action.payload.contractType]: action.payload.gasCost,
-  //   },
-  // }),
-  // [setGasPrice]: (state, action) => ({
-  //   ...state,
-  //   [action.payload.entityType]: action.payload.gasPrice,
-  // }),
   [registerProvider as any]: (state: any, action: any) => {
     const { provider: name, ...provider } = action.payload
     return {
@@ -65,7 +56,7 @@ const reducer = handleActions({
   },
   [updateProvider as any]: (state: any, action: any) => {
     const { provider: name, ...provider } = action.payload
-
+    
     return {
       ...state,
       providers: {
@@ -83,9 +74,28 @@ const reducer = handleActions({
     ...state,
     activeProvider: action.payload,
   }),
-  // [setEtherTokens]: (state, action) => ({
+  [setCurrentAccountAddress as any]: (state: any, action: any) => ({
+    ...state,
+    currentAccount: action.payload.currentAccount
+  }),
+  [setCurrentBalance as any]: (state: any, action: any) => ({
+    ...state,
+    currentBalance: action.payload.currentBalance
+  }),
+  // [setGasCost]: (state, action) => ({
   //   ...state,
   //   [action.payload.entityType]: {
+  //     ...state[action.payload.entityType],
+  //     [action.payload.contractType]: action.payload.gasCost,
+  //   },
+  // }),
+  // [setGasPrice]: (state, action) => ({
+  //   ...state,
+  //   [action.payload.entityType]: action.payload.gasPrice,
+  // }),
+  // [setEtherTokens]: (state, action) => ({
+    //   ...state,
+    //   [action.payload.entityType]: {
   //     ...state[action.payload.entityType],
   //     [action.payload.account]: action.payload.etherTokens,
   //   },
@@ -93,11 +103,12 @@ const reducer = handleActions({
 },                            {
   gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
   gasPrice: undefined,
-  currentBalance: undefined,
   connection: undefined,
   connectionTried: false,
   providers: {},
   activeProvider: null,
+  currentAccount: undefined,
+  currentBalance: undefined,
 })
 
 export default reducer

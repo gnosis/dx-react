@@ -4,17 +4,14 @@ import BalanceButton from '../../components/BalanceButton'
 import { getBalance } from '../../actions/balance'
 
 interface State {
-  balance?: { currentBalance?: number },
   blockchain?: { activeProvider?: string },
 }
 
 interface StateToProps {
-  currentBalance?: number,
   activeProvider?: string,
 }
 
 const mapStateToProps = (state: State): Object => ({
-  balance: state.balance.currentBalance,
   provider: state.blockchain.activeProvider ? state.blockchain.activeProvider : null,
 })
 

@@ -1,116 +1,15 @@
 import * as React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
+import Wallet from 'containers/Wallet'
+
 export const Header = () => (
   <header>
     <div>
       <a href="#" title="DutchX - Dutch Auction Exchange" className="logo"></a>
       
       {/*MENU WALLET - REFACTOR INTO COMPONENT*/}
-      <i className="menuWallet">
-        <span>
-          <code>0xd79Ed64B47...</code>
-          <small>0.1983 ETH</small>
-        </span>
-
-        <div>
-          <table>
-            <tr>
-              <th>Token</th>
-              <th>Balance</th>
-            </tr>
-            <tr>
-              <td>ETH</td>
-              <td>0.340599</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                  <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-                            <tr>
-              <td>GNO</td>
-              <td>14.00349</td>
-            </tr>
-
-          </table>
-        </div>
-      </i>
+      <Wallet />
       {/*MENU AUCTIONS - REFACTOR INTO COMPONENT*/}
       <i className="menuAuctions"><img src={require('assets/auction.svg')} />
         <strong>Your Auctions</strong>

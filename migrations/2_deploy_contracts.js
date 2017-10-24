@@ -5,5 +5,8 @@ var Token = artifacts.require("./Token.sol");
 module.exports = function(deployer) {
   deployer.deploy(DutchExchange);
   deployer.deploy(DutchExchangeFactory);
-  deployer.deploy(Token);
+  deployer.deploy(Token, {});
 };
+
+// TODO
+// fake issuance of tokens

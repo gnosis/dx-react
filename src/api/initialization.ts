@@ -53,10 +53,10 @@ class DutchExchangeInit {
    * @returns DutchExchangeInit INSTANCE
    * @memberof DutchExchangeInit
    */
-  static init(opts?: Object) {
+  static async init(opts?: Object) {
     console.log(' ===> FIRING dutchX.init()')
     const dutchX = new DutchExchangeInit()
-    dutchX.fireUp(opts)
+    await dutchX.fireUp(opts)
     return dutchX
   }
 

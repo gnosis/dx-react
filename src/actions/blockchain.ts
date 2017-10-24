@@ -4,7 +4,7 @@ import {
   getCurrentAccount,
   initDutchXConnection,
   // tokenPairSelect,
-} from '../api/dutchx'
+} from 'api/dutchx'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
@@ -28,13 +28,14 @@ export const setDutchXInitialized = createAction<{ initialized?: boolean, error?
 export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
 export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
-
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
+export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: number }>('SET_CURRENT_BALANCE')
+export const setCurrentAccountAddress = createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
 // export const setEtherTokens = createAction('SET_ETHER_TOKENS')
 
-const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 2000
+const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 /**
  * (Re)-Initializes Gnosis.js connection according to current providers settings
@@ -62,12 +63,23 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
 
   // connect
   try {
+    let account: Object
+    let currentBalance: any
     // runs test executions on gnosisjs
     const getConnection = async () => {
-      const account = await getCurrentAccount()
-      await getCurrentBalance(account)
+      try {
+        account = await getCurrentAccount()
+        currentBalance = await getCurrentBalance(account)
+      } catch(e) {
+        console.log(e)
+      }
+      
     }
+    console.log('HERE WE ARE')
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
+
+    await dispatch(setCurrentAccountAddress({ currentAccount: account }))
+    await dispatch(setCurrentBalance({ currentBalance }))
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
     console.warn(`DutchX connection Error: ${error}`)
@@ -80,17 +92,6 @@ export const getTokenPairs = async () => {
   // const token2 = await grabTokenAddress2
   // const token = await getTokenPairs( 1, 2, token1, token2 ))
 }
-
-
-
-
-
-
-
-
-
-
-
 
 // export const requestGasPrice = () => async (dispatch: Function) => {
 //   const gasPrice = await getGasPrice()

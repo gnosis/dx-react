@@ -21,13 +21,14 @@ export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
 /**
  * Returns an instance of the connection to DutchX
  */
-export const getDutchXConnection: any = async () => dutchXInst
+export const getDutchXConnection: Function = async (): Promise<Object> => dutchXInst
 
 /**
  * Returns the default node account
  */
 export const getCurrentAccount = async () => {
   const dutchX = await getDutchXConnection()
+  
   return await new Promise((resolve, reject) => dutchX.web3.eth.getAccounts(
     (e: Object, accounts: Object) => (e ? reject(e) : resolve(accounts[0]))),
   )
@@ -47,6 +48,7 @@ export const getAllAccounts = async () => {
  */
 export const getCurrentBalance = async (account: Object) => {
   const dutchX = await getDutchXConnection()
+  console.log('GET CONNECTION DUTCHX INSTANCE = ', dutchX)
   return await new Promise((resolve, reject) => dutchX.web3.eth.getBalance(
     account,
     (e: Object, balance: Object) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
