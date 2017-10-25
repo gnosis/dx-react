@@ -47,7 +47,7 @@ header {
     flex-direction: column;
   }
 
-  > div > nav {
+  > div > div > nav {
     transform: translate3d(240px, 0, 0);
     opacity: 0;
     visibility: hidden;
@@ -152,34 +152,6 @@ header {
     max-width: 25px;
     margin: 0 0 0 10px;
   }
-}
-
-.sidebar {
-  width: 240px;
-  position: fixed;
-  top: 0;
-  height: 100vh;
-  right: 0;
-  z-index: 10;
-  background: #35373c;
-  box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
-  z-index: 9999;
-  transition: transform .2s ease-in-out, opacity .2s ease-in-out;
-  will-change: transform, opacity;
-  padding: 75px 0 0;
-  overflow-y: auto;
-}
-
-.show {
-  transform: translate3d(0, 0, 0);
-  opacity: 1;
-  visibility: visible;
-}
-
-.hide {
-  transform: translate3d(240px, 0, 0);
-  opacity: 0;
-  visibility: hidden;
 }
 
 .menuWallet {

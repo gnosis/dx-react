@@ -11,7 +11,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
     super(props)
     
     this.state = {
-      isOpen: false
+      isOpen: false,
     }
 
     this.handleClick = this.handleClick.bind(this)
@@ -20,7 +20,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
   handleClick() {
     console.log(this.state)
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     })
   }
 
@@ -32,7 +32,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
         <button 
           className="hamburger"
           onClick={this.handleClick}></button>
-        <nav className={`sidebar ${isOpen ? "show" : "hide"}`}>
+        <nav className={`${isOpen ? 'show' : undefined}`}>
           <button 
             className="buttonExit"
             onClick={this.handleClick}>
