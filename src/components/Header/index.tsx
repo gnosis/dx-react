@@ -3,6 +3,7 @@ import 'styles/components/navbar/_navbar.scss'
 
 import MenuWallet from 'containers/MenuWallet'
 import MenuAuctions from 'components/MenuAuctions'
+import Hamburger from 'components/Hamburger'
 
 // TODO: move this
 const ongoingAuctions = [
@@ -25,13 +26,8 @@ export const Header: React.SFC = () => (
       {/*MENU AUCTIONS - REFACTOR INTO COMPONENT*/}
       <MenuAuctions ongoingAuctions={ongoingAuctions}/>
       {/*HAMBURGER BUTTON - REFACTOR INTO COMPONENT*/}
-      <button className="hamburger"></button>
-      <nav>
-        <button className="buttonExit"></button>
-        <a href="#">How it works</a>
-        <a href="#">About</a>
-        <a href="#">Faq</a>
-      </nav>
+      <Hamburger />
+
     </div>
   </header>
 )
