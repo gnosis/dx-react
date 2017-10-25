@@ -11,7 +11,7 @@ import { code2tokenMap, TokenCode } from 'globals'
 const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 const tokenBalances = codeList.reduce(
-  (acc, code) => (acc[code] = Math.random() * 5, acc), {},
+  (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
 ) as {[code in TokenCode]: number }
 
 const CenterDecor = (story: Function) => (
