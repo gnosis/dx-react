@@ -8,14 +8,17 @@ interface TokenItemProps {
   code: string,
 }
 
-const TokenItem: React.SFC<TokenItemProps> = ({ onClick, mod, balance, name, code }) => (
-  <div className="tokenItem" onClick={onClick && (() => onClick({ mod, balance, name, code }))}>
-    {mod && <strong>{mod}</strong>}
-    <i data-coin={code}></i>
-    <big>{name}</big><code>{code}</code>
-    <small>{mod && 'AVAILABLE'} BALANCE:</small>
-    <p className={balance ? undefined : 'noBalance'}>{balance} {code}</p>
-  </div>
-)
+const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
+  const { mod, balance, name, code } = rest
+  return (
+    <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
+      {mod && <strong>{mod}</strong>}
+      <i data-coin={code}></i>
+      <big>{name}</big><code>{code}</code>
+      <small>{mod && 'AVAILABLE'} BALANCE:</small>
+      <p className={balance ? undefined : 'noBalance'}>{balance} {code}</p>
+    </div>
+  )
+}
 
 export default TokenItem
