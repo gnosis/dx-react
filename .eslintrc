@@ -71,5 +71,10 @@
   "env": {
     "jest/globals": true,
     "browser": true
+  },
+  "globals": {
+    "assert": true,
+    "contract": true,
+    "artifacts": true
   }
 }
