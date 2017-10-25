@@ -1,7 +1,7 @@
 import * as React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
-import Wallet from 'containers/Wallet'
+import Wallet from 'containers/MenuWallet'
 
 export const Header: React.SFC = () => (
   <header>
