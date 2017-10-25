@@ -1,53 +1,48 @@
-const Token = artifacts.require('./Token.sol');
-const DutchExchange = artifacts.require('./DutchExchange.sol');
-const DutchExchangeFactory = artifacts.require('./DutchExchangeFactory.sol');
+
+const Token = artifacts.require('./Token.sol')
+const DutchExchange = artifacts.require('./DutchExchange.sol')
+// const DutchExchangeFactory = artifacts.require('./DutchExchangeFactory.sol')
 
 contract('Auction', async (accounts) => {
   // console.log(accounts);
 
-  let initialiser;
-  let seller;
-  let buyer;
+  let initialiser
+  let seller
+  let buyer
 
-  let sellToken;
-  let buyToken;
-  let DUTCHX;
-  let dx;
+  let sellToken
+  let buyToken
+  let DUTCHX
+  let dx
 
-  let dxa;
+  let dxa
 
-  let dxFactory;
+  // let dxFactory
 
-  beforeEach(async function () {
-    initialiser = accounts[0];
+  beforeEach(async () => {
+    [initialiser, seller, buyer] = accounts
 
     // get seller set up
-    seller = accounts[1];
-    sellToken = await Token.new();
-    await sellToken.approve(seller, 100);
-    await sellToken.transferFrom(initialiser, seller, 100, { from: seller });
+    sellToken = await Token.new()
+    await sellToken.approve(seller, 100)
+    await sellToken.transferFrom(initialiser, seller, 100, { from: seller })
 
     // get buyer set up
-    buyer = accounts[2];
-    buyToken = await Token.new();
-    await buyToken.approve(buyer, 1000);
-    await buyToken.transferFrom(initialiser, buyer, 1000, { from: buyer });
+    buyToken = await Token.new()
+    await buyToken.approve(buyer, 1000)
+    await buyToken.transferFrom(initialiser, buyer, 1000, { from: buyer })
 
-    DUTCHX = await Token.new();
+    DUTCHX = await Token.new()
 
     // create dx
-    dx = await DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address);
-    dxa = dx.address;
+    dx = await DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address)
+    dxa = dx.address
 
     // dxFactory = await DutchExchangeFactory(DUTCHX.address)
   })
 
 
-
   it('seller can submit order to an auction', async () => {
-    // get a pair of tokens
-    const sellTokenAddress = sellToken.address
-    const buyTokenAddress = buyToken.address
 
     // we know there's a deployed contract somewhere
     const dutchExchange = DutchExchange.at(dxa)
@@ -55,7 +50,7 @@ contract('Auction', async (accounts) => {
 
     const amount = 30
     // allow the contract to move tokens
-    await sellToken.approve(dxa, amount, { from: seller });
+    await sellToken.approve(dxa, amount, { from: seller })
 
     // currently in auction
     const emptyAuctionVol = await dutchExchange.sellVolumeCurrent()
