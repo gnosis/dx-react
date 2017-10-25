@@ -1,21 +1,23 @@
 import React, { Component } from 'react'
-import TokenItem from '../TokenItem'
+import TokenOverlayHeader from '../TokenOverlayHeader'
+import TokenList from '../TokenList'
+import { code2tokenMap, TokenCode } from 'globals'
+import { createSelector } from 'reselect'
 
-// TODO: move tokens and codes to global config or redux
-const code2tokenMap = {
-  ETH: 'ETHER',
-  GNO: 'GNOSIS',
-  REP: 'AUGUR',
-  '1ST': 'FIRST BLOOD',
-  OMG: 'OMISEGO',
-  GNT: 'GOLEM',
-}
+const filterTokens = createSelector(
+  (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
+  (_: TokenOverlayState, props: TokenOverlayProps) => props.tokenCodeList,
+  (filter, codes) => (filter ?
+    codes.filter(code => code.includes(filter) || code2tokenMap[code].includes(filter)) :
+    codes
+  ),
+)
 
 interface TokenOverlayProps {
-  tokenCodeList: string[],
-  // TODO: keep closeOverlay state in redux?
+  tokenCodeList: TokenCode[],
   closeOverlay(): void,
-  tokenBalances: { [code: string]: number }
+  tokenBalances: {[code in TokenCode]: number },
+  open: boolean,
 }
 
 interface TokenOverlayState {
@@ -23,7 +25,6 @@ interface TokenOverlayState {
 }
 
 class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
-  // TODO: consider keeping filter state in redux, if we need to persist
   state = {
     filter: '',
   }
@@ -38,31 +39,16 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
 
 
   render() {
-    const { tokenCodeList, closeOverlay, tokenBalances } = this.props
-    const { filter } = this.state
-    const filterUP = filter.toUpperCase()
-    // TODO: rewrite filter using reselect
-    const filteredTokens = !filter ? tokenCodeList : tokenCodeList.filter(
-      code => code.includes(filterUP) || code2tokenMap[code].includes(filterUP),
-    )
+    if (!this.props.open) return null
 
-    // TODO: change <ul> to <div> (to keep with generic <TokenItem/>), including in CSS
+    const { closeOverlay, tokenBalances } = this.props
+
+    const filteredTokens = filterTokens(this.state, this.props)
+
     return (
       <div className="tokenOverlay">
-        <span className="tokenOverlayHeader">
-          <input
-            className="tokenSearch"
-            type="text"
-            name="tokenSearch"
-            placeholder="Find token by name or code"
-            onChange={this.changeFilter}
-          />
-          <button className="buttonExit" onClick={closeOverlay} />
-        </span>
-        <ul>
-          {filteredTokens.map(code =>
-            <TokenItem name={code2tokenMap[code]} code={code} balance={tokenBalances[code]} key={code} />)}
-        </ul>
+        <TokenOverlayHeader onChange={this.changeFilter} closeOverlay={closeOverlay} />
+        <TokenList tokens={filteredTokens} balances={tokenBalances} />
       </div>
     )
   }
