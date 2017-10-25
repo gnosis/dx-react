@@ -3,13 +3,20 @@ import 'styles/components/navbar/_navbar.scss'
 
 import Wallet from 'containers/Wallet'
 
+const tokens = {
+  GNO: {
+    name: 'GNO',
+    balance: 12,
+  },
+}
+
 export const Header = () => (
   <header>
     <div>
       <a href="#" title="DutchX - Dutch Auction Exchange" className="logo"></a>
       
       {/*MENU WALLET - REFACTOR INTO COMPONENT*/}
-      <Wallet />
+      <Wallet tokens={tokens}/>
       {/*MENU AUCTIONS - REFACTOR INTO COMPONENT*/}
       <i className="menuAuctions"><img src={require('assets/auction.svg')} />
         <strong>Your Auctions</strong>

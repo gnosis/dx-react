@@ -3,10 +3,11 @@ import 'styles/components/navbar/_navbar.scss'
 
 interface WalletProps {
   account: string,
-  balance: Object
+  balance: Object,
+  tokens: Object,
 }
 
-export const Wallet: React.SFC<WalletProps> = ({account, balance}) => {
+export const Wallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => {
   
   return (
     <i className="menuWallet">
@@ -22,95 +23,12 @@ export const Wallet: React.SFC<WalletProps> = ({account, balance}) => {
             <th>Token</th>
             <th>Balance</th>
           </tr>
-          <tr>
-            <td>ETH</td>
-            <td>0.340599</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-                          <tr>
-            <td>GNO</td>
-            <td>14.00349</td>
-          </tr>
-
+          {Object.keys(tokens).map((token: any) => 
+            <tr>
+              <td>{tokens[token].name}</td>
+              <td>{tokens[token].balance}</td>
+          </tr>,
+          )}
         </table>
       </div>
     </i>
