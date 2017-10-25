@@ -421,7 +421,7 @@
       position: fixed;
     }
 
-    > ul {
+    > .tokenList {
       display: flex;
       flex-wrap: wrap;
       overflow-y: auto;
@@ -435,18 +435,18 @@
       width: 100%;
     }
 
-    > ul::-webkit-scrollbar-track {
+    > .tokenList::-webkit-scrollbar-track {
       border-radius: 10px;
       background-color: $greyBorder;
     }
 
-    > ul::-webkit-scrollbar {
+    > .tokenList::-webkit-scrollbar {
       width: 6px;
       border-radius: 10px;
       background-color: $greyBorder;
     }
 
-    > ul::-webkit-scrollbar-thumb {
+    > .tokenList::-webkit-scrollbar-thumb {
       border-radius: 10px;
       background-color: $greyText;
     }
