@@ -17,16 +17,20 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
 
     <div>
       <table>
-        <tr>
-          <th>Token</th>
-          <th>Balance</th>
-        </tr>
-        {Object.keys(tokens).map((token: any) => 
-          <tr key={tokens[token].name}>
-            <td>{tokens[token].name}</td>
-            <td>{tokens[token].balance}</td>
-        </tr>,
-        )}
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(tokens).map((token: any) => 
+            <tr key={tokens[token].name}>
+              <td>{tokens[token].name}</td>
+              <td>{tokens[token].balance}</td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   </i>
