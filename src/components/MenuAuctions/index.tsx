@@ -22,19 +22,23 @@ export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
     <strong>{ name }</strong>
     <div>
       <table>
-        <tr>
-          <th>Auction</th>
-          <th>Comitted</th>
-          <th>Claim Token</th>
-        </tr>
-        {ongoingAuctions.map(
-          (auction: auctionObject) => 
-            <tr key={ auction.id }>
-              <td>{ `${ auction.sellToken }/${ auction.buyToken }` }</td>
-              <td>{ `${auction.buyPrice} ${auction.sellToken}` }</td>
-              { auction.claim && <td><img src={ require('assets/claim.svg') } /></td> }
-            </tr>
-        )}
+        <thead>
+          <tr>
+            <th>Auction</th>
+            <th>Comitted</th>
+            <th>Claim Token</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ongoingAuctions.map(
+            (auction: auctionObject) => 
+              <tr key={ auction.id }>
+                <td>{ `${ auction.sellToken }/${ auction.buyToken }` }</td>
+                <td>{ `${auction.buyPrice} ${auction.sellToken}` }</td>
+                { auction.claim && <td><img src={ require('assets/claim.svg') } /></td> }
+              </tr>
+          )}
+        </tbody>  
       </table>
     </div>
   </i>
