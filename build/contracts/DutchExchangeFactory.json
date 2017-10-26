@@ -558,8 +558,122 @@
       "links": {},
       "address": "0xe7a1433a3fffa135b0f9120f4db6bdf945c4fff4",
       "updated_at": 1508860429921
+    },
+    "1509006858788": {
+      "events": {
+        "0xa54a3d2740ea0fe4c785159b6c73e93e2fc23e824e6167a1fd72f0c2288d4ff4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "sellToken",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "buyToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "proposedValue",
+              "type": "uint256"
+            }
+          ],
+          "name": "newProposal",
+          "type": "event"
+        },
+        "0x1379163b591a5e2e72b8f7b69538c116889e7157e167294bd1102bea7007eeb1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "weight",
+              "type": "uint256"
+            }
+          ],
+          "name": "newVoteFor",
+          "type": "event"
+        },
+        "0x50d0d4f0ee3b90c3efa02e6c6b9ecae52bb45406a25af2ebdd2a457fab1c53bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "weight",
+              "type": "uint256"
+            }
+          ],
+          "name": "newVoteAgainst",
+          "type": "event"
+        },
+        "0x25a9688656dce77cb79da235b316871f387cd5b15d4ca278ce4d638fae23abb8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            }
+          ],
+          "name": "sellTokensClaimed",
+          "type": "event"
+        },
+        "0x7375820157fd9d52f81208fcd7595a7e1f7e291fec01c6066758065f5f3dd8f6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            }
+          ],
+          "name": "collateralTokensClaimed",
+          "type": "event"
+        },
+        "0xff15474578bf5dba039c459351f15e88afe20bb1659a38eb9fca9f478a7f04e6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_proposalIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "outcome",
+              "type": "string"
+            }
+          ],
+          "name": "proposalHasBeenResolved",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xabf71780ca75812b76715153014193ea8944121f",
+      "updated_at": 1509006883076
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508860429921
+  "updated_at": 1509006883076
 }

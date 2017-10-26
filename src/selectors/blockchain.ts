@@ -1,3 +1,4 @@
+// import { getCurrentAccount } from '../api/dutchx'
 import { /* get, */ find, orderBy } from 'lodash'
 const Decimal = require('decimal.js')
 
@@ -9,6 +10,7 @@ export interface Blockchain {
   providers?: Providers,
   activeProvider?: string,
   defaultAccount?: string,
+  currentAccount?: string,
   currentBalance?: string,
   etherTokens?: string,
   gnosisInitialized?: boolean,
@@ -41,6 +43,8 @@ export const getSelectedProvider = (state: State): Providers | null => (
 )
 
 export const getDefaultAccount = (state: State) => selector(state).defaultAccount
+
+export const getAccount = (state: State) => selector(state).currentAccount
 
 // Default account balance
 export const getCurrentBalance = (state: State) => selector(state).currentBalance
