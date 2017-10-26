@@ -7,7 +7,7 @@ interface HamburgerState {
 }
 
 export default class Hamburger extends Component<HamburgerProps, HamburgerState> {
-  constructor(props: any) {
+  constructor(props: HamburgerProps) {
     super(props)
     
     this.state = {
@@ -32,7 +32,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
         <button 
           className="hamburger"
           onClick={this.handleClick}></button>
-        <nav className={`${isOpen ? 'show' : undefined}`}>
+        <nav className={isOpen ? 'show' : null}>
           <button 
             className="buttonExit"
             onClick={this.handleClick}>
