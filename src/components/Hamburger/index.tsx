@@ -7,22 +7,14 @@ interface HamburgerState {
 }
 
 export default class Hamburger extends Component<HamburgerProps, HamburgerState> {
-  constructor(props: HamburgerProps) {
-    super(props)
-    
-    this.state = {
-      isOpen: false,
-    }
-
-    this.handleClick = this.handleClick.bind(this)
+  
+  state = {
+    isOpen: false,
   }
 
-  handleClick() {
-    console.log(this.state)
-    this.setState({
-      isOpen: !this.state.isOpen,
-    })
-  }
+  handleClick = () => this.setState({
+    isOpen: !this.state.isOpen,
+  })
 
   render() {
     const { isOpen } = this.state
