@@ -32,7 +32,7 @@ const constructKnobs = (account: string, balance: number, tokens: object) => ({
     max: 100,
     step: 0.00000001,
   }),
-  tokens: object('tokens', tokens)
+  tokens: object('tokens', tokens),
 })
 
 const tokenObj = {

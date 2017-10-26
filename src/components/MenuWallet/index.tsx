@@ -12,7 +12,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
     {/* Wallet Info - Address && Balance */}
     <span>
       <code>{`${account ? account.slice(0,14) : 'loading...'}...`}</code>
-      <small>{balance ? balance : 'loading...'} ETH</small>
+      <small>{balance || balance === 0 ? balance : 'loading...'} ETH</small>
     </span>
 
     <div>
