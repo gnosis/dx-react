@@ -28,7 +28,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
             <tr key={tokens[token].name}>
               <td>{tokens[token].name}</td>
               <td>{tokens[token].balance}</td>
-            </tr>
+            </tr>,
           )}
         </tbody>
       </table>

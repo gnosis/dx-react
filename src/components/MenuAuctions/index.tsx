@@ -3,7 +3,7 @@ import 'styles/components/navbar/_navbar.scss'
 
 interface MenuAuctionProps {
   name?: string,
-  ongoingAuctions: Array<auctionObject>
+  ongoingAuctions: [auctionObject]
 }
 
 interface auctionObject {
@@ -16,7 +16,7 @@ interface auctionObject {
 
 export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
   name = 'YOUR AUCTIONS',
-  ongoingAuctions
+  ongoingAuctions,
 }) => (
   <i className="menuAuctions"><img src={require('assets/auction.svg')} />
     <strong>{ name }</strong>
@@ -36,7 +36,7 @@ export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
                 <td>{ `${ auction.sellToken }/${ auction.buyToken }` }</td>
                 <td>{ `${auction.buyPrice} ${auction.sellToken}` }</td>
                 { auction.claim && <td><img src={ require('assets/claim.svg') } /></td> }
-              </tr>
+              </tr>,
           )}
         </tbody>  
       </table>

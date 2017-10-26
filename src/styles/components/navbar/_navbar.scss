@@ -324,13 +324,22 @@ header {
 
       @media #{$mobile} {
         font-size: 12px;
-      }
-
-      &:nth-child(odd):not(:first-of-type) {
+      }  
+    }
+    
+    tbody {
+      &:nth-child(odd) {
         background: $greyLight;
       }
+      
+      &:hover {
+        background: $greyBorder;
+      }
+      
+    }
 
-      &:first-of-type {
+    thead {
+      tr {
         font-size: 10px;
         letter-spacing: 1px;
         font-weight: bold;
@@ -341,21 +350,19 @@ header {
           letter-spacing: 2px;
         }
       }
+    }
 
-      &:hover:not(:first-of-type) {
-        background: $greyBorder;
+    tbody, thead {
+      th, td {
+        padding: 6px;
       }
-    }
 
-    th, td {
-      padding: 6px;
-    }
-
-    td {
-      @media #{$mobile} {
-        padding: 12px;
+      td {
+        @media #{$mobile} {
+          padding: 12px;
+        }
       }
-    }
+    }  
   }
 
   &:hover {
@@ -503,12 +510,10 @@ header {
       cursor: pointer;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
+    }
 
-      &:nth-child(odd):not(:first-of-type) {
-        background: $greyLight;
-      }
-
-      &:first-of-type {
+    thead {
+      tr {
         font-size: 10px;
         letter-spacing: 1px;
         font-weight: bold;
@@ -519,31 +524,39 @@ header {
           letter-spacing: 2px;
         }
       }
+    }
 
-      &:hover:not(:first-of-type) {
+    tbody {  
+      &:nth-child(odd) {
+        background: $greyLight;
+      }
+
+      &:hover {
         background: $greyBorder;
       }
     }
 
-    th, td {
-      padding: 6px;
-    }
-
-    td {
-      height: 30px;
-
-      &:last-of-type {
-        text-align: center;
+    thead, tbody {
+      th, td {
+        padding: 6px;
       }
-    }
 
-    td img {
-      background: $orange;
-      border-radius: 50px;
-      height: 14px;
-      width: 14px;
-      padding: 2px;
-    }
+      td {
+        height: 30px;
+
+        &:last-of-type {
+          text-align: center;
+        }
+      }
+
+      td img {
+        background: $orange;
+        border-radius: 50px;
+        height: 14px;
+        width: 14px;
+        padding: 2px;
+      }
+    }  
   }
 
   &:hover {
