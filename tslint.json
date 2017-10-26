@@ -33,13 +33,7 @@
         "ignoreTemplateLiterals": true
       }
     ],
-    "strict-boolean-expressions": [
-      true,
-      "allow-null-union",
-      "allow-undefined-union",
-      "allow-string",
-      "allow-number"
-    ]
+    "strict-boolean-expressions": false
   },
   "rulesDirectory": []
 }
