@@ -1,14 +1,27 @@
 import * as React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { array, object, boolean } from '@storybook/addon-knobs'
-import { action } from '@storybook/addon-actions'
+import { object } from '@storybook/addon-knobs'
+import { decorateAction } from '@storybook/addon-actions'
 
-import TokenOverlay from 'components/TokenOverlay'
+import TokenPair from 'components/TokenPair'
 
 import { code2tokenMap, TokenCode } from 'globals'
 
 const codeList = Object.keys(code2tokenMap) as TokenCode[]
+
+const samplePair = (list: any[]): [any, any] => {
+  const copy = list.slice()
+  const getRandomInd = () => Math.floor(Math.random() * copy.length)
+
+  const [one] = copy.splice(getRandomInd(), 1)
+  const two = copy[getRandomInd()]
+
+  return [one, two]
+}
+
+const [sell, buy] = samplePair(codeList)
+const codePair = { sell, buy }
 
 const tokenBalances = codeList.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
@@ -26,8 +39,6 @@ const CenterDecor = (story: Function) => (
     <div style={{
       padding: 20,
       backgroundColor: 'white',
-      width: 550,
-      height: 500,
       position: 'relative',
     }}>
       {story()}
@@ -35,11 +46,14 @@ const CenterDecor = (story: Function) => (
   </div>
 )
 
-storiesOf('TokenOverlay', module)
+const stringifyAction = decorateAction([
+  args => [args[0].mod],
+])
+
+storiesOf('TokenPair', module)
   .addDecorator(CenterDecor)
-  .addWithJSX('open', () => <TokenOverlay
-    closeOverlay={action('CLOSE OVERLAY')}
-    tokenCodeList={array('tokenCodeList', codeList)}
+  .addWithJSX('SELL <-> RECEIVE', () => <TokenPair
+    openOverlay={stringifyAction('OPEN OVERLAY to select a token to')}
+    tokenPair={object('tokenPair', codePair)}
     tokenBalances={object('tokenBalances', tokenBalances)}
-    open={boolean('open', true)}
   />)
