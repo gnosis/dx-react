@@ -331,11 +331,11 @@ header {
       &:nth-child(odd) {
         background: $greyLight;
       }
-      
-      &:hover {
-        background: $greyBorder;
-      }
-      
+      tr {
+        &:hover {
+          background: $greyBorder;
+        }
+      }  
     }
 
     thead {
@@ -531,8 +531,10 @@ header {
         background: $greyLight;
       }
 
-      &:hover {
-        background: $greyBorder;
+      tr {
+        &:hover {
+          background: $greyBorder;
+        }
       }
     }
 
