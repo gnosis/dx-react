@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getCurrentBalance, getAccount } from 'selectors/blockchain'
 
 import MenuWallet from 'components/MenuWallet'
 
@@ -18,9 +19,9 @@ const tokens = {
   },
 }
 
-const mapStateToProps = (state: State) => ({
-  account: state.blockchain.currentAccount,
-  balance: state.blockchain.currentBalance,
+const mapStateToProps = (state: State | any) => ({
+  account: getAccount(state),
+  balance: getCurrentBalance(state),
   tokens,
 })
 
