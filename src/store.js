@@ -9,7 +9,7 @@ import Notifications from 'middlewares/Notifications'
 
 import reducer from 'reducers'
 
-export default function (history) {
+export default function (history, initialState) {
   const middlewares = [
     thunk,
     routerMiddleware(history),
@@ -24,7 +24,7 @@ export default function (history) {
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
   const enhancer = composeEnhancers(applyMiddleware(...middlewares))
 
-  const store = createStore(connectRouter(history)(reducer), enhancer)
+  const store = createStore(connectRouter(history)(reducer), initialState, enhancer)
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

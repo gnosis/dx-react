@@ -2,10 +2,10 @@ import * as React from 'react'
 
 const { storiesOf } = require('@storybook/react')
 
-import createStoreWithHistory from 'store.js'
-import createHistory from 'history/createBrowserHistory'
-const history = createHistory()
-const store = createStoreWithHistory(history)
+import { storeInit, bcMetamask } from './helpers/mockStore'
+
+const store = storeInit(bcMetamask)
+
 import { Provider } from 'react-redux'
 
 import Header from 'components/Header'
