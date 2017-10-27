@@ -19,7 +19,7 @@ export interface Blockchain {
 
 }
 
-interface State {
+export interface State {
   blockchain: Blockchain
 }
 

@@ -7,7 +7,7 @@ import { boolean } from '@storybook/addon-knobs'
 import TextSquare from 'components/TextSquare'
 import NoWallet from 'components/NoWallet'
 
-const CenterDecor = (story: Function) => (
+const CenterDecorSection = (story: Function) => (
   <div
     style={{
       display: 'flex',
@@ -16,31 +16,29 @@ const CenterDecor = (story: Function) => (
       alignItems: 'center',
     }}
   >
-    {story()}
+    <section className="home">
+      {story()}
+    </section>  
   </div>
 )
 
 storiesOf('TextSquare', module)
-  .addDecorator(CenterDecor)
+  .addDecorator(CenterDecorSection)
   .addWithJSX('TextSquareLeft[Intro]', () => 
-    <section className="home">
-      <TextSquare />
-    </section>,
+    <TextSquare />,
   )
   .addWithJSX('TextSquareRight[No Wallet]', () => 
-    <section className="home">
-      <NoWallet 
-        handleClick={action('ButtonCTA clicked')}
-        hide={boolean('Hide/Show', false)}
-      />
-    </section>,
+    <NoWallet 
+      handleClick={action('ButtonCTA clicked')}
+      hide={boolean('Hide/Show', false)}
+    />,
   )
-  .addWithJSX('TextSquareBoth', () => 
-    <section className="home">
-      <TextSquare />
+  .addWithJSX('TextSquareBoth', (): any => 
+    [
+      <TextSquare />,
       <NoWallet 
         handleClick={action('ButtonCTA clicked')}
         hide={boolean('Hide/Show', false)}
-      />
-    </section>,
+      />,
+    ],
   )
