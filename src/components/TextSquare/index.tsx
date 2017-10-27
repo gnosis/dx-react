@@ -2,7 +2,7 @@ import React from 'react'
 
 interface TextSquareProps {}
 
-export const TextSquare: React.SFC<TextSquareProps> = (): JSX.Element => {
+export const TextSquare: React.SFC<TextSquareProps> = () => {
   return (
     <div className="intro">
       <h1>Decentralised Token Auction Exchange.</h1>
