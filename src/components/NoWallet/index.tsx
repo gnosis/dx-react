@@ -12,7 +12,7 @@ export const NoWallet: React.SFC<NoWalletProps> = ({
   hide = false, 
 }): JSX.Element => (
   <div className={`noWallet${hide ? ' hide' : ''}`}>
-    <h2>Enable &amp; unlock your <strong>Mist / Metamask wallet</strong> to connect before continuing.</h2>
+    <h2>Enable &amp; unlock your <strong>Mist / Metamask wallet</strong> to connect before continuing.</h2>
     <span className="icon-walletUnlock"></span>
     <ButtonCTA onClick={handleClick}>
       Download MetaMask <i className="icon icon-Arrowdown"></i>
