@@ -1,5 +1,4 @@
 import * as React from 'react'
-import 'styles/components/navbar/_navbar.scss'
 
 interface MenuAuctionProps {
   name?: string,

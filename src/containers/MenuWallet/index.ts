@@ -1,14 +1,7 @@
 import { connect } from 'react-redux'
-import { getCurrentBalance, getAccount } from 'selectors/blockchain'
+import { getCurrentBalance, getAccount, State } from 'selectors/blockchain'
 
 import MenuWallet from 'components/MenuWallet'
-
-interface State {
-  blockchain: { 
-    currentAccount?: string,
-    currentBalance?: number,
-  },
-}
 
 // TODO: move into redux or some global config
 // Will need to grab tokens[name].balance from contracts
@@ -19,7 +12,7 @@ const tokens = {
   },
 }
 
-const mapStateToProps = (state: State | any) => ({
+const mapStateToProps = (state: State) => ({
   account: getAccount(state),
   balance: getCurrentBalance(state),
   tokens,
