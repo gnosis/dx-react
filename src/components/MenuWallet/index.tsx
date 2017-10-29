@@ -3,15 +3,16 @@ import 'styles/components/navbar/_navbar.scss'
 
 interface WalletProps {
   account: string,
-  balance: Object,
-  tokens: Object,
+  balance: number | object,
+  tokens: object,
 }
 
 export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
   <i className="menuWallet">
     {/* Wallet Info - Address && Balance */}
     <span>
-      <code>{`${account ? account.slice(0,14) : 'loading...'}...`}</code>
+      <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
+      {/* TODO: Consider creating helper function to shorten long 'string' numbers */}
       <small>{balance != null ? balance : 'loading...'} ETH</small>
     </span>
 
@@ -27,7 +28,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
           {Object.keys(tokens).map((token: any) => 
             <tr key={tokens[token].name}>
               <td>{tokens[token].name}</td>
-              <td>{tokens[token].balance}</td>
+              <td>{Number(tokens[token].balance).toFixed(4)}</td>
             </tr>,
           )}
         </tbody>

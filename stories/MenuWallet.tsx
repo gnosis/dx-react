@@ -51,6 +51,6 @@ storiesOf(`MenuWallet`, module)
   .addWithJSX('MenuWallet Component', () => 
     <MenuWallet
       {...constructKnobs('0x123jhbdsz7u2qwjhvda871273doaidsf', 22, tokenObj) }
-    />
+    />,
   )
 
