@@ -55,7 +55,6 @@
       }
 
       @media #{$tablet-portrait} {
-        margin-right: 0;
         flex-basis: 100%;
         width: 100%;
         text-align: center;
@@ -70,8 +69,7 @@
 
     // Right module (coin picker)
     &:not(.intro) {
-      flex: 0;
-      flex-basis: 550px;
+      flex: 0 0 550px;
       height: 475px;
       box-sizing: border-box;
       border-radius: 3px;
@@ -86,11 +84,10 @@
       }
 
       @media #{$mobile} {
-        flex-basis: 95%;
         max-width: 95%;
         margin: 0 auto;
         height: auto;
-        flex: 1;
+        flex: 1 1 95%;
       }
     }
 
