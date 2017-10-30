@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { object } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
@@ -26,7 +26,7 @@ const tokenBalances = codeList.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
 ) as TokenBalances
 
-const CenterDecor = (story: Function) => (
+const CenterDecor: StoryDecorator = story => (
   <div
     style={{
       display: 'flex',

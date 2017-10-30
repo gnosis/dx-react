@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { object, text } from '@storybook/addon-knobs'
 
 import MenuAuctions from 'components/MenuAuctions'
@@ -28,20 +28,20 @@ const getRandomInt = (min: number, max: number) => {
 // Create Fn that returns Array of length(x) w/Auction props (a,b,c,d,e)
 const auctionFactory = (amt: number) => {
   const auctionsToShow = []
-  
+
   for (let i = 0; i <= amt; i = i + 1) {
     auctionsToShow.push({
       id: +(Math.random() * 5).toFixed(3).toString(),
       sellToken: tokenArr[getRandomInt(0, tokenArr.length)],
       buyToken: tokenArr[getRandomInt(0, tokenArr.length)],
       buyPrice: +(Math.random() * 5).toFixed(4),
-      claim: getRandomInt(0,4) < 2 ? false : true,
+      claim: getRandomInt(0, 4) < 2 ? false : true,
     })
   }
   return auctionsToShow
 }
 
-const TopCenterDecor = (story: Function) => (
+const TopCenterDecor: StoryDecorator = story => (
   <header>
     <div
       style={{
@@ -51,7 +51,7 @@ const TopCenterDecor = (story: Function) => (
     >
       {story()}
     </div>
-  </header>  
+  </header>
 )
 
 const constructKnobs = (
@@ -64,9 +64,9 @@ const constructKnobs = (
 
 storiesOf(`MenuAuctions`, module)
   .addDecorator(TopCenterDecor)
-  .addWithJSX('MenuAuctionsComponent', () => 
+  .addWithJSX('MenuAuctionsComponent', () =>
     <MenuAuctions
       {...constructKnobs('YOUR AUCTIONS', auctionFactory(getRandomInt(1, 6))) }
     />,
-  )
+)
 

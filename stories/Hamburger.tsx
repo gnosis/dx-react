@@ -1,12 +1,12 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 // import { text, number, object } from '@storybook/addon-knobs'
 // import { decorateAction } from '@storybook/addon-actions'
 
 import Hamburger from 'components/Hamburger'
 
-const TopRightDecor = (story: Function) => (
+const TopRightDecor: StoryDecorator = story => (
   <header>
     <div
       style={{
@@ -16,12 +16,12 @@ const TopRightDecor = (story: Function) => (
     >
       {story()}
     </div>
-  </header>  
+  </header>
 )
 
 storiesOf(`Hamburger`, module)
   .addDecorator(TopRightDecor)
-  .addWithJSX('Hamburger Component', () => 
+  .addWithJSX('Hamburger Component', () =>
     <Hamburger />,
-  )
+)
 
