@@ -5,131 +5,126 @@
   display: flex;
   font-family: inherit;
 
+  @media #{$tablet-portrait} {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 100%;
+    height: auto;
+  }
+
+  h1 {
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 48px;
+    color: $white;
+    line-height: 1.2;
+    margin: 0 0 30px;
+    display: block;
+
+    @media #{$tablet} {
+      text-align: center;
+    }
+
     @media #{$tablet-portrait} {
+      font-size: 28px;
+      width: 100%;
+      margin: 0 0 15px;
+    }
+
+    @media #{$mobile} {
+      font-size: 23px;
+      width: 100%;
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+
+  > div {
+    position: relative;
+
+    &.intro {
+      flex: 1;
+      margin-right: 140px;
+      align-content: center;
+      display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
-      max-width: 100%;
-      height: auto;
+
+      @media #{$tablet} {
+        margin-right: 40px;
+      }
+
+      @media #{$tablet-portrait} {
+        flex-basis: 100%;
+        width: 100%;
+        text-align: center;
+        margin: 50px auto 0;
+      }
+
+      @media #{$mobile} {
+        margin: 0 auto 15px;
+        flex-basis: 100%;
+      }
     }
 
-    h1 {
-      font-family: inherit;
-      font-weight: bold;
-      font-size: 48px;
-      color: $white;
-      line-height: 1.2;
-      margin: 0 0 30px;
-      display: block;
+    // Right module (coin picker)
+    &:not(.intro) {
+      flex: 0 0 550px;
+      height: 475px;
+      box-sizing: border-box;
+      border-radius: 3px;
 
-        @media #{$tablet} {
-          text-align: center;
-        }
-
-        @media #{$tablet-portrait} {
-          font-size: 28px;
-          width: 100%;
-          margin: 0 0 15px;
-        }
-
-        @media #{$mobile} {
-          font-size: 23px;
-          width: 100%;
-          text-align: center;
-          margin: 0 auto;
-        }
-    }
-
-    > div {
-      position: relative;
-
-      &.intro {
+      @media #{$tablet} {
         flex: 1;
-        margin-right: 140px;
-        align-content: center;
-        display: flex;
-        flex-wrap: wrap;
-
-          @media #{$tablet} {
-            margin-right: 40px;
-          }
-
-          @media #{$tablet-portrait} {
-            margin-right: 0;
-            flex-basis: 100%;
-            width: 100%;
-            text-align: center;
-            margin: 50px auto 0;
-          }
-
-          @media #{$mobile} {
-            margin: 0 auto 15px;
-            flex-basis: 100%;
-          }
+        margin: 0 auto;
       }
 
-      // Right module (coin picker)
-      &:not(.intro) {
-        flex: 0;
-        flex-basis: 550px;
-        height: 475px;
-        box-sizing: border-box;
-        border-radius: 3px;
-
-          @media #{$tablet} {
-            flex: 1;
-            margin: 0 auto;
-          }
-
-          @media #{$tablet-portrait} {
-            margin: 35px auto 0;
-          }
-
-          @media #{$mobile} {
-            flex-basis: 95%;
-            max-width: 95%;
-            margin: 0 auto;
-            height: auto;
-            flex: 1;
-          }
+      @media #{$tablet-portrait} {
+        margin: 35px auto 0;
       }
 
-      > p {
-        font-family: inherit;
-        font-size: 19px;
-        color: $white;
-        line-height: 1.4;
-
-          @media #{$tablet} {
-            text-align: center;
-            font-size: 16px;
-            width: 100%;
-          }
-
-          @media #{$mobile} {
-            display: block;
-            width: 100%;
-            font-size: 15px;
-            text-align: center;
-            padding: 0 20px;
-          }
+      @media #{$mobile} {
+        max-width: 95%;
+        margin: 0 auto;
+        height: auto;
+        flex: 1 1 95%;
       }
-
-      > p > a {
-        color: $white;
-        text-decoration: underline;
-      }
-
-    } // end of > div
-
-    .icon-walletUnlock {
-      display: block;
-      width: 125px;
-      height: 104px;
-      margin: 0 auto 40px;
-      flex-basis: 100%;
     }
 
+    > p {
+      font-family: inherit;
+      font-size: 19px;
+      color: $white;
+      line-height: 1.4;
+
+      @media #{$tablet} {
+        text-align: center;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      @media #{$mobile} {
+        display: block;
+        width: 100%;
+        font-size: 15px;
+        text-align: center;
+        padding: 0 20px;
+      }
+    }
+
+    > p > a {
+      color: $white;
+      text-decoration: underline;
+    }
+  } // end of > div
+
+  .icon-walletUnlock {
+    display: block;
+    width: 125px;
+    height: 104px;
+    margin: 0 auto 40px;
+    flex-basis: 100%;
+  }
 } // end of .home
 
 // state: no wallet connected
@@ -143,15 +138,15 @@
   align-content: center;
   justify-content: center;
 
-    h2 {
-      width: 100%;
-      font-family: inherit;
-      font-weight: normal;
-      font-size: 22px;
-      color: $white;
-      line-height: 1.2;
-      margin: 0 auto 30px;
-    }
+  h2 {
+    width: 100%;
+    font-family: inherit;
+    font-weight: normal;
+    font-size: 22px;
+    color: $white;
+    line-height: 1.2;
+    margin: 0 auto 30px;
+  }
 }
 
 .tokenPicker {
@@ -172,31 +167,31 @@
   height: 100%;
   align-content: center;
 
+  @media #{$mobile} {
+    align-content: flex-start;
+    padding: 25px 0;
+    height: auto;
+  }
+
+  > h2 {
+    font-family: inherit;
+    margin-top: auto;
+    font-size: 24px;
+    font-weight: bold;
+    color: $darkBlue;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-align: center;
+    width: 100%;
+
     @media #{$mobile} {
-      align-content: flex-start;
-      padding: 25px 0;
-      height: auto;
+      line-height: 1;
     }
+  }
 
-    > h2 {
-      font-family: inherit;
-      margin-top: auto;
-      font-size: 24px;
-      font-weight: bold;
-      color: $darkBlue;
-      letter-spacing: 1px;
-      line-height: 1.5;
-      text-align: center;
-      width: 100%;
-
-        @media #{$mobile} {
-          line-height: 1;
-        }
-    }
-
-    .buttonCTA {
-      width: 80%;
-    }
+  .buttonCTA {
+    width: 80%;
+  }
 }
 
 .tokenPair {
@@ -208,33 +203,33 @@
   position: relative;
   margin: 5px auto 20px;
 
+  .auctionContainer & {
+    margin-bottom: 10px;
+    padding: 15px;
+  }
+
+  &::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    height: 49px;
+    top: 100px;
+    background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
+
     .auctionContainer & {
-      margin-bottom: 10px;
-      padding: 15px;
+      background: url('#{$images}arrowSidesRight.svg') no-repeat center / 60px;
+      top: 70px;
     }
 
-    &::before {
-      content: " ";
-      display: block;
-      position: absolute;
-      margin: auto;
-      left: 0;
-      right: 0;
-      height: 49px;
-      top: 100px;
-      background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
-
-        .auctionContainer & {
-          background: url('#{$images}arrowSidesRight.svg') no-repeat center / 60px;
-          top: 70px;
-        }
-
-        @media #{$mobile} {
-          height: 30px;
-          top: 85px;
-          background-size: 30px;
-        }
+    @media #{$mobile} {
+      height: 30px;
+      top: 85px;
+      background-size: 30px;
     }
+  }
 }
 
 .tokenItem {
@@ -246,162 +241,161 @@
   text-align: center;
   text-transform: uppercase;
 
-    // Alternate styles for when the `tokenOverlay` and the `auctionContainer` are the parents
-    .tokenOverlay &,
-    .auctionContainer & {
-      box-sizing: border-box;
-      flex: 0 1 auto;
-      flex-basis: 31%;
-      margin: 5px;
-      padding: 15px;
+  // Alternate styles for when the `tokenOverlay` and the `auctionContainer` are the parents
+  .tokenOverlay &,
+  .auctionContainer & {
+    box-sizing: border-box;
+    flex: 0 1 auto;
+    flex-basis: 31%;
+    margin: 5px;
+    padding: 15px;
 
-        @media #{$tablet} {
-          flex-basis: 23.5%;
-        }
-
-        @media #{$mobile} {
-          max-width: calc(50% - 10px);
-          flex-basis: calc(50% - 10px);
-        }
+    @media #{$tablet} {
+      flex-basis: 23.5%;
     }
+
+    @media #{$mobile} {
+      max-width: calc(50% - 10px);
+      flex-basis: calc(50% - 10px);
+    }
+  }
+
+  .tokenOverlay & {
+    border: 1px solid $greyBorder;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
 
     .tokenOverlay & {
-      border: 1px solid $greyBorder;
+      border: 1px solid $blue;
     }
 
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+    .tokenOverlay &,
+    .auctionContainer & {
+      > big {
+        color: $darkBlue;
+      }
+
+      > abbr {
+        background: $blue;
+      }
+    }
+  }
+
+  &:hover > [data-coin] {
+    border: 1px solid transparent;
+  }
+
+  > strong {
+    font-family: inherit;
+    font-size: 14px;
+    color: $darkBlue;
+    letter-spacing: 1px;
+    line-height: 1;
+    font-weight: normal;
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  > big {
+    font-family: inherit;
+    font-size: 16px;
+    color: $darkBlue;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0 5px 0 0;
+    vertical-align: middle;
+
+    .tokenOverlay &,
+    .auctionContainer & {
+      will-change: color;
+      transition: color .15s ease;
+      color: $greyText;
+      text-align: center;
+      line-height: 1.3;
+    }
+  }
+
+  > abbr {
+    background: $blue;
+    border-radius: 2px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 10px;
+    color: $white;
+    letter-spacing: 1px;
+    line-height: 1;
+    padding: 4px 6px;
+    box-sizing: border-box;
+    vertical-align: middle;
+    position: relative;
+
+    .tokenOverlay &,
+    .auctionContainer & {
+      will-change: background;
+      transition: background .15s ease;
+      background: $greyText;
+    }
+
+    &::after {
+      content: " ";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 5px 5px 0;
+      border-color: $darkBlue transparent transparent transparent;
+      position: absolute;
+      right: -14px;
+      bottom: 8px;
 
       .tokenOverlay & {
-        border: 1px solid $blue;
-      }
-
-      .tokenOverlay &,
-      .auctionContainer & {
-
-          > big {
-            color: $darkBlue;
-          }
-
-          > abbr {
-            background: $blue;
-          }
+        content: none;
       }
     }
+  }
 
-    &:hover > [data-coin] {
-      border: 1px solid transparent;
-    }
+  > small {
+    font-family: inherit;
+    font-size: 9px;
+    color: $greyText;
+    letter-spacing: 1.5px;
+    line-height: 16px;
+    width: 100%;
+    display: block;
+    margin: 10px auto 2px;
 
-    > strong {
-      font-family: inherit;
-      font-size: 14px;
-      color: $darkBlue;
-      letter-spacing: 1px;
+    @media #{$mobile} {
       line-height: 1;
-      font-weight: normal;
-      width: 100%;
-      display: block;
-      text-align: center;
+      margin: 10px auto 5px;
     }
+  }
 
-    > big {
-      font-family: inherit;
-      font-size: 16px;
-      color: $darkBlue;
-      letter-spacing: 0;
-      line-height: 1;
-      margin: 0 5px 0 0;
-      vertical-align: middle;
+  > p {
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 11px;
+    color: $blue;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin: 0;
 
-        .tokenOverlay &,
-        .auctionContainer & {
-          will-change: color;
-          transition: color .15s ease;
-          color: $greyText;
-          text-align: center;
-          line-height: 1.3;
-        }
-    }
-
-    > abbr {
-      background: $blue;
-      border-radius: 2px;
-      font-family: inherit;
-      font-weight: bold;
-      font-size: 10px;
-      color: $white;
-      letter-spacing: 1px;
-      line-height: 1;
-      padding: 4px 6px;
-      box-sizing: border-box;
-      vertical-align: middle;
-      position: relative;
-
-        .tokenOverlay &,
-        .auctionContainer & {
-          will-change: background;
-          transition: background .15s ease;
-          background: $greyText;
-        }
-
-        &::after {
-          content: " ";
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 5px 5px 0 5px;
-          border-color: $darkBlue transparent transparent transparent;
-          position: absolute;
-          right: -14px;
-          bottom: 8px;
-
-          .tokenOverlay & {
-            content: none;
-          }
-        }
-    }
-
-    > small {
-      font-family: inherit;
-      font-size: 9px;
+    &.noBalance {
       color: $greyText;
-      letter-spacing: 1.5px;
-      line-height: 16px;
-      width: 100%;
-      display: block;
-      margin: 10px auto 2px;
-
-        @media #{$mobile} {
-          line-height: 1;
-          margin: 10px auto 5px;
-        }
     }
+  }
 
-    > p {
-      font-family: inherit;
-      font-weight: bold;
-      font-size: 11px;
-      color: $blue;
-      letter-spacing: 0.5px;
-      line-height: 1;
-      margin: 0;
-
-        &.noBalance {
-          color: $greyText;
-        }
+  > [data-coin] {
+    .tokenOverlay &,
+    .auctionContainer & {
+      height: 80px;
+      width: 80px;
+      margin: 0 auto 10px;
+      background-size: 35px auto;
     }
-
-    > [data-coin] {
-      .tokenOverlay &,
-      .auctionContainer & {
-        height: 80px;
-        width: 80px;
-        margin: 0 auto 10px;
-        background-size: 35px auto;
-      }
-    }
+  }
 }
 
 .tokenOverlay {
@@ -413,44 +407,43 @@
   background: $white;
   z-index: 10;
 
-    @media #{$tablet} {
-      position: fixed;
-    }
+  @media #{$tablet} {
+    position: fixed;
+  }
 
-    @media #{$mobile} {
-      position: fixed;
-    }
+  @media #{$mobile} {
+    position: fixed;
+  }
 
-    > .tokenList {
-      display: flex;
-      flex-wrap: wrap;
-      overflow-y: auto;
-      position: absolute;
-      top: 80px;
-      height: calc(100% - 80px);
-      padding: 10px 5px 50px;
-      box-sizing: border-box;
-      align-content: flex-start;
-      align-items: flex-start;
-      width: 100%;
-    }
+  > .tokenList {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    position: absolute;
+    top: 80px;
+    height: calc(100% - 80px);
+    padding: 10px 5px 50px;
+    box-sizing: border-box;
+    align-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+  }
 
-    > .tokenList::-webkit-scrollbar-track {
-      border-radius: 10px;
-      background-color: $greyBorder;
-    }
+  > .tokenList::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: $greyBorder;
+  }
 
-    > .tokenList::-webkit-scrollbar {
-      width: 6px;
-      border-radius: 10px;
-      background-color: $greyBorder;
-    }
+  > .tokenList::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 10px;
+    background-color: $greyBorder;
+  }
 
-    > .tokenList::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background-color: $greyText;
-    }
-
+  > .tokenList::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: $greyText;
+  }
 }
 
 .tokenOverlayHeader {
@@ -480,15 +473,15 @@
   outline: 0;
   box-sizing: border-box;
 
-    &::placeholder {
-      will-change: color;
-      transition: color .15s ease;
-      color: $greyText;
-    }
+  &::placeholder {
+    will-change: color;
+    transition: color .15s ease;
+    color: $greyText;
+  }
 
-    &:focus::placeholder {
-      color: transparent;
-    }
+  &:focus::placeholder {
+    color: transparent;
+  }
 }
 
 .topAuctions {
@@ -500,17 +493,17 @@
   right: 0;
   margin: auto;
 
-    @media #{$tablet-portrait} {
-      position: relative;
-      bottom: initial;
-      left: initial;
-      right: initial;
-      margin: 25px auto;
-    }
+  @media #{$tablet-portrait} {
+    position: relative;
+    bottom: initial;
+    left: initial;
+    right: initial;
+    margin: 25px auto;
+  }
 
-    @media #{$mobile} {
-      bottom: -150px;
-    }
+  @media #{$mobile} {
+    bottom: -150px;
+  }
 
   h3 {
     font-family: inherit;
@@ -522,15 +515,14 @@
 
   > ul {
     display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
+    flex-flow: row nowrap;
     color: $white;
     box-sizing: border-box;
     margin: 10px auto 0;
 
-      @media #{$tablet-portrait} {
-        flex-wrap: wrap;
-      }
+    @media #{$tablet-portrait} {
+      flex-wrap: wrap;
+    }
   }
 
   > ul > li {
@@ -542,13 +534,13 @@
     transition: opacity .3s ease-in-out;
     cursor: pointer;
 
-      @media #{$tablet-portrait} {
-        flex-basis: 33%;
-        margin: 0 0 10px;
-      }
+    @media #{$tablet-portrait} {
+      flex-basis: 33%;
+      margin: 0 0 10px;
+    }
 
-      &:hover {
-        opacity: 1;
-      }
+    &:hover {
+      opacity: 1;
+    }
   }
 }

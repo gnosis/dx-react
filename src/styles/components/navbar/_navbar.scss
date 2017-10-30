@@ -26,7 +26,7 @@ header {
     display: flex;
     align-items: flex-end;
     margin: 10px auto 0;
-    padding: 0 ;
+    padding: 0;
 
     @media #{$tablet} {
       padding: 0 35px;
@@ -43,8 +43,7 @@ header {
     margin: 0 0 0 15px;
     display: flex;
     align-items: flex-start;
-    flex-wrap: wrap;
-    flex-direction: column;
+    flex-flow: column wrap;
   }
 
   > div > div > nav {
@@ -56,7 +55,6 @@ header {
     top: 0;
     height: 100vh;
     right: 0;
-    z-index: 10;
     background: #35373c;
     box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
     z-index: 9999;
@@ -234,10 +232,7 @@ header {
   > span > small {
     display: inline-block;
     background: $white;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 3px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 3px;
+    border-radius: 0 3px 3px 0;
     color: $darkBlue;
     font-size: inherit;
     padding: 6px 6px 6px 7px;
@@ -246,10 +241,7 @@ header {
     @media #{$mobile} {
       width: 100%;
       box-sizing: border-box;
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
+      border-radius: 0 0 3px;
     }
   }
 
@@ -324,18 +316,19 @@ header {
 
       @media #{$mobile} {
         font-size: 12px;
-      }  
+      }
     }
-    
+
     tbody {
       &:nth-child(odd) {
         background: $greyLight;
       }
+
       tr {
         &:hover {
           background: $greyBorder;
         }
-      }  
+      }
     }
 
     thead {
@@ -362,7 +355,7 @@ header {
           padding: 12px;
         }
       }
-    }  
+    }
   }
 
   &:hover {
@@ -526,7 +519,7 @@ header {
       }
     }
 
-    tbody {  
+    tbody {
       &:nth-child(odd) {
         background: $greyLight;
       }
@@ -558,7 +551,7 @@ header {
         width: 14px;
         padding: 2px;
       }
-    }  
+    }
   }
 
   &:hover {
@@ -573,5 +566,3 @@ header {
     }
   }
 }
-
-

@@ -7,11 +7,11 @@ $headerHeight: 58px;
   display: flex;
   font-family: inherit;
 
-    a.buttonCTA > i {
-      height: 25px;
-      width: 25px;
-      margin: 0 0 0 10px;
-    }
+  a.buttonCTA > i {
+    height: 25px;
+    width: 25px;
+    margin: 0 0 0 10px;
+  }
 }
 
 .auctionContainer {
@@ -29,9 +29,9 @@ $headerHeight: 58px;
   box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
   padding: 0 0 40px;
 
-    &[data-screen="status"] {
-      padding: 0;
-    }
+  &[data-screen="status"] {
+    padding: 0;
+  }
 
   > p {
     font-size: 15px;
@@ -50,15 +50,15 @@ $headerHeight: 58px;
 }
 
 .auctionHeader {
-    height: $headerHeight;
-    border-bottom: 1px solid $greyBorder;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    display: table;
-    position: relative;
+  height: $headerHeight;
+  border-bottom: 1px solid $greyBorder;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  display: table;
+  position: relative;
 
   > h2 {
     vertical-align: middle;
@@ -66,12 +66,12 @@ $headerHeight: 58px;
     font-family: inherit;
     font-weight: bold;
     font-size: 18px;
-    color: #1A4977;
+    color: #1a4977;
     letter-spacing: 0;
 
-      .auctionContainer[data-screen="status"] & {
-        font-size: 14px;
-      }
+    .auctionContainer[data-screen="status"] & {
+      font-size: 14px;
+    }
   }
 
   > h2 > a {
@@ -87,36 +87,36 @@ $headerHeight: 58px;
   padding: 15px 0;
   background: #f2f3f5;
 
-    // [data-screen="details"] {
-    //   display: flex;
-    //   flex-basis: 40%;
-    //   height: 160px;
-    //   flex-wrap: wrap;
-    //   justify-content: center;
-    //   align-items: center;
-    //   align-content: center;
-    //   box-sizing: border-box;
-    //   flex: 0 1 auto;
-    //   width: 40%;
-    // }
+  // [data-screen="details"] {
+  //   display: flex;
+  //   flex-basis: 40%;
+  //   height: 160px;
+  //   flex-wrap: wrap;
+  //   justify-content: center;
+  //   align-items: center;
+  //   align-content: center;
+  //   box-sizing: border-box;
+  //   flex: 0 1 auto;
+  //   width: 40%;
+  // }
 
-    > small {
-      display: block;
-      font-size: 10px;
-      color: $greyText;
-      text-transform: uppercase;
-      line-height: 2;
-      letter-spacing: 1px;
-    }
+  > small {
+    display: block;
+    font-size: 10px;
+    color: $greyText;
+    text-transform: uppercase;
+    line-height: 2;
+    letter-spacing: 1px;
+  }
 
-    > big {
-      font-size: 14px;
-      color: $darkBlue;
-      letter-spacing: 1px;
-      font-weight: bold;
-      line-height: 1;
-      text-transform: uppercase;
-    }
+  > big {
+    font-size: 14px;
+    color: $darkBlue;
+    letter-spacing: 1px;
+    font-weight: bold;
+    line-height: 1;
+    text-transform: uppercase;
+  }
 }
 
 .auctionAmounts {
@@ -130,68 +130,68 @@ $headerHeight: 58px;
   align-items: center;
   position: relative;
 
-    &::after {
-      content: " ";
-      position: absolute;
-      width: 1px;
-      height: 100%;
-      border-right: 1px dashed $white;
-      left: 0;
-      right: 0;
-      margin: auto;
+  &::after {
+    content: " ";
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    border-right: 1px dashed $white;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  > span {
+    flex: 0 1 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  > span > input {
+    height: 38px;
+    box-sizing: border-box;
+    padding: 10px 7px 10px 10px;
+    background: $white;
+    border-radius: 2px;
+    border: 0;
+    outline: 0;
+    font-size: 13px;
+    color: #444951;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-align: right;
+
+    &[readonly] {
+      background: #f2f3f5;
     }
+  }
 
-    > span {
-      flex: 0 1 auto;
-      text-align: center;
-      position: relative;
-    }
+  > span > label {
+    text-align: center;
+    width: 100%;
+    display: block;
+    font-size: 11px;
+    color: $darkBlue;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin: 0 auto 6px;
+    text-transform: uppercase;
+    position: relative;
+    font-weight: bold;
+  }
 
-    > span > input {
-      height: 38px;
-      box-sizing: border-box;
-      padding: 10px 7px 10px 10px;
-      background: $white;
-      border-radius: 2px;
-      border: 0;
-      outline: 0;
-      font-size: 13px;
-      color: #444951;
-      letter-spacing: 0.5px;
-      line-height: 1;
-      text-align: right;
+  > span > label > a {
+    position: absolute;
+    left: -34px;
+    top: 32px;
+    text-decoration: underline;
+    font-weight: lighter;
+    font-family: inherit;
+    font-size: 10px;
+    color: $blue;
+  }
 
-        &[readonly] {
-          background: #f2f3f5;
-        }
-    }
-
-    > span > label {
-      text-align: center;
-      width: 100%;
-      display: block;
-      font-size: 11px;
-      color: $darkBlue;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin: 0 auto 6px;
-      text-transform: uppercase;
-      position: relative;
-      font-weight: bold;
-    }
-
-    > span > label > a {
-      position: absolute;
-      left: -34px;
-      top: 32px;
-      text-decoration: underline;
-      font-weight: lighter;
-      font-family: inherit;
-      font-size: 10px;
-      color: $blue;
-    }
-
-    > span > small {
+  > span > small {
     font-size: 11px;
     color: $darkBlue;
     letter-spacing: 0.5px;
@@ -202,7 +202,7 @@ $headerHeight: 58px;
     right: -32px;
     top: 31px;
     text-align: left;
-    }
+  }
 }
 
 .auctionWalletSummmary {
@@ -286,17 +286,17 @@ $headerHeight: 58px;
   width: 100%;
   flex-basis: 100%;
 
-    &::before {
-      content: " ";
-      display: block;
-      position: absolute;
-      margin: auto;
-      left: 0;
-      right: 0;
-      height: 30px;
-      background: url('#{$images}arrowSidesRight.svg') no-repeat center / contain;
-      top: 124px;
-    }
+  &::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: url('#{$images}arrowSidesRight.svg') no-repeat center / contain;
+    top: 124px;
+  }
 }
 
 .tokenItemSummary {
@@ -350,73 +350,71 @@ $headerHeight: 58px;
   height: 275px;
   align-items: center;
 
-    > span {
-      width: 50%;
-      flex-basis: 50%;
-      flex: 0 1 auto;
-      text-align: center;
+  > span {
+    width: 50%;
+    flex: 0 1 auto;
+    text-align: center;
+  }
+
+  > span > small {
+    font-size: 12px;
+    color: $greyText;
+    letter-spacing: 5px;
+    line-height: 1.6;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  > span > big {
+    font-size: 26px;
+    color: $darkBlue;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+
+  > span:nth-of-type(2) > big {
+    &[data-status="planned"],
+    &[data-status="initialising"] {
+      color: $orange;
     }
 
-    > span > small {
-      font-size: 12px;
-      color: $greyText;
-      letter-spacing: 5px;
-      line-height: 1.6;
-      display: block;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    > span > big {
-      font-size: 26px;
+    &[data-status="active"] {
       color: $darkBlue;
-      letter-spacing: 0.5px;
-      line-height: 1;
     }
 
-    > span:nth-of-type(2) > big {
-      &[data-status="planned"],
-      &[data-status="initialising"] {
-        color: $orange;
-      }
-
-      &[data-status="active"] {
-        color: $darkBlue;
-      }
-
-      &[data-status="ended"] {
-        color: $green;
-      }
+    &[data-status="ended"] {
+      color: $green;
     }
+  }
 
-    > span > h5 {
-      font-size: 12px;
-      color: $greyText;
-      letter-spacing: 1px;
-      line-height: 1;
-      font-weight: normal;
-      margin: 0 auto 8px;
-      text-align: center;
-      display: block;
-      font-weight: bold;
-    }
+  > span > h5 {
+    font-size: 12px;
+    color: $greyText;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin: 0 auto 8px;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+  }
 
-    > span > i {
-      font-size: 15px;
-      color: $blue;
-      letter-spacing: 0;
-      line-height: 1;
-      font-style: normal;
-      margin: 0 auto;
-      text-align: center;
-      width: 100%;
-      display: block;
-    }
+  > span > i {
+    font-size: 15px;
+    color: $blue;
+    letter-spacing: 0;
+    line-height: 1;
+    font-style: normal;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    display: block;
+  }
 
-    > span:last-of-type {
-      width: 100%;
-      flex-basis: 100%;
-    }
+  > span:last-of-type {
+    width: 100%;
+    flex-basis: 100%;
+  }
 }
 
 #claimToken {
@@ -439,49 +437,49 @@ $headerHeight: 58px;
   will-change: box-shadow;
   transition: box-shadow .25s ease-in-out;
 
-    &:hover {
-      box-shadow: 0 10px 10px rgba(0,0,0,.15);
-    }
+  &:hover {
+    box-shadow: 0 10px 10px rgba(0,0,0,.15);
+  }
 
-    > i {
-      font-style: normal;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 0;
-      color: $orange;
-      line-height: 1;
-      vertical-align: middle;
-      margin: 0 16px;
-      display: inline-block;
-    }
+  > i {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0;
+    color: $orange;
+    line-height: 1;
+    vertical-align: middle;
+    margin: 0 16px;
+    display: inline-block;
+  }
 
-    > strong {
-      font-family: inherit;
-      color: $greyTextDark;
-      font-size: 18px;
-      font-weight: 400;
-      margin: 0;
-      display: inline-block;
-      flex: 0 1 auto;
-    }
+  > strong {
+    font-family: inherit;
+    color: $greyTextDark;
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0;
+    display: inline-block;
+    flex: 0 1 auto;
+  }
 
-    > span {
-      background-color: $orange;
-      box-sizing: border-box;
-      margin: 0 0 0 16px;
-      flex: 1;
-      height: 42px;
-      vertical-align: middle;
-      display: flex;
-      align-items: center;
-      width: 72px;
-      justify-content: center;
-    }
+  > span {
+    background-color: $orange;
+    box-sizing: border-box;
+    margin: 0 0 0 16px;
+    flex: 1;
+    height: 42px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    width: 72px;
+    justify-content: center;
+  }
 
-    > span > img {
-      height: 30px;
-      width: 30px;
-    }
+  > span > img {
+    height: 30px;
+    width: 30px;
+  }
 }
 
 .auctionProgress {
@@ -490,51 +488,51 @@ $headerHeight: 58px;
   flex-basis: 100%;
   flex-wrap: wrap;
   height: 110px;
-  background: #F0F2F6;
+  background: #f0f2f6;
   align-content: center;
 
-    > span {
-      display: flex;
-      flex-wrap: nowrap;
-      width: 100%;
-      justify-content: space-around;
+  > span {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  > span > i {
+    flex: 0 1 auto;
+    align-self: center;
+    opacity: .55;
+    transition: opacity .3s ease-in-out;
+    will-change: opacity;
+    position: relative;
+
+    &.active {
+      opacity: 1;
     }
 
-    > span > i {
-      flex: 0 1 auto;
-      align-self: center;
-      opacity: .55;
-      transition: opacity .3s ease-in-out;
-      will-change: opacity;
-      position: relative;
-
-        &.active {
-          opacity: 1;
-        }
-
-        &::before {
-          position: absolute;
-          right: 20px;
-        }
+    &::before {
+      position: absolute;
+      right: 20px;
     }
+  }
 
-    > span > i > img {
-      display: block;
-      margin: 0 auto 8px;
-      max-width: 25px;
-    }
+  > span > i > img {
+    display: block;
+    margin: 0 auto 8px;
+    max-width: 25px;
+  }
 
-    > span > i > small {
-      font-size: 9px;
-      color: $greyTextDark;
-      letter-spacing: 1px;
-      font-style: normal;
-      font-weight: 400;
-      max-width: 105px;
-      display: block;
-      text-align: center;
-      line-height: 1.3;
-    }
+  > span > i > small {
+    font-size: 9px;
+    color: $greyTextDark;
+    letter-spacing: 1px;
+    font-style: normal;
+    font-weight: 400;
+    max-width: 105px;
+    display: block;
+    text-align: center;
+    line-height: 1.3;
+  }
 }
 
 // Progressbar
@@ -549,34 +547,34 @@ $headerHeight: 58px;
   height: 7px;
   border-radius: 7px;
 
-    &::after {
-      content: " ";
-      display: block;
-      background: $greyText;
-      left: 0;
-      position: absolute;
-      top: 0;
-      height: inherit;
-      transition: width .3s ease-in-out;
-      will-change: width;
-    }
+  &::after {
+    content: " ";
+    display: block;
+    background: $greyText;
+    left: 0;
+    position: absolute;
+    top: 0;
+    height: inherit;
+    transition: width .3s ease-in-out;
+    will-change: width;
+  }
 
-      &[data-progress="1"]::after {
-        width: 13%;
-      }
+  &[data-progress="1"]::after {
+    width: 13%;
+  }
 
-      &[data-progress="2"]::after {
-        width: 50%;
-      }
+  &[data-progress="2"]::after {
+    width: 50%;
+  }
 
-      &[data-progress="3"]::after {
-        width: 100%;
-      }
+  &[data-progress="3"]::after {
+    width: 100%;
+  }
 }
 
 .auctionFooter {
   height: 90px;
-  background: #024D90;
+  background: #024d90;
   width: 100%;
   display: flex;
   flex-wrap: nowrap;
@@ -584,19 +582,19 @@ $headerHeight: 58px;
   justify-content: space-around;
   align-items: center;
 
-    > span > small {
-      opacity: .5;
-      letter-spacing: 1px;
-      font-size: 10px;
-      font-weight: normal;
-      display: block;
-      text-align: center;
-      line-height: 1;
-      padding: 0 0 10px;
-    }
+  > span > small {
+    opacity: .5;
+    letter-spacing: 1px;
+    font-size: 10px;
+    font-weight: normal;
+    display: block;
+    text-align: center;
+    line-height: 1;
+    padding: 0 0 10px;
+  }
 
-    > span > big {
-      font-size: 20px;
-      font-weight: normal;
-    }
+  > span > big {
+    font-size: 20px;
+    font-weight: normal;
+  }
 }
