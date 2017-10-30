@@ -18,14 +18,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @media #{$tablet} {
-  }
+  // @media #{$tablet} {
+  // }
 
-  @media #{$mobile} {
-  }
+  // @media #{$mobile} {
+  // }
 }
 
-::selection{
+::selection {
   color: $white;
   background: $blue;
 }
@@ -70,16 +70,16 @@ body > section {
   height: calc(100vh - 60px);
   align-items: center;
 
-    @media #{$tablet} {
-      padding: 0 35px;
-    }
+  @media #{$tablet} {
+    padding: 0 35px;
+  }
 
-    @media #{$mobile} {
-      max-width: 100%;
-      flex-wrap: wrap;
-      padding: 25px 0 0;
-      height: 100%;
-    }
+  @media #{$mobile} {
+    max-width: 100%;
+    flex-wrap: wrap;
+    padding: 25px 0 0;
+    height: 100%;
+  }
 }
 
 .noScroll {
