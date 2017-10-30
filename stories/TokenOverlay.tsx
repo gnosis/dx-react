@@ -1,20 +1,19 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { array, object, boolean } from '@storybook/addon-knobs'
-import { action } from '@storybook/addon-actions'
+import { action, decorateAction } from '@storybook/addon-actions'
 
 import TokenOverlay from 'components/TokenOverlay'
+import { TokenBalances } from 'types'
 
-import { code2tokenMap, TokenCode } from 'globals'
-
-const codeList = Object.keys(code2tokenMap) as TokenCode[]
+import { codeList } from 'globals'
 
 const tokenBalances = codeList.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
-) as {[code in TokenCode]: number }
+) as TokenBalances
 
-const CenterDecor = (story: Function) => (
+const CenterDecor: StoryDecorator = story => (
   <div
     style={{
       display: 'flex',
@@ -35,10 +34,15 @@ const CenterDecor = (story: Function) => (
   </div>
 )
 
+const getCodeFromArgs = decorateAction([
+  args => [args[0].code],
+])
+
 storiesOf('TokenOverlay', module)
   .addDecorator(CenterDecor)
   .addWithJSX('open', () => <TokenOverlay
     closeOverlay={action('CLOSE OVERLAY')}
+    selectTokenAndCloseOverlay={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
     tokenCodeList={array('tokenCodeList', codeList)}
     tokenBalances={object('tokenBalances', tokenBalances)}
     open={boolean('open', true)}

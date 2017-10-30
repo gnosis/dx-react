@@ -1,11 +1,12 @@
 import React from 'react'
+import { TokenCode, TokenName, TokenMod, Balance } from 'types'
 
-interface TokenItemProps {
-  onClick?(props: TokenItemProps): void,
-  mod?: string,
-  balance: number,
-  name: string,
-  code: string,
+export interface TokenItemProps {
+  onClick?(props: TokenItemProps): any,
+  mod?: TokenMod,
+  balance: Balance,
+  name: TokenName,
+  code: TokenCode,
 }
 
 const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {

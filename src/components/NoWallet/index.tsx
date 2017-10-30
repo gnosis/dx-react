@@ -7,17 +7,17 @@ interface NoWalletProps {
   hide?: boolean
 }
 
-export const NoWallet: React.SFC<NoWalletProps> = ({ 
+export const NoWallet: React.SFC<NoWalletProps> = ({
   handleClick,
-  hide = false, 
+  hide = false,
 }) => (
-  <div className={`noWallet${hide ? ' hide' : ''}`}>
-    <h2>Enable &amp; unlock your <strong>Mist / Metamask wallet</strong> to connect before continuing.</h2>
-    <span className="icon-walletUnlock"></span>
-    <ButtonCTA onClick={handleClick}>
-      Download MetaMask <i className="icon icon-Arrowdown"></i>
-    </ButtonCTA>
-  </div>
-)
+    <div className={`noWallet${hide ? ' hide' : ''}`}>
+      <h2>Enable &amp; unlock your <strong>Mist / Metamask wallet</strong> to connect before continuing.</h2>
+      <span className="icon-walletUnlock"></span>
+      <ButtonCTA onClick={handleClick} className={null}>
+        Download MetaMask <i className="icon icon-arrowDown"></i>
+      </ButtonCTA>
+    </div>
+  )
 
 export default NoWallet

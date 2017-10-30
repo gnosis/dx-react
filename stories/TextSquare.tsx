@@ -1,13 +1,13 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { boolean } from '@storybook/addon-knobs'
 
 import TextSquare from 'components/TextSquare'
 import NoWallet from 'components/NoWallet'
 
-const CenterDecorSection = (story: Function) => (
+const CenterDecorSection: StoryDecorator = story => (
   <div
     style={{
       display: 'flex',
@@ -18,27 +18,27 @@ const CenterDecorSection = (story: Function) => (
   >
     <section className="home">
       {story()}
-    </section>  
+    </section>
   </div>
 )
 
 storiesOf('TextSquare', module)
   .addDecorator(CenterDecorSection)
-  .addWithJSX('TextSquareLeft[Intro]', () => 
+  .addWithJSX('TextSquareLeft[Intro]', () =>
     <TextSquare />,
-  )
-  .addWithJSX('TextSquareRight[No Wallet]', () => 
-    <NoWallet 
+)
+  .addWithJSX('TextSquareRight[No Wallet]', () =>
+    <NoWallet
       handleClick={action('ButtonCTA clicked')}
       hide={boolean('Hide/Show', false)}
     />,
-  )
-  .addWithJSX('TextSquareBoth', (): any => 
+)
+  .addWithJSX('TextSquareBoth', (): any =>
     [
       <TextSquare />,
-      <NoWallet 
+      <NoWallet
         handleClick={action('ButtonCTA clicked')}
         hide={boolean('Hide/Show', false)}
       />,
     ],
-  )
+)
