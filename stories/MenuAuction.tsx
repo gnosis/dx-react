@@ -3,8 +3,7 @@ import * as React from 'react'
 import { storiesOf, StoryDecorator } from '@storybook/react'
 import { object, text } from '@storybook/addon-knobs'
 
-import { tokenArr } from './helpers/data'
-import { auctionFactory, getRandomInt } from './helpers/fn'
+import { auctionFactory, getRandomInt, tokenArr } from './helpers'
 
 import MenuAuctions from 'components/MenuAuctions'
 

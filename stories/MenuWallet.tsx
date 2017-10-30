@@ -1,13 +1,8 @@
 import * as React from 'react'
 
 import { storiesOf, StoryDecorator } from '@storybook/react'
-
 import { text, number } from '@storybook/addon-knobs'
-
-// import { decorateAction } from '@storybook/addon-actions'
-
-import { tokenArr } from './helpers/data'
-import { getRandomInt, walletObjectFactory } from './helpers/fn'
+import { tokenArr, getRandomInt, walletObjectFactory } from './helpers'
 
 import MenuWallet from 'components/MenuWallet'
 
@@ -39,17 +34,6 @@ const constructKnobs = (account: string, balance: number, tokens: object | any) 
   }),
   tokens,
 })
-
-// const tokenObj = {
-//   GNO: {
-//     name: 'GNO',
-//     balance: 12,
-//   },
-//   ETH: {
-//     name: 'ETH',
-//     balance: 10,
-//   },
-// }
 
 storiesOf(`MenuWallet`, module)
   .addDecorator(CenterDecor)

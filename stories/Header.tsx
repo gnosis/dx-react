@@ -1,8 +1,7 @@
 import * as React from 'react'
 
 const { storiesOf } = require('@storybook/react')
-
-import { storeInit, bcMetamask } from './helpers/mockStore'
+import { storeInit, bcMetamask } from './helpers'
 
 const store = storeInit(bcMetamask)
 
