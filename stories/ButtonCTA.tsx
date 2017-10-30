@@ -28,7 +28,7 @@ const CenterDecor: StoryDecorator = story => (
 const variants = {
   HOME: text('text', 'Continue to order details'),
   PANEL2: text('text', 'Continue to wallet details'),
-  PANEL3: [text('text', 'Submit order'), <i className="icon icon-walletOK"></i>],
+  PANEL3: [text('text', 'Submit order'), <i className="icon icon-walletOK" key="icon"></i>],
 }
 
 const story = storiesOf(`ButtonCTA`, module)
