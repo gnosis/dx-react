@@ -1,17 +1,16 @@
 import React, { PureComponent } from 'react'
 
 interface ButtonCTAProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  children: React.ReactNode,
   className?: string,
-  onClick(e: React.SyntheticEvent<HTMLAnchorElement>): void
+  onClick(e: React.MouseEvent<HTMLAnchorElement>): void
 }
 
 class ButtonCTA extends PureComponent<ButtonCTAProps> {
-  static defaultProps = {
+  static defaultProps: Partial<ButtonCTAProps> = {
     className: 'blue',
   }
 
-  onClick = (e: React.SyntheticEvent<HTMLAnchorElement>) => {
+  onClick: ButtonCTAProps['onClick'] = (e) => {
     e.preventDefault()
 
     const { onClick } = this.props

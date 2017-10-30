@@ -1,7 +1,8 @@
 import React from 'react'
+import { RatioPairs } from 'types'
 
-interface TopAuctionsProps {
-  pairs: { [pair: string]: number }
+export interface TopAuctionsProps {
+  pairs: RatioPairs
 }
 
 const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs }) => (

@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface TokenOverlayHeaderProps {
-  onChange(e: React.SyntheticEvent<HTMLInputElement>): void,
+  onChange(e: React.ChangeEvent<HTMLInputElement>): void,
   closeOverlay(): void,
 }
 

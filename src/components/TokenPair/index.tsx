@@ -1,11 +1,12 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
-import { code2tokenMap, TokenCode } from 'globals'
+import { code2tokenMap } from 'globals'
+import { TokenPair, TokenBalances } from 'types'
 
-interface TokenPairProps {
-  tokenBalances: {[code in TokenCode]: number },
-  tokenPair: { sell: TokenCode, buy: TokenCode },
-  openOverlay(): void
+export interface TokenPairProps {
+  tokenBalances: TokenBalances,
+  tokenPair: TokenPair,
+  openOverlay(): any
 }
 
 const TokenPair: React.SFC<TokenPairProps> = ({
