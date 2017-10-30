@@ -6,9 +6,8 @@ html {
 }
 
 body {
-  background-color: $darkBlue;
   height: 100vh;
-  background: url('#{$images}bg.jpg') no-repeat center / cover;
+  background: $darkBlue url('#{$images}bg.jpg') no-repeat center / cover;
   color: $black;
   font-family: $montserrat;
   font-size: 12px;
