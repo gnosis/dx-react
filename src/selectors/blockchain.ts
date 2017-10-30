@@ -1,26 +1,10 @@
 // import { getCurrentAccount } from '../api/dutchx'
+import { State } from 'types'
 import { /* get, */ find, orderBy } from 'lodash'
 const Decimal = require('decimal.js')
 
 interface Providers {
   [Providers: string]: any,
-}
-
-export interface Blockchain {
-  providers?: Providers,
-  activeProvider?: string,
-  defaultAccount?: string,
-  currentAccount?: string,
-  currentBalance?: string,
-  etherTokens?: string,
-  gnosisInitialized?: boolean,
-  gasCosts?: string,
-  gasPrice?: string
-
-}
-
-export interface State {
-  blockchain: Blockchain
 }
 
 export const selector = (state: State) => state.blockchain

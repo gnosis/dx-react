@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
-import { getCurrentBalance, getAccount, State } from 'selectors/blockchain'
+import { getCurrentBalance, getAccount } from 'selectors/blockchain'
+import { State } from 'types'
 
 import MenuWallet from 'components/MenuWallet'
 

@@ -1,6 +1,6 @@
 import { WALLET_PROVIDER } from '../constants'
 import InjectedWeb3 from '../injectedWeb3'
-import { Blockchain } from 'selectors/blockchain'
+import { Blockchain } from 'types'
 const Web3 = require('web3')
 
 export default class Remote extends InjectedWeb3 {
