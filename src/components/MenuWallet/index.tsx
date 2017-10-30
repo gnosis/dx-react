@@ -8,7 +8,7 @@ interface WalletProps {
 }
 
 export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
-  <i className="menuWallet">
+  <div className="menuWallet">
     {/* Wallet Info - Address && Balance */}
     <span>
       <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
@@ -34,7 +34,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
         </tbody>
       </table>
     </div>
-  </i>
+  </div>
 )
 
 export default MenuWallet
