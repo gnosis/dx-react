@@ -17,7 +17,7 @@ export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
   name = 'YOUR AUCTIONS',
   ongoingAuctions,
 }) => (
-  <i className="menuAuctions"><img src={require('assets/auction.svg')} />
+  <div className="menuAuctions"><img src={require('assets/auction.svg')} />
     <strong>{ name }</strong>
     <div>
       <table>
@@ -40,7 +40,7 @@ export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
         </tbody>  
       </table>
     </div>
-  </i>
+  </div>
 )
 
 export default MenuAuction
