@@ -6,9 +6,8 @@ import { decorateAction } from '@storybook/addon-actions'
 
 import TokenPair from 'components/TokenPair'
 
-import { code2tokenMap, TokenCode } from 'globals'
-
-const codeList = Object.keys(code2tokenMap) as TokenCode[]
+import { codeList } from 'globals'
+import { TokenBalances } from 'types'
 
 const samplePair = (list: any[]): [any, any] => {
   const copy = list.slice()
@@ -25,7 +24,7 @@ const codePair = { sell, buy }
 
 const tokenBalances = codeList.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
-) as {[code in TokenCode]: number }
+) as TokenBalances
 
 const CenterDecor = (story: Function) => (
   <div
@@ -37,6 +36,7 @@ const CenterDecor = (story: Function) => (
     }}
   >
     <div style={{
+      width: 500,
       padding: 20,
       backgroundColor: 'white',
       position: 'relative',
@@ -46,14 +46,14 @@ const CenterDecor = (story: Function) => (
   </div>
 )
 
-const stringifyAction = decorateAction([
+const getModFromArgs = decorateAction([
   args => [args[0].mod],
 ])
 
 storiesOf('TokenPair', module)
   .addDecorator(CenterDecor)
   .addWithJSX('SELL <-> RECEIVE', () => <TokenPair
-    openOverlay={stringifyAction('OPEN OVERLAY to select a token to')}
+    openOverlay={getModFromArgs('OPEN OVERLAY to select a token to')}
     tokenPair={object('tokenPair', codePair)}
     tokenBalances={object('tokenBalances', tokenBalances)}
   />)
