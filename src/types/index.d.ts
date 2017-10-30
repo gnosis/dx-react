@@ -29,8 +29,20 @@ export interface Blockchain {
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: Balance,
-  gasPrice?: Balance
+  gasPrice?: Balance,
+  ongoingAuctions: OngoingAuctions,
+}
 
+export interface OngoingAuctions {
+  ongoingAuctions: auctionObject[]
+}
+
+export type auctionObject = {
+  id: number,
+  sellToken: string,
+  buyToken: string,
+  buyPrice: number,
+  claim: boolean,
 }
 
 export type TokenBalances = {[code in TokenCode]: Balance }

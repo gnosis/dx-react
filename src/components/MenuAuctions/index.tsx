@@ -1,11 +1,11 @@
 import * as React from 'react'
 
-interface MenuAuctionProps {
+export interface MenuAuctionProps {
   name?: string,
-  ongoingAuctions: [auctionObject]
+  ongoingAuctions: auctionObject[]
 }
 
-interface auctionObject {
+export interface auctionObject {
   id: number,
   sellToken: string,
   buyToken: string,
@@ -13,7 +13,7 @@ interface auctionObject {
   claim: boolean
 }
 
-export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
+export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
   name = 'YOUR AUCTIONS',
   ongoingAuctions,
 }) => (
@@ -43,4 +43,4 @@ export const MenuAuction: React.SFC<MenuAuctionProps | any> = ({
   </div>
 )
 
-export default MenuAuction
+export default MenuAuctions
