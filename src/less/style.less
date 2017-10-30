@@ -9,7 +9,7 @@ html, body, #root {
 a {
   color: @link-color;
   text-decoration: none;
-  
+
   &:visited {
     color: inherit;
   }
@@ -32,7 +32,7 @@ a {
 label {
   display: block;
   text-transform: uppercase;
-  margin: 20px 0 6px 0;
+  margin: 20px 0 6px;
   font-size: 13px;
   letter-spacing: 1px;
   color: #92979b;
@@ -85,7 +85,7 @@ input:not([type=submit]):not([type=file]):not([type=radio]):not([type=checkbox])
   transition: all .15s ease;
   -webkit-transition: all .15s ease;
 
-  @media(min-width: @screen-sm) {
+  @media (min-width: @screen-sm) {
     font-size: 15px;
     padding: 12px 26px;
   }
@@ -111,7 +111,7 @@ input:not([type=submit]):not([type=file]):not([type=radio]):not([type=checkbox])
     transition: all .15s ease;
     -webkit-transition: all .15s ease;
   }
-  
+
   &.btn-default--muted {
     &::before {
       background: @bg-color-muted;
@@ -129,7 +129,7 @@ input:not([type=submit]):not([type=file]):not([type=radio]):not([type=checkbox])
     opacity: 0.3;
   }
 }
-  
+
 .btn.btn-default {
   color: @btn-invert-font-color;
 
@@ -149,7 +149,7 @@ input:not([type=submit]):not([type=file]):not([type=radio]):not([type=checkbox])
     color: lighten(@btn-invert-font-color, 5%);
   }
 }
-  
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: 300;
@@ -161,7 +161,7 @@ h1 {
   letter-spacing: .5px;
   font-weight: 300;
 
-  @media(min-width: @screen-sm-min) {
+  @media (min-width: @screen-sm-min) {
     font-size: 42px;
     line-height: 65px;
   }

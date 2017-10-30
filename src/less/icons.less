@@ -1,12 +1,13 @@
 .svgIcon(@iconName) {
   @iconClass: ~"icon--@{iconName}";
+
   .icon.@{iconClass} {
     @url: "../assets/img/icons/icon_@{iconName}.svg";
+
     background-image: url("@{url}");
     mask-image: url("@{url}");
   }
 }
-
 
 // Icon Definition
 .icon {
@@ -68,8 +69,9 @@
 
 .icon--error {
   @url: "../assets/img/icons/icon_cross.svg";
+
   background-image: url("@{url}");
   mask-image: url("@{url}");
-  
-  background: @active-highlight-error;
+
+  background-color: @active-highlight-error;
 }

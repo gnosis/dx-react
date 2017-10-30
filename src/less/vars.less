@@ -15,7 +15,7 @@
 @active-highlight-error: #f44336;
 
 // default background color
-@bg-color: #FFFFFF;
+@bg-color: #fff;
 // alternative background color
 @bg-color-dark: #182a36;
 // background color for inset elements
@@ -29,9 +29,8 @@
 @btn-gradient-hover: linear-gradient(153deg, rgba(15,199,206,1) 0%, rgba(0,176,206,1) 100%);
 @btn-gradient-active: linear-gradient(153deg, rgba(0,179,186,1) 0%, rgba(0,156,186,1) 100%);
 
-
 // font color for buttons
-@btn-font-color: #FFFFFF;
+@btn-font-color: #fff;
 
 // font color for buttons with whitebackground (dark font)
 @btn-invert-font-color: #02b1c1;
@@ -61,7 +60,7 @@
   width: @size;
   height: @size;
   cursor: pointer;
-  
+
   &::after, &::before {
     content: '';
     position: absolute;
@@ -70,18 +69,18 @@
     transition: background-color .4s ease-in;
     background-color: black;
     transform-origin: 50% 50%;
-  } 
+  }
 
   &::after {
     transform: rotate(45deg);
   }
+
   &::before {
-    transform: rotate(-45deg);  
+    transform: rotate(-45deg);
   }
 
   &:hover {
     &::after, &::before {
-      background-color: @active-highlight;
       background-color: @active-highlight;
     }
   }

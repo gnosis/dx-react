@@ -36,10 +36,10 @@ $defaultTokenSize_mobile: 65px;
   margin: 20px auto;
   background-size: $defaultTokenSize;
 
-    @media #{$mobile} {
-      border-radius: 90px;
-      height: 90px;
-      width: 90px;
-      background-size: $defaultTokenSize_mobile;
-    }
+  @media #{$mobile} {
+    border-radius: 90px;
+    height: 90px;
+    width: 90px;
+    background-size: $defaultTokenSize_mobile;
+  }
 }
