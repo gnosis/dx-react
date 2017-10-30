@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { object, text } from '@storybook/addon-knobs'
 
 import { tokenArr } from './helpers/data'
@@ -8,7 +8,7 @@ import { auctionFactory, getRandomInt } from './helpers/fn'
 
 import MenuAuctions from 'components/MenuAuctions'
 
-const TopCenterDecor = (story: Function) => (
+const TopCenterDecor: StoryDecorator = story => (
   <header>
     <div
       style={{
@@ -18,7 +18,7 @@ const TopCenterDecor = (story: Function) => (
     >
       {story()}
     </div>
-  </header>  
+  </header>
 )
 
 const constructKnobs = (
@@ -31,9 +31,9 @@ const constructKnobs = (
 
 storiesOf(`MenuAuctions`, module)
   .addDecorator(TopCenterDecor)
-  .addWithJSX('MenuAuctionsComponent', () => 
+  .addWithJSX('MenuAuctionsComponent', () =>
     <MenuAuctions
       {...constructKnobs('YOUR AUCTIONS', auctionFactory(getRandomInt(1, 6), tokenArr)) }
     />,
-  )
+)
 

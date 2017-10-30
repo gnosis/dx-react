@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { storiesOf } from '@storybook/react'
+import { storiesOf, StoryDecorator } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { boolean } from '@storybook/addon-knobs'
 
@@ -12,7 +12,7 @@ import { Provider } from 'react-redux'
 import TextSquare from 'components/TextSquare'
 import NoWallet from 'components/NoWallet'
 
-const Provider__CenterDecorSection = (story: Function) =>
+const Provider__CenterDecorSection: StoryDecorator = story =>
   <Provider store={store}>
     <div
       style={{
@@ -24,24 +24,24 @@ const Provider__CenterDecorSection = (story: Function) =>
     >
       <section className="home">
         {story()}
-      </section>  
+      </section>
     </div>
   </Provider>
 
 storiesOf('NoWallet', module)
   .addDecorator(Provider__CenterDecorSection)
-  .addWithJSX('NoWallet[Solo]', () => 
-    <NoWallet 
+  .addWithJSX('NoWallet[Solo]', () =>
+    <NoWallet
       handleClick={action('ButtonCTA clicked')}
       hide={boolean('Hide/Show', false)}
     />,
-  )
-  .addWithJSX('Both', (): any => 
+)
+  .addWithJSX('Both', (): any =>
     [
       <TextSquare />,
-      <NoWallet 
+      <NoWallet
         handleClick={action('ButtonCTA clicked')}
         hide={boolean('Hide/Show', false)}
       />,
     ],
-  )
+)
