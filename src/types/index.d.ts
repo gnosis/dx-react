@@ -33,11 +33,9 @@ export interface Blockchain {
   ongoingAuctions: OngoingAuctions,
 }
 
-export interface OngoingAuctions {
-  ongoingAuctions: auctionObject[]
-}
+export type OngoingAuctions = AuctionObject[]
 
-export type auctionObject = {
+export type AuctionObject = {
   id: number,
   sellToken: string,
   buyToken: string,
