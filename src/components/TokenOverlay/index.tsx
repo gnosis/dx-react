@@ -47,18 +47,23 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     selectTokenAndCloseOverlay({ ...tokenProps, mod })
   }
 
+  closeOverlay = () => {
+    this.props.closeOverlay()
+    this.setState({ filter: '' })
+  }
+
 
   render() {
     if (!this.props.open) return null
 
-    const { closeOverlay, tokenBalances } = this.props
+    const { tokenBalances } = this.props
     const { filter } = this.state
 
     const filteredTokens = filterTokens(this.state, this.props)
 
     return (
       <div className="tokenOverlay">
-        <TokenOverlayHeader onChange={this.changeFilter} closeOverlay={closeOverlay} value={filter} />
+        <TokenOverlayHeader onChange={this.changeFilter} closeOverlay={this.closeOverlay} value={filter} />
         <TokenList tokens={filteredTokens} balances={tokenBalances} onTokenClick={this.selectTokenAndCloseOverlay} />
       </div>
     )
