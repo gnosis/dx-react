@@ -13,6 +13,7 @@ const TokenOverlayHeader: React.SFC<TokenOverlayHeaderProps> = ({ onChange, clos
       name="tokenSearch"
       placeholder="Find token by name or code"
       onChange={onChange}
+      autoFocus
     />
     <button className="buttonExit" onClick={closeOverlay} />
   </span>
