@@ -110,6 +110,7 @@ const reducer = handleActions({
     activeProvider: null,
     currentAccount: undefined,
     currentBalance: undefined,
+    ongoingAuctions: [],
   },
 )
 
