@@ -42,9 +42,9 @@ const CenterDecor: StoryDecorator = story => (
       alignItems: 'center',
     }}
   >
-    <div style={{
+    <div className="home" style={{
       padding: 20,
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       width: 550,
       height: 500,
       position: 'relative',
