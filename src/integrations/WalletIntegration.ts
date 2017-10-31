@@ -6,13 +6,6 @@ import { registerProvider, updateProvider, initDutchX } from '../actions/blockch
 import { Store } from 'redux'
 import * as walletIntegrations from 'integrations/'
 
-// declare global object
-declare global {
-  interface Window { web3: any }
-}
-
-window.web3 = window.web3 || {}
-
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState } = store
   // wraps actionCreator in dispatch
@@ -34,7 +27,7 @@ export default async function walletIntegration(store: Store<any>) {
   try {
     await Promise.all(promisedInits)
   } catch (e) {
-    
+
   } finally {
     dispatch(initDutchX())
   }
