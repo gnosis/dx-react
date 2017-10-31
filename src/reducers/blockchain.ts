@@ -1,13 +1,13 @@
 import { handleActions } from 'redux-actions'
 
 import {
-  setActiveProvider,   
-  setConnectionStatus, 
+  setActiveProvider,
+  setConnectionStatus,
   setDutchXInitialized,
-  registerProvider, 
+  registerProvider,
   updateProvider,
   setCurrentBalance,
-  setCurrentAccountAddress, 
+  setCurrentAccountAddress,
   // setGasCost, 
   // setGasPrice, 
   // setEtherTokens,
@@ -56,7 +56,7 @@ const reducer = handleActions({
   },
   [updateProvider as any]: (state: any, action: any) => {
     const { provider: name, ...provider } = action.payload
-    
+
     return {
       ...state,
       providers: {
@@ -94,21 +94,23 @@ const reducer = handleActions({
   //   [action.payload.entityType]: action.payload.gasPrice,
   // }),
   // [setEtherTokens]: (state, action) => ({
-    //   ...state,
-    //   [action.payload.entityType]: {
+  //   ...state,
+  //   [action.payload.entityType]: {
   //     ...state[action.payload.entityType],
   //     [action.payload.account]: action.payload.etherTokens,
   //   },
   // }),
-},                            {
-  gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
-  gasPrice: undefined,
-  connection: undefined,
-  connectionTried: false,
-  providers: {},
-  activeProvider: null,
-  currentAccount: undefined,
-  currentBalance: undefined,
-})
+},
+  {
+    gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
+    gasPrice: undefined,
+    connection: undefined,
+    connectionTried: false,
+    providers: {},
+    activeProvider: null,
+    currentAccount: undefined,
+    currentBalance: undefined,
+  },
+)
 
 export default reducer
