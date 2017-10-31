@@ -1,7 +1,11 @@
+import { Middleware, Action } from 'redux'
+import { ThunkAction } from 'redux-thunk'
+import { State } from 'types'
+
 /**
  * Sends crash reports as state is updated and listeners are notified.
  */
-const CrashReporter = () => next => (action) => {
+const CrashReporter: Middleware = () => next => (action: ThunkAction<Action, Partial<State>, void>) => {
   try {
     return next(action)
   } catch (err) {

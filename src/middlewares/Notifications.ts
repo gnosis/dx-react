@@ -3,12 +3,20 @@ import {
   hideAllNotifications,
 } from 'actions/notifications'
 
+import { Middleware, Action } from 'redux'
+import { ThunkAction } from 'redux-thunk'
+import { State } from 'types'
+
 let isModalOpen = false
 
-export default store => next => (action) => {
-  const handledAction = next(action)
+interface ActionWithPayload extends Action {
+  payload: any
+}
 
-  const { type, payload } = action
+const Notifications: Middleware = store => next => (action: Action | ThunkAction<Action, Partial<State>, void>) => {
+  const handledAction = next(action as Action)
+
+  const { type, payload } = action as ActionWithPayload
 
   if (type === 'SHOW_MODAL') {
     isModalOpen = true
@@ -36,3 +44,5 @@ export default store => next => (action) => {
 
   return handledAction
 }
+
+export default Notifications
