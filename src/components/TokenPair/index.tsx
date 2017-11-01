@@ -15,8 +15,8 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   openOverlay,
 }) => (
     <div className="tokenPair">
-      <TokenItem code={sell} name={code2tokenMap[sell]} balance={sellTokenBalance} mod="SELL" onClick={openOverlay} />
-      <TokenItem code={buy} name={code2tokenMap[buy]} balance={buyTokenBalance} mod="RECEIVE" onClick={openOverlay} />
+      <TokenItem code={sell} name={code2tokenMap[sell]} balance={sellTokenBalance} mod="sell" onClick={openOverlay} />
+      <TokenItem code={buy} name={code2tokenMap[buy]} balance={buyTokenBalance} mod="buy" onClick={openOverlay} />
     </div>
   )
 

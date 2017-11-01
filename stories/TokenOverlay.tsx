@@ -46,5 +46,5 @@ storiesOf('TokenOverlay', module)
     tokenCodeList={array('tokenCodeList', codeList)}
     tokenBalances={object('tokenBalances', tokenBalances)}
     open={boolean('open', true)}
-    mod={text('mod', 'SELL') as TokenMod}
+    mod={text('mod', 'sell') as TokenMod}
   />)

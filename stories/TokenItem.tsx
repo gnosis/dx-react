@@ -53,7 +53,7 @@ for (const code of codeList) {
   storiesOf(`TokenItem/${name}`, module)
     .addDecorator(CenterDecor)
     .addWithJSX('in Pair', () => <TokenItem
-      {...constructKnobs(name, code, r1, 'SELL') }
+      {...constructKnobs(name, code, r1, 'sell') }
       onClick={stringifyAction('Token clicked')}
     />)
     .addWithJSX('in Picker', () => <TokenItem

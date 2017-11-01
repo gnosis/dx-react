@@ -9,11 +9,16 @@ export interface TokenItemProps {
   code: TokenCode,
 }
 
+const mod2Title: {[P in TokenMod]: string} = {
+  sell: 'SELL',
+  buy: 'RECEIVE',
+}
+
 const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
   const { mod, balance, name, code } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
-      {mod && <strong>{mod}</strong>}
+      {mod && <strong>{mod2Title[mod] || mod}</strong>}
       <i data-coin={code}></i>
       <big>{name}</big><code>{code}</code>
       <small>{mod && 'AVAILABLE'} BALANCE:</small>
