@@ -22,6 +22,8 @@ export const findDefaultProvider = (state: State) => {
   })
 }
 
+export const getActiveProvider = (state: State): Providers[string] => selector(state).activeProvider
+
 export const getSelectedProvider = (state: State): Providers | null => (
   selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null
 )

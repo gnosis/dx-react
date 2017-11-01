@@ -6,10 +6,10 @@ import TokenPicker from 'containers/TokenPicker'
 
 import { Providers } from 'types'
 
-const Home = ({ selectedProvider }: Providers[string]) => 
+const Home = ({ activeProvider }: Providers[string]) => 
   <section className="home">
     <TextSquare />
-    { selectedProvider.available ? <TokenPicker /> : <NoWallet /> }
+    { (activeProvider === 'METAMASK' || activeProvider === 'MIST') ? <TokenPicker /> : <NoWallet /> }
   </section>
 
 export default Home
