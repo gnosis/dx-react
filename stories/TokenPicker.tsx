@@ -5,7 +5,7 @@ import { storiesOf, StoryDecorator } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 
 import TokenPicker from 'components/TokenPicker'
-import { TokenBalances, State } from 'types'
+import { TokenBalances, State, RatioPairs } from 'types'
 
 import { codeList } from 'globals'
 import { storeInit } from './helpers/mockStore'
@@ -15,12 +15,23 @@ const tokenBalances = codeList.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
 ) as TokenBalances
 
+const ratioPairs = codeList.reduce((acc, code) => {
+  if (code !== 'ETH') acc.push({
+    sell: 'ETH',
+    buy: code,
+    price: Math.random().toFixed(8),
+  })
+
+  return acc
+}, []) as RatioPairs
+
 const initialState: Partial<State> = {
   tokenBalances,
   tokenPair: {
     sell: 'ETH',
     buy: 'GNO',
   },
+  ratioPairs,
 }
 
 const store = storeInit(initialState)
