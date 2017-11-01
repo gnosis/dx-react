@@ -38,6 +38,6 @@ stats.json
 .eslintcache
 .stylelintcache
 # contracts
-build
-contracts
-migrations
+build/
+contracts/
+migrations/
