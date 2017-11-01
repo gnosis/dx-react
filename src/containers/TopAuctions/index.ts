@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
-import TopAuctions, { TopAuctionsProps } from 'components/TopAuctions'
+import TopAuctions from 'components/TopAuctions'
+import { selectTokenPair } from 'actions'
 import { State, RatioPairs } from 'types'
 
 import { createSelector } from 'reselect'
@@ -12,10 +13,9 @@ import { createSelector } from 'reselect'
  * @param {typeof ratioPairs} pairs 
  * @returns {typeof ratioPairs}
  */
-const getTop5Pairs = (pairs: RatioPairs) => Object.keys(pairs)
-  .sort((a, b) => +pairs[b] - +pairs[a])
+const getTop5Pairs = (pairs: RatioPairs) => pairs.slice()
+  .sort((a, b) => +b.price - +a.price)
   .slice(0, 5)
-  .reduce((acc, pair) => (acc[pair] = pairs[pair], acc), {})
 
 const selectTop5Pairs = createSelector(
   ({ ratioPairs }) => ratioPairs,
@@ -26,4 +26,4 @@ const mapStateToProps = (state: State) => ({
   pairs: selectTop5Pairs(state),
 })
 
-export default connect<TopAuctionsProps>(mapStateToProps, null)(TopAuctions)
+export default connect(mapStateToProps, { selectTokenPair })(TopAuctions)
