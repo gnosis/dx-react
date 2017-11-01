@@ -65,7 +65,7 @@ img {
   vertical-align: middle;
 }
 
-body > section {
+section.home, section.auction {
   height: calc(100vh - 60px);
   align-items: center;
 

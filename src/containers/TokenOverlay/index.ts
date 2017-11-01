@@ -5,10 +5,11 @@ import { State } from 'types'
 
 import { codeList } from 'globals'
 
-const mapStateToProps = ({ tokenBalances, tokenOverlay: { open } }: State) => ({
+// TODO: consider grabbing tokenOverlay.mod from global state
+const mapStateToProps = ({ tokenBalances, tokenOverlay }: State) => ({
   tokenCodeList: codeList,
   tokenBalances,
-  open,
+  ...tokenOverlay,
 })
 
 export default connect(mapStateToProps, { closeOverlay, selectTokenAndCloseOverlay })(TokenOverlay)

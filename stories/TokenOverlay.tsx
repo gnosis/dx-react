@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { storiesOf, StoryDecorator } from '@storybook/react'
-import { array, object, boolean } from '@storybook/addon-knobs'
+import { array, object, boolean, text } from '@storybook/addon-knobs'
 import { action, decorateAction } from '@storybook/addon-actions'
 
 import TokenOverlay from 'components/TokenOverlay'
-import { TokenBalances } from 'types'
+import { TokenBalances, TokenMod } from 'types'
 
 import { codeList } from 'globals'
 
@@ -46,4 +46,5 @@ storiesOf('TokenOverlay', module)
     tokenCodeList={array('tokenCodeList', codeList)}
     tokenBalances={object('tokenBalances', tokenBalances)}
     open={boolean('open', true)}
+    mod={text('mod', 'SELL') as TokenMod}
   />)

@@ -1,14 +1,15 @@
 import createStoreWithHistory from 'store'
 import createHistory from 'history/createBrowserHistory'
+import { State } from 'types'
 const history = createHistory()
 
-export const storeInit = (initialState?: Object | string | [any] | number) => {
+export const storeInit = (initialState?: Partial<State>) => {
   const store = createStoreWithHistory(history, initialState)
 
   return store
 }
 
-export const bcMetamask = {
+export const bcMetamask: Partial<State> = {
   blockchain: {
     gasCosts: {},
     connectionTried: true,
@@ -28,7 +29,7 @@ export const bcMetamask = {
   },
 }
 
-export const bcLocalHost = {
+export const bcLocalHost: Partial<State> = {
   blockchain: {
     gasCosts: {},
     connectionTried: true,

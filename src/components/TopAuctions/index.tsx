@@ -6,6 +6,7 @@ export interface TopAuctionsProps {
 }
 
 const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs }) => (
+  Object.keys(pairs).length > 0 &&
   <div className="topAuctions">
     <h3>HIGH VOLUME TOKEN PAIR AUCTIONS</h3>
     <ul>

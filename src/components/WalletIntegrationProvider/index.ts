@@ -5,12 +5,6 @@ import { WALLET_PROVIDER } from 'integrations/constants'
 
 const Web3 = require('web3')
 
-declare global {
-  interface Window { web3: any }
-}
-
-window.web3 = window.web3 || {}
-
 interface WalletIntegrationProps {
   children: any,
   integrations: any,

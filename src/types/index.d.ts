@@ -1,5 +1,3 @@
-import { code2tokenMap } from 'globals'
-
 interface Code2Name {
   ETH: 'ETHER',
   GNO: 'GNOSIS',
@@ -28,9 +26,12 @@ export interface Blockchain {
   currentBalance?: Balance,
   etherTokens?: object,
   gnosisInitialized?: boolean,
-  gasCosts?: Balance,
+  gasCosts?: object,
   gasPrice?: Balance,
-  ongoingAuctions: OngoingAuctions,
+  ongoingAuctions?: OngoingAuctions,
+  connectionTried?: boolean,
+  providersLoaded?: boolean,
+  dutchXInitialized?: boolean
 }
 
 export type OngoingAuctions = AuctionObject[]

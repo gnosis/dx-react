@@ -119,6 +119,7 @@
     "@types/react-redux": "^5.0.10",
     "@types/react-router-dom": "^4.0.8",
     "@types/redux-actions": "^2.2.2",
+    "@types/redux-form": "^7.0.8",
     "@types/storybook__addon-actions": "^3.0.1",
     "@types/storybook__addon-knobs": "^3.2.1",
     "@types/storybook__react": "^3.0.5",
