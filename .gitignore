@@ -37,4 +37,7 @@ stats.json
 .awcache
 .eslintcache
 .stylelintcache
-build/
+# contracts
+build
+contracts
+migrations

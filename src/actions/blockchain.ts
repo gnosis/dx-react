@@ -30,7 +30,8 @@ export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
 export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: number }>('SET_CURRENT_BALANCE')
-export const setCurrentAccountAddress = createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
+export const setCurrentAccountAddress = 
+  createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
 // export const setEtherTokens = createAction('SET_ETHER_TOKENS')
@@ -70,7 +71,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
       try {
         account = await getCurrentAccount()
         currentBalance = await getCurrentBalance(account)
-      } catch(e) {
+      } catch (e) {
         console.log(e)
       }
       
