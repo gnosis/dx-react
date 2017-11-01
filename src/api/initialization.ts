@@ -36,7 +36,7 @@ const contractArtifacts = [
 ].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
-  contracts: Object | any
+  contracts: object | any
   web3: any
   constructor() {
     this.contracts = _.fromPairs(contractArtifacts.map((artifact) => {
@@ -64,6 +64,7 @@ class DutchExchangeInit {
   async fireUp(opts?: Object | any) {
     await this.setWeb3Provider(opts.ethereum)
   }
+
   /** ASYNC Class Method: setWeb3Provider
    * @param provider => comes from Redux <opts.ethereum>
    * @param {any} provider
