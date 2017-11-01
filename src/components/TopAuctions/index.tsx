@@ -10,9 +10,10 @@ const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs }) => (
   <div className="topAuctions">
     <h3>HIGH VOLUME TOKEN PAIR AUCTIONS</h3>
     <ul>
-      {Object.keys(pairs).map(pair => (
-        <li key={pair}><strong>{pair}</strong> {pairs[pair]}</li>
-      ))}
+      {pairs.map(({ sell, buy, price }) => {
+        const pair = `${buy}/${sell}`
+        return <li key={pair}><strong>{pair}</strong> {price}</li>
+      })}
     </ul>
   </div>
 )
