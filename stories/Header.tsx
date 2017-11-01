@@ -7,7 +7,7 @@ const store = storeInit(bcMetamask)
 
 import { Provider } from 'react-redux'
 
-import Header from 'components/Header'
+import Header from 'containers/Header'
 
 storiesOf('Header [v2]', module)
   .addDecorator((story: any) => <Provider store={store as any}>{story()}</Provider>)

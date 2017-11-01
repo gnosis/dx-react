@@ -693,8 +693,115 @@
       "links": {},
       "address": "0xe6032cffd01a668ee185fe7d97c653f83a91ca86",
       "updated_at": 1509006883081
+    },
+    "1509376646186": {
+      "events": {
+        "0x89ea2bd5fe4151611db7bd52b5092fcdd940633cf80f8ab4b69112dcc602c9d2": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_auctionIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewSellOrder",
+          "type": "event"
+        },
+        "0xd2f9df91f7abf634f9a1071769ee24546fb6ea8772ef8b11fe6ab1523275d22b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_auctionIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewBuyOrder",
+          "type": "event"
+        },
+        "0x1b02acb87ac6b89aca33a0f6df687538ff28550808aa82ad899da79783307e1e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_auctionIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_returned",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewSellerFundsClaim",
+          "type": "event"
+        },
+        "0x8b565f4b85c95673186feca4ebebb6114efb5e372bb892d5321758a7d183393a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_auctionIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_returned",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewBuyerFundsClaim",
+          "type": "event"
+        },
+        "0xcb3b9bc3dda7efc25dd15601b899bb58d4932b36889d23121d56a52dd850df43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_auctionIndex",
+              "type": "uint256"
+            }
+          ],
+          "name": "AuctionCleared",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xd7dbe748d762fa921ef2b9e1760228e9067ad128",
+      "updated_at": 1509376662341
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509006883081
+  "updated_at": 1509376662341
 }
