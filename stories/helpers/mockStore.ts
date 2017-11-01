@@ -17,7 +17,7 @@ export const bcMetamask: Partial<State> = {
       METAMASK: {
         name: 'METAMASK',
         loaded: true,
-        available: false,
+        available: true,
         priority: 90,
       },
     },
