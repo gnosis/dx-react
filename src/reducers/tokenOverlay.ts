@@ -15,10 +15,10 @@ export default handleActions<TokenOverlay>(
       open: true,
       mod: action.payload.mod,
     }),
-    [selectTokenAndCloseOverlay.toString()]: (state, action) => ({
+    [selectTokenAndCloseOverlay.toString()]: state => ({
       ...state,
       open: false,
-      mod: action.payload.mod,
+      mod: null,
     }),
   },
   {

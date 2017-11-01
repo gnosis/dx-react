@@ -59,7 +59,7 @@ export interface TokenPair {
   buy: TokenCode
 }
 
-export type TokenMod = 'SELL' | 'RECEIVE'
+export type TokenMod = 'sell' | 'buy'
 
 /**
  * represents TokenOverlay state in TokenPicker
