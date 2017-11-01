@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
-import TopAuctions, { TopAuctionsProps } from 'components/TopAuctions'
+import TopAuctions from 'components/TopAuctions'
+import { selectTokenPair } from 'actions'
 import { State, RatioPairs } from 'types'
 
 import { createSelector } from 'reselect'
@@ -25,4 +26,4 @@ const mapStateToProps = (state: State) => ({
   pairs: selectTop5Pairs(state),
 })
 
-export default connect<TopAuctionsProps>(mapStateToProps, null)(TopAuctions)
+export default connect(mapStateToProps, { selectTokenPair })(TopAuctions)
