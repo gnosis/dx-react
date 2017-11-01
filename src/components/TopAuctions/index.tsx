@@ -1,18 +1,19 @@
 import React from 'react'
-import { RatioPairs } from 'types'
+import { RatioPairs, TokenPair } from 'types'
 
 export interface TopAuctionsProps {
-  pairs: RatioPairs
+  pairs: RatioPairs,
+  selectTokenPair(pair: TokenPair): any
 }
 
-const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs }) => (
+const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs, selectTokenPair }) => (
   Object.keys(pairs).length > 0 &&
   <div className="topAuctions">
     <h3>HIGH VOLUME TOKEN PAIR AUCTIONS</h3>
     <ul>
       {pairs.map(({ sell, buy, price }) => {
         const pair = `${buy}/${sell}`
-        return <li key={pair}><strong>{pair}</strong> {price}</li>
+        return <li key={pair} onClick={() => selectTokenPair({ sell, buy })}><strong>{pair}</strong> {price}</li>
       })}
     </ul>
   </div>
