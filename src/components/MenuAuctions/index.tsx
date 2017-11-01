@@ -13,7 +13,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
     <div className="menuAuctions"><img src={require('assets/auction.svg')} />
       <strong>{name}</strong>
       <div>
-        {ongoingAuctions ? 
+        {ongoingAuctions.length ? 
           <table>
             <thead>
               <tr>
