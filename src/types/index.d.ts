@@ -12,8 +12,6 @@ export type TokenName = Code2Name[TokenCode]
 export type Balance = string
 export type Account = string
 
-export type RatioPairs = { [pair: string]: Balance }
-
 interface Providers {
   [provider: string]: any,
 }
@@ -58,6 +56,16 @@ export interface TokenPair {
   sell: TokenCode,
   buy: TokenCode
 }
+
+/**
+ * represents a buy/sell pair
+ * used in TopAuctions
+ */
+export interface RatioPair extends TokenPair {
+  price: Balance
+}
+
+export type RatioPairs = RatioPair[]
 
 export type TokenMod = 'sell' | 'buy'
 
