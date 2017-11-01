@@ -9,4 +9,4 @@ const mapStateToProps = (state: State) => ({
   activeProvider: getActiveProvider(state),
 })
 
-export default connect(mapStateToProps)(Home as React.SFC)
+export default connect(mapStateToProps)(Home)
