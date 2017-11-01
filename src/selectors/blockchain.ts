@@ -3,8 +3,10 @@ import { State } from 'types'
 import { /* get, */ find, orderBy } from 'lodash'
 const Decimal = require('decimal.js')
 
-interface Providers {
-  [Providers: string]: any,
+export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
+
+type Providers = {
+  [P in ProviderName]: string
 }
 
 export const selector = (state: State) => state.blockchain
@@ -22,7 +24,7 @@ export const findDefaultProvider = (state: State) => {
   })
 }
 
-export const getActiveProvider = (state: State): Providers[string] => selector(state).activeProvider
+export const getActiveProvider = (state: State): Providers['METAMASK' | 'MIST'] => selector(state).activeProvider
 
 export const getSelectedProvider = (state: State): Providers | null => (
   selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null
