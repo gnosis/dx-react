@@ -7,13 +7,6 @@ interface Code2Name {
   GNT: 'GOLEM',
 }
 
-export type Tokens = {
-  [T in TokenCode]?: {
-    name: T,
-    balance: number,
-  }
-}
-
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
 export type Balance = string
@@ -37,7 +30,6 @@ export interface Blockchain {
   connectionTried?: boolean,
   providersLoaded?: boolean,
   dutchXInitialized?: boolean,
-  tokens?: Tokens,
 }
 
 export type OngoingAuctions = AuctionObject[]
@@ -50,7 +42,7 @@ export type AuctionObject = {
   claim: boolean,
 }
 
-export type TokenBalances = {[code in TokenCode]: Balance }
+export type TokenBalances = {[code in TokenCode]?: Balance }
 
 
 /**
