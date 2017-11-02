@@ -7,6 +7,13 @@ interface Code2Name {
   GNT: 'GOLEM',
 }
 
+export type Tokens = {
+  [T in TokenCode]?: {
+    name: T,
+    balance: number,
+  }
+}
+
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
 export type Balance = string
