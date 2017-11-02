@@ -1,12 +1,12 @@
 import * as React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
-import { Tokens } from 'types'
+import { TokenBalances } from 'types'
 
 export interface WalletProps {
   account: string,
   balance: string | any,
-  tokens: Tokens,
+  tokens: TokenBalances,
 }
 
 export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
@@ -19,7 +19,6 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
     </span>
 
     <div>
-      {Object.keys(tokens).length ?
         <table>
           <thead>
             <tr>
@@ -29,20 +28,13 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
           </thead>
           <tbody>
             {Object.keys(tokens).map((token: any) => 
-              <tr key={tokens[token].name}>
-                <td>{tokens[token].name}</td>
-                <td>{Number(tokens[token].balance).toFixed(4)}</td>
+              <tr key={token}>
+                <td>{token}</td>
+                <td>{Number(tokens[token]).toFixed(4)}</td>
               </tr>,
             )}
           </tbody>
         </table>
-        :
-        <table>
-          <tbody>
-            <tr><td>No Tokens Available</td></tr>
-          </tbody>
-        </table>
-      }    
     </div>
   </div>
 )
