@@ -8,12 +8,14 @@ import {
   updateProvider,
   setCurrentBalance,
   setCurrentAccountAddress,
+  fetchTokens,
   // setGasCost, 
   // setGasPrice, 
   // setEtherTokens,
 } from 'actions/blockchain'
 
 import { GAS_COST } from 'utils/constants'
+import { State } from 'types'
 
 const INITIAL_PROVIDER_STATE: any = {
   loaded: false,
@@ -82,6 +84,10 @@ const reducer = handleActions({
     ...state,
     currentBalance: action.payload.currentBalance,
   }),
+  [fetchTokens.toString()]: (state: State, action: any) => ({
+    ...state,
+    tokens: action.payload,
+  }),
   // [setGasCost]: (state, action) => ({
   //   ...state,
   //   [action.payload.entityType]: {
@@ -111,6 +117,16 @@ const reducer = handleActions({
     currentAccount: undefined,
     currentBalance: undefined,
     ongoingAuctions: [],
+    tokens: [
+      // {
+      //   name: 'GNO',
+      //   balance: 1.2123123, 
+      // },
+      // {
+      //   name: '1ST',
+      //   balance: 0.23413,
+      // },
+    ],
   },
 )
 
