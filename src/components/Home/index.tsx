@@ -6,7 +6,11 @@ import TokenPicker from 'containers/TokenPicker'
 
 import { Providers } from 'types'
 
-const Home = ({ activeProvider }: Providers[string]) => 
+export interface HomeProps {
+  activeProvider: Providers['METAMASK' | 'MIST']
+}
+
+const Home: React.SFC<HomeProps> = ({ activeProvider }) => 
   <section className="home">
     <TextSquare />
     { (activeProvider === 'METAMASK' || activeProvider === 'MIST') ? <TokenPicker /> : <NoWallet /> }
