@@ -1,72 +1,40 @@
 import * as React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
-// import { array, object, boolean } from '@storybook/addon-knobs'
+import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 
 import TokenPicker from 'components/TokenPicker'
-import { TokenBalances, State, RatioPairs } from 'types'
 
-import { codeList } from 'globals'
-import { storeInit } from './helpers/mockStore'
-import { Provider } from 'react-redux'
+import {
+  storeInit,
+  generateTokenBalances,
+  generateRatioPairs,
+  makeProviderDecorator,
+  makeCenterDecorator,
+} from './helpers'
 
-const tokenBalances = codeList.reduce(
-  (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
-) as TokenBalances
+const tokenBalances = generateTokenBalances()
 
-const ratioPairs = codeList.reduce((acc, code) => {
-  if (code !== 'ETH') acc.push({
-    sell: 'ETH',
-    buy: code,
-    price: Math.random().toFixed(8),
-  })
+const ratioPairs = generateRatioPairs()
 
-  return acc
-}, []) as RatioPairs
-
-const initialState: Partial<State> = {
+const store = storeInit({
   tokenBalances,
   tokenPair: {
     sell: 'ETH',
     buy: 'GNO',
   },
   ratioPairs,
-}
+})
 
-const store = storeInit(initialState)
-console.log(store.getState())
-
-const ProviderDecor: StoryDecorator = story => (
-  <Provider store={store}>
-    {story()}
-  </Provider>
-)
-
-
-const CenterDecor: StoryDecorator = story => (
-  <div
-    style={{
-      display: 'flex',
-      height: '100vh',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <div className="home" style={{
-      padding: 20,
-      backgroundColor: 'transparent',
-      width: 550,
-      height: 500,
-      position: 'relative',
-    }}>
-      {story()}
-    </div>
-  </div>
-)
+const CenterDecor = makeCenterDecorator({
+  style: {
+    backgroundColor: null,
+  },
+  className: 'home',
+})
 
 storiesOf('TokenPicker', module)
-  .addDecorator(ProviderDecor)
+  .addDecorator(makeProviderDecorator(store))
   .addDecorator(CenterDecor)
   .addWithJSX('main', () => <TokenPicker
     continueToOrder={action('Continue to order details')}

@@ -1,24 +1,18 @@
 import * as React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import { object, text } from '@storybook/addon-knobs'
 
-import { auctionFactory, getRandomInt, tokenArr } from './helpers'
+import { auctionFactory, getRandomInt, tokenArr, makeTopDecorator } from './helpers'
 
 import MenuAuctions from 'components/MenuAuctions'
 
-const TopCenterDecor: StoryDecorator = story => (
-  <header>
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      {story()}
-    </div>
-  </header>
-)
+const TopCenterDecor = makeTopDecorator({
+  style: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+})
 
 const constructKnobs = (
   name = 'YOUR AUCTIONS',

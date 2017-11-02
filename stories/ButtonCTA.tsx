@@ -1,29 +1,18 @@
 import * as React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import { text } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 
+import { makeCenterDecorator } from './helpers'
 import ButtonCTA from 'components/ButtonCTA'
 
-const CenterDecor: StoryDecorator = story => (
-  <div
-    style={{
-      display: 'flex',
-      height: '100vh',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <div className="auctionContainer" style={{
-      width: 600,
-      padding: 20,
-      backgroundColor: 'white',
-    }}>
-      {story()}
-    </div>
-  </div>
-)
+const CenterDecor = makeCenterDecorator({
+  style: {
+    padding: 50,
+    height: null,
+  },
+})
 
 const variants = {
   HOME: text('text', 'Continue to order details'),
