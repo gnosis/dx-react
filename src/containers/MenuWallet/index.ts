@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import { getCurrentBalance, getAccount } from 'selectors/blockchain'
-import { State } from 'types'
+import { State, Tokens } from 'types'
 
-import MenuWallet from 'components/MenuWallet'
+import { MenuWallet, WalletProps } from 'components/MenuWallet'
 
 // TODO: move into redux or some global config
 // Will need to grab tokens[name].balance from contracts
-const tokens = {
+const tokens: Tokens = {
   GNO: {
     name: 'GNO',
     balance: 12,
@@ -19,4 +19,4 @@ const mapStateToProps = (state: State) => ({
   tokens,
 })
 
-export default connect(mapStateToProps)(MenuWallet as React.SFC<any>)
+export default connect<WalletProps>(mapStateToProps)(MenuWallet)
