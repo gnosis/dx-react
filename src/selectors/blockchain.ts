@@ -61,12 +61,6 @@ export const getEtherTokensAmount = (state: State, account: string) => {
   return new Decimal(0)
 }
 
-/**
- * Grabs the Tokens object from State
- * @param state 
- */
-export const getTokens = (state: State) => selector(state).tokens
-
 export default {
   getDefaultAccount,
 }
