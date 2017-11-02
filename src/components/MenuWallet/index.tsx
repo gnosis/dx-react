@@ -1,10 +1,12 @@
 import * as React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
-interface WalletProps {
+import { Tokens } from 'types'
+
+export interface WalletProps {
   account: string,
-  balance: number | object,
-  tokens: object,
+  balance: string | any,
+  tokens: Tokens,
 }
 
 export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
