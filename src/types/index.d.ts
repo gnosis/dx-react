@@ -36,7 +36,8 @@ export interface Blockchain {
   ongoingAuctions?: OngoingAuctions,
   connectionTried?: boolean,
   providersLoaded?: boolean,
-  dutchXInitialized?: boolean
+  dutchXInitialized?: boolean,
+  tokens?: Tokens,
 }
 
 export type OngoingAuctions = AuctionObject[]
