@@ -117,17 +117,17 @@ const reducer = handleActions({
     currentAccount: undefined,
     currentBalance: undefined,
     ongoingAuctions: [],
-    tokens: [
-      // {
+    tokens: {
+      // GNO: {  
       //   name: 'GNO',
       //   balance: 1.2123123, 
       // },
-      // {
-      //   name: '1ST',
-      //   balance: 0.23413,
-      // },
-    ],
-  },
+      // ETH: {
+      //   name: 'ETHER',
+      //   balance: 1.45654,
+      // },  
+    },
+  },  
 )
 
 export default reducer
