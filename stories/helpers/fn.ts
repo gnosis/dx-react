@@ -4,6 +4,9 @@ export const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (mx - mn)) + mn
 }
 
+export const tokenFactory = (arr: string[]) =>
+  arr.map(item => ({ [item]: 100 * Math.random() }))
+
 // Create Fn that returns Array of length(x) w/Auction props (a,b,c,d,e)
 export const walletObjectFactory = (amt: number, arr: string[]) => {
   const tokensWallet = {}
@@ -12,10 +15,7 @@ export const walletObjectFactory = (amt: number, arr: string[]) => {
     const name: string = arr[getRandomInt(0,arr.length)]
     
     if (!tokensWallet[name]) {
-      tokensWallet[name] = {
-        name,
-        balance: 100 * Math.random(),
-      }
+      tokensWallet[name] = 100 * Math.random()
     } else {
       continue
     }
