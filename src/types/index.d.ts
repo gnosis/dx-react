@@ -29,7 +29,7 @@ export interface Blockchain {
   ongoingAuctions?: OngoingAuctions,
   connectionTried?: boolean,
   providersLoaded?: boolean,
-  dutchXInitialized?: boolean
+  dutchXInitialized?: boolean,
 }
 
 export type OngoingAuctions = AuctionObject[]
@@ -42,7 +42,7 @@ export type AuctionObject = {
   claim: boolean,
 }
 
-export type TokenBalances = {[code in TokenCode]: Balance }
+export type TokenBalances = {[code in TokenCode]?: Balance }
 
 
 /**

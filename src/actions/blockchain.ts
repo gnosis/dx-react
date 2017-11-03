@@ -9,7 +9,9 @@ import {
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
-import { findDefaultProvider } from '../selectors/blockchain'
+import { findDefaultProvider } from 'selectors/blockchain'
+
+import { TokenBalances } from 'types'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -32,6 +34,7 @@ export const updateProvider = createAction<{ provider?: string, data?: Object }>
 export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: number }>('SET_CURRENT_BALANCE')
 export const setCurrentAccountAddress = 
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
+export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')  
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
 // export const setEtherTokens = createAction('SET_ETHER_TOKENS')

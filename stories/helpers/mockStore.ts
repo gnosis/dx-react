@@ -26,6 +26,11 @@ export const bcMetamask: Partial<State> = {
     currentBalance: '99.5788472',
     providersLoaded: true,
     dutchXInitialized: true,
+    ongoingAuctions: [],
+  },
+  tokenBalances: { 
+    GNO: '0.12364',
+    ETH: '0.46783', 
   },
 }
 
@@ -39,6 +44,9 @@ export const bcLocalHost: Partial<State> = {
     currentBalance: '99.5788472',
     providersLoaded: true,
     dutchXInitialized: true,
+    ongoingAuctions: [],
   },
-}
-
+  tokenBalances:{ 
+    GNO: '0.12364', 
+  },
+}  
