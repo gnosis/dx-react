@@ -1,24 +1,18 @@
 import * as React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
+import { storiesOf } from '@storybook/react'
+import { makeTopDecorator } from './helpers'
+
+const TopRightDecorator = makeTopDecorator({
+  style: {
+    justifyContent: 'flex-end',
+  },
+})
 
 import Hamburger from 'components/Hamburger'
 
-const TopRightDecor: StoryDecorator = story => (
-  <header>
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-      }}
-    >
-      {story()}
-    </div>
-  </header>
-)
-
 storiesOf(`Hamburger`, module)
-  .addDecorator(TopRightDecor)
+  .addDecorator(TopRightDecorator)
   .addWithJSX('Hamburger Component', () =>
     <Hamburger />,
 )

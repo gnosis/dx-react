@@ -1,31 +1,20 @@
 import * as React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
+import { storiesOf } from '@storybook/react'
 import { text, number } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
 import TokenItem, { TokenItemProps } from 'components/TokenItem'
 import { code2tokenMap, codeList } from 'globals'
 import { TokenMod, Balance, TokenCode, TokenName } from 'types'
+import { makeCenterDecorator } from './helpers'
 
-
-const CenterDecor: StoryDecorator = story => (
-  <div
-    style={{
-      display: 'flex',
-      height: '100vh',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <div style={{
-      padding: 20,
-      backgroundColor: 'white',
-    }}>
-      {story()}
-    </div>
-  </div>
-)
+const CenterDecor = makeCenterDecorator({
+  style: {
+    height: null,
+    width: null,
+  },
+})
 
 const constructKnobs = (name: TokenName, code: TokenCode, balance: Balance, mod?: TokenMod) => ({
   name: text('name', name),

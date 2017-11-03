@@ -1,19 +1,13 @@
 import React from 'react'
 
-import { storiesOf, StoryDecorator } from '@storybook/react'
-import { storeInit, bcMetamask } from './helpers'
+import { storiesOf } from '@storybook/react'
+import { storeInit, bcMetamask, makeProviderDecorator } from './helpers'
 
 const store = storeInit(bcMetamask)
 
-import { Provider } from 'react-redux'
+const ProviderDecor = makeProviderDecorator(store)
 
 import Home from 'containers/Home'
-
-const ProviderDecor: StoryDecorator = story => (
-  <Provider store={store as any}>
-    {story()}
-  </Provider>
-)
 
 storiesOf('Home', module)
   .addDecorator(ProviderDecor)
