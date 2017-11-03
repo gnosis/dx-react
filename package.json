@@ -19,6 +19,5 @@
   "bugs": {
     "url": "https://github.com/gnosis/dutch-exchange/issues"
   },
-  "homepage": "https://github.com/gnosis/dutch-exchange#readme",
-  "dependencies": "@digix/tempo"
+  "homepage": "https://github.com/gnosis/dutch-exchange#readme"
 }

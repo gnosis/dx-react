@@ -17,7 +17,7 @@ contract('DutchExchange', function(accounts) {
 
 	let sellToken;
 	let buyToken;
-	let DUTCHX;
+	let TUL;
 	let dx;
 
 	let dxa;
@@ -37,10 +37,10 @@ contract('DutchExchange', function(accounts) {
 		await buyToken.approve(buyer, 1000);
 		await buyToken.transferFrom(initialiser, buyer, 1000, {from: buyer});
 
-		DUTCHX = await Token.new();
+		TUL = await Token.new();
 
 		// create dx
-		dx = await DutchExchange.new(2, 1, sellToken.address, buyToken.address, DUTCHX.address);
+		dx = await DutchExchange.new(2, 1, sellToken.address, buyToken.address, TUL.address);
 		dxa = dx.address;
 	})
 
@@ -58,9 +58,9 @@ contract('DutchExchange', function(accounts) {
 		const exchangeBuyToken = await dx.buyToken();
 		assert.equal(exchangeBuyToken, buyToken.address, 'buyToken set correctly');
 
-		// DUTCHX token is set
-		const exchangeDUTCHX = await dx.DUTCHX();
-		assert.equal(exchangeDUTCHX, DUTCHX.address, 'DUTCHX set correctly');
+		// TUL token is set
+		const exchangeTUL = await dx.TUL();
+		assert.equal(exchangeTUL, TUL.address, 'TUL set correctly');
 
 		// next auction is scheduled correctly
 		await nextAuctionScheduled();
@@ -78,6 +78,12 @@ contract('DutchExchange', function(accounts) {
 
 		assert.equal(sellerBalancesBefore + amount, sellerBalancesAfter, 'sellerBalances updated'); 
 		assert.equal(sellVolumeBefore + amount, sellVolumeAfter, 'sellVolume updated');
+	}
+
+	const postSellOrders = async function() {
+		await utils.assertRejects(approveAndBuy(50));
+		await approveAndSell(50);
+		await approveAndSell(50);
 	}
 
 	const approveAndBuy = async function(amount) {
@@ -115,10 +121,11 @@ contract('DutchExchange', function(accounts) {
 		assert.equal(buyVolumeAfter, buyVolumeBefore + amount, 'buyVolumes updated');
 	}
 
-	const postSellOrders = async function() {
-		await utils.assertRejects(approveAndBuy(50));
-		await approveAndSell(50);
-		await approveAndSell(50);
+	const postBuyOrdersAndClaim = async function() {
+		await approveAndBuy(50);
+		await approveBuyAndClaim(25);
+		await utils.assertRejects(approveAndSell(50));
+		await auctionStillRunning();
 	}
 
 	const auctionStillRunning = async function() {
@@ -131,13 +138,6 @@ contract('DutchExchange', function(accounts) {
 		const now = (await dx.now()).toNumber();
 		const timeUntilStart = exchangeStart - now;
 		await dx.increaseTimeBy(1, timeUntilStart);
-	}
-
-	const postBuyOrdersAndClaim = async function() {
-		await approveAndBuy(50);
-		await approveBuyAndClaim(25);
-		await utils.assertRejects(approveAndSell(50));
-		await auctionStillRunning();
 	}
 
 	const runThroughAuctionBeforeClear = async function() {
@@ -258,7 +258,7 @@ contract('DutchExchange', function(accounts) {
 		assert(now + 21600 >= exchangeStart, 'auction starts within 6 hrs');
 	}
 
-	it('runs correctly auction until clearing', runThroughAuctionBeforeClear)
+	it('runs correctly through auction until clearing', runThroughAuctionBeforeClear)
 
 	it('clears auction with time', async function() {
 		await runThroughAuctionBeforeClear();
