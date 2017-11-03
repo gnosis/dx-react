@@ -49,4 +49,11 @@ export const bcLocalHost: Partial<State> = {
   tokenBalances:{ 
     GNO: '0.12364', 
   },
-}  
+}
+
+export const tokenPairState: Partial<State> = {
+  tokenPair: {
+    sell: 'ETH',
+    buy: '1ST',
+  },
+}
