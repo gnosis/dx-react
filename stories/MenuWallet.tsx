@@ -42,4 +42,3 @@ storiesOf(`MenuWallet`, module)
       {...constructKnobs('0x123jhbdsz7u2qwjhvda871273doaidsf', 22, walletObjectFactory(getRandomInt(5,20), tokenArr)) }
     />,
   )
-

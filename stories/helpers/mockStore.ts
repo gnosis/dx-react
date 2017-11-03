@@ -27,12 +27,10 @@ export const bcMetamask: Partial<State> = {
     providersLoaded: true,
     dutchXInitialized: true,
     ongoingAuctions: [],
-    tokens: {
-      GNO: {
-        name: 'GNO',
-        balance: 0.123454655443,
-      },
-    },
+  },
+  tokenBalances: { 
+    GNO: '0.12364',
+    ETH: '0.46783', 
   },
 }
 
@@ -47,12 +45,8 @@ export const bcLocalHost: Partial<State> = {
     providersLoaded: true,
     dutchXInitialized: true,
     ongoingAuctions: [],
-    tokens: {
-      GNO: {
-        name: 'GNO',
-        balance: 0.123454655443,
-      },
-    },
   },
-}
-
+  tokenBalances:{ 
+    GNO: '0.12364', 
+  },
+}  
