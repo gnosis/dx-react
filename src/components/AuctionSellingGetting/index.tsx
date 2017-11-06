@@ -37,29 +37,28 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   }
 
   render() {
-    const { sellToken, buyToken, ratio } = this.props
+    const { sellToken, buyToken, ratio, balance } = this.props
     const { value } = this.state
 
     return (
       <div className="auctionAmounts">
-        <span>
-          <label htmlFor="sellingAmount">Amount Selling:<a href="#max" onClick={this.onClick}>MAX</a></label>
-          <input 
-            type="number" 
-            name="sellingAmount" 
-            id="sellingAmount" 
-            onChange={this.onChange} 
-            value={value} 
-          />
-          <small>{sellToken}</small>
-        </span>
+        <label htmlFor="sellingAmount">Amount Selling:</label>
+        <a href="#max" onClick={this.onClick}>MAX</a>
+        <input
+          type="number"
+          name="sellingAmount"
+          id="sellingAmount"
+          onChange={this.onChange}
+          value={value}
+          min="0"
+          max={balance}
+        />
+        <small>{sellToken}</small>
 
-        <span>
-          <label htmlFor="gettingAmount">Est. Amount Getting:</label>
-          {/* CONSIDER ADDING GAS_COST TO RATIO */}
-          <input type="number" name="gettingAmount" id="gettingAmount" value={value * ratio} disabled />
-          <small>{buyToken}</small>
-        </span>
+        <label htmlFor="gettingAmount">Est. Amount Getting:</label>
+        {/* CONSIDER ADDING GAS_COST TO RATIO */}
+        <input type="number" name="gettingAmount" id="gettingAmount" value={value * ratio} readOnly />
+        <small>{buyToken}</small>
       </div>
     )
   }
