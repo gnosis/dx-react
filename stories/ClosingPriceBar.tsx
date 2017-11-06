@@ -16,7 +16,22 @@ const AuctionSectionDecorator: StoryDecorator = story => (
   </section>
 )
 
-storiesOf('ClosingPriceBar', module)
+const variations = {
+  PANEL2: {
+    header: 'Closing Price',
+  },
+  PANEL3: {
+    header: 'Price',
+  },
+}
+
+const story = storiesOf('ClosingPriceBar', module)
   .addDecorator(AuctionSectionDecorator)
   .addDecorator(ProviderDecorator)
-  .add('ClosingPriceBar', () => <ClosingPriceBar />)
+  // .add('ClosingPriceBar', () => <ClosingPriceBar />)
+
+for (const vrs of Object.keys(variations)) {
+  story.addWithJSX(vrs, (): React.ReactElement<string> => 
+    <ClosingPriceBar header={variations[vrs].header}/>,
+  )
+}
