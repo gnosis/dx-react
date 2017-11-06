@@ -1,11 +1,11 @@
 import * as React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
-import { TokenBalances } from 'types'
+import { Account, Balance, TokenBalances } from 'types'
 
 export interface WalletProps {
-  account: string,
-  balance: string | any,
+  account: Account,
+  balance: Balance | any,
   tokens: TokenBalances,
 }
 

@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { storiesOf, StoryDecorator } from '@storybook/react'
+import { text } from '@storybook/addon-knobs'
 
-import { makeProviderDecorator, storeInit, tokenPairState } from './helpers' 
+import { TokenCode } from 'types'
 
-import ClosingPriceBar from 'containers/ClosingPriceBar'
-
-const ProviderDecorator = makeProviderDecorator(storeInit(tokenPairState))
+import ClosingPriceBar from 'components/ClosingPriceBar'
 
 const AuctionSectionDecorator: StoryDecorator = story => (
   <section className="auction">
@@ -27,11 +26,14 @@ const variations = {
 
 const story = storiesOf('ClosingPriceBar', module)
   .addDecorator(AuctionSectionDecorator)
-  .addDecorator(ProviderDecorator)
-  // .add('ClosingPriceBar', () => <ClosingPriceBar />)
 
 for (const vrs of Object.keys(variations)) {
   story.addWithJSX(vrs, (): React.ReactElement<string> => 
-    <ClosingPriceBar header={variations[vrs].header}/>,
+    <ClosingPriceBar
+      buyToken={text('buyToken', 'GNO') as TokenCode} 
+      header={variations[vrs].header}
+      sellToken={text('sellToken', 'ETH') as TokenCode}
+      sellTokenPrice={text('sellPrice', '0')}
+    />,
   )
 }
