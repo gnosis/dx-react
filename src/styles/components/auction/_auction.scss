@@ -124,14 +124,18 @@ $headerHeight: 58px;
   width: 100%;
   padding: 25px;
   margin: 0 auto 35px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
+  display: grid;
   align-items: center;
   position: relative;
+  grid-gap: 6px;
+  grid-template-columns: minmax(20px, 1fr) minmax(20ch, 3fr) minmax(30px, 1fr) minmax(30px, 1fr) minmax(20ch, 3fr) minmax(20px, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+    ".   label1 .      . label2 ."
+    "max input1 token1 . input2 token2";
 
   &::after {
-    content: " ";
+    content: "";
     position: absolute;
     width: 1px;
     height: 100%;
@@ -141,13 +145,7 @@ $headerHeight: 58px;
     margin: auto;
   }
 
-  > span {
-    flex: 0 1 auto;
-    text-align: center;
-    position: relative;
-  }
-
-  > span > input {
+  input {
     height: 38px;
     box-sizing: border-box;
     padding: 10px 7px 10px 10px;
@@ -161,12 +159,20 @@ $headerHeight: 58px;
     line-height: 1;
     text-align: right;
 
+    &:first-of-type {
+      grid-area: input1;
+    }
+
+    &:last-of-type {
+      grid-area: input2;
+    }
+
     &[readonly] {
       background: #f2f3f5;
     }
   }
 
-  > span > label {
+  label {
     text-align: center;
     width: 100%;
     display: block;
@@ -174,34 +180,44 @@ $headerHeight: 58px;
     color: $darkBlue;
     letter-spacing: 1px;
     line-height: 1;
-    margin: 0 auto 6px;
     text-transform: uppercase;
-    position: relative;
     font-weight: bold;
+    white-space: nowrap;
+
+    &:first-of-type {
+      grid-area: label1;
+    }
+
+    &:last-of-type {
+      grid-area: label2;
+    }
   }
 
-  > span > label > a {
-    position: absolute;
-    left: -34px;
-    top: 32px;
+  a {
     text-decoration: underline;
     font-weight: lighter;
     font-family: inherit;
     font-size: 10px;
     color: $blue;
+    grid-area: max;
+    text-align: right;
   }
 
-  > span > small {
+  small {
     font-size: 11px;
     color: $darkBlue;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
     font-weight: bold;
-    position: absolute;
-    right: -32px;
-    top: 31px;
-    text-align: left;
+
+    &:first-of-type {
+      grid-area: token1;
+    }
+
+    &:last-of-type {
+      grid-area: token2;
+    }
   }
 }
 
