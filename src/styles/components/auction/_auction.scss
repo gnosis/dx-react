@@ -555,6 +555,7 @@ $headerHeight: 58px;
     position: absolute;
     top: 0;
     height: inherit;
+    width: 0;
     transition: width .3s ease-in-out;
     will-change: width;
   }
@@ -568,6 +569,10 @@ $headerHeight: 58px;
   }
 
   &[data-progress="3"]::after {
+    width: 86%;
+  }
+
+  &[data-progress="4"]::after {
     width: 100%;
   }
 }

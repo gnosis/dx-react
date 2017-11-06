@@ -3,9 +3,9 @@ interface Window {
   web3: any,
 }
 
+declare module 'storybook-router'
+
 declare module '*.svg' {
-  const content: string
+  const content: any
   export default content
 }
-
-declare module 'storybook-router'
