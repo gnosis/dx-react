@@ -346,12 +346,12 @@ $headerHeight: 58px;
 .auctionStatus {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
   height: 275px;
+  min-width: 90%;
   align-items: center;
 
   > span {
-    width: 50%;
     flex: 0 1 auto;
     text-align: center;
   }
