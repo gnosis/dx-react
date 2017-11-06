@@ -27,9 +27,11 @@ contract('DutchExchange', function(accounts) {
 
 		// get seller set up  
 		seller = accounts[1];
-		sellToken = await Token.new(); 
-		await sellToken.approve(seller, 100);
- 		await sellToken.transferFrom(initialiser, seller, 100, {from: seller});
+		sellToken = await Token.new();
+		await sellToken.approve(seller, 100)
+			.then(res => console.log('approve', res.receipt.gasUsed));
+ 		await sellToken.transferFrom(initialiser, seller, 100, {from: seller})
+ 			.then(res => console.log('transferFrom', res.receipt.gasUsed));
 
 		// get buyer set up
 		buyer = accounts[2];
@@ -70,8 +72,10 @@ contract('DutchExchange', function(accounts) {
 		const sellerBalancesBefore = (await dx.sellerBalances(1, seller)).toNumber();
 		const sellVolumeBefore = (await dx.sellVolumeCurrent()).toNumber();
 
-		await sellToken.approve(dxa, amount, {from: seller});
-		await dx.postSellOrder(amount, {from: seller});
+		await sellToken.approve(dxa, amount, {from: seller})
+			.then(res => console.log('approve sellOrder', res.receipt.gasUsed));
+		await dx.postSellOrder(amount, {from: seller})
+			.then(res => console.log('postSellOrder', res.receipt.gasUsed));
 
 		const sellerBalancesAfter = (await dx.sellerBalances(1, seller)).toNumber();
 		const sellVolumeAfter = (await dx.sellVolumeCurrent()).toNumber();
@@ -90,10 +94,12 @@ contract('DutchExchange', function(accounts) {
 		const buyerBalancesBefore = (await dx.buyerBalances(1, buyer)).toNumber();
 		const buyVolumeBefore = (await dx.buyVolumes(1)).toNumber();
 
-		await buyToken.approve(dxa, amount, {from: buyer});
+		await buyToken.approve(dxa, amount, {from: buyer})
+			.then(res => console.log('approve buyOrder', res.receipt.gasUsed));
 		const price = (await dx.getPrice(1)).map(x => x.toNumber());
 
-		await dx.postBuyOrder(amount, 1, {from: buyer});
+		await dx.postBuyOrder(amount, 1, {from: buyer})
+			.then(res => console.log('postBuyOrder', res.receipt.gasUsed));
 
 		const buyerBalancesAfter = (await dx.buyerBalances(1, buyer)).toNumber();
 		const buyVolumeAfter = (await dx.buyVolumes(1)).toNumber();
@@ -107,9 +113,11 @@ contract('DutchExchange', function(accounts) {
 		const buyerBalancesBefore = (await dx.buyerBalances(1, buyer)).toNumber();
 		const buyVolumeBefore = (await dx.buyVolumes(1)).toNumber();
 
-		await buyToken.approve(dxa, amount, {from: buyer});
+		await buyToken.approve(dxa, amount, {from: buyer})
+			.then(res => console.log('approve buyOrderAndClaim', res.receipt.gasUsed));
 		const price = (await dx.getPrice(1)).map(x => x.toNumber());
-		await dx.postBuyOrderAndClaim(amount, 1, {from: buyer});
+		await dx.postBuyOrderAndClaim(amount, 1, {from: buyer})
+			.then(res => console.log('postBuyOrderAndClaim', res.receipt.gasUsed));
 
 		const claimedAmountAfter = (await dx.claimedAmounts(1, buyer)).toNumber();
 		const buyerBalancesAfter = (await dx.buyerBalances(1, buyer)).toNumber();
@@ -123,6 +131,7 @@ contract('DutchExchange', function(accounts) {
 
 	const postBuyOrdersAndClaim = async function() {
 		await approveAndBuy(50);
+		await approveAndBuy(25);
 		await approveBuyAndClaim(25);
 		await utils.assertRejects(approveAndSell(50));
 		await auctionStillRunning();
@@ -135,6 +144,7 @@ contract('DutchExchange', function(accounts) {
 
 	const startAuction = async function() {
 		const exchangeStart = (await dx.auctionStart()).toNumber();
+			// .then(res => console.log('get exchangeStart', res.receipt.gasUsed)).toNumber();
 		const now = (await dx.now()).toNumber();
 		const timeUntilStart = exchangeStart - now;
 		await dx.increaseTimeBy(1, timeUntilStart);
@@ -189,7 +199,8 @@ contract('DutchExchange', function(accounts) {
 		// It should subtract it before transferring
 
 		await buyToken.approve(dxa, amount, {from: buyer});
-		await dx.postBuyOrder(amount, 1, {from: buyer});
+		await dx.postBuyOrder(amount, 1, {from: buyer})
+			.then(res => console.log('post Buy order which clears auction', res.receipt.gasUsed));
 
 		const buyVolumeAfter = (await dx.buyVolumes(1)).toNumber();
 		const buyerBalanceAfter = (await dx.buyerBalances(1, buyer)).toNumber();
@@ -205,7 +216,8 @@ contract('DutchExchange', function(accounts) {
 		const buyerBalance = (await dx.buyerBalances(1, buyer)).toNumber();
 		const claimedAmountBefore = (await dx.claimedAmounts(1, buyer)).toNumber();
 
-		await dx.claimBuyerFunds(1, {from: buyer});
+		await dx.claimBuyerFunds(1, {from: buyer})
+			.then(res => console.log('claimBuyerFunds', res.receipt.gasUsed));
 
 		// Calculate returned value
 		const price = (await dx.getPrice(1)).map(x => x.toNumber());
@@ -221,7 +233,13 @@ contract('DutchExchange', function(accounts) {
 	const claimSellerFunds = async function() {
 		const sellerBalance = (await dx.sellerBalances(1, seller)).toNumber();
 
-		const claimReceipt = await dx.claimSellerFunds(1, {from: seller});
+		let claimReceipt;
+
+		await dx.claimSellerFunds(1, {from: seller})
+			.then(res => {
+				claimReceipt = res;
+				console.log('claimSellerFunds', res.receipt.gasUsed);
+			})
 
 		const returned = claimReceipt.logs[0].args._returned.toNumber();
 
@@ -281,5 +299,7 @@ contract('DutchExchange', function(accounts) {
 
 		await claimBuyerFunds();
 		await claimSellerFunds();
+
+		console.log('balance', web3.eth.getBalance(seller).toNumber());
 	})
 })
