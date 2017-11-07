@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
-import AuctionContainer from 'components/AuctionContainer'
+import AuctionContainer from 'containers/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
 import AuctionPriceBar from 'containers/AuctionPriceBar'
