@@ -57,7 +57,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
 
         <label htmlFor="gettingAmount">Est. Amount Getting:</label>
         {/* CONSIDER ADDING GAS_COST TO RATIO */}
-        <input type="number" name="gettingAmount" id="gettingAmount" value={value * ratio} readOnly />
+        <input type="number" name="gettingAmount" id="gettingAmount" value={(value * ratio).toFixed(4)} readOnly />
         <small>{buyToken}</small>
       </div>
     )
