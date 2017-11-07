@@ -5,7 +5,7 @@ import { text } from '@storybook/addon-knobs'
 
 import { TokenCode } from 'types'
 
-import ClosingPriceBar from 'components/ClosingPriceBar'
+import AuctionPriceBar from 'components/AuctionPriceBar'
 
 const AuctionSectionDecorator: StoryDecorator = story => (
   <section className="auction">
@@ -29,7 +29,7 @@ const story = storiesOf('ClosingPriceBar', module)
 
 for (const vrs of Object.keys(variations)) {
   story.addWithJSX(vrs, () => 
-    <ClosingPriceBar
+    <AuctionPriceBar
       buyToken={text('buyToken', 'GNO') as TokenCode} 
       header={variations[vrs].header}
       sellToken={text('sellToken', 'ETH') as TokenCode}

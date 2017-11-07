@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { State } from 'types'
-import ClosingPriceBar from 'components/ClosingPriceBar'
+import AuctionPriceBar from 'components/AuctionPriceBar'
 
 // TODO: create state for lastAuctionPrice for each token
 const mapState = ({ tokenPair }: State) => ({
@@ -10,4 +10,4 @@ const mapState = ({ tokenPair }: State) => ({
   buyToken: tokenPair.buy,
 })
 
-export default connect(mapState)(ClosingPriceBar)
+export default connect(mapState)(AuctionPriceBar)
