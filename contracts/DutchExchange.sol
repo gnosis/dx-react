@@ -25,8 +25,8 @@ contract DutchExchange {
     Token public sellToken;
     // Usually ETH
     Token public buyToken;
-    // DUTCHX tokens, used to vote on new token proposals
-    Token public DUTCHX;
+    // TUL tokens provide benefit to regular users
+    Token public TUL;
 
     // Index of the current auction. This is necessary to store closing prices (see next variable)
     uint256 public auctionIndex = 1;
@@ -62,7 +62,7 @@ contract DutchExchange {
         uint256 initialClosingPriceDen,
         address _sellToken,
         address _buyToken,
-        address _DUTCHX
+        address _TUL
     ) public {
         // Calculate initial price
         fraction memory initialClosingPrice;
@@ -73,23 +73,8 @@ contract DutchExchange {
         // Set variables
         sellToken = Token(_sellToken);
         buyToken = Token(_buyToken);
-        DUTCHX = Token(_DUTCHX);
+        TUL = Token(_TUL);
         scheduleNextAuction();
-    }
-
-    function clearAuction(uint256 currentPriceNum, uint256 currentPriceDen)
-        internal
-        returns (bool success) 
-    {
-        // Update state variables
-        closingPrices[auctionIndex].num = currentPriceNum;
-        closingPrices[auctionIndex].den = currentPriceDen;
-        sellVolumeCurrent = sellVolumeNext;
-        sellVolumeNext = 0;
-        auctionIndex++;
-
-        AuctionCleared(auctionIndex - 1);
-        success = true;
     }
 
     function postSellOrder(uint256 amount) public returns (bool success) {
@@ -121,6 +106,14 @@ contract DutchExchange {
         uint256 num;
         uint256 den;
         (num, den) = getPrice(_auctionIndex);
+
+        // 2ndprice = price of other auction
+        // if (1 / 2ndprice < currentprice) {
+            // avg = (1/2ndprice + currentprice) / 2;
+            // buytokensrequired = ... ;
+            // buytokensrequiredforOtherAuction = ...;
+            // processed = 2ndAuction.postBuyOrderWithPriceAndClaim(buytokensrequired);
+        // }
 
         // Calculate if buy order overflows
 
@@ -237,14 +230,31 @@ contract DutchExchange {
                 denOfLastClosingPrice = denOfLastClosingPrice / 10**9;
             }
 
-            // The numbers 36k and 18k are chosen, so the initial price is double the last closing price
+            // The numbers 36k and 18k are chosen such that the initial price is double the last closing price,
             // And after 5 hours (18000 s), the price is the same as last closing price
             num = 36000 * numOfLastClosingPrice;
             den = (now - auctionStart + 18000) * denOfLastClosingPrice;
         }  
     }
 
-    function scheduleNextAuction() internal {
+    function clearAuction(uint256 currentPriceNum, uint256 currentPriceDen)
+        internal
+        returns (bool success) 
+    {
+        // Update state variables
+        closingPrices[auctionIndex].num = currentPriceNum;
+        closingPrices[auctionIndex].den = currentPriceDen;
+        sellVolumeCurrent = sellVolumeNext;
+        sellVolumeNext = 0;
+        auctionIndex++;
+
+        AuctionCleared(auctionIndex - 1);
+        success = true;
+    }
+
+    function scheduleNextAuction()
+        internal
+    {
         // Number of elapsed 6-hour periods since 1/1/1970
         uint256 elapsedPeriods = now / 1 hours / 6;
         // Set start period to following one

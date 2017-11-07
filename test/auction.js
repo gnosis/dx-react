@@ -43,7 +43,6 @@ contract('Auction', async (accounts) => {
 
 
   it('seller can submit order to an auction', async () => {
-
     // we know there's a deployed contract somewhere
     const dutchExchange = DutchExchange.at(dxa)
 
