@@ -72,7 +72,8 @@
   },
   "env": {
     "jest/globals": true,
-    "browser": true
+    "browser": true,
+    "mocha": true
   },
   "globals": {
     "assert": true,
