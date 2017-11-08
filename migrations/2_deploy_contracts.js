@@ -29,8 +29,8 @@ module.exports = (deployer) => {
      * _buyToken = GNO | ETH
      * _TUL = Token
      */
-    deployer.deploy(DutchExchangeETHGNO, 2, 1, TokenETH.address, Token.address)
-    deployer.deploy(DutchExchangeGNOETH, 2, 1, TokenGNO.address, Token.address)
+    deployer.deploy(DutchExchangeETHGNO, 2, 1, TokenETH.address, TokenGNO.address, Token.address)
+    deployer.deploy(DutchExchangeGNOETH, 2, 1, TokenGNO.address, TokenETH.address, Token.address)
 
     deployer.deploy(Token3)
     deployer.deploy(DutchExchange)
