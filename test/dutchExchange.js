@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const utils = require('./utils');
 // const { wait, waitUntilBlock } = require('tempo')(web3);
 
