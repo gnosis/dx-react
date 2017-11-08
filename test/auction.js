@@ -4,18 +4,7 @@ const DutchExchange = artifacts.require('./DutchExchange.sol')
 // const DutchExchangeFactory = artifacts.require('./DutchExchangeFactory.sol')
 
 contract('Auction', async (accounts) => {
-  // console.log(accounts);
-
-  let initialiser
-  let seller
-  let buyer
-
-  let sellToken
-  let buyToken
-  let DUTCHX
-  let dx
-
-  let dxa
+  let initialiser, seller, buyer, sellToken, buyToken, DUTCHX, dx, dxa
 
   // let dxFactory
 
@@ -24,8 +13,11 @@ contract('Auction', async (accounts) => {
 
     // get seller set up
     sellToken = await Token.new()
+
     await sellToken.approve(seller, 100)
     await sellToken.transferFrom(initialiser, seller, 100, { from: seller })
+    // same effect as
+    // await sellToken.transfer(seller, 100, { from: initialiser })
 
     // get buyer set up
     buyToken = await Token.new()
