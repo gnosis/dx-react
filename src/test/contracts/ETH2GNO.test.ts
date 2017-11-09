@@ -6,12 +6,17 @@ import TULart from '../../../build/contracts/Token.json'
 import TC from 'truffle-contract'
 import Web3 from 'web3'
 
+import { promisify } from 'util'
+
 const DX = TC(DXart)
 const ETH = TC(ETHart)
 const GNO = TC(GNOart)
 const TUL = TC(TULart)
+console.log(1, TUL.deployed)
 
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
+const web3 = new Web3(provider)
+
 
 DX.setProvider(provider)
 ETH.setProvider(provider)
@@ -21,6 +26,7 @@ TUL.setProvider(provider)
 describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
+  const [master, seller, buyer]: string[] = web3.eth.accounts
 
 
   beforeAll(async () => {
@@ -28,18 +34,33 @@ describe('ETH 2 GNO contract', () => {
     eth = await ETH.deployed()
     gno = await GNO.deployed()
     tul = await TUL.deployed()
+
+    // seller must have initial balance of ETH
+    // allow a transfer
+    await eth.approve(seller, 100, { from: master })
+    // // transfer initial balance of 100 ETH
+    await eth.transferFrom(master, seller, 100, { from: seller })
+    // same as
+    // await eth.transfer(seller, 100, { from: master })
+
+
+    // // buyer must have initial balance of GNO
+    // // allow a transfer
+    await gno.approve(buyer, 1000, { from: master })
+    // // transfer initial balance of 1000 GNO
+    await gno.transferFrom(master, buyer, 1000, { from: buyer })
   })
 
 
   it('contracts are deployed', async () => {
-    expect(dx).toBeTruthy()
-
-    expect(eth).toBeTruthy()
-
-    expect(gno).toBeTruthy()
-
-    expect(tul).toBeTruthy()
+    expect(dx && eth && gno && tul).toBeTruthy()
   })
+
+
+  it('accounts are available', () => {
+    [master, seller, buyer].forEach(address => expect(address).toMatch(/^0x\w{40}$/))
+  })
+
 
 
   it('contracts are deployed with expected initial data', async () => {
@@ -62,5 +83,24 @@ describe('ETH 2 GNO contract', () => {
     expect(TULaddress).toBe(TUL.address)
   })
 
+  it('master is ETH and GNO owner', async () => {
+    const ETHowner = await eth.owner()
+    const GNOowner = await gno.owner()
 
+    expect(master).toBe(ETHowner)
+    expect(master).toBe(GNOowner)
+  })
+
+  it('all accounts have the right balance', async () => {
+    const ETHtotal = await eth.getTotalSupply()
+    const masterETHBalance = await eth.balanceOf(master)
+    const sellerETHBalance = await eth.balanceOf(seller)
+
+    const GNOtotal = await gno.getTotalSupply()
+    const masterGNOBalance = await gno.balanceOf(master)
+    const buyerGNOBalance = await gno.balanceOf(buyer)
+
+    expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
+    expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
+  })
 })
