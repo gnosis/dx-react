@@ -96,7 +96,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "sha1": "^1.1.1",
-    "truffle-contract": "^3.0.0",
+    "truffle-contract": "^3.0.1",
     "uuid": "^3.1.0",
     "web3": "^0.20.2",
     "whatwg-fetch": "^2.0.3"
