@@ -24,10 +24,15 @@ describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
   const [master, seller, buyer]: string[] = web3.eth.accounts
+  let dxa: string
+
+  // TODO: snapshot testrpc state
+  // WORKAROUND: truffle migrate --reset before tests
 
 
   beforeAll(async () => {
     dx = await DX.deployed()
+    dxa = DX.address
     eth = await ETH.deployed()
     gno = await GNO.deployed()
     tul = await TUL.deployed()
@@ -99,5 +104,36 @@ describe('ETH 2 GNO contract', () => {
 
     expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
     expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
+  })
+
+  // TODO: rework to make a part of submit -> buy -> claim flow
+  it('seller can submit order to an auction', async () => {
+    const amount = 30
+    // allow the contract to move tokens
+    await eth.approve(dxa, amount, { from: seller })
+
+    // currently in auction
+    const emptyAuctionVol = await dx.sellVolumeCurrent()
+    expect(emptyAuctionVol.toNumber()).toBe(0)
+
+    // seller submits order and returns transaction object
+    // that includes logs of events that fired during function execution
+    const { logs: [log] } = await dx.postSellOrder(amount, { from: seller, gas: 4712388 })
+    const { _auctionIndex, _from, amount: submittedAmount } = log.args
+
+    // submitter is indeed the seller
+    expect(_from).toBe(seller)
+    // amount is the same
+    expect(submittedAmount.toNumber()).toBe(amount)
+
+    // currently in auction
+    const filledAuctionVol = await dx.sellVolumeCurrent()
+
+    // auction received the exact sum from the seller
+    expect(filledAuctionVol.add(emptyAuctionVol).toNumber()).toEqual(amount)
+
+    // seller is now assigned a balance
+    const sellerBalance = await dx.sellerBalances(_auctionIndex, seller)
+    expect(sellerBalance.toNumber()).toEqual(amount)
   })
 })
