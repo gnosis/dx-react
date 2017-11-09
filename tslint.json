@@ -14,6 +14,7 @@
     "import-name": false,
     "max-line-length": false,
     "object-shorthand-properties-first": false,
+    "one-variable-per-declaration": false,
     "align": [
       true,
       "statements",
