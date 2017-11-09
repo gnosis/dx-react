@@ -1,4 +1,4 @@
-import DXart from '../../../build/contracts/DutchExchange.json'
+import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
 import GNOart from '../../../build/contracts/TokenGNO.json'
 import TULart from '../../../build/contracts/Token.json'
