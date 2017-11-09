@@ -6,13 +6,10 @@ import TULart from '../../../build/contracts/Token.json'
 import TC from 'truffle-contract'
 import Web3 from 'web3'
 
-import { promisify } from 'util'
-
 const DX = TC(DXart)
 const ETH = TC(ETHart)
 const GNO = TC(GNOart)
 const TUL = TC(TULart)
-console.log(1, TUL.deployed)
 
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 const web3 = new Web3(provider)
