@@ -42,7 +42,7 @@ describe('ETH 2 GNO contract', () => {
   })
 
 
-  it.skip('ccontracts are deployed with expected data', async () => {
+  it('contracts are deployed with expected initial data', async () => {
     // initial price is set
     let initialClosingPrice = await dx.closingPrices(0)
     initialClosingPrice = initialClosingPrice.map((x: any) => x.toNumber())
