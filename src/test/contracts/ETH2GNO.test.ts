@@ -24,10 +24,10 @@ describe('ETH 2 GNO contract', () => {
 
 
   beforeAll(async () => {
-    dx = await ETH.deployed()
+    dx = await DX.deployed()
     eth = await ETH.deployed()
-    gno = await ETH.deployed()
-    tul = await ETH.deployed()
+    gno = await GNO.deployed()
+    tul = await TUL.deployed()
   })
 
 
