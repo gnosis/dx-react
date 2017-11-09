@@ -32,7 +32,11 @@ const windowLoaded = new Promise((accept, reject) => {
 const contractArtifacts = [
   'DutchExchange',
   'DutchExchangeFactory',
+  'DutchExchangeETHGNO',
+  'DutchExchangeGNOETH',
   'Token',
+  'TokenETH',
+  'TokenGNO',
 ].map(name => require(`../../build/contracts/${name}.json`))
 
 class DutchExchangeInit {
@@ -53,15 +57,14 @@ class DutchExchangeInit {
    * @returns DutchExchangeInit INSTANCE
    * @memberof DutchExchangeInit
    */
-  static async init(opts?: Object) {
-    console.log(' ===> FIRING dutchX.init()')
+  static async init(opts?: object) {
     const dutchX = new DutchExchangeInit()
     await dutchX.fireUp(opts)
     return dutchX
   }
 
   /* SET UP OPTS PARAM */
-  async fireUp(opts?: Object | any) {
+  async fireUp(opts?: object | any) {
     await this.setWeb3Provider(opts.ethereum)
   }
 
@@ -96,8 +99,12 @@ class DutchExchangeInit {
     // Attempt to attach all CONTRACT INSTANCES to Class
     await Promise.all([
       this.setupContractInstances('DutchExchange', this.contracts.DutchExchange),
-      this.setupContractInstances('DutchExchangeFactory', this.contracts.DutchExchangeFactory),
-      // this.setupContractInstances('Token', this.contracts.Token),
+      // this.setupContractInstances('DutchExchangeFactory', this.contracts.DutchExchangeFactory),
+      this.setupContractInstances('DutchExchangeETHGNO', this.contracts.DutchExchangeETHGNO),
+      this.setupContractInstances('DutchExchangeGNOETH', this.contracts.DutchExchangeGNOETH),
+      this.setupContractInstances('Token', this.contracts.Token),
+      this.setupContractInstances('TokenETH', this.contracts.TokenETH),
+      this.setupContractInstances('TokenGNO', this.contracts.TokenGNO),
     ])
   }
 
