@@ -1,16 +1,7 @@
-/**
- * Initialisation Class for connecting to Blockchain - Setting Provider - Migrating//Connecting Contracts
- */
-
 const Web3 = require('web3')
 const TruffleContract = require('truffle-contract')
 const _ = require('lodash')
 
-/** EVENT LISTENER: WINDOW:LOAD
- * Checks that window is loaded
- * If browser is unable to listen to events, REJECT
- * Else ACCEPT
- */
 const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
     return accept()
@@ -26,9 +17,6 @@ const windowLoaded = new Promise((accept, reject) => {
   }, false)
 })
 
-/** ARRAY of Contract Artifacts
- * ^ that
- */
 const contractArtifacts = [
   'DutchExchange',
   'DutchExchangeFactory',
@@ -42,6 +30,11 @@ const contractArtifacts = [
 class DutchExchangeInit {
   contracts: object | any
   web3: any
+
+  /** CONSTRUCTOR
+   * sets contract artifacts from build/contracts/../.json into TruffleContract(...) 
+   * and into DutchExchange.contracts.ContractName
+   */
   constructor() {
     this.contracts = _.fromPairs(contractArtifacts.map((artifact) => {
       const c = TruffleContract(artifact)
@@ -63,7 +56,7 @@ class DutchExchangeInit {
     return dutchX
   }
 
-  /* SET UP OPTS PARAM */
+  /** SET UP OPTS PARAM */
   async fireUp(opts?: object | any) {
     await this.setWeb3Provider(opts.ethereum)
   }
