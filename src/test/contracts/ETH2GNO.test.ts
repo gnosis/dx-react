@@ -14,7 +14,6 @@ const TUL = TC(TULart)
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 const web3 = new Web3(provider)
 
-
 DX.setProvider(provider)
 ETH.setProvider(provider)
 GNO.setProvider(provider)
@@ -54,7 +53,7 @@ describe('ETH 2 GNO contract', () => {
   })
 
 
-  it('contracts are deployed', async () => {
+  it('contracts are deployed', () => {
     expect(dx && eth && gno && tul).toBeTruthy()
   })
 
