@@ -1,14 +1,14 @@
 /* eslint-disable */
 import { initDutchXConnection, getDutchXConnection } from 'api/dutchx'
 // import DutchExchangeInit from 'api/initialization'
-const Web3 = require('web3')
+// const Web3 = require('web3')
 
 describe('DutchExchangeInit', () => {
   let dxClass: any
-  let dx: any 
+  let dx: any
   let dxEG: any
   let dxGE: any
-  let eth: any 
+  let eth: any
   let gno: any
   let tul: any
   let accounts: any
@@ -18,18 +18,18 @@ describe('DutchExchangeInit', () => {
 
   beforeAll(async () => {
     await initDutchXConnection({ ethereum: 'http://localhost:8545' })
-    dxClass =   await getDutchXConnection()
-    dx =        dxClass.DutchExchange
-    dxEG =      dxClass.DutchExchangeETHGNO
-    dxGE =      dxClass.DutchExchangeGNOETH
-    tul =       dxClass.Token
-    eth =       dxClass.TokenETH
-    gno =       dxClass.TokenGNO
-    accounts =  [...dxClass.web3.eth.accounts]
-    
-    user =      accounts[0]
-    seller =    accounts[1]
-    buyer =     accounts[2]
+    dxClass = await getDutchXConnection()
+    dx = dxClass.DutchExchange
+    dxEG = dxClass.DutchExchangeETHGNO
+    dxGE = dxClass.DutchExchangeGNOETH
+    tul = dxClass.Token
+    eth = dxClass.TokenETH
+    gno = dxClass.TokenGNO
+    accounts = [...dxClass.web3.eth.accounts]
+
+    user = accounts[0]
+    seller = accounts[1]
+    buyer = accounts[2]
   })
 
   it('should return an instance of DutchExchangeInit', () => {
@@ -46,7 +46,7 @@ describe('DutchExchangeInit', () => {
     initialClosingPrice = initialClosingPrice.map((x: any) => x.toNumber())
 
     console.log('initialClosingPrice = ', initialClosingPrice)
-    expect(initialClosingPrice).toEqual([2,1])
+    expect(initialClosingPrice).toEqual([2, 1])
 
     // sell Token = set
     const ETHAddress = await dxEG.sellToken()
@@ -60,7 +60,7 @@ describe('DutchExchangeInit', () => {
   })
 
   it('should grab Token Balances for each Token - ETH,GNO,TUL', async () => {
-    
+
     const instantiatorETHBalance = await eth.balanceOf(user)
     console.log(instantiatorETHBalance.s)
 
