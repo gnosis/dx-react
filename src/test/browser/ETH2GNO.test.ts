@@ -17,15 +17,17 @@ const currentProvider = typeof window !== 'undefined' && window.web3 && window.w
 console.log('currentProvider', currentProvider)
 
 // when running testrpc via truffle develop change port to 9545
-const provider = currentProvider || new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+const localProvider = new Web3.providers.HttpProvider('http://localhost:8545')
+// Metamask returns only current account from web3.eth.accounts
+// so we get all accounts from local testrpc instance
+const web3 = new Web3(localProvider)
 
-DX.setProvider(provider)
-ETH.setProvider(provider)
-GNO.setProvider(provider)
-TUL.setProvider(provider)
+DX.setProvider(localProvider)
+ETH.setProvider(localProvider)
+GNO.setProvider(localProvider)
+TUL.setProvider(localProvider)
 
-console.log('window', web3.eth.accounts)
+console.log('accounts', web3.eth.accounts)
 
 const delay = (timeout = 20000) => new Promise((res) => {
   console.log(`start delay ${timeout / 1000} sec`)
@@ -36,19 +38,14 @@ const delay = (timeout = 20000) => new Promise((res) => {
 const metamaskWarning = (acc: string, addr: string) =>
   console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
 
-// deterministic accounts from testrpc
-// needed because Metamask returns only current account from web3.eth.accounts
-const DET = [
-  '0x22d491bde2303f2f43325b2108d26f1eaba1e32b',
-  '0xffcf8fdee72ac11b5c542428b35eef5769c409f0',
-  '0x22d491bde2303f2f43325b2108d26f1eaba1e32b',
-]
-
 
 describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
-  const [master = DET[0], seller = DET[1], buyer = DET[2]]: string[] = web3.eth.accounts
+  const [master, seller, buyer]: string[] = web3.eth.accounts
+  // if Metamask is injected, switch to its provider
+  currentProvider && web3.setProvider(currentProvider)
+
   let dxa: string
 
   const accs = { master, seller, buyer }
@@ -68,14 +65,10 @@ describe('ETH 2 GNO contract', () => {
     gno = await GNO.deployed()
     tul = await TUL.deployed()
 
-    await delayFor('master')
-
     // seller must have initial balance of ETH
     // allow a transfer
     await eth.approve(seller, 100, { from: master })
-    console.log('master aapproved seller to withdraw 100 ETH')
-
-    await delayFor('seller')
+    console.log('master approved seller to withdraw 100 ETH')
 
     // transfer initial balance of 100 ETH
     await eth.transferFrom(master, seller, 100, { from: seller })
@@ -83,19 +76,19 @@ describe('ETH 2 GNO contract', () => {
     // await eth.transfer(seller, 100, { from: master })
     console.log('seller', seller, 'received 100 ETH')
 
-    await delayFor('master')
-
 
     // buyer must have initial balance of GNO
     // allow a transfer
     await gno.approve(buyer, 1000, { from: master })
     console.log('master approved buyer to withdraw 1000 GNO')
 
-    await delayFor('buyer')
-
     // transfer initial balance of 1000 GNO
     await gno.transferFrom(master, buyer, 1000, { from: buyer })
     console.log('buyer', buyer, 'received 1000 GNO')
+
+    // if Metamask is injected, use it for interaction with DX
+    // by switching providers to it
+    currentProvider && DX.setProvider(currentProvider)
   })
 
 
