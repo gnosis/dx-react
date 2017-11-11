@@ -21,7 +21,7 @@
     "lint:fix": "npm run lint:js:fix; npm run lint:ts:fix; npm run lint:css:fix",
     "test": "jest --watch",
     "test:karma": "karma start",
-    "test:karma:manual": "karma start --no-browser",
+    "test:karma:manual": "karma start --no-browsers",
     "stats": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --profile --json > stats.json",
     "precommit": "lint-staged",
     "storybook": "start-storybook -s ./ -p 6006",
