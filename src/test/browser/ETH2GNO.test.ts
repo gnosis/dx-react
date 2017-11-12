@@ -177,4 +177,30 @@ describe('ETH 2 GNO contract', () => {
     const sellerBalance = await dx.sellerBalances(_auctionIndex, seller)
     expect(sellerBalance.toNumber()).toEqual(amount)
   })
+
+  it('auction is started', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+
+    // still on the first auction
+    expect(auctionIndex).toBe(1)
+    const auctionStart = (await dx.auctionStart()).toNumber()
+    let now = (await dx.now()).toNumber()
+
+    // auction hasn't started yet
+    expect(auctionStart).toBeGreaterThan(now)
+    const timeUntilStart = auctionStart - now
+
+    // move time to start + 1 hour
+    await dx.increaseTimeBy(1, timeUntilStart, { from: master })
+    now = (await dx.now()).toNumber()
+
+    const getPrice = async (ind: number) => (await dx.getPrice(ind)).map((n: any) => n.toNumber())
+    const [num, den] = await getPrice(auctionIndex)
+    const [lastNum, lastDen] = await getPrice(auctionIndex - 1)
+
+    // current num/den are derived from last closing price according to formula in DutchExchange.getPrice
+    // that is double the last closing price minus function of time passed
+    expect(36000 * lastNum).toBe(num)
+    expect((now - auctionStart + 18000) * lastDen).toBe(den)
+  })
 })
