@@ -190,9 +190,16 @@ describe('ETH 2 GNO contract', () => {
     expect(auctionStart).toBeGreaterThan(now)
     const timeUntilStart = auctionStart - now
 
+    // quickly switch providers to testrpc if needed
+    currentProvider && DX.setProvider(localProvider)
     // move time to start + 1 hour
     await dx.increaseTimeBy(1, timeUntilStart, { from: master })
     now = (await dx.now()).toNumber()
+    // switch providers back
+    currentProvider && DX.setProvider(currentProvider)
+
+    // auction has started
+    expect(auctionStart).toBeLessThan(now)
 
     const getPrice = async (ind: number) => (await dx.getPrice(ind)).map((n: any) => n.toNumber())
     const [num, den] = await getPrice(auctionIndex)
