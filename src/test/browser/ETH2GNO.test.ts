@@ -39,7 +39,7 @@ const metamaskWarning = (acc: string, addr: string) =>
   console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
 
 
-describe('ETH 2 GNO contract', () => {
+describe.skip('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
   const [master, seller, buyer]: string[] = web3.eth.accounts
