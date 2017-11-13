@@ -1,33 +1,14 @@
+// import DutchExchangeInit from '../../api/initialization';
 import expect from 'expect'
-
-import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
-import ETHart from '../../../build/contracts/TokenETH.json'
-import GNOart from '../../../build/contracts/TokenGNO.json'
-import TULart from '../../../build/contracts/Token.json'
-
-import TC from 'truffle-contract'
-import Web3 from 'web3'
-
-const DX = TC(DXart)
-const ETH = TC(ETHart)
-const GNO = TC(GNOart)
-const TUL = TC(TULart)
+import { initDutchXConnection/*, getDutchXConnection*/ } from 'api/dutchx'
 
 const currentProvider = typeof window !== 'undefined' && window.web3 && window.web3.currentProvider
 console.log('currentProvider', currentProvider)
 
 // when running testrpc via truffle develop change port to 9545
-const localProvider = new Web3.providers.HttpProvider('http://localhost:8545')
+const localProvider = 'http://localhost:8545'
 // Metamask returns only current account from web3.eth.accounts
 // so we get all accounts from local testrpc instance
-const web3 = new Web3(localProvider)
-
-DX.setProvider(localProvider)
-ETH.setProvider(localProvider)
-GNO.setProvider(localProvider)
-TUL.setProvider(localProvider)
-
-console.log('accounts', web3.eth.accounts)
 
 const delay = (timeout = 20000) => new Promise((res) => {
   console.log(`start delay ${timeout / 1000} sec`)
@@ -39,31 +20,61 @@ const metamaskWarning = (acc: string, addr: string) =>
   console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
 
 
-describe('ETH 2 GNO contract', () => {
+describe('ETH 2 GNO contract via DutchX Class', () => {
   // TODO: proper types
-  let dx: any, eth: any, gno: any, tul: any
-  const [master, seller, buyer]: string[] = web3.eth.accounts
-  // if Metamask is injected, switch to its provider
-  currentProvider && web3.setProvider(currentProvider)
-
+  // let masterDX: any
+  let dxClass: any
+  let DX: any; let ETH: any; let GNO: any; let TUL: any
   let dxa: string
-
-  const accs = { master, seller, buyer }
-
-  // delays interaction so that we can switch accounts in Metamask
-  // if running without metamask -- no delay
-  const delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay())
+  let dx: any; let eth: any; let gno: any; let tul: any
+  
+  // let masterAccount: any
+  let dxAccounts: any; let accs: any
+  
+  let master: any; let seller: any; let buyer: any
+  let delayFor: any
+  // if Metamask is injected, switch to its provider
+  // currentProvider && web3.setProvider(currentProvider)
 
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
 
   before(async () => {
-    dx = await DX.deployed()
-    dxa = DX.address
-    eth = await ETH.deployed()
-    gno = await GNO.deployed()
-    tul = await TUL.deployed()
+    // masterDX  = await initDutchXConnection({ ethereum: localProvider })
+    dxClass   = await initDutchXConnection({ ethereum: localProvider })
+
+    DX        = dxClass.contracts.DutchExchangeETHGNO
+    dxa       = dxClass.contracts.DutchExchangeETHGNO.address
+    dx        = dxClass.DutchExchangeETHGNO
+
+    ETH       = dxClass.contracts.TokenETH
+    GNO       = dxClass.contracts.TokenGNO
+    TUL       = dxClass.contracts.Token
+    dxa       = dxClass.contracts.DutchExchangeETHGNO.address
+    dx        = dxClass.DutchExchangeETHGNO
+    tul       = dxClass.Token
+    eth       = dxClass.TokenETH
+    gno       = dxClass.TokenGNO
+    
+    // Set master Account from masterDX and accounts from dxClass
+    // masterAccount   = [...masterDX.web3.eth.accounts]
+    dxAccounts      = [...dxClass.web3.eth.accounts]
+
+    master    = dxAccounts[0]
+    seller    = dxAccounts[1]
+    buyer     = dxAccounts[2]
+
+    accs = { master, seller, buyer }
+
+    console.log(`MASTER = ${master}, SELLER = ${seller}, BUYER = ${buyer}`)
+    
+    // delays interaction so that we can switch accounts in Metamask
+    // if running without metamask -- no delay
+    delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay(15000))
+
+    // Set Provider for MASTER as local
+    // await DX.setProvider(localProvider)
 
     // seller must have initial balance of ETH
     // allow a transfer
@@ -148,7 +159,7 @@ describe('ETH 2 GNO contract', () => {
   it('seller can submit order to an auction', async () => {
     const amount = 30
 
-    await delayFor('seller')
+    // await delayFor('seller')
 
     // allow the contract to move tokens
     await eth.approve(dxa, amount, { from: seller })
@@ -191,12 +202,16 @@ describe('ETH 2 GNO contract', () => {
     const timeUntilStart = auctionStart - now
 
     // quickly switch providers to testrpc if needed
-    currentProvider && DX.setProvider(localProvider)
+    // currentProvider && DX.setProvider(localProvider)
+    
+    await delayFor('master')
     // move time to start + 1 hour
     await dx.increaseTimeBy(1, timeUntilStart, { from: master })
     now = (await dx.now()).toNumber()
+    
+    await delayFor('seller')
     // switch providers back
-    currentProvider && DX.setProvider(currentProvider)
+    // currentProvider && DX.setProvider(currentProvider)
 
     // auction has started
     expect(auctionStart).toBeLessThan(now)
