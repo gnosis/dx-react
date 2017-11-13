@@ -1,3 +1,5 @@
+import expect from 'expect'
+
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
 import GNOart from '../../../build/contracts/TokenGNO.json'
@@ -11,25 +13,52 @@ const ETH = TC(ETHart)
 const GNO = TC(GNOart)
 const TUL = TC(TULart)
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+const currentProvider = typeof window !== 'undefined' && window.web3 && window.web3.currentProvider
+console.log('currentProvider', currentProvider)
 
-DX.setProvider(provider)
-ETH.setProvider(provider)
-GNO.setProvider(provider)
-TUL.setProvider(provider)
+// when running testrpc via truffle develop change port to 9545
+const localProvider = new Web3.providers.HttpProvider('http://localhost:8545')
+// Metamask returns only current account from web3.eth.accounts
+// so we get all accounts from local testrpc instance
+const web3 = new Web3(localProvider)
+
+DX.setProvider(localProvider)
+ETH.setProvider(localProvider)
+GNO.setProvider(localProvider)
+TUL.setProvider(localProvider)
+
+console.log('accounts', web3.eth.accounts)
+
+const delay = (timeout = 20000) => new Promise((res) => {
+  console.log(`start delay ${timeout / 1000} sec`)
+
+  setTimeout(() => (console.log('end delay'), res()), timeout)
+})
+
+const metamaskWarning = (acc: string, addr: string) =>
+  console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
+
 
 describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
   const [master, seller, buyer]: string[] = web3.eth.accounts
+  // if Metamask is injected, switch to its provider
+  currentProvider && web3.setProvider(currentProvider)
+
   let dxa: string
+
+  const accs = { master, seller, buyer }
+
+  // delays interaction so that we can switch accounts in Metamask
+  // if running without metamask -- no delay
+  const delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay())
 
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
 
-  beforeAll(async () => {
+  before(async () => {
     dx = await DX.deployed()
     dxa = DX.address
     eth = await ETH.deployed()
@@ -39,17 +68,27 @@ describe('ETH 2 GNO contract', () => {
     // seller must have initial balance of ETH
     // allow a transfer
     await eth.approve(seller, 100, { from: master })
-    // // transfer initial balance of 100 ETH
+    console.log('master approved seller to withdraw 100 ETH')
+
+    // transfer initial balance of 100 ETH
     await eth.transferFrom(master, seller, 100, { from: seller })
     // same as
     // await eth.transfer(seller, 100, { from: master })
+    console.log('seller', seller, 'received 100 ETH')
 
 
-    // // buyer must have initial balance of GNO
-    // // allow a transfer
+    // buyer must have initial balance of GNO
+    // allow a transfer
     await gno.approve(buyer, 1000, { from: master })
-    // // transfer initial balance of 1000 GNO
+    console.log('master approved buyer to withdraw 1000 GNO')
+
+    // transfer initial balance of 1000 GNO
     await gno.transferFrom(master, buyer, 1000, { from: buyer })
+    console.log('buyer', buyer, 'received 1000 GNO')
+
+    // if Metamask is injected, use it for interaction with DX
+    // by switching providers to it
+    currentProvider && DX.setProvider(currentProvider)
   })
 
 
@@ -108,6 +147,9 @@ describe('ETH 2 GNO contract', () => {
   // TODO: rework to make a part of submit -> buy -> claim flow
   it('seller can submit order to an auction', async () => {
     const amount = 30
+
+    await delayFor('seller')
+
     // allow the contract to move tokens
     await eth.approve(dxa, amount, { from: seller })
 
@@ -134,5 +176,38 @@ describe('ETH 2 GNO contract', () => {
     // seller is now assigned a balance
     const sellerBalance = await dx.sellerBalances(_auctionIndex, seller)
     expect(sellerBalance.toNumber()).toEqual(amount)
+  })
+
+  it('auction is started', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+
+    // still on the first auction
+    expect(auctionIndex).toBe(1)
+    const auctionStart = (await dx.auctionStart()).toNumber()
+    let now = (await dx.now()).toNumber()
+
+    // auction hasn't started yet
+    expect(auctionStart).toBeGreaterThan(now)
+    const timeUntilStart = auctionStart - now
+
+    // quickly switch providers to testrpc if needed
+    currentProvider && DX.setProvider(localProvider)
+    // move time to start + 1 hour
+    await dx.increaseTimeBy(1, timeUntilStart, { from: master })
+    now = (await dx.now()).toNumber()
+    // switch providers back
+    currentProvider && DX.setProvider(currentProvider)
+
+    // auction has started
+    expect(auctionStart).toBeLessThan(now)
+
+    const getPrice = async (ind: number) => (await dx.getPrice(ind)).map((n: any) => n.toNumber())
+    const [num, den] = await getPrice(auctionIndex)
+    const [lastNum, lastDen] = await getPrice(auctionIndex - 1)
+
+    // current num/den are derived from last closing price according to formula in DutchExchange.getPrice
+    // that is double the last closing price minus function of time passed
+    expect(36000 * lastNum).toBe(num)
+    expect((now - auctionStart + 18000) * lastDen).toBe(den)
   })
 })

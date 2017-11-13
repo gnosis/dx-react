@@ -16,3 +16,5 @@ declare module '*.json' {
   const content: any
   export default content
 }
+
+declare const before: typeof beforeAll
