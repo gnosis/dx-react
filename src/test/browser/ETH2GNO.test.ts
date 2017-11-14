@@ -249,4 +249,36 @@ describe('ETH 2 GNO contract', () => {
     // there's only one buyer
     expect(buyerBalancesAfter).toBe(buyVolumeAfter)
   })
+
+
+  it('buyer can claim the amount bought', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+    const claimed = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
+    const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    const buyVolume = (await dx.buyVolumes(auctionIndex)).toNumber()
+
+    // nothing yet claimed
+    expect(claimed).toBe(0)
+    // something bought
+    expect(buyerBalance).toBeGreaterThan(0)
+    // by one buyer
+    expect(buyVolume).toBe(buyerBalance)
+
+    const [num, den] = (await dx.getPrice(auctionIndex)).map((n: any) => n.toNumber())
+    await dx.claimBuyerFunds(auctionIndex, { from: buyer, gas: 4712388 })
+
+    const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
+    const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+
+    // return is a function of price, which itself is a function of time passed
+    const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
+    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+
+    // claimed what it could
+    expect(expectedReturn + claimed).toBe(claimedAmountAfter)
+    // balance is kept as a record, just can't be claimed twice
+    expect(buyerBalance).toBe(buyerBalancesAfter)
+    expect(buyVolumeAfter).toBe(buyVolume)
+  })
+
 })
