@@ -387,4 +387,25 @@ describe('ETH 2 GNO contract', () => {
   })
 
 
+  it('seller can claim funds', async () => {
+    await delayFor('seller', 10000)
+
+    const lastAuctionIndex = (await dx.auctionIndex()).toNumber() - 1
+    let sellerBalance = (await dx.sellerBalances(lastAuctionIndex, seller)).toNumber()
+    // transaction receipt includes amount returned
+    const claimReceipt = await dx.claimSellerFunds(lastAuctionIndex, { from: seller })
+
+    const returned = claimReceipt.logs[0].args._returned.toNumber()
+
+    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+    // closing price * balance
+    const expectedReturn = Math.floor(sellerBalance * num / den)
+    expect(expectedReturn).toBe(returned)
+
+    sellerBalance = (await dx.sellerBalances(lastAuctionIndex, seller)).toNumber()
+    // balance is drained
+    expect(sellerBalance).toBe(0)
+  })
+
+
 })
