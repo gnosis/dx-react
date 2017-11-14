@@ -281,4 +281,16 @@ describe('ETH 2 GNO contract', () => {
     expect(buyVolumeAfter).toBe(buyVolume)
   })
 
+
+  it('buyer can\'t claim more at this time', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+    try {
+      await dx.claimBuyerFunds(auctionIndex, { from: buyer, gas: 4712388 })
+      // break test if reached
+      expect(true).toBe(false)
+    } catch (error) {
+      expect(error.message).toContain('revert')
+    }
+  })
+
 })
