@@ -291,7 +291,7 @@ describe('ETH 2 GNO contract', () => {
     expect(buyVolume).toBe(buyerBalance)
 
     const [num, den] = (await dx.getPrice(auctionIndex)).map((n: any) => n.toNumber())
-    await dx.claimBuyerFunds(auctionIndex, { from: buyer, gas: 4712388 })
+    await dx.claimBuyerFunds(auctionIndex, { from: buyer })
 
     const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
     const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
@@ -311,7 +311,7 @@ describe('ETH 2 GNO contract', () => {
   it('buyer can\'t claim more at this time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
-      await dx.claimBuyerFunds(auctionIndex, { from: buyer, gas: 4712388 })
+      await dx.claimBuyerFunds(auctionIndex, { from: buyer })
       // break test if reached
       expect(true).toBe(false)
     } catch (error) {
@@ -324,7 +324,7 @@ describe('ETH 2 GNO contract', () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
       // trying to claim from the ongoing auction
-      await dx.claimSellerFunds(auctionIndex, { from: seller, gas: 4712388 })
+      await dx.claimSellerFunds(auctionIndex, { from: seller })
       // break test if reached
       expect(true).toBe(false)
     } catch (error) {
@@ -398,7 +398,7 @@ describe('ETH 2 GNO contract', () => {
     expect(claimed).toBeLessThan(buyerBalance)
 
     // claim what can be claimed
-    await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer, gas: 4712388 })
+    await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
 
     claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
 
