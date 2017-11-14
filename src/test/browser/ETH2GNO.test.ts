@@ -97,6 +97,12 @@ describe('ETH 2 GNO contract', () => {
     // if Metamask is injected, use it for interaction with DX
     // by switching providers to it
     currentProvider && DX.setProvider(currentProvider)
+
+    await checkBalances()
+  })
+
+  after(async () => {
+    await checkBalances()
   })
 
 
@@ -440,4 +446,27 @@ describe('ETH 2 GNO contract', () => {
     // seller received all GNO buyer sent to auction
     expect(buyerStartGNO - buyerGNOBalance).toBe(sellerGNOBalance)
   })
+
+  async function checkBalances() {
+    // don't spam browser console
+    if (currentProvider) return
+
+    const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
+    const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
+    const masterGNOBalance = (await gno.balanceOf(master)).toNumber()
+    const masterETHBalance = (await eth.balanceOf(master)).toNumber()
+    const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
+    const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
+    const totalETH = (await eth.getTotalSupply()).toNumber()
+    const totalGNO = (await gno.getTotalSupply()).toNumber()
+
+    console.log()
+    console.log('  ETH\tGNO')
+    console.log(`S ${sellerETHBalance}\t${sellerGNOBalance}`)
+    console.log(`B ${buyerETHBalance}\t${buyerGNOBalance}`)
+    console.log(`M ${masterETHBalance}\t${masterGNOBalance}`)
+    console.log('__________________________')
+    console.log(`= ${totalETH}\t${totalGNO}`)
+  }
+
 })
