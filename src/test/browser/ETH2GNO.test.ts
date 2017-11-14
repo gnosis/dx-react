@@ -1,5 +1,12 @@
 import expect from 'expect'
 
+declare module 'expect' {
+  interface Expectation<T> {
+    toBeLessThanOrEqual: Expectation<T>['toBeLessThanOrEqualTo']
+    toBeGreaterThanOrEqual: Expectation<T>['toBeGreaterThanOrEqualTo']
+  }
+}
+
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
 import GNOart from '../../../build/contracts/TokenGNO.json'
