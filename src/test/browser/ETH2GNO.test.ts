@@ -88,6 +88,12 @@ describe('ETH 2 GNO contract', () => {
     gno = await GNO.deployed()
     tul = await TUL.deployed()
 
+    Object.assign(accs, { dx: DX.address, eth: ETH.address, gno: GNO.address, tul: TUL.addresss })
+
+    watchAllEventsFor(dx, 'DutchExchange')
+    watchAllEventsFor(eth, 'ETH')
+    watchAllEventsFor(gno, 'GNO')
+
     // seller must have initial balance of ETH
     // allow a transfer
     await eth.approve(seller, 100, { from: master })
@@ -326,7 +332,7 @@ describe('ETH 2 GNO contract', () => {
     }
   })
 
-  it.skip('seller can\'t claim before auction ended', async () => {
+  it('seller can\'t claim before auction ended', async () => {
     await delayFor('seller', 10)
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
@@ -353,21 +359,21 @@ describe('ETH 2 GNO contract', () => {
 
     await withLocalProvider(async () => {
       await dx.setTime(timeWhenAuctionClears, { from: master })
-    const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
-    const amount = 1
+      const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+      const amount = 1
       await gno.approve(dxa, amount, { from: buyer })
       await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
-    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
-    const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+      const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+      const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
-    // no changes, as the auction has ended
-    expect(buyVolume).toBe(buyVolumeAfter)
-    expect(buyerBalance).toBe(buyerBalanceAfter)
+      // no changes, as the auction has ended
+      expect(buyVolume).toBe(buyVolumeAfter)
+      expect(buyerBalance).toBe(buyerBalanceAfter)
 
-    const newAuctionIndex = (await dx.auctionIndex()).toNumber()
+      const newAuctionIndex = (await dx.auctionIndex()).toNumber()
 
-    expect(newAuctionIndex).toBe(auctionIndex + 1)
-  })
+      expect(newAuctionIndex).toBe(auctionIndex + 1)
+    })
 
 
     await delay(5000)
@@ -487,6 +493,28 @@ describe('ETH 2 GNO contract', () => {
     console.log(`M ${masterETHBalance}\t${masterGNOBalance}`)
     console.log('__________________________')
     console.log(`= ${totalETH}\t${totalGNO}`)
+  }
+
+  function watchAllEventsFor(contract: any, name: string) {
+    const addr2acc = Object.entries(accs).reduce((accum, [name, addr]) => (accum[addr] = name, accum), {})
+    contract.allEvents((err: Error, log: any) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      const { args, event } = log
+      for (const arg of Object.keys(args)) {
+        const val = args[arg]
+        if (val.toNumber) {
+          // convert BigNumbers
+          args[arg] = val.toNumber()
+        } else if (typeof val === 'string' && /^0x\w{40}$/.test(val)) {
+          args[arg] = addr2acc[val] || val
+        }
+      }
+
+      console.log(`${name}::${event}`, args)
+    })
   }
 
 })
