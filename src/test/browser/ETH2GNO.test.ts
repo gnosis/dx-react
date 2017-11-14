@@ -52,7 +52,8 @@ describe('ETH 2 GNO contract', () => {
 
   // delays interaction so that we can switch accounts in Metamask
   // if running without metamask -- no delay
-  const delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay())
+  const delayFor = (name: string, timeout?: number) => currentProvider
+    && (metamaskWarning(name, accs[name]), delay(timeout))
 
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
