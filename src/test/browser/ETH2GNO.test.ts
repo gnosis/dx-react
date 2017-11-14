@@ -107,7 +107,7 @@ describe('ETH 2 GNO contract', () => {
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
     let initialClosingPrice = await dx.closingPrices(0)
-    initialClosingPrice = initialClosingPrice.map((x: any) => x.toNumber())
+    initialClosingPrice = initialClosingPrice.map((n: any) => n.toNumber())
 
     expect(initialClosingPrice).toEqual([2, 1])
 
@@ -136,13 +136,18 @@ describe('ETH 2 GNO contract', () => {
     const ETHtotal = await eth.getTotalSupply()
     const masterETHBalance = await eth.balanceOf(master)
     const sellerETHBalance = await eth.balanceOf(seller)
+    const buyerETHBalance = await eth.balanceOf(buyer)
 
     const GNOtotal = await gno.getTotalSupply()
     const masterGNOBalance = await gno.balanceOf(master)
+    const sellerGNOBalance = await gno.balanceOf(seller)
     const buyerGNOBalance = await gno.balanceOf(buyer)
 
     expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
     expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
+
+    expect(sellerGNOBalance.toNumber()).toBe(0)
+    expect(buyerETHBalance.toNumber()).toBe(0)
   })
 
   // TODO: rework to make a part of submit -> buy -> claim flow
