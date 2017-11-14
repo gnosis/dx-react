@@ -293,4 +293,18 @@ describe('ETH 2 GNO contract', () => {
     }
   })
 
+  it('seller can\'t claim before auction ended', async () => {
+    await delayFor('seller', 10)
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+    try {
+      // trying to claim from the ongoing auction
+      await dx.claimSellerFunds(auctionIndex, { from: seller, gas: 4712388 })
+      // break test if reached
+      expect(true).toBe(false)
+    } catch (error) {
+      expect(error.message).toContain('revert')
+    }
+  })
+
+
 })
