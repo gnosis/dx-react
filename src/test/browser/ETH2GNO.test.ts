@@ -307,4 +307,40 @@ describe('ETH 2 GNO contract', () => {
   })
 
 
+  it('auction ends with time', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+
+    const buyVolume = (await dx.buyVolumes(auctionIndex)).toNumber()
+    const sellVolume = (await dx.sellVolumeCurrent()).toNumber()
+    const auctionStart = (await dx.auctionStart()).toNumber()
+
+    // Auction clears when sellVolume * price = buyVolume
+    // Since price is a function of time, so we have to rearrange the equation for time, which gives
+    const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
+
+    // quickly switch providers to testrpc if needed
+    currentProvider && DX.setProvider(localProvider)
+    await dx.setTime(timeWhenAuctionClears, { from: master })
+    // switch providers back
+    currentProvider && DX.setProvider(currentProvider)
+
+    const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+
+    await delayFor('buyer')
+
+    const amount = 1
+    await gno.approve(dxa, amount, { from: buyer })
+    await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
+
+    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+    const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+
+    // no changes, as the auction has ended
+    expect(buyVolume).toBe(buyVolumeAfter)
+    expect(buyerBalance).toBe(buyerBalanceAfter)
+
+    const newAuctionIndex = (await dx.auctionIndex()).toNumber()
+
+    expect(newAuctionIndex).toBe(auctionIndex + 1)
+  })
 })
