@@ -358,4 +358,33 @@ describe('ETH 2 GNO contract', () => {
     expect(auctionStart).toBeLessThanOrEqual(now + 21600)
   })
 
+  it('buyer can claim the remainder of the funds', async () => {
+    const lastAuctionIndex = (await dx.auctionIndex()).toNumber() - 1
+    let claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
+    const buyerBalance = (await dx.buyerBalances(lastAuctionIndex, buyer)).toNumber()
+    const buyVolume = (await dx.buyVolumes(lastAuctionIndex)).toNumber()
+
+    // some funds were claimed
+    expect(claimed).toBeGreaterThan(0)
+    // there's non-zero buyers' balance
+    expect(buyerBalance).toBeGreaterThan(0)
+    // that belongs to one buyer
+    expect(buyVolume).toBe(buyerBalance)
+    // there are still funds to be claimed
+    expect(claimed).toBeLessThan(buyerBalance)
+
+    // claim what can be claimed
+    await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer, gas: 4712388 })
+
+    claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
+
+    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+    // assuming all buyerBalance got converted toETH at the closing price
+    const balance2ETH = Math.floor(buyerBalance * den / num)
+
+    // everything was claimed
+    expect(claimed).toBe(balance2ETH)
+  })
+
+
 })
