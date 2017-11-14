@@ -216,4 +216,37 @@ describe('ETH 2 GNO contract', () => {
     expect(36000 * lastNum).toBe(num)
     expect((now - auctionStart + 18000) * lastDen).toBe(den)
   })
+
+
+  it('buyer can submit a buy order', async () => {
+    const amount = 10
+
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+    const claimed = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
+    const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    const buyVolume = (await dx.buyVolumes(auctionIndex)).toNumber()
+
+    // nothing yet claimed or bought
+    expect(claimed).toBe(0)
+    expect(buyerBalance).toBe(0)
+    expect(buyVolume).toBe(0)
+
+    await delayFor('buyer', 10000)
+
+    // allow DX to withdraw GNO from buyer's account
+    await gno.approve(dxa, amount, { from: buyer })
+
+    // submit a buy order for the current auction
+    await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
+
+    const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+
+    // buyer's balance increased
+    expect(buyerBalance + amount).toBe(buyerBalancesAfter)
+    // auction7s buy volume increased
+    expect(buyVolumeAfter).toBe(buyVolume + amount)
+    // there's only one buyer
+    expect(buyerBalancesAfter).toBe(buyVolumeAfter)
+  })
 })
