@@ -45,13 +45,28 @@ const delay = (timeout = 20000) => new Promise((res) => {
 const metamaskWarning = (acc: string, addr: string) =>
   console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
 
+const setLocalProvider = () => {
+  // quickly switch providers to testrpc if needed
+  currentProvider && DX.setProvider(localProvider)
+}
+const setCurrentProvider = () => {
+  // switch providers back
+  currentProvider && DX.setProvider(currentProvider)
+}
+
+const withLocalProvider = async (func: () => void) => {
+  setLocalProvider()
+  await func()
+  setCurrentProvider()
+}
+
 
 describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
   const [master, seller, buyer]: string[] = web3.eth.accounts
   // if Metamask is injected, switch to its provider
-  currentProvider && web3.setProvider(currentProvider)
+  setCurrentProvider()
 
   let dxa: string
 
@@ -96,7 +111,7 @@ describe('ETH 2 GNO contract', () => {
 
     // if Metamask is injected, use it for interaction with DX
     // by switching providers to it
-    currentProvider && DX.setProvider(currentProvider)
+    setCurrentProvider()
 
     await checkBalances()
   })
@@ -209,13 +224,11 @@ describe('ETH 2 GNO contract', () => {
     expect(auctionStart).toBeGreaterThan(now)
     const timeUntilStart = auctionStart - now
 
-    // quickly switch providers to testrpc if needed
-    currentProvider && DX.setProvider(localProvider)
-    // move time to start + 1 hour
-    await dx.increaseTimeBy(1, timeUntilStart, { from: master })
-    now = (await dx.now()).toNumber()
-    // switch providers back
-    currentProvider && DX.setProvider(currentProvider)
+    await withLocalProvider(async () => {
+      // move time to start + 1 hour
+      await dx.increaseTimeBy(1, timeUntilStart, { from: master })
+      now = (await dx.now()).toNumber()
+    })
 
     // auction has started
     expect(auctionStart).toBeLessThan(now)
@@ -331,11 +344,9 @@ describe('ETH 2 GNO contract', () => {
     // Since price is a function of time, so we have to rearrange the equation for time, which gives
     const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
 
-    // quickly switch providers to testrpc if needed
-    currentProvider && DX.setProvider(localProvider)
-    await dx.setTime(timeWhenAuctionClears, { from: master })
-    // switch providers back
-    currentProvider && DX.setProvider(currentProvider)
+    await withLocalProvider(async () => {
+      await dx.setTime(timeWhenAuctionClears, { from: master })
+    })
 
     const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
