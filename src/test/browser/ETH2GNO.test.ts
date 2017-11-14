@@ -7,6 +7,8 @@ declare module 'expect' {
   }
 }
 
+import { delay, metamaskWarning } from '../utils'
+
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
 import GNOart from '../../../build/contracts/TokenGNO.json'
@@ -36,15 +38,6 @@ TUL.setProvider(localProvider)
 
 console.log('accounts', web3.eth.accounts)
 
-const delay = (timeout = 20000) => currentProvider && new Promise((res) => {
-  console.log(`start delay ${timeout / 1000} sec`)
-
-  setTimeout(() => (console.log('end delay'), res()), timeout)
-})
-
-const metamaskWarning = (acc: string, addr: string) =>
-  console.log(`If testing with METAMASK you need to be on the ${acc} (${addr}) account`)
-
 const setLocalProvider = () => {
   // quickly switch providers to testrpc if needed
   currentProvider && DX.setProvider(localProvider)
@@ -61,7 +54,7 @@ const withLocalProvider = async (func: () => void) => {
 }
 
 
-describe.skip('ETH 2 GNO contract', () => {
+describe('ETH 2 GNO contract', () => {
   // TODO: proper types
   let dx: any, eth: any, gno: any, tul: any
   const [master, seller, buyer]: string[] = web3.eth.accounts
