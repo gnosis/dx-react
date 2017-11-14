@@ -11,6 +11,7 @@ export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
   console.log(' ===> FIRING initDutchX ACTION')
   try {
     dutchXInst = await dutchX.init(DUTCHX_OPTIONS)
+    return dutchXInst
     // console.log('SUCCESS CONNECTING TO DUTCHX INSTANCE', dutchXInst)
   } catch (e) {
     console.log('ERROR CONNECTING TO DUTCHX INSTANCE', e.message)
