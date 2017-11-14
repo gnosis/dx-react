@@ -36,7 +36,7 @@ TUL.setProvider(localProvider)
 
 console.log('accounts', web3.eth.accounts)
 
-const delay = (timeout = 20000) => new Promise((res) => {
+const delay = (timeout = 20000) => currentProvider && new Promise((res) => {
   console.log(`start delay ${timeout / 1000} sec`)
 
   setTimeout(() => (console.log('end delay'), res()), timeout)
@@ -257,7 +257,7 @@ describe('ETH 2 GNO contract', () => {
     expect(buyerBalance).toBe(0)
     expect(buyVolume).toBe(0)
 
-    await delayFor('buyer', 10000)
+    await delay(5000)
 
     await withLocalProvider(async () => {
       // allow DX to withdraw GNO from buyer's account
@@ -353,19 +353,10 @@ describe('ETH 2 GNO contract', () => {
 
     await withLocalProvider(async () => {
       await dx.setTime(timeWhenAuctionClears, { from: master })
-    })
-
     const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
-
-    await delayFor('buyer')
-
     const amount = 1
-
-    await withLocalProvider(async () => {
       await gno.approve(dxa, amount, { from: buyer })
       await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
-    })
-
     const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
     const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
@@ -376,6 +367,10 @@ describe('ETH 2 GNO contract', () => {
     const newAuctionIndex = (await dx.auctionIndex()).toNumber()
 
     expect(newAuctionIndex).toBe(auctionIndex + 1)
+  })
+
+
+    await delay(5000)
   })
 
   it('next auction is scheduled', async () => {
@@ -429,9 +424,7 @@ describe('ETH 2 GNO contract', () => {
     const lastAuctionIndex = (await dx.auctionIndex()).toNumber() - 1
     let sellerBalance = (await dx.sellerBalances(lastAuctionIndex, seller)).toNumber()
     const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
-    console.log('====================================')
-    console.log(lastAuctionIndex, sellerBalance, num, den)
-    console.log('====================================')
+
     // transaction receipt includes amount returned
     const claimReceipt = await dx.claimSellerFunds(lastAuctionIndex, { from: seller })
 
