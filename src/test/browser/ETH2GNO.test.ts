@@ -408,4 +408,29 @@ describe('ETH 2 GNO contract', () => {
   })
 
 
+  it('seller has some GNO tokens, buyer has some ETH', async () => {
+    const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
+    const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
+    const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
+    const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
+
+    const masterGNOBalance = (await gno.balanceOf(master)).toNumber()
+    const masterETHBalance = (await eth.balanceOf(master)).toNumber()
+
+    const totalETH = (await eth.getTotalSupply()).toNumber()
+    const totalGNO = (await gno.getTotalSupply()).toNumber()
+
+    const sellerStartETH = totalETH - masterETHBalance
+    const buyerStartGNO = totalGNO - masterGNOBalance
+
+    // seller received GNO
+    expect(sellerGNOBalance).toBeGreaterThan(0)
+    // buyer received ETH
+    expect(buyerETHBalance).toBeGreaterThan(0)
+
+    // buyer received all ETH seller sent to aucion
+    expect(sellerStartETH - sellerETHBalance).toBe(buyerETHBalance)
+    // seller received all GNO buyer sent to auction
+    expect(buyerStartGNO - buyerGNOBalance).toBe(sellerGNOBalance)
+  })
 })
