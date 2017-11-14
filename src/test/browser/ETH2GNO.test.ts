@@ -343,4 +343,19 @@ describe('ETH 2 GNO contract', () => {
 
     expect(newAuctionIndex).toBe(auctionIndex + 1)
   })
+
+  it('next auction is scheduled', async () => {
+    const auctionIndex = (await dx.auctionIndex()).toNumber()
+
+    // still on the first auction
+    expect(auctionIndex).toBe(2)
+    const auctionStart = (await dx.auctionStart()).toNumber()
+    const now = (await dx.now()).toNumber()
+
+    // next auction hasn't started yet
+    expect(auctionStart).toBeGreaterThan(now)
+    // it will, in 6 hours
+    expect(auctionStart).toBeLessThanOrEqual(now + 21600)
+  })
+
 })
