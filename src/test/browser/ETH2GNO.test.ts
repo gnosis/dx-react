@@ -259,11 +259,13 @@ describe('ETH 2 GNO contract', () => {
 
     await delayFor('buyer', 10000)
 
-    // allow DX to withdraw GNO from buyer's account
-    await gno.approve(dxa, amount, { from: buyer })
+    await withLocalProvider(async () => {
+      // allow DX to withdraw GNO from buyer's account
+      await gno.approve(dxa, amount, { from: buyer })
 
-    // submit a buy order for the current auction
-    await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
+      // submit a buy order for the current auction
+      await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
+    })
 
     const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
     const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
@@ -291,27 +293,32 @@ describe('ETH 2 GNO contract', () => {
     expect(buyVolume).toBe(buyerBalance)
 
     const [num, den] = (await dx.getPrice(auctionIndex)).map((n: any) => n.toNumber())
-    await dx.claimBuyerFunds(auctionIndex, { from: buyer })
 
-    const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
-    const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    await withLocalProvider(async () => {
+      await dx.claimBuyerFunds(auctionIndex, { from: buyer })
+      const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
+      const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
-    // return is a function of price, which itself is a function of time passed
-    const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
-    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+      // return is a function of price, which itself is a function of time passed
+      const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
+      const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
 
-    // claimed what it could
-    expect(expectedReturn + claimed).toBe(claimedAmountAfter)
-    // balance is kept as a record, just can't be claimed twice
-    expect(buyerBalance).toBe(buyerBalancesAfter)
-    expect(buyVolumeAfter).toBe(buyVolume)
+      // claimed what it could
+      expect(expectedReturn + claimed).toBe(claimedAmountAfter)
+      // balance is kept as a record, just can't be claimed twice
+      expect(buyerBalance).toBe(buyerBalancesAfter)
+      expect(buyVolumeAfter).toBe(buyVolume)
+    })
+
   })
 
 
   it('buyer can\'t claim more at this time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
-      await dx.claimBuyerFunds(auctionIndex, { from: buyer })
+      await withLocalProvider(async () => {
+        await dx.claimBuyerFunds(auctionIndex, { from: buyer })
+      })
       // break test if reached
       expect(true).toBe(false)
     } catch (error) {
@@ -319,7 +326,7 @@ describe('ETH 2 GNO contract', () => {
     }
   })
 
-  it('seller can\'t claim before auction ended', async () => {
+  it.skip('seller can\'t claim before auction ended', async () => {
     await delayFor('seller', 10)
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
@@ -353,8 +360,11 @@ describe('ETH 2 GNO contract', () => {
     await delayFor('buyer')
 
     const amount = 1
-    await gno.approve(dxa, amount, { from: buyer })
-    await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
+
+    await withLocalProvider(async () => {
+      await gno.approve(dxa, amount, { from: buyer })
+      await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
+    })
 
     const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
     const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
@@ -397,31 +407,37 @@ describe('ETH 2 GNO contract', () => {
     // there are still funds to be claimed
     expect(claimed).toBeLessThan(buyerBalance)
 
-    // claim what can be claimed
-    await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
+    await withLocalProvider(async () => {
+      // claim what can be claimed
+      await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
+      claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
 
-    claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
+      const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+      // assuming all buyerBalance got converted toETH at the closing price
+      const balance2ETH = Math.floor(buyerBalance * den / num)
 
-    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
-    // assuming all buyerBalance got converted toETH at the closing price
-    const balance2ETH = Math.floor(buyerBalance * den / num)
+      // everything was claimed
+      expect(claimed).toBe(balance2ETH)
+    })
 
-    // everything was claimed
-    expect(claimed).toBe(balance2ETH)
   })
 
 
   it('seller can claim funds', async () => {
-    await delayFor('seller', 10000)
+    await delayFor('seller')
 
     const lastAuctionIndex = (await dx.auctionIndex()).toNumber() - 1
     let sellerBalance = (await dx.sellerBalances(lastAuctionIndex, seller)).toNumber()
+    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+    console.log('====================================')
+    console.log(lastAuctionIndex, sellerBalance, num, den)
+    console.log('====================================')
     // transaction receipt includes amount returned
     const claimReceipt = await dx.claimSellerFunds(lastAuctionIndex, { from: seller })
 
     const returned = claimReceipt.logs[0].args._returned.toNumber()
 
-    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+
     // closing price * balance
     const expectedReturn = Math.floor(sellerBalance * num / den)
     expect(expectedReturn).toBe(returned)
