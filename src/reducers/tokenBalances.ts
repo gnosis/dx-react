@@ -1,12 +1,16 @@
 import { handleActions } from 'redux-actions'
 import { TokenBalances } from 'types'
-import { codeList } from 'globals'
+// import { codeList } from 'globals'
 
-const zeroBalance = codeList.reduce((acc, code) => (acc[code] = 0, acc), {}) as TokenBalances
+// const zeroBalance = codeList.reduce((acc, code) => (acc[code] = 0, acc), {}) as TokenBalances
 
-// TODO: fill in when we have actions
+// TODO: fill in when we have actions + fill in rest of Tokens
 export default handleActions<TokenBalances>(
   {
   },
-  zeroBalance,
+  // zeroBalance
+  {
+    ETH: undefined,
+    GNO: undefined,
+  },
 )
