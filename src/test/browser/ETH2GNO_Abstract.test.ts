@@ -1,90 +1,76 @@
 import expect from 'expect'
-
-declare module 'expect' {
-  interface Expectation<T> {
-    toBeLessThanOrEqual: Expectation<T>['toBeLessThanOrEqualTo']
-    toBeGreaterThanOrEqual: Expectation<T>['toBeGreaterThanOrEqualTo']
-  }
-}
-
 import { delay, metamaskWarning } from '../utils'
 
+import { initDutchXConnection } from 'api/dutchx'
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
-import ETHart from '../../../build/contracts/TokenETH.json'
-import GNOart from '../../../build/contracts/TokenGNO.json'
-import TULart from '../../../build/contracts/Token.json'
-
 import TC from 'truffle-contract'
 import Web3 from 'web3'
+// Truffle-Contract: DutchExchange 
+const DX: any = TC(DXart)
 
-const DX = TC(DXart)
-const ETH = TC(ETHart)
-const GNO = TC(GNOart)
-const TUL = TC(TULart)
-
+// Check curr Provider - useful when switching between local and Metamask Providers
 const currentProvider = typeof window !== 'undefined' && window.web3 && window.web3.currentProvider
-console.log('currentProvider', currentProvider)
-
 // when running testrpc via truffle develop change port to 9545
 const localProvider = new Web3.providers.HttpProvider('http://localhost:8545')
+
 // Metamask returns only current account from web3.eth.accounts
 // so we get all accounts from local testrpc instance
 const web3 = new Web3(localProvider)
 
+// Set ONLY DutchExchangeETHGNO to the localProvider
 DX.setProvider(localProvider)
-ETH.setProvider(localProvider)
-GNO.setProvider(localProvider)
-TUL.setProvider(localProvider)
 
-console.log('accounts', web3.eth.accounts)
-
-const setLocalProvider = () => {
-  // quickly switch providers to testrpc if needed
-  currentProvider && DX.setProvider(localProvider)
-}
-const setCurrentProvider = () => {
-  // switch providers back
-  currentProvider && DX.setProvider(currentProvider)
-}
-
-const withLocalProvider = async (func: () => void) => {
-  setLocalProvider()
-  await func()
-  setCurrentProvider()
-}
-
-
-describe.skip('ETH 2 GNO contract', () => {
+describe('ETH 2 GNO contract via DutchX Class', () => {
   // TODO: proper types
-  let dx: any, eth: any, gno: any, tul: any
-  const [master, seller, buyer]: string[] = web3.eth.accounts
-  // if Metamask is injected, switch to its provider
-  setCurrentProvider()
-
+  let dxClass: any
+  let ETH: any; let GNO: any; let TUL: any
   let dxa: string
-
-  const accs = { master, seller, buyer }
-
-  // delays interaction so that we can switch accounts in Metamask
-  // if running without metamask -- no delay
-  const delayFor = (name: string, timeout?: number) => currentProvider
-    && (metamaskWarning(name, accs[name]), delay(timeout))
+  let dx: any; let eth: any; let gno: any; let tul: any
+  
+  let accounts: any; let accs: any
+  
+  let master: any; let seller: any; let buyer: any
+  let delayFor: any
 
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
 
   before(async () => {
-    dx = await DX.deployed()
-    dxa = DX.address
-    eth = await ETH.deployed()
-    gno = await GNO.deployed()
-    tul = await TUL.deployed()
+    dxClass   = await initDutchXConnection({ ethereum: 'http://localhost:8545' })
+
+    dx        = await DX.deployed()
+    dxa       = DX.address
+
+    // Truffle-loaded Contracts
+    ETH       = dxClass.contracts.TokenETH
+    GNO       = dxClass.contracts.TokenGNO
+    TUL       = dxClass.contracts.Token
+    
+    // Deployed Class instance Contracts
+    eth       = dxClass.TokenETH
+    gno       = dxClass.TokenGNO
+    tul       = dxClass.Token
+    
+    // Set master Account from masterDX and accounts from dxClass
+    accounts      = [...web3.eth.accounts]
+
+    master    = accounts[0]
+    seller    = accounts[1]
+    buyer     = accounts[2]
+
+    accs = { master, seller, buyer }
+
+    console.log(`MASTER ACCT = ${master}, SELLER ACCT = ${seller}, BUYER ACCT = ${buyer}`)
+    
+    // delays interaction so that we can switch accounts in Metamask
+    // if running without metamask -- no delay
+    delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay(15000))
 
     Object.assign(accs, { dx: DX.address, eth: ETH.address, gno: GNO.address, tul: TUL.addresss })
-
+    
     watchAllEventsFor(dx, 'DutchExchange')
-    watchAllEventsFor(eth, 'ETH')
+    // watchAllEventsFor(eth, 'ETH')
     watchAllEventsFor(gno, 'GNO')
 
     // seller must have initial balance of ETH
@@ -108,9 +94,9 @@ describe.skip('ETH 2 GNO contract', () => {
     await gno.transferFrom(master, buyer, 1000, { from: buyer })
     console.log('buyer', buyer, 'received 1000 GNO')
 
-    // if Metamask is injected, use it for interaction with DX
-    // by switching providers to it
-    setCurrentProvider()
+    // ONLY set Tokens to Metamask for approving txs
+    currentProvider && 
+    (ETH.setProvider(currentProvider) && GNO.setProvider(currentProvider) && TUL.setProvider(currentProvider))
 
     await checkBalances()
   })
@@ -118,7 +104,6 @@ describe.skip('ETH 2 GNO contract', () => {
   after(async () => {
     await checkBalances()
   })
-
 
   it('contracts are deployed', () => {
     expect(dx && eth && gno && tul).toBeTruthy()
@@ -130,11 +115,10 @@ describe.skip('ETH 2 GNO contract', () => {
   })
 
 
-
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
-    let initialClosingPrice = await dx.closingPrices(0)
-    initialClosingPrice = initialClosingPrice.map((n: any) => n.toNumber())
+    let initialClosingPrice = await dx.closingPrices(0, { from: master })
+    initialClosingPrice = initialClosingPrice.map((x: any) => x.toNumber())
 
     expect(initialClosingPrice).toEqual([2, 1])
 
@@ -163,25 +147,18 @@ describe.skip('ETH 2 GNO contract', () => {
     const ETHtotal = await eth.getTotalSupply()
     const masterETHBalance = await eth.balanceOf(master)
     const sellerETHBalance = await eth.balanceOf(seller)
-    const buyerETHBalance = await eth.balanceOf(buyer)
 
     const GNOtotal = await gno.getTotalSupply()
     const masterGNOBalance = await gno.balanceOf(master)
-    const sellerGNOBalance = await gno.balanceOf(seller)
     const buyerGNOBalance = await gno.balanceOf(buyer)
 
     expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
     expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
-
-    expect(sellerGNOBalance.toNumber()).toBe(0)
-    expect(buyerETHBalance.toNumber()).toBe(0)
   })
 
   // TODO: rework to make a part of submit -> buy -> claim flow
   it('seller can submit order to an auction', async () => {
     const amount = 30
-
-    await delayFor('seller')
 
     // allow the contract to move tokens
     await eth.approve(dxa, amount, { from: seller })
@@ -223,12 +200,10 @@ describe.skip('ETH 2 GNO contract', () => {
     expect(auctionStart).toBeGreaterThan(now)
     const timeUntilStart = auctionStart - now
 
-    await withLocalProvider(async () => {
-      // move time to start + 1 hour
-      await dx.increaseTimeBy(1, timeUntilStart, { from: master })
-      now = (await dx.now()).toNumber()
-    })
-
+    // move time to start + 1 hour
+    await dx.increaseTimeBy(1, timeUntilStart, { from: master })
+    now = (await dx.now()).toNumber()
+    
     // auction has started
     expect(auctionStart).toBeLessThan(now)
 
@@ -256,15 +231,11 @@ describe.skip('ETH 2 GNO contract', () => {
     expect(buyerBalance).toBe(0)
     expect(buyVolume).toBe(0)
 
-    await delay(5000)
-
-    await withLocalProvider(async () => {
-      // allow DX to withdraw GNO from buyer's account
-      await gno.approve(dxa, amount, { from: buyer })
-
-      // submit a buy order for the current auction
-      await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
-    })
+    // allow DX to withdraw GNO from buyer's account
+    await gno.approve(dxa, amount, { from: buyer })
+    
+    // submit a buy order for the current auction
+    await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
 
     const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
     const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
@@ -293,21 +264,21 @@ describe.skip('ETH 2 GNO contract', () => {
 
     const [num, den] = (await dx.getPrice(auctionIndex)).map((n: any) => n.toNumber())
 
-    await withLocalProvider(async () => {
-      await dx.claimBuyerFunds(auctionIndex, { from: buyer })
-      const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
-      const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    
+    await dx.claimBuyerFunds(auctionIndex, { from: buyer })
+    const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
+    const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
-      // return is a function of price, which itself is a function of time passed
-      const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
-      const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+    // return is a function of price, which itself is a function of time passed
+    const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
+    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
 
-      // claimed what it could
-      expect(expectedReturn + claimed).toBe(claimedAmountAfter)
-      // balance is kept as a record, just can't be claimed twice
-      expect(buyerBalance).toBe(buyerBalancesAfter)
-      expect(buyVolumeAfter).toBe(buyVolume)
-    })
+    // claimed what it could
+    expect(expectedReturn + claimed).toBe(claimedAmountAfter)
+    // balance is kept as a record, just can't be claimed twice
+    expect(buyerBalance).toBe(buyerBalancesAfter)
+    expect(buyVolumeAfter).toBe(buyVolume)
+    
 
   })
 
@@ -315,9 +286,9 @@ describe.skip('ETH 2 GNO contract', () => {
   it('buyer can\'t claim more at this time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
-      await withLocalProvider(async () => {
-        await dx.claimBuyerFunds(auctionIndex, { from: buyer })
-      })
+      
+      await dx.claimBuyerFunds(auctionIndex, { from: buyer })
+      
       // break test if reached
       expect(true).toBe(false)
     } catch (error) {
@@ -326,7 +297,7 @@ describe.skip('ETH 2 GNO contract', () => {
   })
 
   it('seller can\'t claim before auction ended', async () => {
-    await delayFor('seller', 10)
+    
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
       // trying to claim from the ongoing auction
@@ -350,26 +321,22 @@ describe.skip('ETH 2 GNO contract', () => {
     // Since price is a function of time, so we have to rearrange the equation for time, which gives
     const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
 
-    await withLocalProvider(async () => {
-      await dx.setTime(timeWhenAuctionClears, { from: master })
-      const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
-      const amount = 1
-      await gno.approve(dxa, amount, { from: buyer })
-      await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
-      const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
-      const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    
+    await dx.setTime(timeWhenAuctionClears, { from: master })
+    const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
+    const amount = 1
+    await gno.approve(dxa, amount, { from: buyer })
+    await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
+    const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
+    const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
 
-      // no changes, as the auction has ended
-      expect(buyVolume).toBe(buyVolumeAfter)
-      expect(buyerBalance).toBe(buyerBalanceAfter)
+    // no changes, as the auction has ended
+    expect(buyVolume).toBe(buyVolumeAfter)
+    expect(buyerBalance).toBe(buyerBalanceAfter)
 
-      const newAuctionIndex = (await dx.auctionIndex()).toNumber()
+    const newAuctionIndex = (await dx.auctionIndex()).toNumber()
 
-      expect(newAuctionIndex).toBe(auctionIndex + 1)
-    })
-
-
-    await delay(5000)
+    expect(newAuctionIndex).toBe(auctionIndex + 1)
   })
 
   it('next auction is scheduled', async () => {
@@ -401,24 +368,22 @@ describe.skip('ETH 2 GNO contract', () => {
     // there are still funds to be claimed
     expect(claimed).toBeLessThan(buyerBalance)
 
-    await withLocalProvider(async () => {
-      // claim what can be claimed
-      await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
-      claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
+    
+    // claim what can be claimed
+    await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
+    claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()
 
-      const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
-      // assuming all buyerBalance got converted toETH at the closing price
-      const balance2ETH = Math.floor(buyerBalance * den / num)
+    const [num, den] = (await dx.getPrice(lastAuctionIndex)).map((n: any) => n.toNumber())
+    // assuming all buyerBalance got converted toETH at the closing price
+    const balance2ETH = Math.floor(buyerBalance * den / num)
 
-      // everything was claimed
-      expect(claimed).toBe(balance2ETH)
-    })
+    // everything was claimed
+    expect(claimed).toBe(balance2ETH)
 
   })
 
 
   it('seller can claim funds', async () => {
-    await delayFor('seller')
 
     const lastAuctionIndex = (await dx.auctionIndex()).toNumber() - 1
     let sellerBalance = (await dx.sellerBalances(lastAuctionIndex, seller)).toNumber()
@@ -492,7 +457,7 @@ describe.skip('ETH 2 GNO contract', () => {
     const addr2acc = Object.entries(accs).reduce((accum, [name, addr]) => (accum[addr] = name, accum), {})
     contract.allEvents((err: Error, log: any) => {
       if (err) {
-        console.error(err)
+        console.error(err, name)
         return
       }
       const { args, event } = log

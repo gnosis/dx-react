@@ -3,7 +3,7 @@ import { initDutchXConnection, getDutchXConnection } from 'api/dutchx'
 // import DutchExchangeInit from 'api/initialization'
 // const Web3 = require('web3')
 
-describe('DutchExchangeInit', () => {
+describe.skip('DutchExchangeInit', () => {
   let dxClass: any
   let dx: any
   let dxEG: any
