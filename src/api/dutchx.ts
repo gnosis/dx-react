@@ -50,10 +50,30 @@ export const getAllAccounts = async () => {
 export const getCurrentBalance = async (account: Object) => {
   const dutchX = await getDutchXConnection()
   console.log('GET CONNECTION DUTCHX INSTANCE = ', dutchX)
-  return await new Promise((resolve, reject) => dutchX.web3.eth.getBalance(
+  return await new Promise((accept, reject) => dutchX.web3.eth.getBalance(
     account,
-    (e: Object, balance: Object) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
+    (e: Object, balance: Object) => (
+      e ? reject(e) : accept(weiToEth(balance.toString()))
+    ),
   ))
+}
+
+// TODO: probably extrapolate some parameterizable parts - ContractName in string form for example
+export const getTokenBalances = async (account: Account) => {
+  // grab the TokenContracts from dx
+  // forEach contract call the Contract.balanceOf() passing in the account address
+
+  const dx = await getDutchXConnection()
+  const ETH = {
+    name: 'ETH', 
+    balance: (await dx.TokenETH.balanceOf(account)).toNumber(),
+  }
+  const GNO = {
+    name: 'GNO', 
+    balance: (await dx.TokenGNO.balanceOf(account)).toNumber(),
+  }
+
+  return [ETH, GNO]
 }
 
 export const tokenPairSelect = async (
