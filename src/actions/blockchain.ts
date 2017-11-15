@@ -3,11 +3,11 @@ import {
   getCurrentBalance,
   getCurrentAccount,
   initDutchXConnection,
-  getTokenBalance,
+  getTokenBalances,
   // tokenPairSelect,
 } from 'api/dutchx'
 
-import { setTokenBalance } from 'reducers/tokenBalances'
+import { setTokenBalance } from 'actions/tokenBalances'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
@@ -80,7 +80,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
       try {
         account = await getCurrentAccount()
         currentBalance = await getCurrentBalance(account)
-        tokenBalance = await getTokenBalance(account)
+        tokenBalance = await getTokenBalances(account)
       } catch (e) {
         console.log(e)
       }

@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
 import { TokenBalances } from 'types'
 
-import { setTokenBalance } from 'actions/tokenBalance'
+import { setTokenBalance } from 'actions/tokenBalances'
 // import { codeList } from 'globals'
 
 // const zeroBalance = codeList.reduce((acc, code) => (acc[code] = 0, acc), {}) as TokenBalances
