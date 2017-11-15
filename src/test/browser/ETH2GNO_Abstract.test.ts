@@ -26,9 +26,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let ETH: any; let GNO: any; let TUL: any
   let dxa: string
   let dx: any; let eth: any; let gno: any; let tul: any
-  
+
   let accounts: any; let accs: any
-  
+
   let master: any; let seller: any; let buyer: any
   let delayFor: any
 
@@ -37,40 +37,40 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   before(async () => {
-    dxClass   = await initDutchXConnection({ ethereum: 'http://localhost:8545' })
+    dxClass = await initDutchXConnection({ ethereum: 'http://localhost:8545' })
 
-    dx        = await DX.deployed()
-    dxa       = DX.address
+    dx = await DX.deployed()
+    dxa = DX.address
 
     // Truffle-loaded Contracts
-    ETH       = dxClass.contracts.TokenETH
-    GNO       = dxClass.contracts.TokenGNO
-    TUL       = dxClass.contracts.Token
-    
-    // Deployed Class instance Contracts
-    eth       = dxClass.TokenETH
-    gno       = dxClass.TokenGNO
-    tul       = dxClass.Token
-    
-    // Set master Account from masterDX and accounts from dxClass
-    accounts      = [...web3.eth.accounts]
+    ETH = dxClass.contracts.TokenETH
+    GNO = dxClass.contracts.TokenGNO
+    TUL = dxClass.contracts.Token
 
-    master    = accounts[0]
-    seller    = accounts[1]
-    buyer     = accounts[2]
+    // Deployed Class instance Contracts
+    eth = dxClass.TokenETH
+    gno = dxClass.TokenGNO
+    tul = dxClass.Token
+
+    // Set master Account from masterDX and accounts from dxClass
+    accounts = [...web3.eth.accounts]
+
+    master = accounts[0]
+    seller = accounts[1]
+    buyer = accounts[2]
 
     accs = { master, seller, buyer }
 
     console.log(`MASTER ACCT = ${master}, SELLER ACCT = ${seller}, BUYER ACCT = ${buyer}`)
-    
+
     // delays interaction so that we can switch accounts in Metamask
     // if running without metamask -- no delay
     delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay(15000))
 
     Object.assign(accs, { dx: DX.address, eth: ETH.address, gno: GNO.address, tul: TUL.addresss })
-    
+
     watchAllEventsFor(dx, 'DutchExchange')
-    // watchAllEventsFor(eth, 'ETH')
+    watchAllEventsFor(eth, 'ETH')
     watchAllEventsFor(gno, 'GNO')
 
     // seller must have initial balance of ETH
@@ -95,8 +95,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     console.log('buyer', buyer, 'received 1000 GNO')
 
     // ONLY set Tokens to Metamask for approving txs
-    currentProvider && 
-    (ETH.setProvider(currentProvider) && GNO.setProvider(currentProvider) && TUL.setProvider(currentProvider))
+    currentProvider &&
+      (ETH.setProvider(currentProvider) && GNO.setProvider(currentProvider) && TUL.setProvider(currentProvider))
 
     await checkBalances()
   })
@@ -203,7 +203,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // move time to start + 1 hour
     await dx.increaseTimeBy(1, timeUntilStart, { from: master })
     now = (await dx.now()).toNumber()
-    
+
     // auction has started
     expect(auctionStart).toBeLessThan(now)
 
@@ -233,7 +233,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     // allow DX to withdraw GNO from buyer's account
     await gno.approve(dxa, amount, { from: buyer })
-    
+
     // submit a buy order for the current auction
     await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
 
@@ -264,7 +264,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     const [num, den] = (await dx.getPrice(auctionIndex)).map((n: any) => n.toNumber())
 
-    
+
     await dx.claimBuyerFunds(auctionIndex, { from: buyer })
     const claimedAmountAfter = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
     const buyerBalancesAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
@@ -278,7 +278,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // balance is kept as a record, just can't be claimed twice
     expect(buyerBalance).toBe(buyerBalancesAfter)
     expect(buyVolumeAfter).toBe(buyVolume)
-    
+
 
   })
 
@@ -286,9 +286,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   it('buyer can\'t claim more at this time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
-      
+
       await dx.claimBuyerFunds(auctionIndex, { from: buyer })
-      
+
       // break test if reached
       expect(true).toBe(false)
     } catch (error) {
@@ -297,7 +297,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('seller can\'t claim before auction ended', async () => {
-    
+
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
       // trying to claim from the ongoing auction
@@ -321,7 +321,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // Since price is a function of time, so we have to rearrange the equation for time, which gives
     const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
 
-    
+
     await dx.setTime(timeWhenAuctionClears, { from: master })
     const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
     const amount = 1
@@ -368,7 +368,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // there are still funds to be claimed
     expect(claimed).toBeLessThan(buyerBalance)
 
-    
+
     // claim what can be claimed
     await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
     claimed = (await dx.claimedAmounts(lastAuctionIndex, buyer)).toNumber()

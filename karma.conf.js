@@ -46,6 +46,7 @@ module.exports = (config) => {
         // helps when waiting for long Promises
         timeout: 1200000,
       },
+      args: config.grep ? ['--grep', config.grep] : [],
     },
 
 
