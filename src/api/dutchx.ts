@@ -1,7 +1,7 @@
 import dutchX from './initialization'
 import { weiToEth } from 'utils/helpers'
 
-let dutchXInst: any
+let dxInst: any
 
 /**
  * Initializes connection to DutchX
@@ -10,9 +10,9 @@ let dutchXInst: any
 export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
   console.log(' ===> FIRING initDutchX ACTION')
   try {
-    dutchXInst = await dutchX.init(DUTCHX_OPTIONS)
-    return dutchXInst
-    // console.log('SUCCESS CONNECTING TO DUTCHX INSTANCE', dutchXInst)
+    dxInst = await dutchX.init(DUTCHX_OPTIONS)
+    return dxInst
+    // console.log('SUCCESS CONNECTING TO DUTCHX INSTANCE', dxInst)
   } catch (e) {
     console.log('ERROR CONNECTING TO DUTCHX INSTANCE', e.message)
     throw (e)
@@ -22,7 +22,7 @@ export const initDutchXConnection = async (DUTCHX_OPTIONS: any) => {
 /**
  * Returns an instance of the connection to DutchX
  */
-export const getDutchXConnection: Function = async (): Promise<Object> => dutchXInst
+export const getDutchXConnection: Function = async (): Promise<Object> => dxInst
 
 /**
  * Returns the default node account
