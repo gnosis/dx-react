@@ -1,16 +1,9 @@
 import React from 'react'
 
 import { TokenCode, Balance } from 'types'
+import { AuctionStatus as Status } from 'globals'
 
 import claim from 'assets/claim.svg'
-
-// TODO: move to global types
-export enum Status {
-  INIT = 'initialising',
-  PLANNED = 'planned',
-  ACTIVE = 'active',
-  ENDED = 'ended',
-}
 
 export interface AuctionStatusProps {
   sellToken: TokenCode,
