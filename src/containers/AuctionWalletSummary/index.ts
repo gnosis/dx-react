@@ -7,7 +7,7 @@ const mapState = ({ blockchain }: State) => {
   const { activeProvider, providers } = blockchain
   const currentProvider = providers[activeProvider]
 
-  const { provider = '', address = '', network = '', loaded, available } = currentProvider
+  const { name: provider = '', address = '', network = '', loaded, available } = currentProvider
 
   return ({
     address,
