@@ -3,8 +3,11 @@ import {
   getCurrentBalance,
   getCurrentAccount,
   initDutchXConnection,
+  getTokenBalances,
   // tokenPairSelect,
 } from 'api/dutchx'
+
+import { setTokenBalance } from 'actions/tokenBalances'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
@@ -41,6 +44,7 @@ export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKEN
 
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
+// CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
 /**
  * (Re)-Initializes Gnosis.js connection according to current providers settings
  */
@@ -69,21 +73,28 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   try {
     let account: Object
     let currentBalance: any
+    let tokenBalance: any
+
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
         account = await getCurrentAccount()
         currentBalance = await getCurrentBalance(account)
+        tokenBalance = await getTokenBalances(account)
       } catch (e) {
         console.log(e)
       }
       
     }
-    console.log('HERE WE ARE')
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
     await dispatch(setCurrentAccountAddress({ currentAccount: account }))
     await dispatch(setCurrentBalance({ currentBalance }))
+    
+    // Grab each TokenBalance and dispatch
+    tokenBalance.forEach(async (token: any) => 
+      await dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
     console.warn(`DutchX connection Error: ${error}`)
