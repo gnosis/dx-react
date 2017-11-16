@@ -12,7 +12,7 @@ interface AuctionPanelProps {
 
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({ auctionAddress }) => (
   <AuctionContainer auctionDataScreen="status">
-    <AuctionHeader backTo="/">
+    <AuctionHeader backTo="/wallet">
       {/* TODO: grab auction address for url */}
       Auction URL: <a href="#">https://www.dutchx.pm/auction/{auctionAddress}/</a>
     </AuctionHeader>

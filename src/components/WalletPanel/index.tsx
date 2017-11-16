@@ -14,7 +14,7 @@ interface WalletPanelProps {
 
 const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress }) => (
   <AuctionContainer auctionDataScreen="details">
-    <AuctionHeader backTo="/">
+    <AuctionHeader backTo="/order">
       Confirm Order Details
       </AuctionHeader>
     <TokenPair />
