@@ -3,13 +3,13 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
-import AuctionContainer from 'containers/AuctionContainer'
+import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
 import AuctionPriceBar from 'containers/AuctionPriceBar'
 import AuctionProgress from 'components/AuctionProgress'
 import AuctionSellingGetting from 'components/AuctionSellingGetting'
-import AuctionStatus, { Status } from 'components/AuctionStatus'
+import AuctionStatus from 'components/AuctionStatus'
 import AuctionWalletSummary from 'components/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
@@ -18,6 +18,7 @@ import { action } from '@storybook/addon-actions'
 import { boolean, number, text } from '@storybook/addon-knobs'
 
 import { TokenCode } from 'types'
+import { AuctionStatus as Status } from 'globals'
 
 const Provider = makeProviderDecorator(storeInit())
 

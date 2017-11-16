@@ -2,7 +2,6 @@ import React from 'react'
 
 export interface AuctionContainerProps {
   auctionDataScreen: string,
-  children?: React.ReactNode[],
 }
 
 export const AuctionContainer: React.SFC<AuctionContainerProps> = ({ auctionDataScreen = 'details', children }) =>
