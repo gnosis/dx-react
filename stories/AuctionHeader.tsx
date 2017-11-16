@@ -25,7 +25,7 @@ const variants = {
     dataScreen: 'details',
   },
   PANEL4: {
-    header: { children: [text('text', 'Auction URL: '), <a href="#">https://www.dutchx.pm/auction/0x03494929349594/</a>] },
+    header: { children: [text('text', 'Auction URL: '), <a href="#" key="0">https://www.dutchx.pm/auction/0x03494929349594/</a>] },
     dataScreen: 'status',
   },
 }

@@ -22,8 +22,9 @@ storiesOf('NoWallet', module)
 )
   .addWithJSX('Both', (): any =>
     [
-      <TextSquare />,
+      <TextSquare key="0" />,
       <NoWallet
+        key="1"
         handleClick={action('ButtonCTA clicked')}
         hide={boolean('Hide/Show', false)}
       />,
