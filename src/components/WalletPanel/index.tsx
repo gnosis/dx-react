@@ -7,8 +7,12 @@ import AuctionWalletSummary from 'containers/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 
+interface WalletPanelProps {
+  auctionAddress: string
+}
 
-const WalletPanel: React.SFC = () => (
+
+const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress }) => (
   <AuctionContainer auctionDataScreen="details">
     <AuctionHeader backTo="/">
       Confirm Order Details
