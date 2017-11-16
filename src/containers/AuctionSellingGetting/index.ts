@@ -14,7 +14,8 @@ const findRatioPair = createSelector(
 )
 
 const mapState = (state: State) => {
-  const { sell, buy, price } = findRatioPair(state)
+  // TODO: always have some price for every pair in RatioPairs
+  const { sell, buy, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
   const { [sell]: balance } = state.tokenBalances
   return ({
     // TODO: change prop to sellTokenBalance
