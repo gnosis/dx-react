@@ -88,7 +88,7 @@ export default class InjectedParent {
           return reject(err)
         }
 
-        return resolve(networkById[netId] || ETHEREUM_NETWORKS.UNKNOWN)
+        resolve(networkById[netId] || ETHEREUM_NETWORKS.UNKNOWN)
       })
     })
   }
@@ -98,7 +98,7 @@ export default class InjectedParent {
       this.web3.eth.getAccounts(
         (e: Error, accounts: any) => {
           if (e) {
-            reject(e)
+            return reject(e)
           }
           resolve(accounts && accounts.length ? accounts[0] : null)
         },
@@ -119,7 +119,7 @@ export default class InjectedParent {
           (e: Error, balance: any) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
         )
       } else {
-        return reject(new Error('No Account available'))
+        reject(new Error('No Account available'))
       }
     })
   }
