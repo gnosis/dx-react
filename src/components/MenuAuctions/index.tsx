@@ -27,7 +27,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                 auction =>
                   <tr key={auction.id}>
                     <td>{`${auction.sellToken}/${auction.buyToken}`}</td>
-                    <td>{`${auction.buyPrice} ${auction.sellToken}`}</td>
+                    <td>{`${auction.price} ${auction.sellToken}`}</td>
                     {auction.claim && <td><img src={require('assets/claim.svg')} /></td>}
                   </tr>,
               )}
