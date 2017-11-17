@@ -22,12 +22,19 @@ import AuctionSellingGetting from 'components/AuctionSellingGetting'
 storiesOf('Auction Sell & Get', module)
   .addDecorator(CenterDecorator)
   // .addDecorator(ProviderDecor)
-  .add('AuctionSellingGetting', () =>
-    <AuctionSellingGetting
-      sellTokenBalance={text('balance', '20')}
-      buyToken={text('buyToken', 'GNO') as TokenCode}
-      sellToken={text('sellToken', 'ETH') as TokenCode}
-      sellAmount={number('sellAmount', 0).toString()}
-      buyAmount={number('sellAmount', 0).toString()}
-      setSellTokenAmount={action('Set sellTokenAmount')}
-    />)
+  .add('AuctionSellingGetting', () => {
+    const sellAmount = number('sellAmount', 0).toString()
+    const ratio = number('sellRatio', 1.5)
+    const buyAmount = (+sellAmount * ratio).toString()
+
+    return (
+      <AuctionSellingGetting
+        sellTokenBalance={text('balance', '20')}
+        buyToken={text('buyToken', 'GNO') as TokenCode}
+        sellToken={text('sellToken', 'ETH') as TokenCode}
+        sellAmount={sellAmount}
+        buyAmount={buyAmount}
+        setSellTokenAmount={action('Set sellTokenAmount')}
+      />
+    )
+  })
