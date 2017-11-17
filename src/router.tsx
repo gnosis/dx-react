@@ -1,33 +1,14 @@
 import React from 'react'
 import { ConnectedRouter } from 'connected-react-router'
-import {
-  Route,
-  // NavLink,
-} from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { History } from 'history'
 
-// import App from 'containers/App'
-// import BalanceButton from './containers/BalanceButton/'
 import Header from 'components/Header'
-// import { getDutchXConnection } from 'contract-fe-test/api/dutchx'
+import Home from 'containers/Home'
+import OrderPanel from 'containers/OrderPanel'
+import WalletPanel from 'containers/WalletPanel'
+import AuctionPanel from 'containers/AuctionPanel'
 
-import TokenPicker from 'containers/TokenPicker'
-import TextSquare from 'components/TextSquare'
-
-const TempApp: React.SFC<any> = () => (
-  <div>
-    <Header />
-    {/* <div>
-      <h1>Truffle + React/Redux</h1>
-      <h2>Connect testRPC via a terminal first...</h2>
-      <BalanceButton />
-    </div> */}
-    <section className="home">
-      <TextSquare />
-      <TokenPicker />
-    </section>
-  </div>
-)
 
 interface AppRouterProps {
   history: History
@@ -36,10 +17,12 @@ interface AppRouterProps {
 const AppRouter: React.SFC<AppRouterProps> = ({ history }) => (
   <ConnectedRouter history={history}>
     <div>
-      {/* <NavLink to="/">Home</NavLink>{' '}
-      <NavLink to="/someroute">Some Route</NavLink> */}
-      <Route exact path="/" component={TempApp} />
-      <Route path="/someroute" render={() => <h3>Some Route</h3>} />
+      <Header />
+      <Route exact path="/" component={Home} />
+      <Route path="/order" component={OrderPanel} />
+      <Route path="/wallet" component={WalletPanel} />
+      {/* TODO: check for valid params.addr and redirect if necessary */}
+      <Route path="/auction/:addr" component={AuctionPanel} />
     </div>
   </ConnectedRouter>
 )

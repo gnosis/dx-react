@@ -10,3 +10,10 @@ export const code2tokenMap: Code2Name = {
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]
+
+export enum AuctionStatus {
+  INIT = 'initialising',
+  PLANNED = 'planned',
+  ACTIVE = 'active',
+  ENDED = 'ended',
+}

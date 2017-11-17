@@ -3,13 +3,13 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
-import AuctionContainer from 'containers/AuctionContainer'
+import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
 import AuctionPriceBar from 'containers/AuctionPriceBar'
 import AuctionProgress from 'components/AuctionProgress'
 import AuctionSellingGetting from 'components/AuctionSellingGetting'
-import AuctionStatus, { Status } from 'components/AuctionStatus'
+import AuctionStatus from 'components/AuctionStatus'
 import AuctionWalletSummary from 'components/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
@@ -18,6 +18,7 @@ import { action } from '@storybook/addon-actions'
 import { boolean, number, text } from '@storybook/addon-knobs'
 
 import { TokenCode } from 'types'
+import { AuctionStatus as Status } from 'globals'
 
 const Provider = makeProviderDecorator(storeInit())
 
@@ -26,13 +27,13 @@ storiesOf('AuctionContainer', module)
   .addDecorator(Provider)
   .addWithJSX('PAGE 2', () =>
     <AuctionContainer auctionDataScreen="amount">
-      <AuctionHeader 
-        backTo="/" 
+      <AuctionHeader
+        backTo="/"
         children="Token Auction ETH/GNO"
       />
       <TokenPair />
-      <AuctionPriceBar header="Closing Price"/>
-      <AuctionSellingGetting 
+      <AuctionPriceBar header="Closing Price" />
+      <AuctionSellingGetting
         balance={number('balance', 0, {
           range: true,
           min: 0,
@@ -48,43 +49,44 @@ storiesOf('AuctionContainer', module)
           step: 0.1,
         })}
       />
-      <ButtonCTA 
+      <ButtonCTA
+        to=""
         children="Continue to wallet details"
-        onClick={action('Continuing to Wallet Details')} 
+        onClick={action('Continuing to Wallet Details')}
       />
     </AuctionContainer>,
-  )
+)
   .addWithJSX('PAGE 3', () =>
     <AuctionContainer auctionDataScreen="details">
-      <AuctionHeader 
-        backTo="/" 
+      <AuctionHeader
+        backTo="/"
         children="Confirm Order Details"
       />
       <TokenPair />
-      <AuctionPriceBar header="Price"/>
-      <AuctionWalletSummary 
-        address={text('Wallet Addr.', '0x67a8s8ff687asd6a8s9d8fa')} 
+      <AuctionPriceBar header="Price" />
+      <AuctionWalletSummary
+        address={text('Wallet Addr.', '0x67a8s8ff687asd6a8s9d8fa')}
         provider={text('Provider', 'METAMASK')}
         network={text('Provider', 'MAIN-NET')}
         connected={boolean('connectStatus', false)}
       />
       <p>
-        When submitting the order and signing with MetaMask, 
-        your deposit will be added to the next (scheduled) auction. Every auction takes aprox. 5 hours.
+        When submitting the order and signing with MetaMask,
+        your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
       </p>
-      <ButtonCTA onClick={action('Order Submitted')}>
+      <ButtonCTA onClick={action('Order Submitted')} to="">
         Submit Order <i className="icon icon-walletOK"></i>
       </ButtonCTA>
     </AuctionContainer>,
-  )
+)
   .addDecorator(StoryRouter())
   .addWithJSX('PAGE 4', () =>
     <AuctionContainer auctionDataScreen="status">
-      <AuctionHeader 
-        backTo="/" 
-        children={['Auction URL: ', <a href="#">https://www.dutchx.pm/auction/0x03494929349594/</a>]}
+      <AuctionHeader
+        backTo="/"
+        children={['Auction URL: ', <a href="#" key="0">https://www.dutchx.pm/auction/0x03494929349594/</a>]}
       />
-      <AuctionStatus 
+      <AuctionStatus
         sellToken={text('sellToken', 'ETH') as TokenCode}
         buyToken={text('buyToken', 'GNO') as TokenCode}
         buyAmount={text('buyAmt', '100')}
@@ -94,9 +96,9 @@ storiesOf('AuctionContainer', module)
           min: 0,
           max: (3600 * 6),
           step: 5,
-        }).toString()}  
+        }).toString()}
       />
-      <AuctionProgress progress={4}/>
+      <AuctionProgress progress={4} />
       <AuctionFooter
         sellToken={text('sellToken', 'ETH') as TokenCode}
         buyToken={text('buyToken', 'GNO') as TokenCode}
@@ -105,4 +107,4 @@ storiesOf('AuctionContainer', module)
         auctionEnded={boolean('auctionEnded', false)}
       />
     </AuctionContainer>,
-  )
+)

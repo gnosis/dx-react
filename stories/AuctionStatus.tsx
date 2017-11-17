@@ -4,7 +4,8 @@ import { storiesOf } from '@storybook/react'
 import { number, text } from '@storybook/addon-knobs'
 import { makeCenterDecorator } from './helpers'
 
-import AuctionStatus, { Status, AuctionStatusProps } from 'components/AuctionStatus'
+import AuctionStatus, { AuctionStatusProps } from 'components/AuctionStatus'
+import { AuctionStatus as Status } from 'globals'
 
 const CenterDecor = makeCenterDecorator({
   style: {

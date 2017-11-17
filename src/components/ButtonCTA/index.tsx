@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react'
+import { Link } from 'react-router-dom'
+
 
 interface ButtonCTAProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   className?: string,
-  onClick(e: React.MouseEvent<HTMLAnchorElement>): void
+  onClick?(e: React.MouseEvent<HTMLAnchorElement>): void,
+  to: string,
 }
 
 class ButtonCTA extends PureComponent<ButtonCTAProps> {
@@ -11,7 +14,7 @@ class ButtonCTA extends PureComponent<ButtonCTAProps> {
   }
 
   onClick: ButtonCTAProps['onClick'] = (e) => {
-    e.preventDefault()
+    // e.preventDefault()
 
     const { onClick } = this.props
     onClick && onClick(e)
@@ -21,14 +24,14 @@ class ButtonCTA extends PureComponent<ButtonCTAProps> {
     const { className, children, onClick, ...rest } = this.props
 
     return (
-      <a
+      <Link
         href="#"
         className={'buttonCTA ' + (className || '')}
         onClick={this.onClick}
         {...rest}
       >
         {children}
-      </a>
+      </Link>
     )
   }
 }

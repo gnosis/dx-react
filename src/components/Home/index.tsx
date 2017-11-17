@@ -10,10 +10,10 @@ export interface HomeProps {
   activeProvider: Providers['METAMASK' | 'MIST']
 }
 
-const Home: React.SFC<HomeProps> = ({ activeProvider }) => 
+const Home: React.SFC<HomeProps> = ({ activeProvider }) =>
   <section className="home">
     <TextSquare />
-    { (activeProvider === 'METAMASK' || activeProvider === 'MIST') ? <TokenPicker /> : <NoWallet /> }
+    {(activeProvider === 'METAMASK' || activeProvider === 'MIST') ? <TokenPicker to="/order" /> : <NoWallet />}
   </section>
 
 export default Home

@@ -27,6 +27,7 @@ for (const vr of Object.keys(variants)) {
   story.addWithJSX(vr, () => (
     <ButtonCTA
       onClick={action('ButtonCTA clicked')}
+      to=""
     >
       {variants[vr]}
     </ButtonCTA>

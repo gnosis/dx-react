@@ -38,4 +38,5 @@ storiesOf('TokenPicker', module)
   .addDecorator(CenterDecor)
   .addWithJSX('main', () => <TokenPicker
     continueToOrder={action('Continue to order details')}
+    to=""
   />)
