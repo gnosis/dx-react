@@ -3,6 +3,7 @@ import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { text } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
+import StoryRouter from 'storybook-router'
 
 import { makeCenterDecorator } from './helpers'
 import ButtonCTA from 'components/ButtonCTA'
@@ -21,6 +22,7 @@ const variants = {
 }
 
 const story = storiesOf(`ButtonCTA`, module)
+  .addDecorator(StoryRouter())
   .addDecorator(CenterDecor)
 
 for (const vr of Object.keys(variants)) {

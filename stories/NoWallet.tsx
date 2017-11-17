@@ -3,6 +3,7 @@ import * as React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { boolean } from '@storybook/addon-knobs'
+import StoryRouter from 'storybook-router'
 
 import { storeInit, bcMetamask, makeProviderDecorator, CenterSectionDecorator } from './helpers'
 
@@ -12,8 +13,9 @@ import TextSquare from 'components/TextSquare'
 import NoWallet from 'components/NoWallet'
 
 storiesOf('NoWallet', module)
-  .addDecorator(CenterSectionDecorator)
+  .addDecorator(StoryRouter())
   .addDecorator(makeProviderDecorator(store))
+  .addDecorator(CenterSectionDecorator)
   .addWithJSX('NoWallet[Solo]', () =>
     <NoWallet
       handleClick={action('ButtonCTA clicked')}
