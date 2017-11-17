@@ -20,6 +20,7 @@ export default handleActions<TokenPair, TokenItemProps & TokenPair>(
     }),
     [setSellTokenAmount.toString()]: (state, action) => ({
       ...state,
+      // TODO: restrict payload.sellAmount to [0, tokenBalances[state.sell]]
       ...action.payload,
     }),
   },
