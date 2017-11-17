@@ -34,7 +34,7 @@ storiesOf('AuctionContainer', module)
       <TokenPair />
       <AuctionPriceBar header="Closing Price" />
       <AuctionSellingGetting
-        balance={number('balance', 0, {
+        sellTokenBalance={number('balance', 0, {
           range: true,
           min: 0,
           max: 5000,
@@ -42,12 +42,9 @@ storiesOf('AuctionContainer', module)
         }).toString()}
         buyToken={text('buyToken', 'GNO') as TokenCode}
         sellToken={text('sellToken', 'ETH') as TokenCode}
-        ratio={number('multiplier', 1, {
-          range: true,
-          min: 0.01,
-          max: 20,
-          step: 0.1,
-        })}
+        sellAmount={number('sellAmount', 0).toString()}
+        buyAmount={number('sellAmount', 0).toString()}
+        setSellTokenAmount={action('Set sellTokenAmount')}
       />
       <ButtonCTA
         children="Continue to wallet details"

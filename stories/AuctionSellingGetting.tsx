@@ -2,6 +2,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { number, text } from '@storybook/addon-knobs'
+import { action } from '@storybook/addon-actions'
 import { makeCenterDecorator/*, storeInit, bcMetamask, makeProviderDecorator */ } from './helpers'
 
 import { TokenCode } from 'types'
@@ -21,10 +22,12 @@ import AuctionSellingGetting from 'components/AuctionSellingGetting'
 storiesOf('Auction Sell & Get', module)
   .addDecorator(CenterDecorator)
   // .addDecorator(ProviderDecor)
-  .add('AuctionSellingGetting', () => 
+  .add('AuctionSellingGetting', () =>
     <AuctionSellingGetting
-      balance={text('balance', '20')} 
+      sellTokenBalance={text('balance', '20')}
       buyToken={text('buyToken', 'GNO') as TokenCode}
-      ratio={number('sellRatio', 1.0)}
       sellToken={text('sellToken', 'ETH') as TokenCode}
+      sellAmount={number('sellAmount', 0).toString()}
+      buyAmount={number('sellAmount', 0).toString()}
+      setSellTokenAmount={action('Set sellTokenAmount')}
     />)
