@@ -14,6 +14,7 @@ import AuctionWalletSummary from 'components/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 import AuctionAmountSummary from 'containers/AuctionAmountSummary'
+import TokenOverlay from 'containers/TokenOverlay'
 
 import { action } from '@storybook/addon-actions'
 import { boolean, number, text } from '@storybook/addon-knobs'
@@ -28,6 +29,7 @@ storiesOf('AuctionContainer', module)
   .addDecorator(Provider)
   .addWithJSX('PAGE 2', () =>
     <AuctionContainer auctionDataScreen="amount">
+      <TokenOverlay />
       <AuctionHeader
         backTo="/"
         children="Token Auction ETH/GNO"
