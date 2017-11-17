@@ -19,7 +19,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken }) => (
   <AuctionContainer auctionDataScreen="amount">
     <TokenOverlay />
     <AuctionHeader backTo="/">
-      Token Auction ${sellToken}/${buyToken}
+      Token Auction {sellToken}/{buyToken}
     </AuctionHeader>
     <TokenPair />
     <AuctionPriceBar header="Closing Price" />
