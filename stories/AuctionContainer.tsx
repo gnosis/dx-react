@@ -50,7 +50,6 @@ storiesOf('AuctionContainer', module)
         })}
       />
       <ButtonCTA
-        to=""
         children="Continue to wallet details"
         onClick={action('Continuing to Wallet Details')}
       />
@@ -74,7 +73,7 @@ storiesOf('AuctionContainer', module)
         When submitting the order and signing with MetaMask,
         your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
       </p>
-      <ButtonCTA onClick={action('Order Submitted')} to="">
+      <ButtonCTA onClick={action('Order Submitted')}>
         Submit Order <i className="icon icon-walletOK"></i>
       </ButtonCTA>
     </AuctionContainer>,
