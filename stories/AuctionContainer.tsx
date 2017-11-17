@@ -46,7 +46,7 @@ storiesOf('AuctionContainer', module)
         buyToken={text('buyToken', 'GNO') as TokenCode}
         sellToken={text('sellToken', 'ETH') as TokenCode}
         sellAmount={number('sellAmount', 0).toString()}
-        buyAmount={number('sellAmount', 0).toString()}
+        buyAmount={number('buyAmount', 0).toString()}
         setSellTokenAmount={action('Set sellTokenAmount')}
       />
       <ButtonCTA
