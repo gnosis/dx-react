@@ -8,7 +8,7 @@ export default handleActions<TokenOverlay>(
     [closeOverlay.toString()]: state => ({
       ...state,
       open: false,
-      mode: null,
+      mod: null,
     }),
     [openOverlay.toString()]: (state, action) => ({
       ...state,
