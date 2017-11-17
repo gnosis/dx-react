@@ -13,6 +13,7 @@ import AuctionStatus from 'components/AuctionStatus'
 import AuctionWalletSummary from 'components/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
+import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
 import { action } from '@storybook/addon-actions'
 import { boolean, number, text } from '@storybook/addon-knobs'
@@ -58,7 +59,7 @@ storiesOf('AuctionContainer', module)
         backTo="/"
         children="Confirm Order Details"
       />
-      <TokenPair />
+      <AuctionAmountSummary />
       <AuctionPriceBar header="Price" />
       <AuctionWalletSummary
         address={text('Wallet Addr.', '0x67a8s8ff687asd6a8s9d8fa')}
