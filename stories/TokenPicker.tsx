@@ -22,6 +22,7 @@ const store = storeInit({
   tokenPair: {
     sell: 'ETH',
     buy: 'GNO',
+    sellAmount: '0',
   },
   ratioPairs,
 })

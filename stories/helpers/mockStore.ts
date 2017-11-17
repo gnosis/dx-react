@@ -28,9 +28,9 @@ export const bcMetamask: Partial<State> = {
     dutchXInitialized: true,
     ongoingAuctions: [],
   },
-  tokenBalances: { 
+  tokenBalances: {
     GNO: '0.12364',
-    ETH: '0.46783', 
+    ETH: '0.46783',
   },
 }
 
@@ -46,8 +46,8 @@ export const bcLocalHost: Partial<State> = {
     dutchXInitialized: true,
     ongoingAuctions: [],
   },
-  tokenBalances:{ 
-    GNO: '0.12364', 
+  tokenBalances: {
+    GNO: '0.12364',
   },
 }
 
@@ -55,5 +55,6 @@ export const tokenPairState: Partial<State> = {
   tokenPair: {
     sell: 'ETH',
     buy: '1ST',
+    sellAmount: '0',
   },
 }
