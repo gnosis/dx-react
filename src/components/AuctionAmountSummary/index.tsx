@@ -1,14 +1,14 @@
 import React from 'react'
 import { TokenCode, Balance } from 'types'
 
-export interface TokenPairProps {
+export interface AuctionAmountSummaryProps {
   sellToken: TokenCode,
   buyToken: TokenCode,
   sellTokenAmount: Balance,
   buyTokenAmount: Balance,
 }
 
-const TokenPair: React.SFC<TokenPairProps> = ({
+const AuctionAmountSummary: React.SFC<AuctionAmountSummaryProps> = ({
   sellToken, buyToken, sellTokenAmount, buyTokenAmount,
 }) => (
     <div className="auctionAmountSummary">
@@ -26,4 +26,4 @@ const TokenPair: React.SFC<TokenPairProps> = ({
     </div>
   )
 
-export default TokenPair
+export default AuctionAmountSummary
