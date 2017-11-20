@@ -4,41 +4,30 @@ import { Balance, TokenCode } from 'types'
 
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
-  balance: Balance,
+  sellTokenBalance: Balance,
   buyToken: TokenCode,
-  ratio: number,
   sellToken: TokenCode,
+  sellAmount: Balance,
+  buyAmount: Balance,
+  setSellTokenAmount(props: any): any,
 }
 
-export interface AuctionSellingGettingState {
-  value: string | number
-}
 
-class AuctionSellingGetting extends Component<AuctionSellingGettingProps, AuctionSellingGettingState> {
-
-  state = {
-    value: 0,
-  }
-
+class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
   onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      value: e.target.value,
-    })
+    this.props.setSellTokenAmount({ sellAmount: e.target.value })
   }
 
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const { balance } = this.props
+    const { sellTokenBalance, setSellTokenAmount } = this.props
 
     e.preventDefault()
 
-    this.setState({
-      value: Number(balance),
-    })
+    setSellTokenAmount({ sellAmount: sellTokenBalance })
   }
 
   render() {
-    const { sellToken, buyToken, ratio, balance } = this.props
-    const { value } = this.state
+    const { sellToken, buyToken, buyAmount, sellTokenBalance, sellAmount } = this.props
 
     return (
       <div className="auctionAmounts">
@@ -49,15 +38,16 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
           name="sellingAmount"
           id="sellingAmount"
           onChange={this.onChange}
-          value={value}
+          value={sellAmount}
           min="0"
-          max={balance}
+          max={sellTokenBalance}
         />
         <small>{sellToken}</small>
 
         <label htmlFor="gettingAmount">Est. Amount Getting:</label>
         {/* CONSIDER ADDING GAS_COST TO RATIO */}
-        <input type="number" name="gettingAmount" id="gettingAmount" value={value * ratio} readOnly />
+        {/* TODO: use BN.mult() */}
+        <input type="number" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
         <small>{buyToken}</small>
       </div>
     )

@@ -14,6 +14,8 @@ interface AppRouterProps {
   history: History
 }
 
+// TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
+
 const AppRouter: React.SFC<AppRouterProps> = ({ history }) => (
   <ConnectedRouter history={history}>
     <div>

@@ -6,6 +6,7 @@ import AuctionPriceBar from 'containers/AuctionPriceBar'
 import AuctionSellingGetting from 'containers/AuctionSellingGetting'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
+import TokenOverlay from 'containers/TokenOverlay'
 
 import { TokenCode } from 'types'
 
@@ -16,8 +17,9 @@ interface OrderPanelProps {
 
 const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken }) => (
   <AuctionContainer auctionDataScreen="amount">
+    <TokenOverlay />
     <AuctionHeader backTo="/">
-      Token Auction ${sellToken}/${buyToken}
+      Token Auction {sellToken}/{buyToken}
     </AuctionHeader>
     <TokenPair />
     <AuctionPriceBar header="Closing Price" />

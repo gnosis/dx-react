@@ -3,7 +3,7 @@ import { RatioPairs, TokenPair } from 'types'
 
 export interface TopAuctionsProps {
   pairs: RatioPairs,
-  selectTokenPair(pair: TokenPair): any
+  selectTokenPair(pair: Pick<TokenPair, 'sell' | 'buy'>): any
 }
 
 const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs, selectTokenPair }) => (

@@ -5,7 +5,7 @@ import AuctionHeader from 'components/AuctionHeader'
 import AuctionPriceBar from 'containers/AuctionPriceBar'
 import AuctionWalletSummary from 'containers/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
-import TokenPair from 'containers/TokenPair'
+import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
 interface WalletPanelProps {
   auctionAddress: string
@@ -17,7 +17,7 @@ const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress }) => (
     <AuctionHeader backTo="/order">
       Confirm Order Details
       </AuctionHeader>
-    <TokenPair />
+    <AuctionAmountSummary />
     <AuctionPriceBar header="Price" />
     <AuctionWalletSummary />
     <p>

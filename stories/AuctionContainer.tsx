@@ -13,6 +13,8 @@ import AuctionStatus from 'components/AuctionStatus'
 import AuctionWalletSummary from 'components/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
+import AuctionAmountSummary from 'containers/AuctionAmountSummary'
+import TokenOverlay from 'containers/TokenOverlay'
 
 import { action } from '@storybook/addon-actions'
 import { boolean, number, text } from '@storybook/addon-knobs'
@@ -27,6 +29,7 @@ storiesOf('AuctionContainer', module)
   .addDecorator(Provider)
   .addWithJSX('PAGE 2', () =>
     <AuctionContainer auctionDataScreen="amount">
+      <TokenOverlay />
       <AuctionHeader
         backTo="/"
         children="Token Auction ETH/GNO"
@@ -34,7 +37,7 @@ storiesOf('AuctionContainer', module)
       <TokenPair />
       <AuctionPriceBar header="Closing Price" />
       <AuctionSellingGetting
-        balance={number('balance', 0, {
+        sellTokenBalance={number('balance', 0, {
           range: true,
           min: 0,
           max: 5000,
@@ -42,15 +45,11 @@ storiesOf('AuctionContainer', module)
         }).toString()}
         buyToken={text('buyToken', 'GNO') as TokenCode}
         sellToken={text('sellToken', 'ETH') as TokenCode}
-        ratio={number('multiplier', 1, {
-          range: true,
-          min: 0.01,
-          max: 20,
-          step: 0.1,
-        })}
+        sellAmount={number('sellAmount', 0).toString()}
+        buyAmount={number('buyAmount', 0).toString()}
+        setSellTokenAmount={action('Set sellTokenAmount')}
       />
       <ButtonCTA
-        to=""
         children="Continue to wallet details"
         onClick={action('Continuing to Wallet Details')}
       />
@@ -62,7 +61,7 @@ storiesOf('AuctionContainer', module)
         backTo="/"
         children="Confirm Order Details"
       />
-      <TokenPair />
+      <AuctionAmountSummary />
       <AuctionPriceBar header="Price" />
       <AuctionWalletSummary
         address={text('Wallet Addr.', '0x67a8s8ff687asd6a8s9d8fa')}
@@ -74,7 +73,7 @@ storiesOf('AuctionContainer', module)
         When submitting the order and signing with MetaMask,
         your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
       </p>
-      <ButtonCTA onClick={action('Order Submitted')} to="">
+      <ButtonCTA onClick={action('Order Submitted')}>
         Submit Order <i className="icon icon-walletOK"></i>
       </ButtonCTA>
     </AuctionContainer>,

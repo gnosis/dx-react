@@ -14,8 +14,9 @@ const tokenBalances = generateTokenBalances()
 
 const CenterDecor = makeCenterDecorator({
   style: {
-    width: 500,
+    width: 650,
     height: null,
+    backgroundColor: null,
   },
 })
 
@@ -23,10 +24,30 @@ const getModFromArgs = decorateAction([
   args => [args[0].mod],
 ])
 
+const tokenPair = () => {
+  const { sell, buy } = object('tokenPair', codePair)
+  const { [sell]: sellTokenBalance, [buy]: buyTokenBalance } = object('tokenBalances', tokenBalances)
+
+  return (
+    <TokenPair
+      openOverlay={getModFromArgs('OPEN OVERLAY to select a token to')}
+      sellToken={sell}
+      buyToken={buy}
+      sellTokenBalance={sellTokenBalance}
+      buyTokenBalance={buyTokenBalance}
+    />
+  )
+}
+
 storiesOf('TokenPair', module)
   .addDecorator(CenterDecor)
-  .addWithJSX('SELL <-> RECEIVE', () => <TokenPair
-    openOverlay={getModFromArgs('OPEN OVERLAY to select a token to')}
-    tokenPair={object('tokenPair', codePair)}
-    tokenBalances={object('tokenBalances', tokenBalances)}
-  />)
+  .addWithJSX('HOME', () => (
+    <div className="tokenIntro" style={{ width: 540, backgroundColor: 'white', margin: 'auto' }}>
+      {tokenPair()}
+    </div>
+  ))
+  .addWithJSX('PANEL 2', () => (
+    <div className="auctionContainer">
+      {tokenPair()}
+    </div>
+  ))

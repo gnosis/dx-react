@@ -54,15 +54,18 @@ export type TokenBalances = {[code in TokenCode]?: Balance }
  */
 export interface TokenPair {
   sell: TokenCode,
-  buy: TokenCode
+  buy: TokenCode,
+  sellAmount: Balance,
 }
 
 /**
  * represents a buy/sell pair
  * used in TopAuctions
  */
-export interface RatioPair extends TokenPair {
-  price: Balance
+export interface RatioPair {
+  sell: TokenCode,
+  buy: TokenCode,
+  price: Balance,
 }
 
 export type RatioPairs = RatioPair[]

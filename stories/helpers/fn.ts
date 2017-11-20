@@ -89,5 +89,5 @@ const samplePair = (list: any[]): [any, any] => {
  */
 export const generateTokenPair = (codes = codeList): TokenPair => {
   const [sell, buy] = samplePair(codes)
-  return { sell, buy }
+  return { sell, buy, sellAmount: '0' }
 }

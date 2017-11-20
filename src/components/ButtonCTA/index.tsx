@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 interface ButtonCTAProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   className?: string,
   onClick?(e: React.MouseEvent<HTMLAnchorElement>): void,
-  to: string,
+  to?: string,
 }
 
 class ButtonCTA extends PureComponent<ButtonCTAProps> {
@@ -21,13 +21,14 @@ class ButtonCTA extends PureComponent<ButtonCTAProps> {
   }
 
   render() {
-    const { className, children, onClick, ...rest } = this.props
+    const { className, children, onClick, to = '', ...rest } = this.props
 
     return (
       <Link
         href="#"
         className={'buttonCTA ' + (className || '')}
         onClick={this.onClick}
+        to={to}
         {...rest}
       >
         {children}
