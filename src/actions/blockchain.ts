@@ -9,6 +9,7 @@ import {
 } from 'api/dutchx'
 
 import { setTokenBalance } from 'actions/tokenBalances'
+import { setSellTokenAmount } from 'actions/tokenPair'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
@@ -125,6 +126,9 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
 
     // proceed to /auction/0x03494929349594
     dispatch(push(proceedTo))
+
+    // reset sellAmount
+    dispatch(setSellTokenAmount({ sellAmount: 0 }))
 
     // indicate that submition worked
     return true
