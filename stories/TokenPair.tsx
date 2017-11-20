@@ -24,11 +24,20 @@ const getModFromArgs = decorateAction([
   args => [args[0].mod],
 ])
 
-const tokenPair = () => <TokenPair
-  openOverlay={getModFromArgs('OPEN OVERLAY to select a token to')}
-  tokenPair={object('tokenPair', codePair)}
-  tokenBalances={object('tokenBalances', tokenBalances)}
-/>
+const tokenPair = () => {
+  const { sell, buy } = object('tokenPair', codePair)
+  const { [sell]: sellTokenBalance, [buy]: buyTokenBalance } = object('tokenBalances', tokenBalances)
+
+  return (
+    <TokenPair
+      openOverlay={getModFromArgs('OPEN OVERLAY to select a token to')}
+      sellToken={sell}
+      buyToken={buy}
+      sellTokenBalance={sellTokenBalance}
+      buyTokenBalance={buyTokenBalance}
+    />
+  )
+}
 
 storiesOf('TokenPair', module)
   .addDecorator(CenterDecor)

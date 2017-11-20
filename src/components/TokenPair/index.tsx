@@ -1,22 +1,38 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
-import { TokenPair, TokenBalances } from 'types'
+import { TokenCode, Balance } from 'types'
 
 export interface TokenPairProps {
-  tokenBalances: TokenBalances,
-  tokenPair: TokenPair,
+  sellToken: TokenCode,
+  buyToken: TokenCode,
+  sellTokenBalance: Balance,
+  buyTokenBalance: Balance,
   openOverlay(): any
 }
 
 const TokenPair: React.SFC<TokenPairProps> = ({
-  tokenPair: { sell, buy },
-  tokenBalances: { [sell]: sellTokenBalance, [buy]: buyTokenBalance },
+  sellToken,
+  buyToken,
+  sellTokenBalance,
+  buyTokenBalance,
   openOverlay,
 }) => (
     <div className="tokenPair">
-      <TokenItem code={sell} name={code2tokenMap[sell]} balance={sellTokenBalance} mod="sell" onClick={openOverlay} />
-      <TokenItem code={buy} name={code2tokenMap[buy]} balance={buyTokenBalance} mod="buy" onClick={openOverlay} />
+      <TokenItem
+        code={sellToken}
+        name={code2tokenMap[sellToken]}
+        balance={sellTokenBalance}
+        mod="sell"
+        onClick={openOverlay}
+      />
+      <TokenItem
+        code={buyToken}
+        name={code2tokenMap[buyToken]}
+        balance={buyTokenBalance}
+        mod="buy"
+        onClick={openOverlay}
+      />
     </div>
   )
 
