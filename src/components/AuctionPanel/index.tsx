@@ -6,6 +6,8 @@ import AuctionHeader from 'components/AuctionHeader'
 import AuctionProgress from 'containers/AuctionProgress'
 import AuctionStatus from 'containers/AuctionStatus'
 
+import BuyButton from 'components/BuyButton'
+
 interface AuctionPanelProps {
   auctionAddress: string
 }
@@ -17,6 +19,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({ auctionAddress }) => (
       Auction URL: <a href="#">https://www.dutchx.pm/auction/{auctionAddress}/</a>
     </AuctionHeader>
     <AuctionStatus />
+    <BuyButton />
     <AuctionProgress />
     <AuctionFooter />
   </AuctionContainer>
