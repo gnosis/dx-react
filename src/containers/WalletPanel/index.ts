@@ -1,5 +1,5 @@
 import { connect, Dispatch } from 'react-redux'
-import WalletPanel from 'components/WalletPanel'
+import WalletPanel, { WalletPanelProps } from 'components/WalletPanel'
 // import { State } from 'types'
 import { submitSellOrder } from 'actions'
 
@@ -9,12 +9,26 @@ const mapStateToProps = () => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  submitOrder() {
+  submitOrder(proceedTo: string) {
     console.log('Submitting order')
 
-    dispatch(submitSellOrder())
-  }
+    dispatch(submitSellOrder(proceedTo))
+  },
+})
+
+const mergeProps = (
+  stateProps: Partial<WalletPanelProps>,
+  dispatchProps: { submitOrder: Function },
+  ownProps: Partial<WalletPanelProps>,
+) => ({
+  ...stateProps,
+  submitOrder(e: MouseEvent) {
+    // don't go to /auction/0x03494929349594 just yet
+    e.preventDefault()
+    dispatchProps.submitOrder(`/auction/${stateProps.auctionAddress}`)
+  },
+  ...ownProps,
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletPanel)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(WalletPanel)

@@ -7,7 +7,7 @@ import AuctionWalletSummary from 'containers/AuctionWalletSummary'
 import ButtonCTA from 'components/ButtonCTA'
 import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
-interface WalletPanelProps {
+export interface WalletPanelProps {
   auctionAddress: string,
   submitOrder(): any,
 }

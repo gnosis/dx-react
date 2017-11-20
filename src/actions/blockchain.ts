@@ -13,6 +13,7 @@ import { setTokenBalance } from 'actions/tokenBalances'
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
+import { push } from 'connected-react-router'
 import { findDefaultProvider } from 'selectors/blockchain'
 
 import { TokenBalances } from 'types'
@@ -103,7 +104,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   }
 }
 
-export const submitSellOrder = () => async (dispatch: Function, getState: any) => {
+export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
   const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
@@ -121,6 +122,9 @@ export const submitSellOrder = () => async (dispatch: Function, getState: any) =
 
     // new balance for the token just sold
     dispatch(setTokenBalance({ tokenName: name, balance }))
+
+    // proceed to /auction/0x03494929349594
+    dispatch(push(proceedTo))
 
     // indicate that submition worked
     return true
