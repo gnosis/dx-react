@@ -133,7 +133,7 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
     // indicate that submition worked
     return true
   } catch (error) {
-    console.error('Error submitting a sell order', error)
+    console.error('Error submitting a sell order', error.message || error)
     return error
   }
 }
