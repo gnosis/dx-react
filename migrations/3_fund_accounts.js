@@ -1,15 +1,29 @@
 const TokenETH = artifacts.require('./TokenETH.sol')
+const TokenGNO = artifacts.require('./TokenGNO.sol')
 
-module.exports = (deployer) => {
+module.exports = (deployer, network, accounts) => {
   let ETH
+  let GNO
+
+  const [master, seller, buyer] = accounts
   deployer.then(() => {
     TokenETH.deployed().then((inst) => {
       ETH = inst
-      ETH.approve('0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0', 100, { from: '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' })
+      ETH.approve(seller, 100, { from: master })
+    })
+  })
+  deployer.then(() => {
+    TokenGNO.deployed().then((inst) => {
+      GNO = inst
+      GNO.approve(buyer, 10000, { from: master })
     })
   })
 
-  deployer.then(() => ETH.transferFrom('0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1', '0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0', 100, { from: '0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0' }))
-  deployer.then(() => ETH.balanceOf('0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0'))
-    .then(bal => console.log(bal))
+  deployer.then(() => ETH.transferFrom(master, seller, 100, { from: seller }))
+  deployer.then(() => GNO.transferFrom(master, buyer, 1000, { from: buyer }))
+
+  deployer.then(() => ETH.balanceOf(seller))
+    .then(bal => console.log('Seller ETH balance', bal.toNumber()))
+  deployer.then(() => GNO.balanceOf(buyer))
+    .then(bal => console.log('Buyer GNO balance', bal.toNumber()))
 }
