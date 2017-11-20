@@ -12,6 +12,7 @@ import { makeCenterDecorator } from './helpers'
 const CenterDecor = makeCenterDecorator({
   style: {
     height: null,
+    padding: '60px 0',
   },
 })
 
