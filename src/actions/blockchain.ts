@@ -5,13 +5,16 @@ import {
   initDutchXConnection,
   getTokenBalances,
   // tokenPairSelect,
+  postSellOrder,
 } from 'api/dutchx'
 
 import { setTokenBalance } from 'actions/tokenBalances'
+import { setSellTokenAmount } from 'actions/tokenPair'
 
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
+import { push } from 'connected-react-router'
 import { findDefaultProvider } from 'selectors/blockchain'
 
 import { TokenBalances } from 'types'
@@ -35,9 +38,9 @@ export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
 export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: number }>('SET_CURRENT_BALANCE')
-export const setCurrentAccountAddress = 
+export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
-export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')  
+export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
 // export const setGasCost = createAction('SET_GAS_COST')
 // export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
 // export const setEtherTokens = createAction('SET_ETHER_TOKENS')
@@ -71,7 +74,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
 
   // connect
   try {
-    let account: Object
+    let account: any
     let currentBalance: any
     let tokenBalance: any
 
@@ -84,21 +87,54 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
       } catch (e) {
         console.log(e)
       }
-      
+
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
     await dispatch(setCurrentAccountAddress({ currentAccount: account }))
     await dispatch(setCurrentBalance({ currentBalance }))
-    
+
     // Grab each TokenBalance and dispatch
-    tokenBalance.forEach(async (token: any) => 
+    tokenBalance.forEach(async (token: any) =>
       await dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
     console.warn(`DutchX connection Error: ${error}`)
     return dispatch(setConnectionStatus({ connected: false }))
+  }
+}
+
+export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
+  const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount } } = getState()
+
+  // don't do anything when submitting a <= 0 amount
+  // indicate that nothing happened with false return
+  if (sellAmount <= 0) return false
+
+  try {
+    const receipt = await postSellOrder(currentAccount, sellAmount, sell, buy)
+
+    console.log('Submit order receipt', receipt)
+
+    // TODO: function to get specific Token's balance, also actions for such functions
+    const tokenBalances = await getTokenBalances(currentAccount)
+    const { name, balance } = tokenBalances.find(({ name }) => name === sell)
+
+    // new balance for the token just sold
+    dispatch(setTokenBalance({ tokenName: name, balance }))
+
+    // proceed to /auction/0x03494929349594
+    dispatch(push(proceedTo))
+
+    // reset sellAmount
+    dispatch(setSellTokenAmount({ sellAmount: 0 }))
+
+    // indicate that submition worked
+    return true
+  } catch (error) {
+    console.error('Error submitting a sell order', error.message || error)
+    return error
   }
 }
 

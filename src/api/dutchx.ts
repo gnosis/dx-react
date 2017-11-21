@@ -1,5 +1,6 @@
 import dutchX from './initialization'
 // import { weiToEth } from 'utils/helpers'
+import { Account, Balance, TokenCode } from 'types'
 
 let dxInst: any
 
@@ -27,7 +28,7 @@ export const getDutchXConnection = () => dxInst
  */
 export const getCurrentAccount = async () => {
   const dx = getDutchXConnection()
-  
+
   return await new Promise((resolve, reject) => dx.web3.eth.getAccounts(
     (e: Object, accounts: Object) => (e ? reject(e) : resolve(accounts[0]))),
   )
@@ -56,13 +57,33 @@ export const getTokenBalances = async (account: Account) => {
   const dx = getDutchXConnection()
 
   const ETH = {
-    name: 'ETH', 
+    name: 'ETH',
     balance: (await dx.TokenETH.balanceOf(account)).toNumber(),
   }
   const GNO = {
-    name: 'GNO', 
+    name: 'GNO',
     balance: (await dx.TokenGNO.balanceOf(account)).toNumber(),
   }
 
   return [ETH, GNO]
+}
+
+export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
+  const dx = getDutchXConnection()
+
+  const exchange = dx[`DutchExchange${sell}${buy}`]
+  console.log(Object.keys(dx))
+
+  if (!exchange) return Promise.reject(`No DutchExchange contract available for ${sell} -> ${buy} pair`)
+
+  const token = dx[`Token${sell}`]
+
+  if (!token) return Promise.reject(`No contract available for ${sell} token`)
+
+  // TODO: in future ask for a larger allowance
+  const receipt = await token.approve(exchange.address, amount, { from: account })
+  console.log('approved tx', receipt)
+
+  // returns Promise<transaction receipt>
+  return exchange.postSellOrder(amount, { from: account })
 }
