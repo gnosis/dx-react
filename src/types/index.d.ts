@@ -34,12 +34,25 @@ export interface Blockchain {
 
 export type OngoingAuctions = AuctionObject[]
 
+/**
+ * Auction Shape
+ * id: timestamp? || auctionIndex? Both? Profit???
+ * sellToken: token to sell
+ * buyToken: token to buy
+ * buyPrice: last closingPrice - from DutchExchange contract
+ * claim: boolean yay or ney
+ * 
+ * 
+ */
 export type AuctionObject = {
   id: number,
-  sellToken: string,
-  buyToken: string,
-  buyPrice: number,
+  sellToken: TokenCode,
+  buyToken: TokenCode,
+  price: number,
+  balance: Balance,
   claim: boolean,
+  contractAddress: Account,
+  timestamp?: string,
 }
 
 export type TokenBalances = {[code in TokenCode]?: Balance }
