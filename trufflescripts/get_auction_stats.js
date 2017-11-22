@@ -33,7 +33,7 @@ Current auction index ${auctionIndex}
   ${timeUntilStart > 0 ? `starts in\t\t${timeStr}` : timeUntilStart < 0 ? `started\t\t${timeStr}ago` : 'just started'}
   
   sellVolumeCurrent:\t${sellVolumeCurrent}
-  sellVolumeNext:\t${sellVolumeNext}${sellerBalanceNext ? `\nsellerBalance for next auction:\t${sellerBalanceNext}` : ''}  
+  sellVolumeNext:\t${sellVolumeNext}${sellerBalanceNext ? `\n  sellerBalance for next auction:\t${sellerBalanceNext}` : ''}  
   `)
 
 
@@ -66,12 +66,12 @@ Current auction index ${auctionIndex}
 
     if (i !== auctionIndex) {
       console.log('=============================')
-      console.log(`Auction index ${auctionIndex}`)
+      console.log(`Auction index ${i}`)
     }
 
     console.log(`
   buyVolume:\t\t${buyVolume}
-  price:\t\t${price}${amountToClearAuction ? `\nto clear auction buy ${amountToClearAuction} GNO` : ''}
+  price:\t\t${price}${amountToClearAuction ? `\n  to clear auction buy ${amountToClearAuction} GNO` : ''}
 
   sellerBalance:  ${sellerBalance}\tclaimed:  ${sellerClaimed} ETH
   buyerBalance:   ${buyerBalance}\tclaimed:  ${buyerClaimed} GNO
