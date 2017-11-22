@@ -53,6 +53,8 @@
     "class-methods-use-this": 0,
     "one-var": 0,
     "one-var-declaration-per-line": 0,
+    "no-nested-ternary": 0,
+    "no-await-in-loop": 0,
     "semi": [
       "error",
       "never"
@@ -68,6 +70,10 @@
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
       }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      "WithStatement"
     ]
   },
   "env": {
@@ -78,6 +84,7 @@
   "globals": {
     "assert": true,
     "contract": true,
-    "artifacts": true
+    "artifacts": true,
+    "web3": true
   }
 }
