@@ -26,7 +26,7 @@ module.exports = async () => {
   const sellerBalanceNext = sellVolumeNext && (await dx.sellerBalances(auctionIndex + 1, seller)).toNumber()
 
   console.log(`
-  Current auction index ${auctionIndex}
+Current auction index ${auctionIndex}
   ______________________________________
   now:\t\t\t${new Date(now * 1000).toTimeString()}
   auctionStart:\t\t${new Date(auctionStart * 1000).toTimeString()}
@@ -39,13 +39,19 @@ module.exports = async () => {
 
   // if auctionIndex === 3, indexes = [3, 2, 1]
   const indexes = Array.from({ length: auctionIndex }, (v, i) => auctionIndex - i)
-  indexes.forEach(async (i) => {
+
+  const readStats = async (i) => {
     const buyVolume = (await dx.buyVolumes(i)).toNumber()
 
-    let price
+    let price, amountToClearAuction
     try {
       const [nom, den] = (await dx.getPrice(i)).map(n => n.toNumber())
       price = `${nom}/${den}`
+
+      // if current running auction
+      if (i === auctionIndex) {
+        amountToClearAuction = Math.floor(sellVolumeCurrent * nom / den) - buyVolume
+      }
     } catch (error) {
       price = 'unavailable, auction hasn\'t started'
 
@@ -65,10 +71,14 @@ module.exports = async () => {
 
     console.log(`
   buyVolume:\t\t${buyVolume}
-  price:\t\t${price}
+  price:\t\t${price}${amountToClearAuction ? `\nto clear auction buy ${amountToClearAuction} GNO` : ''}
 
   sellerBalance:  ${sellerBalance}\tclaimed:  ${sellerClaimed} ETH
   buyerBalance:   ${buyerBalance}\tclaimed:  ${buyerClaimed} GNO
     `)
-  })
+  }
+
+  for (const i of indexes) {
+    await readStats(i)
+  }
 }
