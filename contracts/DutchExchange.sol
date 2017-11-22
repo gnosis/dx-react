@@ -225,7 +225,7 @@ contract DutchExchange {
         returnedBuyerFunds = claimAllBuyerFunds(user, _auctionIndex);
     }
 
-    // for one auction 
+    /// @dev Claim buyer funds for one auction 
     function getUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
         public
         constant
@@ -243,28 +243,38 @@ contract DutchExchange {
         unclaimedFunds = buyerBalance * den / num - claimedAmounts[_auctionIndex][user];
     }
 
-    function getIndicesOfAuctionsContainingUnclaimedSellerFunds(address user, uint256 _auctionIndex)
+    function getIndicesOfAuctionsContainingUnclaimedSellerFunds(
+        address user,
+        uint256 auctionIndexStart,
+        uint256 auctionIndexEnd
+    )
         public
         constant
         returns (uint256[] arrayOfAuctionIndices)
     {
-        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+        arrayOfAuctionIndices = new uint256[](to - from);
+        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             if (sellerBalances[i][user] > 0) {
                 // e.g. if _auctionIndex is 100 and there are funds in auctions 100 and 96,
                 // this will output A[0] = 100, A[4] = 96.
-                // (it's done this way because memory array cannot have dynamic length)
+                // (it's done this way because memory arrays cannot have dynamic length)
                 arrayOfAuctionIndices[_auctionIndex - i] = i;
             }
         }
     }
 
 
-    function getIndicesOfAuctionsContainingUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+    function getIndicesOfAuctionsContainingUnclaimedBuyerFunds(
+        address user,
+        uint256 auctionIndexStart,
+        uint256 auctionIndexEnd
+    )
         public
         constant
         returns (uint256[] arrayOfAuctionIndices)
     {
-        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+        arrayOfAuctionIndices = new uint256[](to - from);
+        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             // since we reset buyerBalances when a user claims from a closed auction,
             // this also takes care of the case when a user has partially claimed
             // from current auction
