@@ -168,15 +168,17 @@ contract DutchExchange {
         returns (uint256 returned)
     {
         for (uint i; i < auctionIndices.length; i++) {
-            returned += claimSellerFunds(user, i);
+            if (auctionIndices[i] > 0) {
+                returned += claimSellerFunds(user, auctionIndices[i]);
+            }
         }
     }
 
-    function claimAllSellerFunds(address user, uint256 _auctionIndex)
+    function claimAllSellerFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
         public
         returns (uint256 returned)
     {
-        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedSellerFunds(user, _auctionIndex);
+        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedSellerFunds(user, auctionIndexStart, auctionIndexEnd);
         returned = claimSellerFundsOfAuctions(user, auctionIndices);
     }
 
@@ -205,24 +207,26 @@ contract DutchExchange {
         returns (uint256 returned)
     {
         for (uint i; i < auctionIndices.length; i++) {
-            returned += claimBuyerFunds(user, i);
+            if (auctionIndices[i] > 0) {
+                returned += claimBuyerFunds(user, auctionIndices[i]);
+            }
         }
     }
 
-    function claimAllBuyerFunds(address user, uint256 _auctionIndex)
+    function claimAllBuyerFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
         public
         returns (uint256 returned)
     {
-        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedBuyerFunds(user, _auctionIndex);
+        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
         returned = claimBuyerFundsOfAuctions(user, auctionIndices);
     }
 
-    function claimAllFunds(address user, uint256 _auctionIndex)
+    function claimAllFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
         public
         returns (uint256 returnedSellerFunds, uint256 returnedBuyerFunds)
     {
-        returnedSellerFunds = claimAllSellerFunds(user, _auctionIndex);
-        returnedBuyerFunds = claimAllBuyerFunds(user, _auctionIndex);
+        returnedSellerFunds = claimAllSellerFunds(user, auctionIndexStart, auctionIndexEnd);
+        returnedBuyerFunds = claimAllBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
     }
 
     /// @dev Claim buyer funds for one auction 
@@ -252,13 +256,13 @@ contract DutchExchange {
         constant
         returns (uint256[] arrayOfAuctionIndices)
     {
-        arrayOfAuctionIndices = new uint256[](to - from);
+        arrayOfAuctionIndices = new uint256[](auctionIndexEnd - auctionIndexStart);
         for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             if (sellerBalances[i][user] > 0) {
-                // e.g. if _auctionIndex is 100 and there are funds in auctions 100 and 96,
-                // this will output A[0] = 100, A[4] = 96.
+                // e.g. if auctionIndexStart is 50 and auctionIndexEnd is 100 
+                // and there are funds in auctions 100 and 96, this will output A[0] = 100, A[4] = 96.
                 // (it's done this way because memory arrays cannot have dynamic length)
-                arrayOfAuctionIndices[_auctionIndex - i] = i;
+                arrayOfAuctionIndices[auctionIndexEnd - i] = i;
             }
         }
     }
@@ -273,23 +277,27 @@ contract DutchExchange {
         constant
         returns (uint256[] arrayOfAuctionIndices)
     {
-        arrayOfAuctionIndices = new uint256[](to - from);
+        arrayOfAuctionIndices = new uint256[](auctionIndexEnd - auctionIndexStart);
         for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             // since we reset buyerBalances when a user claims from a closed auction,
             // this also takes care of the case when a user has partially claimed
             // from current auction
             if (buyerBalances[i][user] > 0) {
-                arrayOfAuctionIndices[_auctionIndex - i] = i;
+                arrayOfAuctionIndices[auctionIndexEnd - i] = i;
             }
         }
     }
 
-    function getAllUnclaimedSellerFunds(address user, uint256 _auctionIndex)
+    function getAllUnclaimedSellerFunds(
+        address user,
+        uint256 auctionIndexStart,
+        uint256 auctionIndexEnd
+    )
         public
         constant
         returns (uint256 unclaimedSellerFunds)
     {
-        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             uint256 balance = sellerBalances[i][user];
             if (balance > 0) {
                 // Fetch price
@@ -303,12 +311,16 @@ contract DutchExchange {
         }
     }
 
-    function getAllUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+    function getAllUnclaimedBuyerFunds(
+        address user,
+        uint256 auctionIndexStart,
+        uint256 auctionIndexEnd
+    )
         public
         constant
         returns (uint256 unclaimedBuyerFunds)
     {
-        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
             uint256 balance = buyerBalances[i][user];
 
             if (balance > 0) {
@@ -328,13 +340,17 @@ contract DutchExchange {
         }
     }
 
-    function getAllUnclaimedFunds(address user, uint256 _auctionIndex)
+    function getAllUnclaimedFunds(
+        address user,
+        uint256 auctionIndexStart,
+        uint256 auctionIndexEnd
+    )
         public
         constant
         returns (uint256 unclaimedSellerFunds, uint256 unclaimedBuyerFunds)
     {
-        unclaimedSellerFunds = getAllUnclaimedSellerFunds(user, _auctionIndex);
-        unclaimedBuyerFunds = getAllUnclaimedBuyerFunds(user, _auctionIndex);
+        unclaimedSellerFunds = getAllUnclaimedSellerFunds(user, auctionIndexStart, auctionIndexEnd);
+        unclaimedBuyerFunds = getAllUnclaimedBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
     }
 
     function getPrice(uint256 _auctionIndex)
