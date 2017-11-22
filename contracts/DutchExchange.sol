@@ -44,7 +44,7 @@ contract DutchExchange {
     // Seller balances for all auctions. The first uint256 is auction index
     // (needed because closing price could be different for each auction)
     mapping (uint256 => mapping (address => uint256)) public sellerBalances;
-    // Buyer balances for current auction (usually in ETH)
+    // Buyer balances for all auctions
     mapping (uint256 => mapping (address => uint256)) public buyerBalances;
     // Buyers can claim tokens while auction is running, so we need to store that
     mapping (uint256 => mapping (address => uint256)) public claimedAmounts;
@@ -107,16 +107,7 @@ contract DutchExchange {
         uint256 den;
         (num, den) = getPrice(_auctionIndex);
 
-        // 2ndprice = price of other auction
-        // if (1 / 2ndprice < currentprice) {
-            // avg = (1/2ndprice + currentprice) / 2;
-            // buytokensrequired = ... ;
-            // buytokensrequiredforOtherAuction = ...;
-            // processed = 2ndAuction.postBuyOrderWithPriceAndClaim(buytokensrequired);
-        // }
-
         // Calculate if buy order overflows
-
         int256 overflow = int256(buyVolumes[_auctionIndex] + amount - sellVolumeCurrent * num / den);
 
         if (int256(amount) > overflow) {
@@ -145,11 +136,14 @@ contract DutchExchange {
         public 
     {
         postBuyOrder(amount, _auctionIndex);
-        claimBuyerFunds(_auctionIndex);
+        claimBuyerFunds(msg.sender, _auctionIndex);
     }
 
-    function claimSellerFunds(uint256 _auctionIndex) public returns (uint256 returned) {
-        uint256 sellerBalance = sellerBalances[_auctionIndex][msg.sender];
+    function claimSellerFunds(address user, uint256 _auctionIndex) 
+        public 
+        returns (uint256 returned) 
+    {
+        uint256 sellerBalance = sellerBalances[_auctionIndex][user];
 
         // Checks if particular auction has cleared
         require(auctionIndex > _auctionIndex);
@@ -164,42 +158,173 @@ contract DutchExchange {
         require(returned > 0);
 
         // Perform transfer
-        sellerBalances[_auctionIndex][msg.sender] = 0;
-        require(buyToken.transfer(msg.sender, returned));
-        NewSellerFundsClaim(_auctionIndex, msg.sender, returned);
+        sellerBalances[_auctionIndex][user] = 0;
+        require(buyToken.transfer(user, returned));
+        NewSellerFundsClaim(_auctionIndex, user, returned);
     }
 
-    function claimBuyerFunds(uint256 _auctionIndex) 
-        public 
-        returns 
-        (uint256 returned) 
+    function claimSellerFundsOfAuctions(address user, uint256[] auctionIndices)
+        public
+        returns (uint256 returned)
     {
-        uint256 buyerBalance = buyerBalances[_auctionIndex][msg.sender];
+        for (uint i; i < auctionIndices.length; i++) {
+            returned += claimSellerFunds(user, i);
+        }
+    }
 
+    function claimAllSellerFunds(address user, uint256 _auctionIndex)
+        public
+        returns (uint256 returned)
+    {
+        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedSellerFunds(user, _auctionIndex);
+        returned = claimSellerFundsOfAuctions(user, auctionIndices);
+    }
+
+    function claimBuyerFunds(address user, uint256 _auctionIndex) 
+        public 
+        returns (uint256 returned) 
+    {
+        returned = getUnclaimedBuyerFunds(user, _auctionIndex);
+        require(returned > 0);
+
+        if (_auctionIndex == auctionIndex) {
+            claimedAmounts[_auctionIndex][user] += returned;
+        } else {
+            // If auction has closed, we can reset buyerBalances and claimedAmounts
+            buyerBalances[_auctionIndex][user] = 0;
+            claimedAmounts[_auctionIndex][user] = 0;
+        }
+
+        // Perform transfer
+        require(sellToken.transfer(user, returned));
+        NewBuyerFundsClaim(_auctionIndex, user, returned);
+    }
+
+    function claimBuyerFundsOfAuctions(address user, uint256[] auctionIndices)
+        public
+        returns (uint256 returned)
+    {
+        for (uint i; i < auctionIndices.length; i++) {
+            returned += claimBuyerFunds(user, i);
+        }
+    }
+
+    function claimAllBuyerFunds(address user, uint256 _auctionIndex)
+        public
+        returns (uint256 returned)
+    {
+        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedBuyerFunds(user, _auctionIndex);
+        returned = claimBuyerFundsOfAuctions(user, auctionIndices);
+    }
+
+    function claimAllFunds(address user, uint256 _auctionIndex)
+        public
+        returns (uint256 returnedSellerFunds, uint256 returnedBuyerFunds)
+    {
+        returnedSellerFunds = claimAllSellerFunds(user, _auctionIndex);
+        returnedBuyerFunds = claimAllBuyerFunds(user, _auctionIndex);
+    }
+
+    // for one auction 
+    function getUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256 unclaimedFunds)
+    {
         // Checks if particular auction has ever run
         require(auctionIndex >= _auctionIndex);
 
+        uint256 buyerBalance = buyerBalances[_auctionIndex][user];
+
         uint256 num;
         uint256 den;
+        (num, den) = getPrice(_auctionIndex);
 
-        // User has called a running auction
-        if (auctionIndex == _auctionIndex) {
-            (num, den) = getPrice(_auctionIndex);
-        } else {
-            // User has called a cleared auction, so we need its closing price:
-            fraction memory closingPrice = closingPrices[_auctionIndex];
-            num = closingPrice.num;
-            den = closingPrice.den;
+        unclaimedFunds = buyerBalance * den / num - claimedAmounts[_auctionIndex][user];
+    }
+
+    function getIndicesOfAuctionsContainingUnclaimedSellerFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256[] arrayOfAuctionIndices)
+    {
+        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+            if (sellerBalances[i][user] > 0) {
+                // e.g. if _auctionIndex is 100 and there are funds in auctions 100 and 96,
+                // this will output A[0] = 100, A[4] = 96.
+                // (it's done this way because memory array cannot have dynamic length)
+                arrayOfAuctionIndices[_auctionIndex - i] = i;
+            }
         }
+    }
 
-        // Get amount to return
-        returned = buyerBalance * den / num - claimedAmounts[_auctionIndex][msg.sender];
-        require(returned > 0);
 
-        // Perform transfer
-        claimedAmounts[_auctionIndex][msg.sender] += returned;
-        require(sellToken.transfer(msg.sender, returned));
-        NewBuyerFundsClaim(_auctionIndex, msg.sender, returned);
+    function getIndicesOfAuctionsContainingUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256[] arrayOfAuctionIndices)
+    {
+        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+            // since we reset buyerBalances when a user claims from a closed auction,
+            // this also takes care of the case when a user has partially claimed
+            // from current auction
+            if (buyerBalances[i][user] > 0) {
+                arrayOfAuctionIndices[_auctionIndex - i] = i;
+            }
+        }
+    }
+
+    function getAllUnclaimedSellerFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256 unclaimedSellerFunds)
+    {
+        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+            uint256 balance = sellerBalances[i][user];
+            if (balance > 0) {
+                // Fetch price
+                uint256 num;
+                uint256 den;
+                (num, den) = getPrice(i);
+
+                // Add converted amount
+                unclaimedSellerFunds += balance * num / den;
+            }
+        }
+    }
+
+    function getAllUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256 unclaimedBuyerFunds)
+    {
+        for (uint i = _auctionIndex; i > _auctionIndex - 120; i--) {
+            uint256 balance = buyerBalances[i][user];
+
+            if (balance > 0) {
+                // if we're talking about the current auction, we have to subtract claimedAmount
+                if (i == auctionIndex) {
+                    unclaimedBuyerFunds -= claimedAmounts[i][user];
+                }
+
+                // Fetch price
+                uint256 num;
+                uint256 den;
+                (num, den) = getPrice(i);
+
+                // Add converted amount
+                unclaimedBuyerFunds += balance * den / num;
+            }
+        }
+    }
+
+    function getAllUnclaimedFunds(address user, uint256 _auctionIndex)
+        public
+        constant
+        returns (uint256 unclaimedSellerFunds, uint256 unclaimedBuyerFunds)
+    {
+        unclaimedSellerFunds = getAllUnclaimedSellerFunds(user, _auctionIndex);
+        unclaimedBuyerFunds = getAllUnclaimedBuyerFunds(user, _auctionIndex);
     }
 
     function getPrice(uint256 _auctionIndex)
@@ -224,12 +349,6 @@ contract DutchExchange {
             uint256 numOfLastClosingPrice = lastClosingPrice.num;
             uint256 denOfLastClosingPrice = lastClosingPrice.den;
 
-            // We need to make the numbers smaller to prevent overflow
-            if (numOfLastClosingPrice > 10**18 || denOfLastClosingPrice > 10**18) {
-                numOfLastClosingPrice = numOfLastClosingPrice / 10**9;
-                denOfLastClosingPrice = denOfLastClosingPrice / 10**9;
-            }
-
             // The numbers 36k and 18k are chosen such that the initial price is double the last closing price,
             // And after 5 hours (18000 s), the price is the same as last closing price
             num = 36000 * numOfLastClosingPrice;
@@ -241,11 +360,24 @@ contract DutchExchange {
         internal
         returns (bool success) 
     {
-        // Update state variables
-        closingPrices[auctionIndex].num = currentPriceNum;
-        closingPrices[auctionIndex].den = currentPriceDen;
+        if (sellVolumeNext == 0) {
+            // No sell orders were submitted
+            closingPrices[auctionIndex].num = closingPrices[auctionIndex - 1].num;
+            closingPrices[auctionIndex].den = closingPrices[auctionIndex - 1].den;
+        } else {
+            // We need to make the numbers smaller to prevent overflow
+            if (currentPriceNum > 10**18 || currentPriceDen > 10**18) {
+                currentPriceNum = currentPriceNum / 10**9;
+                currentPriceDen = currentPriceDen / 10**9;
+            }
+            
+            // Update state variables
+            closingPrices[auctionIndex].num = currentPriceNum;
+            closingPrices[auctionIndex].den = currentPriceDen;
+            sellVolumeNext = 0;
+        }
+
         sellVolumeCurrent = sellVolumeNext;
-        sellVolumeNext = 0;
         auctionIndex++;
 
         AuctionCleared(auctionIndex - 1);

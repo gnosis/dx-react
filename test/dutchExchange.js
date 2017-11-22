@@ -205,7 +205,7 @@ contract('DutchExchange', function(accounts) {
 		const buyerBalance = (await dx.buyerBalances(1, buyer)).toNumber();
 		const claimedAmountBefore = (await dx.claimedAmounts(1, buyer)).toNumber();
 
-		await dx.claimBuyerFunds(1, {from: buyer});
+		await dx.claimBuyerFunds(buyer, 1, {from: buyer});
 
 		// Calculate returned value
 		const price = (await dx.getPrice(1)).map(x => x.toNumber());
@@ -215,13 +215,13 @@ contract('DutchExchange', function(accounts) {
 		assert.equal(claimedAmountBefore + returned, claimedAmountAfter, 'claimedAmount updated');
 
 		// Follow-up claims should fail
-		utils.assertRejects(dx.claimBuyerFunds(1, {from: buyer}));
+		utils.assertRejects(dx.claimBuyerFunds(buyer, 1, {from: buyer}));
 	}
 
 	const claimSellerFunds = async function() {
 		const sellerBalance = (await dx.sellerBalances(1, seller)).toNumber();
 
-		const claimReceipt = await dx.claimSellerFunds(1, {from: seller});
+		const claimReceipt = await dx.claimSellerFunds(seller, 1, {from: seller});
 
 		const returned = claimReceipt.logs[0].args._returned.toNumber();
 
@@ -230,7 +230,7 @@ contract('DutchExchange', function(accounts) {
 		assert.equal(expectedReturn, returned, 'returned correct amount');
 
 		// Follow-up claims should fail
-		utils.assertRejects(dx.claimSellerFunds(1, {from: seller}));
+		utils.assertRejects(dx.claimSellerFunds(seller, 1, {from: seller}));
 	}
 
 	const auctionCleared = async function() {
