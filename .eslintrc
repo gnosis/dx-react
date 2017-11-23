@@ -55,6 +55,14 @@
     "one-var-declaration-per-line": 0,
     "no-nested-ternary": 0,
     "no-await-in-loop": 0,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true,
+        "optionalDependencies": false,
+        "peerDependencies": false
+      }
+    ],
     "semi": [
       "error",
       "never"
