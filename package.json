@@ -173,6 +173,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "lint-staged": "^4.2.3",
+    "minimist": "^1.2.0",
     "mocha": "^4.0.1",
     "name-all-modules-plugin": "^1.0.1",
     "node-sass": "^4.5.3",
