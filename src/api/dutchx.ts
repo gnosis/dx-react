@@ -90,6 +90,12 @@ export const getTokenBalances = async (account: Account) => {
 export const closingPrice = async (sellToken: TokenCode, buyToken: TokenCode, aDiff: number = 1) => {
   const DX = getDutchXConnection()
   const exchange = DX[`DutchExchange${sellToken}${buyToken}`]
+
+  if(!exchange) {
+    console.warn(`Exchange ${sellToken}/${buyToken} has not yet started`)
+    return 'N/A'
+  }
+
   let auctionOffset = aDiff
 
   const currAuctionIdx = (await exchange.auctionIndex()).toNumber()
