@@ -68,19 +68,6 @@ export const getTokenBalances = async (account: Account) => {
   return [ETH, GNO]
 }
 
-// export const lastClosingPrice = async (sellToken: TokenCode, buyToken: TokenCode) => {
-//   const DX = getDutchXConnection()
-//   const exchange = DX[`DutchExchange${sellToken}${buyToken}`]
-//   // const [ account ] = await DX.web3.eth.accounts
-
-//   const currAuctionIdx = (await exchange.auctionIndex()).toNumber()
-//   const [num, den] = await exchange.closingPrices(currAuctionIdx - 1)
-
-//   console.log(`currAuctionIdx = ${currAuctionIdx} // lastClosingPrice: 1 ${sellToken} buys ${num/den} ${buyToken}`)
-
-//   return (num/den)
-// }
-
 /**
  * closingPrice - get's closingPrice of Auction
  * @param sellToken 
@@ -96,16 +83,14 @@ export const closingPrice = async (sellToken: TokenCode, buyToken: TokenCode, aD
     return 'N/A'
   }
 
-  let auctionOffset = aDiff
-
   const currAuctionIdx = (await exchange.auctionIndex()).toNumber()
     // Guard against negative index
   if (currAuctionIdx - aDiff < 0) {
     console.warn('WARNING: Attempting to access a negative indexed Auction - reverting to current Auction price.')
-    auctionOffset = 0
+    aDiff = 0
   }
 
-  const [num, den] = await exchange.closingPrices(currAuctionIdx - auctionOffset)
+  const [num, den] = await exchange.closingPrices(currAuctionIdx - aDiff)
 
   console.log(`currAuctionIdx = ${currAuctionIdx} // lastClosingPrice: 1 ${sellToken} buys ${num / den} ${buyToken}`)
   return (num / den)
