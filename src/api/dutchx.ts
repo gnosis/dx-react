@@ -91,7 +91,7 @@ export const closingPrice = async (sellToken: TokenCode, buyToken: TokenCode, aD
   const DX = getDutchXConnection()
   const exchange = DX[`DutchExchange${sellToken}${buyToken}`]
 
-  if(!exchange) {
+  if (!exchange) {
     console.warn(`Exchange ${sellToken}/${buyToken} has not yet started`)
     return 'N/A'
   }
