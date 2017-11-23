@@ -1,17 +1,18 @@
 import { connect } from 'react-redux'
 
 import { State } from 'types'
+import { findRatioPair } from 'selectors/ratioPairs'
+
 import AuctionPriceBar from 'components/AuctionPriceBar'
 
 // TODO: create state for lastAuctionPrice for each token
 const mapState = (state: State) => {
-  const ratioPairSelector: any = state.ratioPairs.find((pair: any) => 
-    (pair.sell === state.tokenPair.sell && pair.buy === state.tokenPair.buy))
-    
+  const { buy, sell, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
+
   return {
-    sellToken: state.tokenPair.sell,
-    sellTokenPrice: ratioPairSelector.price,
-    buyToken: state.tokenPair.buy,
+    sellToken: sell,
+    sellTokenPrice: price,
+    buyToken: buy,
   }
 }
 
