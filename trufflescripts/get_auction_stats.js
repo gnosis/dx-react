@@ -10,6 +10,7 @@ const getTimeStr = (timestamp) => {
 }
 
 module.exports = async () => {
+  console.log(process.argv.slice(4))
   const dx = await DutchExchangeETHGNO.deployed()
   const auctionStart = (await dx.auctionStart()).toNumber()
   const now = (await dx.now()).toNumber()
