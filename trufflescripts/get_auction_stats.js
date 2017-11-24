@@ -9,6 +9,11 @@ const getTimeStr = (timestamp) => {
   return `${hh ? `${hh} hour(s) ` : ''}${mm ? `${mm} minute(s) ` : ''}${ss ? `${ss} second(s) ` : ''}`
 }
 
+/**
+ * truffle exec trufflescripts/get_auction_stats.js
+ * prints stats for the current and past auctions
+ */
+
 module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
   const auctionStart = (await dx.auctionStart()).toNumber()

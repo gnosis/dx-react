@@ -1,5 +1,11 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 
+/**
+ * truffle exec trufflescripts/start_auction.js
+ * if auction isn't running,
+ * sets time to auction start + 1 hour
+ */
+
 module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
   const auctionStart = (await dx.auctionStart()).toNumber()
