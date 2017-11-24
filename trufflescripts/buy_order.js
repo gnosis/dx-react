@@ -1,12 +1,14 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**
  * truffle exec trufflescripts/buy_order.js
- * to post a buy order to the current auction
+ * to post a buy order to the current auction as the buyer
  * @flags:
+ * --seller      as the seller
+ * -a <address>  as the given account
  * --clear       enough to clear an auction
  * -n <number>   for a specific amount
  */
@@ -18,7 +20,12 @@ module.exports = async () => {
 
   const auctionIndex = (await dx.auctionIndex()).toNumber()
 
-  const [, , buyer] = web3.eth.accounts
+  let buyer
+  if (argv.a) buyer = argv.a
+  else if (argv.seller)[, buyer] = web3.eth.accounts
+  else {
+    [, , buyer] = web3.eth.accounts
+  }
 
   const buyerStats = () => Promise.all([
     dx.buyVolumes(auctionIndex),
