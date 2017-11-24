@@ -69,7 +69,7 @@ module.exports = async () => {
     }
 
     await gno.approve(dx.address, amount, { from: buyer })
-    await dx.postBuyOrder(amount, 1, { from: buyer })
+    await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
   } catch (error) {
     console.error(error.message || error)
   }
