@@ -45,10 +45,10 @@ module.exports = async () => {
   try {
     let amount
 
-    const [nom, den] = (await dx.getPrice(auctionIndex)).map(n => n.toNumber())
+    const [num, den] = (await dx.getPrice(auctionIndex)).map(n => n.toNumber())
     const sellVolumeCurrent = (await dx.sellVolumeCurrent()).toNumber()
 
-    const amountToClearAuction = Math.floor(sellVolumeCurrent * nom / den) - buyVolume
+    const amountToClearAuction = Math.floor(sellVolumeCurrent * num / den) - buyVolume
 
     if (argv.clear) {
       console.log(`

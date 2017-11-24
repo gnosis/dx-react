@@ -50,12 +50,12 @@ Current auction index ${auctionIndex}
 
     let price, amountToClearAuction, timeUntilAuctionClears
     try {
-      const [nom, den] = (await dx.getPrice(i)).map(n => n.toNumber())
-      price = `${nom}/${den}`
+      const [num, den] = (await dx.getPrice(i)).map(n => n.toNumber())
+      price = `1 ETH = ${(num / den).toFixed(8)} GNO`
 
       // if current running auction
       if (i === auctionIndex) {
-        amountToClearAuction = Math.floor(sellVolumeCurrent * nom / den) - buyVolume
+        amountToClearAuction = Math.floor(sellVolumeCurrent * num / den) - buyVolume
         const timeWhenAuctionClears = Math.ceil(72000 * sellVolumeCurrent / buyVolume - 18000 + auctionStart)
 
         timeUntilAuctionClears = getTimeStr((now - timeWhenAuctionClears) * 1000)
@@ -63,8 +63,8 @@ Current auction index ${auctionIndex}
     } catch (error) {
       price = 'unavailable, auction hasn\'t started'
 
-      const [nom, den] = (await dx.getPrice(i - 1)).map(n => n.toNumber())
-      price += `\n  last closingPrice:\t${nom}/${den}`
+      const [num, den] = (await dx.getPrice(i - 1)).map(n => n.toNumber())
+      price += `\n  last closingPrice:\t1 ETH = ${(num / den).toFixed(8)} GNO`
     }
 
     const sellerBalance = (await dx.sellerBalances(i, seller)).toNumber()
