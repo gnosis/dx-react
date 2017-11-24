@@ -4,6 +4,11 @@ const TokenGNO = artifacts.require('./TokenGNO.sol')
 const sellerETH = 100
 const buyerGNO = 1000
 
+/**
+ * truffle exec trufflescripts/topup_accounts.js
+ * transfers seller 100 RTH and buyer 1000 GNO from master account
+ */
+
 module.exports = async () => {
   // web3 is available in the global context
   const [master, seller, buyer] = web3.eth.accounts
