@@ -10,7 +10,6 @@ const getTimeStr = (timestamp) => {
 }
 
 module.exports = async () => {
-  console.log(process.argv.slice(4))
   const dx = await DutchExchangeETHGNO.deployed()
   const auctionStart = (await dx.auctionStart()).toNumber()
   const now = (await dx.now()).toNumber()
@@ -44,7 +43,7 @@ Current auction index ${auctionIndex}
   const readStats = async (i) => {
     const buyVolume = (await dx.buyVolumes(i)).toNumber()
 
-    let price, amountToClearAuction
+    let price, amountToClearAuction, timeUntilAuctionClears
     try {
       const [nom, den] = (await dx.getPrice(i)).map(n => n.toNumber())
       price = `${nom}/${den}`
@@ -52,6 +51,9 @@ Current auction index ${auctionIndex}
       // if current running auction
       if (i === auctionIndex) {
         amountToClearAuction = Math.floor(sellVolumeCurrent * nom / den) - buyVolume
+        const timeWhenAuctionClears = Math.ceil(72000 * sellVolumeCurrent / buyVolume - 18000 + auctionStart)
+
+        timeUntilAuctionClears = getTimeStr((now - timeWhenAuctionClears) * 1000)
       }
     } catch (error) {
       price = 'unavailable, auction hasn\'t started'
@@ -72,7 +74,8 @@ Current auction index ${auctionIndex}
 
     console.log(`
   buyVolume:\t\t${buyVolume}
-  price:\t\t${price}${amountToClearAuction ? `\n  to clear auction buy ${amountToClearAuction} GNO` : ''}
+  price:\t\t${price}${amountToClearAuction ? `\n  to clear auction buy\t${amountToClearAuction} GNO` : ''}
+  ${timeUntilAuctionClears ? `will clear with time in ${timeUntilAuctionClears}` : ''}
 
   sellerBalance:  ${sellerBalance}\tclaimed:  ${sellerClaimed} ETH
   buyerBalance:   ${buyerBalance}\tclaimed:  ${buyerClaimed} GNO
