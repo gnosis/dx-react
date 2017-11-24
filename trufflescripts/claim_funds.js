@@ -9,12 +9,14 @@ const argv = require('minimist')(process.argv.slice(2))
  * --seller     for seller only
  * --buyer      for buyer only
  * -i <index>   for auction with given index
+ * --last       for last auction
  */
 
 module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
 
-  const auctionIndex = argv.i !== undefined ? argv.i : (await dx.auctionIndex()).toNumber()
+  let auctionIndex = argv.i !== undefined ? argv.i : (await dx.auctionIndex()).toNumber()
+  if (argv.i === undefined && argv.last) auctionIndex -= 1
 
   const [, seller, buyer] = web3.eth.accounts
 
@@ -36,8 +38,7 @@ module.exports = async () => {
     was:\t${sellerBalance}\t${sellerClaimed}`)
 
     try {
-      const receipt = await dx.claimSellerFunds(auctionIndex, { from: seller })
-      console.log(Object.keys(receipt));
+      await dx.claimSellerFunds(auctionIndex, { from: seller });
 
       [sellerBalance, sellerClaimed] = await sellerStats()
 
@@ -58,11 +59,10 @@ module.exports = async () => {
 
     try {
 
-      const receipt = await dx.claimBuyerFunds(auctionIndex, { from: buyer })
-      console.log(Object.keys(receipt));
+      await dx.claimBuyerFunds(auctionIndex, { from: buyer });
 
       [buyerBalance, buyerClaimed] = await buyerStats()
-      console.log(`is:  ${buyerBalance} ${buyerClaimed}`)
+      console.log(`    is:  ${buyerBalance} ${buyerClaimed}`)
     } catch (error) {
       console.error(error.message || error)
     }
