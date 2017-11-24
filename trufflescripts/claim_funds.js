@@ -1,15 +1,17 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**
  * truffle exec trufflescripts/claim_funds.js
- * to claim funds for the current auction for both seller and buyer
+ * to claim funds for the current auction for both seller and buyer,
+ * from auction's sellerBalances and buyerBalances respectively
  * @flags:
- * --seller     for seller only
- * --buyer      for buyer only
- * -i <index>   for auction with given index
- * --last       for last auction
+ * --seller                     sellerBalance for seller only
+ * --buyer                      buyerBalance for buyer only
+ * -a seller|buyer|<address>    for the given address
+ * -i <index>                   for auction with given index
+ * --last                       for last auction
  */
 
 module.exports = async () => {
@@ -18,7 +20,11 @@ module.exports = async () => {
   let auctionIndex = argv.i !== undefined ? argv.i : (await dx.auctionIndex()).toNumber()
   if (argv.i === undefined && argv.last) auctionIndex -= 1
 
-  const [, seller, buyer] = web3.eth.accounts
+  let [, seller, buyer] = web3.eth.accounts
+
+  if (argv.a === 'seller') buyer = seller
+  else if (argv.a === 'buyer') seller = buyer
+  else if (argv.a) seller = buyer = argv.a
 
   const sellerStats = () => Promise.all([
     dx.sellerBalances(auctionIndex, seller),
@@ -58,7 +64,6 @@ module.exports = async () => {
     `)
 
     try {
-
       await dx.claimBuyerFunds(auctionIndex, { from: buyer });
 
       [buyerBalance, buyerClaimed] = await buyerStats()
