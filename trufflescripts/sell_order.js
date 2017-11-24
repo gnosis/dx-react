@@ -8,7 +8,6 @@ const argv = require('minimist')(process.argv.slice(2))
  * to post a buy order to the current auction
  * @flags:
  * -n <number>   for a specific amount
- * -i <index>    to auction with given index
  */
 
 
@@ -16,9 +15,9 @@ module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
   const eth = await TokenETH.deployed()
 
-  const auctionIndex = argv.i !== undefined ? argv.i : (await dx.auctionIndex()).toNumber()
+  const auctionIndex = (await dx.auctionIndex()).toNumber()
 
-  const [, , seller] = web3.eth.accounts
+  const [, seller] = web3.eth.accounts
 
   const sellerStats = () => Promise.all([
     dx.sellVolumeCurrent(),
@@ -30,11 +29,11 @@ module.exports = async () => {
   let [sellVolumeCurrent, sellVolumeNext, sellerBalance, sellerETHBalance] = await sellerStats()
 
   console.log(`Auction index ${auctionIndex}
-    was:
+  was:
     sellVolumeCurrent:\t${sellVolumeCurrent}
     sellVolumeNext:\t${sellVolumeNext}
     sellerBalance:\t${sellerBalance} in auction
-    \t\t${sellerETHBalance} ETH in account
+    \t\t\t${sellerETHBalance} ETH in account
   `)
 
   if (argv.n === undefined) {
@@ -44,18 +43,17 @@ module.exports = async () => {
 
   try {
     await eth.approve(dx.address, argv.n, { from: seller })
-    const receipt = await dx.postSellOrder(argv.n, 1, { from: seller })
-    console.log(receipt)
+    await dx.postSellOrder(argv.n, { from: seller })
   } catch (error) {
     console.error(error.message || error)
   }
 
   [sellVolumeCurrent, sellVolumeNext, sellerBalance, sellerETHBalance] = await sellerStats()
 
-  console.log(`now:
-  sellVolumeCurrent:\t${sellVolumeCurrent}
-  sellVolumeNext:\t${sellVolumeNext}
-  sellerBalance:\t${sellerBalance} in auction
-  \t\t${sellerETHBalance} ETH in account
+  console.log(`  now:
+    sellVolumeCurrent:\t${sellVolumeCurrent}
+    sellVolumeNext:\t${sellVolumeNext}
+    sellerBalance:\t${sellerBalance} in auction
+    \t\t\t${sellerETHBalance} ETH in account
 `)
 }
