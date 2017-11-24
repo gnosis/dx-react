@@ -12,7 +12,7 @@ export interface AuctionPriceBarProps {
 const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellToken, sellTokenPrice, buyToken, header }) => 
   <div className="auctionLastPrice">
     <small>{`${header} of last auction:`}</small>
-    <big>{`1${sellToken} = ${sellTokenPrice} ${buyToken}`}</big>
+    <big>{`1 ${sellToken} = ${sellTokenPrice} ${buyToken}`}</big>
   </div>
 
 export default AuctionPriceBar
