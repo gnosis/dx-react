@@ -68,6 +68,8 @@ module.exports = async () => {
     }
   }
 
+  console.log(`in auction ${auctionIndex}`)
+
   if (argv.seller) {
     await printSeller()
   } else if (argv.buyer) {
