@@ -6,8 +6,10 @@ import {
   getTokenBalances,
   // tokenPairSelect,
   postSellOrder,
+  closingPrice,
 } from 'api/dutchx'
 
+import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
 import { setSellTokenAmount } from 'actions/tokenPair'
 
@@ -84,6 +86,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
         account = await getCurrentAccount()
         currentBalance = await getCurrentBalance(account)
         tokenBalance = await getTokenBalances(account)
+        await dispatch(getClosingPrice())
       } catch (e) {
         console.log(e)
       }
@@ -102,6 +105,18 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   } catch (error) {
     console.warn(`DutchX connection Error: ${error}`)
     return dispatch(setConnectionStatus({ connected: false }))
+  }
+}
+
+export const getClosingPrice = () => async (dispatch: Function, getState: any) => {
+  const { tokenPair: { buy, sell } } = getState()
+
+  try {
+    const lastPrice = (await closingPrice(sell, buy)).toString()
+    console.log('FIRING LASTCLOSINGPRICES')
+    return dispatch(setClosingPrice({ sell, buy, price: lastPrice }))
+  } catch (e) {
+    console.log(e)
   }
 }
 

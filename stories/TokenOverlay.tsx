@@ -20,7 +20,7 @@ storiesOf('TokenOverlay', module)
   .addDecorator(CenterDecorator)
   .addWithJSX('open', () => <TokenOverlay
     closeOverlay={action('CLOSE OVERLAY')}
-    selectTokenAndCloseOverlay={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
+    selectTokenPairAndRatioPair={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
     tokenCodeList={array('tokenCodeList', codeList)}
     tokenBalances={object('tokenBalances', tokenBalances)}
     open={boolean('open', true)}

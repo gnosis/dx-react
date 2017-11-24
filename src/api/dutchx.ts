@@ -68,6 +68,34 @@ export const getTokenBalances = async (account: Account) => {
   return [ETH, GNO]
 }
 
+/**
+ * closingPrice - get's closingPrice of Auction
+ * @param sellToken 
+ * @param buyToken 
+ * @param aDiff - Number to offset auctionIndex by - if left blank defaults to lastAuction (-1)
+ */
+export const closingPrice = async (sellToken: TokenCode, buyToken: TokenCode, aDiff: number = 1) => {
+  const DX = getDutchXConnection()
+  const exchange = DX[`DutchExchange${sellToken}${buyToken}`]
+
+  if (!exchange) {
+    console.warn(`Exchange ${sellToken}/${buyToken} has not yet started`)
+    return 'N/A'
+  }
+
+  const currAuctionIdx = (await exchange.auctionIndex()).toNumber()
+    // Guard against negative index
+  if (currAuctionIdx - aDiff < 0) {
+    console.warn('WARNING: Attempting to access a negative indexed Auction - reverting to current Auction price.')
+    aDiff = 0
+  }
+
+  const [num, den] = await exchange.closingPrices(currAuctionIdx - aDiff)
+
+  console.log(`currAuctionIdx = ${currAuctionIdx} // lastClosingPrice: 1 ${sellToken} buys ${num / den} ${buyToken}`)
+  return (num / den)
+}
+
 export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
   const dx = getDutchXConnection()
 

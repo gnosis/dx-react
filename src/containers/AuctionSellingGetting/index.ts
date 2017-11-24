@@ -1,18 +1,9 @@
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
 import { setSellTokenAmount } from 'actions'
+import { findRatioPair } from 'selectors/ratioPairs'
 
-import { State, RatioPairs, TokenCode } from 'types'
+import { State } from 'types'
 import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/AuctionSellingGetting'
-
-// TODO: move to selectors
-const findRatioPair = createSelector(
-  ({ tokenPair }) => tokenPair.sell,
-  ({ tokenPair }) => tokenPair.buy,
-  ({ ratioPairs }) => ratioPairs,
-  (sell: TokenCode, buy: TokenCode, ratioPairs: RatioPairs) => ratioPairs.find(
-    pair => pair.sell === sell && pair.buy === buy),
-)
 
 const mapState = (state: State) => {
   // TODO: always have some price for every pair in RatioPairs

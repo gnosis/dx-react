@@ -18,7 +18,7 @@ const filterTokens = createSelector(
 export interface TokenOverlayProps {
   tokenCodeList: TokenCode[],
   closeOverlay(): any,
-  selectTokenAndCloseOverlay(props: Partial<TokenItemProps>): any,
+  selectTokenPairAndRatioPair(props: Partial<TokenItemProps>): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
@@ -41,10 +41,10 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     filter: e.target.value,
   })
 
-  selectTokenAndCloseOverlay: TokenOverlayProps['selectTokenAndCloseOverlay'] = (tokenProps) => {
-    const { selectTokenAndCloseOverlay, mod } = this.props
+  selectTokenAndCloseOverlay: TokenOverlayProps['selectTokenPairAndRatioPair'] = (tokenProps) => {
+    const { selectTokenPairAndRatioPair, mod } = this.props
 
-    selectTokenAndCloseOverlay({ ...tokenProps, mod })
+    selectTokenPairAndRatioPair({ ...tokenProps, mod })
   }
 
   closeOverlay = () => {
