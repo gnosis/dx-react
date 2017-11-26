@@ -53,6 +53,7 @@ module.exports = async () => {
       const sellVolume = (await dx.sellVolumeCurrent()).toNumber()
 
       // Auction clears when sellVolume * price = buyVolume
+      // eslint-disable-next-line no-mixed-operators
       timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
       if (timeWhenAuctionClears !== Infinity) {
         const timeUntilAuctionClears = now - timeWhenAuctionClears

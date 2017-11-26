@@ -1,3 +1,5 @@
+/* eslint-disable no-mixed-operators */
+
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 

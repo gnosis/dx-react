@@ -52,7 +52,6 @@ module.exports = async () => {
     } catch (error) {
       console.error(error.message || error)
     }
-
   }
 
   const printBuyer = async () => {

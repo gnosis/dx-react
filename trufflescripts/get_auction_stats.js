@@ -55,6 +55,7 @@ Current auction index ${auctionIndex}
 
       // if current running auction
       if (i === auctionIndex) {
+        /* eslint-disable no-mixed-operators */
         amountToClearAuction = Math.floor(sellVolumeCurrent * num / den) - buyVolume
         const timeWhenAuctionClears = Math.ceil(72000 * sellVolumeCurrent / buyVolume - 18000 + auctionStart)
 
