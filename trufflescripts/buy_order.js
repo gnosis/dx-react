@@ -36,10 +36,10 @@ module.exports = async () => {
   let [buyVolume, buyerBalance, buyerGNOBalance] = await buyerStats()
 
   console.log(`Auction index ${auctionIndex}
-    was:
+  was:
     buyVolume:\t${buyVolume}
     buyerBalance:\t${buyerBalance} in auction
-    \t\t${buyerGNOBalance} GNO in account
+    \t\t\t${buyerGNOBalance} GNO in account
   `)
 
   try {
@@ -77,8 +77,8 @@ module.exports = async () => {
   [buyVolume, buyerBalance, buyerGNOBalance] = await buyerStats()
 
   console.log(`now:
-  buyVolume:\t${buyVolume}
-  buyerBalance:\t${buyerBalance} in auction
-  \t\t${buyerGNOBalance} GNO in account
+    buyVolume:\t${buyVolume}
+    buyerBalance:\t${buyerBalance} in auction
+    \t\t\t${buyerGNOBalance} GNO in account
 `)
 }
