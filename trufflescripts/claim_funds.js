@@ -67,7 +67,7 @@ module.exports = async () => {
       await dx.claimBuyerFunds(auctionIndex, { from: buyer });
 
       [buyerBalance, buyerClaimed] = await buyerStats()
-      console.log(`    is:  ${buyerBalance} ${buyerClaimed}`)
+      console.log(`    is:\t\t${buyerBalance}\t${buyerClaimed}`)
     } catch (error) {
       console.error(error.message || error)
     }
