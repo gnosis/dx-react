@@ -33,7 +33,7 @@ module.exports = async () => {
     gno.balanceOf(acc),
   ]).then(res => res.map(n => n.toNumber()))
 
-  console.log(`${accountName}\tETH\tGNO`)
+  console.log(`${accountName}\t\tETH\tGNO`)
 
   let [accountETH, accountGNO] = await getBalances(account)
   console.log(`Balance was:\t${accountETH}\t${accountGNO}`)
