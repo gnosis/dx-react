@@ -19,7 +19,6 @@ const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' 
  */
 
 module.exports = async () => {
-  console.log(argv)
   // web3 is available in the global context
   const [master, seller, buyer] = web3.eth.accounts
 
@@ -110,17 +109,20 @@ module.exports = async () => {
       } else event.watch(printLog.bind(null, name))
     }
 
-    const eventsArray = typeof events === 'string' ? events.split(',') : ['allEvents']
-
-    eventsArray.forEach((e) => {
-      try {
-        processEvent(contract[e](filterObj))
-      } catch (error) {
-        if (error.message === 'contract[e] is not a function') {
-          console.warn(`contract ${name} doesn't have ${e} event`)
-        } else throw error
-      }
-    })
+    if (typeof events === 'string') {
+      const eventsArray = events.split(',')
+      eventsArray.forEach((e) => {
+        try {
+          processEvent(contract[e](null, filterObj))
+        } catch (error) {
+          if (error.message === 'contract[e] is not a function') {
+            console.warn(`contract ${name} doesn't have ${e} event`)
+          } else throw error
+        }
+      })
+    } else {
+      processEvent(contract.allEvents(filterObj))
+    }
   }
 
   if (!argv.eth && !argv.gno && !argv.dx) {
