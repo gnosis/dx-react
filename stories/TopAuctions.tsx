@@ -26,5 +26,5 @@ storiesOf(`TopAuctions`, module)
   .addDecorator(CenterDecor)
   .addWithJSX('5 random pairs', () => {
     const top5Pairs = getTop5Pairs(ratioPairs.map((pair, i) => object(`Pair ${i}`, pair)))
-    return <TopAuctions pairs={top5Pairs} selectTokenPair={stringifyAction('SELECT_TOKEN_PAIR')} />
+    return <TopAuctions pairs={top5Pairs} selectTokenPairAndSetClosingPrice={stringifyAction('SELECT_TOKEN_PAIR')} />
   })
