@@ -1,5 +1,5 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
-const { getTime, increaseTimeBy } = require('./utils')(web3)
+const { getTime, increaseTimeBy, makeSnapshot } = require('./utils')(web3)
 
 /**
  * truffle exec trufflescripts/start_auction.js
@@ -19,6 +19,8 @@ module.exports = async () => {
 
   // auctionStart is in the future
   if (timeUntilStart > 0) {
+    const snapshot = await makeSnapshot()
+    console.log(`SNAPSHOT CREATED OF BLOCK # ${snapshot}`)
     increaseTimeBy(timeUntilStart + hour)
     console.log(`ETH -> GNO auction ${auctionIndex} started`)
   } else {
