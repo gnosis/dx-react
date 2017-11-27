@@ -263,13 +263,13 @@ contract DutchExchange {
 
     // --- For Testing only! ---
 
-    uint256 public now = 1508473469;
-    function increaseTimeBy(uint256 byHours, uint256 bySeconds) public {
-        now += byHours * 1 hours;
-        now += bySeconds;
-    }
+    // uint256 public now = 1508473469;
+    // function increaseTimeBy(uint256 byHours, uint256 bySeconds) public {
+    //     now += byHours * 1 hours;
+    //     now += bySeconds;
+    // }
 
-    function setTime(uint256 newTime) public {
-        now = newTime;
-    }
+    // function setTime(uint256 newTime) public {
+    //     now = newTime;
+    // }
 }
