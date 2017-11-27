@@ -48,6 +48,10 @@ module.exports = async () => {
     return
   }
 
+  console.log(`
+  Posting order for ${argv.n}
+  `)
+
   try {
     await eth.approve(dx.address, argv.n, { from: seller })
     await dx.postSellOrder(argv.n, { from: seller })
