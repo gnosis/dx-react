@@ -2,6 +2,8 @@ const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 const TokenETH = artifacts.require('./TokenETH.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
+const { getTime } = require('./utils')(web3)
+
 const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' } })
 
 /**
@@ -35,7 +37,13 @@ module.exports = async () => {
     [gno.address]: 'GNO',
   }
 
-  const printTime = () => (!argv.log ? `${new Date().toLocaleTimeString()}\t` : '')
+  const printTime = (blockNumber) => {
+    let str = ''
+    if (!argv.log) str += `${new Date().toLocaleTimeString()} | `
+    if (argv.log || argv.v) str += `bt.${new Date(getTime(blockNumber) * 1000).toLocaleTimeString()} | `
+
+    return str
+  }
 
   // when logging, read from the very first block
   const filterObj = argv.log && { fromBlock: 0 }
@@ -69,9 +77,9 @@ module.exports = async () => {
       }
     }
 
-    const verbose = argv.v ? `${blockNumber}/${transactionIndex}/${logIndex}\t` : ''
+    const verbose = argv.v ? `${blockNumber}/${transactionIndex}/${logIndex} | ` : ''
 
-    console.log(`${printTime()}${verbose}${name}::${event}`, args)
+    console.log(`${printTime(blockNumber)}${verbose}${name}::${event}`, args)
   }
 
   const printLogs = (logs) => {
