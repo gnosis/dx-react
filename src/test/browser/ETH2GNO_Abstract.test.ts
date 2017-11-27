@@ -1,5 +1,6 @@
 import expect from 'expect'
 import { delay, metamaskWarning } from '../utils'
+import web3Utils from '../../../trufflescripts/utils'
 
 import { initDutchXConnection } from 'api/dutchx'
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
@@ -19,6 +20,8 @@ const web3 = new Web3(localProvider)
 
 // Set ONLY DutchExchangeETHGNO to the localProvider
 DX.setProvider(localProvider)
+
+const { getTime, increaseTimeBy, setTime } = web3Utils(web3)
 
 describe('ETH 2 GNO contract via DutchX Class', () => {
   // TODO: proper types
@@ -147,16 +150,17 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const ETHtotal = await eth.getTotalSupply()
     const masterETHBalance = await eth.balanceOf(master)
     const sellerETHBalance = await eth.balanceOf(seller)
+    const buyerETHBalance = await eth.balanceOf(buyer)
 
     const GNOtotal = await gno.getTotalSupply()
     const masterGNOBalance = await gno.balanceOf(master)
+    const sellerGNOBalance = await gno.balanceOf(seller)
     const buyerGNOBalance = await gno.balanceOf(buyer)
 
-    expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
-    expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
+    expect(masterETHBalance.add(sellerETHBalance).add(buyerETHBalance)).toEqual(ETHtotal)
+    expect(masterGNOBalance.add(sellerGNOBalance).add(buyerGNOBalance)).toEqual(GNOtotal)
   })
 
-  // TODO: rework to make a part of submit -> buy -> claim flow
   it('seller can submit order to an auction', async () => {
     const amount = 30
 
@@ -194,15 +198,15 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // still on the first auction
     expect(auctionIndex).toBe(1)
     const auctionStart = (await dx.auctionStart()).toNumber()
-    let now = (await dx.now()).toNumber()
+    let now = getTime()
 
     // auction hasn't started yet
     expect(auctionStart).toBeGreaterThan(now)
     const timeUntilStart = auctionStart - now
 
     // move time to start + 1 hour
-    await dx.increaseTimeBy(1, timeUntilStart, { from: master })
-    now = (await dx.now()).toNumber()
+    increaseTimeBy(timeUntilStart + 3600)
+    now = getTime()
 
     // auction has started
     expect(auctionStart).toBeLessThan(now)
@@ -278,8 +282,6 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // balance is kept as a record, just can't be claimed twice
     expect(buyerBalance).toBe(buyerBalancesAfter)
     expect(buyVolumeAfter).toBe(buyVolume)
-
-
   })
 
 
@@ -322,7 +324,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
 
 
-    await dx.setTime(timeWhenAuctionClears, { from: master })
+    setTime(timeWhenAuctionClears)
     const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
     const amount = 1
     await gno.approve(dxa, amount, { from: buyer })
@@ -345,7 +347,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // still on the first auction
     expect(auctionIndex).toBe(2)
     const auctionStart = (await dx.auctionStart()).toNumber()
-    const now = (await dx.now()).toNumber()
+    const now = getTime()
 
     // next auction hasn't started yet
     expect(auctionStart).toBeGreaterThan(now)

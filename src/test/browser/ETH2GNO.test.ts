@@ -8,6 +8,7 @@ declare module 'expect' {
 }
 
 import { delay, metamaskWarning } from '../utils'
+import web3Utils from '../../../trufflescripts/utils'
 
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
@@ -53,6 +54,7 @@ const withLocalProvider = async (func: () => void) => {
   setCurrentProvider()
 }
 
+const { getTime, increaseTimeBy, setTime } = web3Utils(web3)
 
 describe('ETH 2 GNO contract standalone', () => {
   // TODO: proper types
@@ -170,14 +172,10 @@ describe('ETH 2 GNO contract standalone', () => {
     const sellerGNOBalance = await gno.balanceOf(seller)
     const buyerGNOBalance = await gno.balanceOf(buyer)
 
-    expect(masterETHBalance.add(sellerETHBalance)).toEqual(ETHtotal)
-    expect(masterGNOBalance.add(buyerGNOBalance)).toEqual(GNOtotal)
-
-    expect(sellerGNOBalance.toNumber()).toBe(0)
-    expect(buyerETHBalance.toNumber()).toBe(0)
+    expect(masterETHBalance.add(sellerETHBalance).add(buyerETHBalance)).toEqual(ETHtotal)
+    expect(masterGNOBalance.add(sellerGNOBalance).add(buyerGNOBalance)).toEqual(GNOtotal)
   })
 
-  // TODO: rework to make a part of submit -> buy -> claim flow
   it('seller can submit order to an auction', async () => {
     const amount = 30
 
@@ -217,7 +215,7 @@ describe('ETH 2 GNO contract standalone', () => {
     // still on the first auction
     expect(auctionIndex).toBe(1)
     const auctionStart = (await dx.auctionStart()).toNumber()
-    let now = (await dx.now()).toNumber()
+    let now = getTime()
 
     // auction hasn't started yet
     expect(auctionStart).toBeGreaterThan(now)
@@ -225,8 +223,8 @@ describe('ETH 2 GNO contract standalone', () => {
 
     await withLocalProvider(async () => {
       // move time to start + 1 hour
-      await dx.increaseTimeBy(1, timeUntilStart, { from: master })
-      now = (await dx.now()).toNumber()
+      increaseTimeBy(timeUntilStart + 3600)
+      now = getTime()
     })
 
     // auction has started
@@ -351,7 +349,7 @@ describe('ETH 2 GNO contract standalone', () => {
     const timeWhenAuctionClears = Math.ceil(72000 * sellVolume / buyVolume - 18000 + auctionStart)
 
     await withLocalProvider(async () => {
-      await dx.setTime(timeWhenAuctionClears, { from: master })
+      setTime(timeWhenAuctionClears)
       const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
       const amount = 1
       await gno.approve(dxa, amount, { from: buyer })
@@ -378,7 +376,7 @@ describe('ETH 2 GNO contract standalone', () => {
     // still on the first auction
     expect(auctionIndex).toBe(2)
     const auctionStart = (await dx.auctionStart()).toNumber()
-    const now = (await dx.now()).toNumber()
+    const now = getTime()
 
     // next auction hasn't started yet
     expect(auctionStart).toBeGreaterThan(now)
