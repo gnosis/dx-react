@@ -19,8 +19,8 @@ module.exports = async () => {
 
   // auctionStart is in the future
   if (timeUntilStart > 0) {
-    const snapshot = await makeSnapshot()
-    console.log(`SNAPSHOT CREATED OF BLOCK # ${snapshot}`)
+    const snapshot = makeSnapshot()
+    console.log(`SNAPSHOT CREATED WITH BLOCK-ID # ${snapshot}`)
     increaseTimeBy(timeUntilStart + hour)
     console.log(`ETH -> GNO auction ${auctionIndex} started`)
   } else {
