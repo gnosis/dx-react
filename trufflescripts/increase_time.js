@@ -1,4 +1,5 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
+const { getTime, increaseTimeBy, setTime } = require('./utils')(web3)
 
 const argv = require('minimist')(process.argv.slice(2))
 
@@ -30,7 +31,7 @@ module.exports = async () => {
 
   const printAuctionTimes = async () => {
     const auctionStart = (await dx.auctionStart()).toNumber()
-    const now = (await dx.now()).toNumber()
+    const now = getTime()
 
     const timeUntilStart = auctionStart - now
     const timeStr = getTimeStr(timeUntilStart * 1000)
@@ -71,13 +72,13 @@ module.exports = async () => {
   console.log(`Setting time to ${argv.start ? 'AUCTION_START' : argv.clear ? 'AUCTION_END' : ''} ${incTimeBy ? `+ ${getTimeStr(incTimeBy * 1000)}` : ''}`)
 
   if (argv.start) {
-    await dx.setTime(auctionStart)
+    setTime(auctionStart)
   } else if (argv.clear && timeWhenAuctionClears !== Infinity) {
-    await dx.setTime(timeWhenAuctionClears)
+    setTime(timeWhenAuctionClears)
   }
 
   if (incTimeBy) {
-    await dx.increaseTimeBy(0, incTimeBy)
+    increaseTimeBy(incTimeBy)
   }
 
   console.log('==========================')

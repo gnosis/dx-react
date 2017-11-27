@@ -1,4 +1,5 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
+const { getTime } = require('./utils')(web3)
 
 const getTimeStr = (timestamp) => {
   const date = new Date(Math.abs(timestamp))
@@ -17,7 +18,7 @@ const getTimeStr = (timestamp) => {
 module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
   const auctionStart = (await dx.auctionStart()).toNumber()
-  const now = (await dx.now()).toNumber()
+  const now = getTime()
 
   const timeUntilStart = auctionStart - now
   const timeStr = getTimeStr(timeUntilStart * 1000)
