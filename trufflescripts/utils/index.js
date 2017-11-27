@@ -28,8 +28,8 @@ module.exports = (web3) => {
 
   const makeSnapshot = () => web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_snapshot' }).result
 
-  const revertSnapshot = async (blockN = '0x01') => {
-    await web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_revert', params: [blockN] })
+  const revertSnapshot = (blockN = '0x01') => {
+    web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_revert', params: [blockN] })
     return blockN
   }
 
