@@ -1,5 +1,5 @@
 module.exports = (web3) => {
-  const getTime = (blockNumber = web3.eth.blockNumber) => web3.eth.getBlock(blockNumber).timestamp
+  const getTime = (blockNumber = 'latest') => web3.eth.getBlock(blockNumber).timestamp
 
   const increaseTimeBy = (seconds) => {
     web3.currentProvider.send({
