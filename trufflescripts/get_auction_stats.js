@@ -1,4 +1,6 @@
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
+const TokenETH = artifacts.require('./TokenETH.sol')
+const TokenGNO = artifacts.require('./TokenGNO.sol')
 const { getTime } = require('./utils')(web3)
 
 const getTimeStr = (timestamp) => {
@@ -17,6 +19,14 @@ const getTimeStr = (timestamp) => {
 
 module.exports = async () => {
   const dx = await DutchExchangeETHGNO.deployed()
+  const eth = await TokenETH.deployed()
+  const gno = await TokenGNO.deployed()
+
+  const dxETHBalance = (await eth.balanceOf(dx.address)).toNumber()
+  const dxGNOBalance = (await gno.balanceOf(dx.address)).toNumber()
+
+  console.log(`Auction holds:\t${dxETHBalance} ETH\t${dxGNOBalance} GNO`)
+
   const auctionStart = (await dx.auctionStart()).toNumber()
   const now = getTime()
 
