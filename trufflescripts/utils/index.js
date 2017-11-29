@@ -29,11 +29,11 @@ module.exports = (web3) => {
 
   const makeSnapshot = () => web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_snapshot' }).result
 
-  const revertSnapshot = blockID => new Promise((resolve, reject) => {
-    web3.currentProvider.sendAsync({ jsonrpc: '2.0', method: 'evm_revert', params: [blockID] }, (err) => {
+  const revertSnapshot = snapshotID => new Promise((resolve, reject) => {
+    web3.currentProvider.sendAsync({ jsonrpc: '2.0', method: 'evm_revert', params: [snapshotID] }, (err) => {
       if (!err) {
         console.log('Revert Success')
-        resolve(blockID)
+        resolve(snapshotID)
       } else {
         reject(err)
       }

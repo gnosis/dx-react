@@ -8,5 +8,8 @@ const { makeSnapshot } = require('./utils')(web3)
 
 module.exports = () => {
   const snapshot = makeSnapshot()
-  console.log(`SNAPSHOT CREATED: BLOCK-ID # ${snapshot}`)
+  console.log(`
+    SNAPSHOT CREATED: # ${snapshot}
+    BLOCK-NUMBER:     ${web3.eth.blockNumber} 
+  `)
 }
