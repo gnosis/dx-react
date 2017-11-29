@@ -24,6 +24,9 @@ module.exports = async () => {
   const race = Promise.race([timeout, revertSnapshot(snapshotID)])
   try {
     await race
+    console.warn(`
+      CAUTION: Reverting does NOT roll back time to snapshot time. You've been warned...
+    `)
     console.log(`
       REVERTED TO SNAPSHOT-ID:  # ${snapshotID}
       BLOCKNUMBER:              ${web3.eth.blockNumber}
