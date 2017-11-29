@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
 const { getTime, increaseTimeBy } = require('./utils')(web3)
 
