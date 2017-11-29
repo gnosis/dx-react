@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 module.exports = (web3) => {
   const getTime = (blockNumber = web3.eth.blockNumber) => web3.eth.getBlock(blockNumber).timestamp
 
@@ -28,10 +29,16 @@ module.exports = (web3) => {
 
   const makeSnapshot = () => web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_snapshot' }).result
 
-  const revertSnapshot = (blockN = '0x01') => {
-    web3.currentProvider.send({ jsonrpc: '2.0', method: 'evm_revert', params: [blockN] })
-    return blockN
-  }
+  const revertSnapshot = blockID => new Promise((resolve, reject) => {
+    web3.currentProvider.sendAsync({ jsonrpc: '2.0', method: 'evm_revert', params: [blockID] }, (err) => {
+      if (!err) {
+        console.log('Revert Success')
+        resolve(blockID)
+      } else {
+        reject(err)
+      }
+    })
+  })
 
   return {
     getTime,
