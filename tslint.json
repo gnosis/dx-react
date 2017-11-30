@@ -15,6 +15,7 @@
     "max-line-length": false,
     "object-shorthand-properties-first": false,
     "one-variable-per-declaration": false,
+    "no-parameter-reassignment": false,
     "align": [
       true,
       "statements",
@@ -28,7 +29,7 @@
         "code": 120,
         "tabWidth": 2,
         "ignoreUrls": true,
-        "ignoreComments": false,
+        "ignoreComments": true,
         "ignoreRegExpLiterals": true,
         "ignoreStrings": false,
         "ignoreTemplateLiterals": true
