@@ -132,3 +132,10 @@ export interface DutchExchange {
   // claimAllFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
 
 }
+
+
+export interface dxAPI {
+  web3: ProviderInterface,
+  Tokens: TokensInterface,
+  DutchX: DutchExchange,
+}
