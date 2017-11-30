@@ -52,13 +52,15 @@ contract('ETH to GNO auctionz', async (accounts) => {
     const ETHtotal = await ETH.getTotalSupply()
     const initialiserETHBalance = await ETH.balanceOf(initialiser)
     const sellerETHBalance = await ETH.balanceOf(seller)
+    const buyerETHBalance = await ETH.balanceOf(buyer)
 
     const GNOtotal = await GNO.getTotalSupply()
     const initialiserGNOBalance = await GNO.balanceOf(initialiser)
+    const sellerGNOBalance = await GNO.balanceOf(seller)
     const buyerGNOBalance = await GNO.balanceOf(buyer)
 
-    assert.deepEqual(initialiserETHBalance.add(sellerETHBalance), ETHtotal)
-    assert.deepEqual(initialiserGNOBalance.add(buyerGNOBalance), GNOtotal)
+    assert.deepEqual(initialiserETHBalance.add(sellerETHBalance).add(buyerETHBalance), ETHtotal)
+    assert.deepEqual(initialiserGNOBalance.add(sellerGNOBalance).add(buyerGNOBalance), GNOtotal)
   })
 
 

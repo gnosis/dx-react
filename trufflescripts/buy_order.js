@@ -78,7 +78,7 @@ module.exports = async () => {
 
   [buyVolume, buyerBalance, buyerGNOBalance] = await buyerStats()
 
-  console.log(`now:
+  console.log(`  now:
     buyVolume:\t${buyVolume}
     buyerBalance:\t${buyerBalance} in auction
     \t\t\t${buyerGNOBalance} GNO in account
