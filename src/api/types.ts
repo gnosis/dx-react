@@ -1,4 +1,8 @@
-import { Account, Balance, TokenCode, TokenPair } from 'types'
+import { Account, Balance, TokenCode, TokenPair as TP } from 'types'
+
+// TokenPair without sellAmout
+type TokenPair = Pick<TP, 'sell' | 'buy'>
+
 
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
