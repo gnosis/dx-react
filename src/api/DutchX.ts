@@ -27,6 +27,8 @@ async function init(): Promise<DutchExchange> {
     account === undefined ? getCurrentAccount() : account,
   ])
 
+  const getAddress = (pair: TokenPair) => getExchange(pair).address
+
   const getAuctionIndex = async (pair: TokenPair) => {
     const index = await getExchange(pair).auctionIndex()
 
@@ -124,6 +126,7 @@ async function init(): Promise<DutchExchange> {
   }
 
   return {
+    getAddress,
     getAuctionIndex,
     getClosingPrice,
     getPrice,

@@ -98,6 +98,8 @@ export interface Auction {
 export interface DutchExchange {
   // getAuction(pair: TokenPair): Auction,
 
+  getAddress(pair: TokenPair): Account,
+
   getAuctionIndex(pair: TokenPair): Promise<number>,
   getClosingPrice(pair: TokenPair, index?: number): Promise<Balance>,
   getPrice(pair: TokenPair, index?: number): Promise<Balance>,
