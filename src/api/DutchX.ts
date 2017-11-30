@@ -34,7 +34,7 @@ async function init(): Promise<DutchExchange> {
   }
 
   const getClosingPrice = async (pair: TokenPair, index?: number) => {
-    if (index === undefined) index = await getAuctionIndex(pair)
+    if (index === undefined) index = await getAuctionIndex(pair) - 1
 
     const [num, den] = getExchange(pair).closingPrices(index)
 
