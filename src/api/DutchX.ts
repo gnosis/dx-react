@@ -1,7 +1,7 @@
 import { promisedContractsMap } from './contracts'
 import { promisedWeb3 } from './web3Provider'
 import { DutchExchange } from './types'
-import { TokenPair, Account } from 'types'
+import { TokenPair, Account, Balance } from 'types'
 
 export const promisedDutchX = init()
 
@@ -93,19 +93,19 @@ async function init(): Promise<DutchExchange> {
     return balance.toString()
   }
 
-  const postSellOrder = async (pair: TokenPair, amount: number, account?: Account) => {
+  const postSellOrder = async (pair: TokenPair, amount: Balance, account?: Account) => {
     if (account === undefined) account = await getCurrentAccount()
 
     return getExchange(pair).postSellOrder(amount, { from: account })
   }
 
-  const postBuyOrder = async (pair: TokenPair, amount: number, index?: number, account?: Account) => {
+  const postBuyOrder = async (pair: TokenPair, amount: Balance, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
     return getExchange(pair).postBuyOrder(amount, index, { from: account })
   }
 
-  const postBuyOrderAndClaim = async (pair: TokenPair, amount: number, index?: number, account?: Account) => {
+  const postBuyOrderAndClaim = async (pair: TokenPair, amount: Balance, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
     return getExchange(pair).postBuyorderAndClaim(amount, index, { from: account })

@@ -25,9 +25,9 @@ export interface TransactionObject {
 export interface TokensInterface {
   getTokenBalance(code: TokenCode, account: Account): Promise<Balance>,
   getTotalSupply(code: TokenCode): Promise<Balance>,
-  transfer(code: TokenCode, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  approve(code: TokenCode, spender: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
+  transfer(code: TokenCode, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(code: TokenCode, owner: Account, spender: Account): Promise<Balance>,
 }
 
@@ -75,9 +75,9 @@ export interface Auction {
   getSellerBalances(index?: number, account?: Account): Balance,
   getBuyerBalances(index?: number, account?: Account): Balance,
   getClaimedAmounts(index?: number, account?: Account): Balance,
-  postSellOrder(amount: number, account?: Account): Receipt
-  postBuyOrder(amount: number, index?: number, account?: Account): Receipt,
-  postBuyOrderAndClaim(amount: number, index?: number, account?: Account): Receipt,
+  postSellOrder(amount: Balance, account?: Account): Receipt
+  postBuyOrder(amount: Balance, index?: number, account?: Account): Receipt,
+  postBuyOrderAndClaim(amount: Balance, index?: number, account?: Account): Receipt,
   claimSellerFunds(index?: number, account?: Account): Receipt,
   claimBuyerFunds(index?: number, account?: Account): Receipt,
   // getUnclaimedBuyerFunds(index?: number, account?: Account): Receipt,
@@ -107,9 +107,9 @@ export interface DutchExchange {
   getSellerBalances(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
   getBuyerBalances(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
   getClaimedAmounts(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
-  postSellOrder(pair: TokenPair, amount: number, account?: Account): Promise<Receipt>,
-  postBuyOrder(pair: TokenPair, amount: number, index?: number, account?: Account): Promise<Receipt>,
-  postBuyOrderAndClaim(pair: TokenPair, amount: number, index?: number, account?: Account): Promise<Receipt>,
+  postSellOrder(pair: TokenPair, amount: Balance, account?: Account): Promise<Receipt>,
+  postBuyOrder(pair: TokenPair, amount: Balance, index?: number, account?: Account): Promise<Receipt>,
+  postBuyOrderAndClaim(pair: TokenPair, amount: Balance, index?: number, account?: Account): Promise<Receipt>,
   claimSellerFunds(pair: TokenPair, index?: number, account?: Account): Promise<Receipt>,
   claimBuyerFunds(pair: TokenPair, index?: number, account?: Account): Promise<Receipt>,
   // getUnclaimedBuyerFunds(pair: TokenPair, index?: number, account?: Account): Receipt,
