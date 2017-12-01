@@ -1,6 +1,6 @@
 import { ProviderInterface } from './types'
 import { windowLoaded, promisify } from './utils'
-import { Web3 } from 'web3'
+import Web3 from 'web3'
 
 const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
