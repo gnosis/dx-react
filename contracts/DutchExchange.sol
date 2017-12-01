@@ -161,13 +161,16 @@ contract DutchExchange {
         // If Solidity was to change, this ensures the next sellOrder
         // will still schedule the next auction in 6 hrs as required
         auctionStarts[sellToken][buyToken] = 0;
-
+        auctionStarts[buyToken][sellToken] = 0;
         // Save price
         fraction memory initialClosingPrice = fraction(initialClosingPriceNum, initialClosingPriceDen);
         closingPrices[sellToken][buyToken][0] = initialClosingPrice;
+        initialClosingPrice = fraction( initialClosingPriceDen,initialClosingPriceNum);
+        closingPrices[buyToken][sellToken][0] = initialClosingPrice;
 
         // Update other variables
         latestAuctionIndices[sellToken][buyToken] = 1;
+        latestAuctionIndices[buyToken][sellToken] = 1;
     }
 
     function deposit(
@@ -238,7 +241,7 @@ contract DutchExchange {
         // Fees are added to extraSellTokens -> current auction in the edge cases,
         // next auction in the majority case
         extraSellTokens[sellToken][buyToken][auctionIndex] += fee;
-        amountAfterFee = amount - fee;
+        uint amountAfterFee = amount - fee;
 
         // Update variables
         balances[sellToken][msg.sender] -= amount;
@@ -250,7 +253,6 @@ contract DutchExchange {
     function postBuyOrder(
         address sellToken,
         address buyToken,
-        uint auctionIndex,
         uint amountSubmitted,
         uint amountOfWIZToBurn
     )
@@ -260,9 +262,9 @@ contract DutchExchange {
         // Requirements
         // TODO
         require(auctionStarts[sellToken][buyToken] >= now);
-        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
-        require(auctionIndex == latestAuctionIndex);
 
+        uint auctionIndex = latestAuctionIndices[sellToken][buyToken];
+        checkReziproityMarket(auctionIndex,sellToken,buyToken);
         uint amount = Math.min(amountSubmitted, balances[buyToken][msg.sender]);
 
         // Fee mechanism
@@ -276,7 +278,7 @@ contract DutchExchange {
         // To calculate overbuy, we first get current price
         uint num;
         uint den;
-        (num, den) = getPrice(latestAuctionIndex);
+        (num, den) = getPrice(auctionIndex);
 
         uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
         uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
@@ -299,9 +301,68 @@ contract DutchExchange {
         if (overbuy >= 0) {
             // Clear auction
             uint finalBuyVolume = buyVolume + amountAfterFee - overbuy;
-            clearAuction(finalBuyVolume, sellVolume);
+            clearAuction(sellToken, buyToken, finalBuyVolume, sellVolume);
         }
     }
+    function checkReziproityMarket(uint auctionIndex, address sellToken, address buyToken) public
+    {
+      // Check whether ReziproAuction already closed:
+      if(closingPrices[sellToken][buyToken][auctionIndex].den!=0)
+      {
+        uint num;
+        uint den;
+        (num, den) = getPrice(sellToken, buyToken, auctionIndex);
+        uint numRezi;
+        uint denRezi;
+        (numRezi, denRezi) = getPrice( buyToken, sellToken, auctionIndex);
+
+        // Check wheter there is an arbitrage possibility
+        // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
+        if(num*denRezi<den*numRezi){
+          //calculate outstanding volumes for both makets at time of priceCrossing:
+          fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
+          num= lastClosingPrice.num/2;
+          den= lastClosingPrice.den/2;
+          numRezi=lastClosingPrice.den/2;
+          denRezi=lastClosingPrice.num/2;
+          uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
+          uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
+          int missingVolume= int(buyVolume  - sellVolume * num / den);
+
+          uint sellVolumeRezi = sellVolumes[buyToken][sellToken][auctionIndex];
+          uint buyVolumeRezi = buyVolumes[buyToken][sellToken][auctionIndex];
+          int missingVolumeRezi= int(buyVolumeRezi  - sellVolumeRezi * numRezi / denRezi)* num / den;
+
+          // fill up the Auction with smaller missing volume
+          if( missingVolume>0 && missingVolumeRezi>0)
+          {
+              if(missingVolume>missingVolumeRezi){
+                fillUpReziAuction(sellToken,buyToken,missingVolumeRezi,num,den,auctionIndex);
+              }
+              else{
+                fillUpReziAuction(buyToken,sellToken,missingVolume,numRezi,denRezi,auctionIndex);
+              }
+          }
+          else{
+            if(missingVolume<=0){
+              clearAuction(sellToken, buyToken, buyVolume, sellVolume);
+            }
+            if(missingVolumeRezi<=0){
+              clearAuction(buyToken, sellToken, buyVolumeRezi, sellVolumeRezi);
+              }
+          }
+      }
+      }
+    }
+    function fillUpReziAuction(address sellToken,address buyToken, uint volume, uint numClearing, uint denClearing, uint auctionIndex)
+    internal
+    {
+      buyVolumes[sellToken][buyToken][auctionIndex] += volume*numClearing/denClearing;
+      sellVolumes[sellToken][buyToken][auctionIndex] -= volume*denClearing/numClearing;
+      clearAuction(sellToken , buyToken, buyVolumes[sellToken][buyToken][auctionIndex], buyVolumes[sellToken][buyToken][auctionIndex]*denClearing/numClearing);
+    }
+
+
 
     function claimSellerFunds(
         address sellToken,
@@ -318,7 +379,7 @@ contract DutchExchange {
 
         // Checks if particular auction has cleared
         require(auctionIndex > latestAuctionIndices[sellToken][buyToken]);
-        
+
         // Get closing price for said auction
         fraction memory closingPrice = closingPrices[sellToken][buyToken][auctionIndex];
         uint256 num = closingPrice.num;
@@ -343,7 +404,7 @@ contract DutchExchange {
         uint auctionIndex
     )
         public
-        returns (uint returned) 
+        returns (uint returned)
     {
         returned = getUnclaimedBuyerFunds(sellToken, buyToken, user, auctionIndex);
         require(returned > 0);
@@ -358,7 +419,7 @@ contract DutchExchange {
             buyerBalances[sellToken][buyToken][user][auctionIndex] = 0;
             claimedAmounts[sellToken][buyToken][user][auctionIndex] = 0;
 
-            // Assign extra tokens (this is possible only after auction has cleared, 
+            // Assign extra tokens (this is possible only after auction has cleared,
             // because buyVolume could still increase before that)
             uint buyerBalance = buyerBalances[sellToken][buyToken][user][auctionIndex];
             uint extraTokensTotal = extraSellTokens[sellToken][buyToken][auctionIndex];
@@ -371,7 +432,7 @@ contract DutchExchange {
         NewBuyerFundsClaim(sellToken, buyToken, user, auctionIndex, returned);
     }
 
-    /// @dev Claim buyer funds for one auction 
+    /// @dev Claim buyer funds for one auction
     function getUnclaimedBuyerFunds(
         address sellToken,
         address buyToken,
@@ -428,7 +489,7 @@ contract DutchExchange {
             uint denOfLastClosingPrice = lastClosingPrice.den;
 
             // If the previous closing price was 0, for calculations we assume it was
-            // 10% of the closing price of the last auction that closed above 0 
+            // 10% of the closing price of the last auction that closed above 0
             if (numOfLastClosingPrice <= 0) {
                 fraction memory previousClosingPrice;
                 uint i = 1;
@@ -470,8 +531,8 @@ contract DutchExchange {
         } else {
             auctionStarts[sellToken][buyToken] = now;
         }
-        
-        // Update extra tokens 
+
+        // Update extra tokens
         extraBuyTokensNext[sellToken][buyToken] = 0;
         extraSellTokens[sellToken][buyToken] = 0;
 
@@ -501,7 +562,7 @@ contract DutchExchange {
         // F(0) = 0.5%, F(1%) = 0.25%, F(>=10%) = 0
         // (Takes in my ratio of all TUL tokens, outputs fee ratio)
         // We then multiply by amount to get fee:
-        uint fee = (supplyOfTUL - 10 * balanceOfTUL) * amount / (16000 * balanceOfTUL + 200 * supplyOfTUL);
+        fee = (supplyOfTUL - 10 * balanceOfTUL) * amount / (16000 * balanceOfTUL + 200 * supplyOfTUL);
         fee = Math.max(fee, 0);
 
         if (fee > 0) {
