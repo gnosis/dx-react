@@ -1,4 +1,3 @@
-import { setProvider } from './contracts'
 import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './DutchX'
@@ -96,8 +95,6 @@ async function initAPI(): Promise<dxAPI> {
     promisedTokens,
     promisedDutchX,
   ])
-
-  setProvider(web3.currentProvider)
 
   return { web3, Tokens, DutchX }
 }

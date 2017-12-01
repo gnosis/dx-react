@@ -1,4 +1,5 @@
 import TruffleContract from 'truffle-contract'
+import { promisedWeb3 } from './web3Provider'
 
 const contractNames = [
   'DutchExchange',
@@ -16,7 +17,7 @@ type ContractName = 'DutchExchange' |
   'TokenETH' |
   'TokenGNO'
 
-type ContractsMap = {[P in ContractName]: object}
+type ContractsMap = {[P in ContractName]: any}
 
 const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
 
@@ -30,12 +31,15 @@ export const setProvider = (provider: any) => Contracts.forEach((contract) => {
   contract.setProvider(provider)
 })
 
-const promisedInstances = Promise.all(Contracts.map(contr => contr.deployed()))
+const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deployed()))
 
 export const promisedContractsMap = init()
 
 async function init() {
-  const instances = await promisedInstances
+  const { currentProvider } = await promisedWeb3
+  setProvider(currentProvider)
+
+  const instances = await getPromisedIntances()
 
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
