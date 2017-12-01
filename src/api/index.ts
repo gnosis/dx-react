@@ -39,15 +39,15 @@ export const getCurrentBalance = async (account?: Account) => {
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
-export const getTokenBalances = async (codeList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
+export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
   const { Tokens, web3 } = await promisedAPI
 
   if (!account) account = await web3.getCurrentAccount()
 
-  const balances = Promise.all(codeList.map(code => Tokens.getTokenBalance(code, account)))
+  const balances = Promise.all(tokenList.map(code => Tokens.getTokenBalance(code, account)))
 
   // [{name: 'ETH': balance: Balance}, {...}]
-  return codeList.map((code, i) => ({
+  return tokenList.map((code, i) => ({
     name: code,
     balance: balances[i],
   }))
