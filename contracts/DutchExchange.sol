@@ -10,8 +10,8 @@ contract DutchExchange {
 
     // The price is a rational number, so we need a concept of a fraction
     struct fraction {
-        uint256 num;
-        uint256 den;
+        uint num;
+        uint den;
     }
 
     address public owner;
@@ -59,7 +59,7 @@ contract DutchExchange {
         address indexed buyToken,
         address indexed user,
         uint auctionIndex,
-        uint256 amount
+        uint amount
     );
     event NewBuyOrder(
         address indexed sellToken,
@@ -490,7 +490,6 @@ contract DutchExchange {
         uint amountOfWIZBurnedSubmitted
     )
         internal
-        constant
         returns (uint fee)
     {
         // Calculate fee based on proportion of all TUL tokens owned
@@ -510,7 +509,7 @@ contract DutchExchange {
             // Convert fee to ETH, then USD
             feeInETH = priceOracles[buyToken].convert(fee);
             feeInUSD = ETHUSDOracle.convert(feeInETH);
-            uint amountOfWIZBurned = Math.max(amountOfWIZBurnedSubmitted, feeInUSD / 2);
+            uint amountOfWIZBurned = Math.min(amountOfWIZBurnedSubmitted, feeInUSD / 2);
             // ERC-20
             WIZ.spend(user, amountOfWIZBurned);
 
