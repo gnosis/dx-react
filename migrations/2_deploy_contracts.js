@@ -1,5 +1,4 @@
 var DutchExchange = artifacts.require("./DutchExchange.sol");
-var DutchExchangeFactory = artifacts.require("./DutchExchangeFactory.sol");
 var Token1 = artifacts.require("./Token1.sol");
 var Token2 = artifacts.require("./Token2.sol");
 var Token3 = artifacts.require("./Token3.sol");

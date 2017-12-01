@@ -1,433 +1,521 @@
-pragma solidity 0.4.15;
+pragma solidity ^0.4.18;
 
-import "./Token.sol";
+import "./Math.sol";
+// import "./Token.sol";
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
-/// @author Dominik Teiml - <dominik.teiml@gnosis.pm>
+/// @author Dominik Teiml - <dominik@gnosis.pm>
 
 contract DutchExchange {
-    // This contract represents an exchange between two ERC20 tokens
 
-    // The price is a rational number, so we need a concept of a fraction:
+    // The price is a rational number, so we need a concept of a fraction
     struct fraction {
-        // Numerator
         uint256 num;
-
-        // Denominator
         uint256 den;
     }
 
-    // If DX is running, this is the start time of that auction
-    // If DX is cleared, this is the scheduled time of the next auction
-    uint256 public auctionStart;
+    address public owner;
+    address public ETH;
+    address public ETHUSDOracle;
+    address public TUL;
+    address public WIZ;
 
-    // Tokens that are being traded
-    Token public sellToken;
-    // Usually ETH
-    Token public buyToken;
-    // TUL tokens provide benefit to regular users
-    Token public TUL;
+    // Token => Token => index
+    mapping (address => mapping (address => uint)) public latestAuctionIndices;
+    // Token => Token => auctionIndex => price
+    mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
+    // Token => oracle
+    mapping (address => address) public priceOracles;
 
-    // Index of the current auction. This is necessary to store closing prices (see next variable)
-    uint256 public auctionIndex = 1;
+    // Token => Token => time
+    // Will always be in the past except when:
+    // 1. A new token pair is added
+    // 2. An auction doesn't receive any sellOrders
+    // In both cases, the first sellOrder will schedule the auction to begin in 6 hours
+    mapping (address => mapping (address => uint)) public auctionStarts;
 
-    // The prices at which all auctions cleared, will influence the price scale of the next auction
-    mapping (uint256 => fraction) public closingPrices;
+    // Token => user => amount
+    mapping (address => mapping (address => uint)) public balances;
 
-    // Sell volume for current auction. Needed to determine when auction clears
-    uint256 public sellVolumeCurrent;
-    // Cumulative sell volume for next auction
-    uint256 public sellVolumeNext;
-    // Buy volumes for all auctions. Needed to display most busy auctions
-    mapping (uint256 => uint256) public buyVolumes;
+    // Token => Token => auctionIndex => amount
+    // We store historical values, because they are necessary to calculate extraTokens
+    mapping (address => mapping (address => mapping (uint => uint))) public sellVolumes;
+    mapping (address => mapping (address => mapping (uint => uint))) public buyVolumes;
 
-    // Seller balances for all auctions. The first uint256 is auction index
-    // (needed because closing price could be different for each auction)
-    mapping (uint256 => mapping (address => uint256)) public sellerBalances;
-    // Buyer balances for all auctions
-    mapping (uint256 => mapping (address => uint256)) public buyerBalances;
-    // Buyers can claim tokens while auction is running, so we need to store that
-    mapping (uint256 => mapping (address => uint256)) public claimedAmounts;
+    // Token => Token => auctionIndex => amount
+    mapping (address => mapping (address => mapping (uint => uint))) public extraSellTokens;
+    mapping (address => mapping (address => mapping (uint => uint))) public extraBuyTokens;
+
+    // Token => Token => user => auctionIndex => amount
+    mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public sellerBalances;
+    mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public buyerBalances;
+    mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public claimedAmounts;
 
     // Events
-    event NewSellOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
-    event NewBuyOrder(uint256 indexed _auctionIndex, address indexed _from, uint256 amount);
-    event NewSellerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
-    event NewBuyerFundsClaim(uint256 indexed _auctionIndex, address indexed _from, uint256 _returned);
-    event AuctionCleared(uint256 _auctionIndex);
+    event NewDeposit(address indexed token, uint indexed amount);
+    event NewWithdrawal(address indexed token, uint indexed amount);
+    event NewSellOrder(
+        address indexed sellToken,
+        address indexed buyToken,
+        address indexed user,
+        uint auctionIndex,
+        uint256 amount
+    );
+    event NewBuyOrder(
+        address indexed sellToken,
+        address indexed buyToken,
+        address indexed user,
+        uint auctionIndex,
+        uint amount
+    );
+    event NewSellerFundsClaim(
+        address indexed sellToken,
+        address indexed buyToken,
+        address indexed user,
+        uint auctionIndex,
+        uint amount
+    );
+    event NewBuyerFundsClaim(
+        address indexed sellToken,
+        address indexed buyToken,
+        address indexed user,
+        uint auctionIndex,
+        uint amount
+    );
+    event AuctionCleared(address indexed sellToken, address indexed buyToken, uint indexed auctionIndex);
 
-    // Constructor
+    // Modifiers
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    modifier existingToken(address token) {
+        require(priceOracles[token] > 0);
+        _;
+    }
+
+    modifier existingTokenPair(address sellToken, address buyToken) {
+        require(latestAuctionIndices[sellToken][buyToken] > 0);
+        _;
+    }
+
+    /// @dev Constructor creates exchange
+    /// @param owner address. Only owner can set up new token pairs and halt trading
+    /// @param address of ETH ERC-20 token
+    /// @param address of ETH/USD price oracle
+    /// @param address of TUL ERC-20 token. Tulips are a loyalty scheme
+    /// @param address of WIZ tokens
     function DutchExchange(
-        uint256 initialClosingPriceNum,
-        uint256 initialClosingPriceDen,
-        address _sellToken,
-        address _buyToken,
-        address _TUL
-    ) public {
-        // Calculate initial price
-        fraction memory initialClosingPrice;
-        initialClosingPrice.num = initialClosingPriceNum;
-        initialClosingPrice.den = initialClosingPriceDen;
-        closingPrices[0] = initialClosingPrice;
-
-        // Set variables
-        sellToken = Token(_sellToken);
-        buyToken = Token(_buyToken);
-        TUL = Token(_TUL);
-        scheduleNextAuction();
-    }
-
-    function postSellOrder(uint256 amount) public returns (bool success) {
-        require(sellToken.transferFrom(msg.sender, this, amount));
-
-        if (auctionStart <= now) {
-            // There is an active auction, we add sell order to next auction
-            sellerBalances[auctionIndex + 1][msg.sender] += amount;
-            sellVolumeNext += amount;
-        } else {
-            // No active auction, we add it to the scheduled auction
-            sellerBalances[auctionIndex][msg.sender] += amount;
-            sellVolumeCurrent += amount;
-        }
-
-        NewSellOrder(auctionIndex, msg.sender, amount);
-        success = true;
-    }
-
-    function postBuyOrder(uint256 amount, uint256 _auctionIndex) 
+        address _owner,
+        address _ETH,
+        address _ETHUSDOracle,
+        address _TUL,
+        address _WIZ
+    )
         public
     {
-        // User inputs the current auction index, this is a fail-safe in case
-        // his/her transaction is mined after the auction clears
-        require(auctionIndex == _auctionIndex);
-        require(auctionStart <= now);
+        owner = _owner;
+        ETH = _ETH;
+        ETHUSDOracle = _ETHUSDOracle;
+        TUL = _TUL;
+        WIZ = _WIZ;
+    }
 
-        // Get current price to calculate overflow
-        uint256 num;
-        uint256 den;
-        (num, den) = getPrice(_auctionIndex);
+    /// @param Address of Token that is used to fund auction
+    /// @param Address of price oracle between sellToken and ETH. If sellToken == ETH, can be arbitrary address
+    /// @param Address of Token that is used to buy into auctions
+    /// @param Address of price oracle between buyToken and ETH. If buyToken == ETH, can be arbitrary address
+    /// @param The initial price will be 2 * initialClosingPrice. This is its numerator
+    /// @param The initial price will be 2 * initialClosingPrice. This is its denominator
+    function addTokenPair(
+        address sellToken,
+        address sellTokenETHOracle,
+        address buyToken,
+        address buyTokenETHOracle,
+        uint initialClosingPriceNum,
+        uint initialClosingPriceDen
+    )
+        public
+        onlyOwner()
+    {
+        require(initialClosingPriceNum != 0);
+        require(initialClosingPriceDen != 0);
 
-        // Calculate if buy order overflows
-        int256 overflow = int256(buyVolumes[_auctionIndex] + amount - sellVolumeCurrent * num / den);
+        // If neither token is ETH, we require there to exist ETH-Token auctions
+        if (sellToken != ETH && buyToken != ETH) {
+            require(latestAuctionIndices[sellToken][ETH] > 0);
+            require(latestAuctionIndices[ETH][sellToken] > 0);
+            require(latestAuctionIndices[buyToken][ETH] > 0);
+            require(latestAuctionIndices[ETH][buyToken] > 0);
+        }
 
-        if (int256(amount) > overflow) {
+        if (sellToken != ETH) {
+            priceOracles[sellToken] = sellTokenETHOracle;
+        }
+
+        if (buyToken != ETH) {
+            priceOracles[buyToken] = buyTokenETHOracle;
+        }
+
+        // If Solidity was to change, this ensures the next sellOrder
+        // will still schedule the next auction in 6 hrs as required
+        auctionStarts[sellToken][buyToken] = 0;
+
+        // Save price
+        fraction memory initialClosingPrice = fraction(initialClosingPriceNum, initialClosingPriceDen);
+        closingPrices[sellToken][buyToken][0] = initialClosingPrice;
+
+        // Update other variables
+        latestAuctionIndices[sellToken][buyToken] = 1;
+    }
+
+    function deposit(
+        address token,
+        uint amount
+    )
+        public
+        existingToken(token)
+    {
+        require(token.transferFrom(msg.sender, this, amount));
+        balances[token][msg.sender] += amount;
+        NewDeposit(token, amount);
+    }
+
+    function withdraw(
+        address token,
+        uint amount
+    )
+        public
+        existingToken(token)
+    {
+        amount = Math.min(amount, balances[token][msg.sender]);
+        require(amount > 0);
+
+        balances[token][msg.sender] -= amount;
+        require(token.transfer(msg.sender, amount));
+        NewWithdrawal(token, amount);
+    }
+
+    function postSellOrder(
+        address sellToken,
+        address buyToken,
+        uint auctionIndex,
+        uint amountSubmitted,
+        uint amountOfWIZToBurn
+    )
+        public
+        existingTokenPair(sellToken, buyToken)
+    {
+        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+
+        // The following logic takes care primarily of first auctions
+        // or when an auction receives 0 sell orders
+        // In those two cases, auctionIndex will be latestAuctionIndex
+        // (In all other cases, it will be latestAuctionIndex + 1)
+        if (auctionStarts[sellToken][buyToken] == 0) {
+            // If no auction is scheduled, we accept sell orders only for current auction
+            require(auctionIndex == latestAuctionIndex);
+            // Schedule auction in 6 hours
+            auctionStarts[sellToken][buyToken] = now + 6 * 1 hours;
+        } else if (auctionStarts[sellToken][buyToken] > now) {
+            // There is a scheduled action, we accept sell orders only for that auction
+            require(auctionIndex == latestAuctionIndex);
+            // We accept sell orders only in the first 6 hours
+            require(auctionStarts[sellToken][buyToken] < now + 6 * 1 hours);
+        } else {
+            // This case happens more than 99% of the time
+            // Sell orders are accepted only for next auction
+            require(auctionIndex == latestAuctionIndex + 1);
+        }
+
+        uint amount = Math.min(amountSubmitted, balances[sellToken][msg.sender]);
+
+        require(amount > 0);
+
+        // Fee mechanism
+        uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
+        // Fees are added to extraSellTokens -> current auction in the edge cases,
+        // next auction in the majority case
+        extraSellTokens[sellToken][buyToken][auctionIndex] += fee;
+        amountAfterFee = amount - fee;
+
+        // Update variables
+        balances[sellToken][msg.sender] -= amount;
+        sellerBalances[auctionIndex][msg.sender] += amountAfterFee;
+        sellVolumes[auctionIndex] += amountAfterFee;
+        NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
+    }
+
+    function postBuyOrder(
+        address sellToken,
+        address buyToken,
+        uint auctionIndex,
+        uint amountSubmitted,
+        uint amountOfWIZToBurn
+    )
+        public
+        existingTokenPair(sellToken, buyToken)
+    {
+        // Requirements
+        // TODO
+        require(auctionStarts[sellToken][buyToken] >= now);
+        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+        require(auctionIndex == latestAuctionIndex);
+
+        uint amount = Math.min(amountSubmitted, balances[buyToken][msg.sender]);
+
+        // Fee mechanism
+        uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
+        // Fees are always added to next auction
+        extraBuyTokens[sellToken][buyToken][auctionIndex + 1] += fee;
+        uint amountAfterFee = amount - fee;
+
+        // Overbuy is when a part of a buy order clears an auction
+        // In that case we only process the part before the overbuy
+        // To calculate overbuy, we first get current price
+        uint num;
+        uint den;
+        (num, den) = getPrice(latestAuctionIndex);
+
+        uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
+        uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
+        int overbuy = int(buyVolume + amountAfterFee - sellVolume * num / den);
+
+        if (int(amountAfterFee) > overbuy) {
             // We must process the buy order
-            if (overflow > 0) {
+            if (overbuy > 0) {
                 // We have to adjust the amount
-                amount -= uint256(overflow);
+                amountAfterFee -= uint(overbuy);
             }
 
-            // Perform transfer
-            require(buyToken.transferFrom(msg.sender, this, amount));
-            buyVolumes[auctionIndex] += amount;
-            buyerBalances[auctionIndex][msg.sender] += amount;
-
+            // Update variables
+            balances[buyToken][msg.sender] -= amount;
+            buyerBalances[auctionIndex][msg.sender] += amountAfterFee;
+            buyVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
             NewBuyOrder(auctionIndex, msg.sender, amount);
         }
 
-        // Clear auction
-        if (overflow >= 0) {
-            clearAuction(num, den);
-            scheduleNextAuction();
+        if (overbuy >= 0) {
+            // Clear auction
+            uint finalBuyVolume = buyVolume + amountAfterFee - overbuy;
+            clearAuction(finalBuyVolume, sellVolume);
         }
     }
 
-    function postBuyOrderAndClaim(uint256 amount, uint256 _auctionIndex)
-        public 
+    function claimSellerFunds(
+        address sellToken,
+        address buyToken,
+        address user,
+        uint auctionIndex
+    )
+        public
+        returns (uint returned)
     {
-        postBuyOrder(amount, _auctionIndex);
-        claimBuyerFunds(msg.sender, _auctionIndex);
-    }
-
-    function claimSellerFunds(address user, uint256 _auctionIndex) 
-        public 
-        returns (uint256 returned) 
-    {
-        uint256 sellerBalance = sellerBalances[_auctionIndex][user];
+        // Requirements
+        uint256 sellerBalance = sellerBalances[sellToken][buyToken][user][auctionIndex];
+        require(sellerBalance > 0);
 
         // Checks if particular auction has cleared
-        require(auctionIndex > _auctionIndex);
+        require(auctionIndex > latestAuctionIndices[sellToken][buyToken]);
         
         // Get closing price for said auction
-        fraction memory closingPrice = closingPrices[_auctionIndex];
+        fraction memory closingPrice = closingPrices[sellToken][buyToken][auctionIndex];
         uint256 num = closingPrice.num;
         uint256 den = closingPrice.den;
 
         // Calculate return amount
         returned = sellerBalance * num / den;
+        uint extraTokensTotal = extraBuyTokens[sellToken][buyToken][auctionIndex];
+        uint extraTokens = sellerBalance * extraTokensTotal / sellVolumes[sellToken][buyToken][auctionIndex];
+        returned += extraTokens;
+
+        // Claim tokens
+        sellerBalances[sellToken][buyToken][user][auctionIndex] = 0;
+        balances[buyToken][user] += returned;
+        NewSellerFundsClaim(sellToken, buyToken, user, auctionIndex, returned);
+    }
+
+    function claimBuyerFunds(
+        address sellToken,
+        address buyToken,
+        address user,
+        uint auctionIndex
+    )
+        public
+        returns (uint returned) 
+    {
+        returned = getUnclaimedBuyerFunds(sellToken, buyToken, user, auctionIndex);
         require(returned > 0);
 
-        // Perform transfer
-        sellerBalances[_auctionIndex][user] = 0;
-        require(buyToken.transfer(user, returned));
-        NewSellerFundsClaim(_auctionIndex, user, returned);
-    }
-
-    function claimSellerFundsOfAuctions(address user, uint256[] auctionIndices)
-        public
-        returns (uint256 returned)
-    {
-        for (uint i; i < auctionIndices.length; i++) {
-            if (auctionIndices[i] > 0) {
-                returned += claimSellerFunds(user, auctionIndices[i]);
-            }
-        }
-    }
-
-    function claimAllSellerFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
-        public
-        returns (uint256 returned)
-    {
-        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedSellerFunds(user, auctionIndexStart, auctionIndexEnd);
-        returned = claimSellerFundsOfAuctions(user, auctionIndices);
-    }
-
-    function claimBuyerFunds(address user, uint256 _auctionIndex) 
-        public 
-        returns (uint256 returned) 
-    {
-        returned = getUnclaimedBuyerFunds(user, _auctionIndex);
-        require(returned > 0);
-
-        if (_auctionIndex == auctionIndex) {
-            claimedAmounts[_auctionIndex][user] += returned;
+        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+        if (auctionIndex == latestAuctionIndex) {
+            // Auction is running
+            claimedAmounts[sellToken][buyToken][user][auctionIndex] += returned;
         } else {
-            // If auction has closed, we can reset buyerBalances and claimedAmounts
-            buyerBalances[_auctionIndex][user] = 0;
-            claimedAmounts[_auctionIndex][user] = 0;
+            // Auction has closed
+            // Reset buyerBalances and claimedAmounts
+            buyerBalances[sellToken][buyToken][user][auctionIndex] = 0;
+            claimedAmounts[sellToken][buyToken][user][auctionIndex] = 0;
+
+            // Assign extra tokens (this is possible only after auction has cleared, 
+            // because buyVolume could still increase before that)
+            uint buyerBalance = buyerBalances[sellToken][buyToken][user][auctionIndex];
+            uint extraTokensTotal = extraSellTokens[sellToken][buyToken][auctionIndex];
+            uint extraTokens = buyerBalance * extraTokensTotal / buyVolumes[sellToken][buyToken][auctionIndex];
+            returned += extraTokens;
         }
 
-        // Perform transfer
-        require(sellToken.transfer(user, returned));
-        NewBuyerFundsClaim(_auctionIndex, user, returned);
-    }
-
-    function claimBuyerFundsOfAuctions(address user, uint256[] auctionIndices)
-        public
-        returns (uint256 returned)
-    {
-        for (uint i; i < auctionIndices.length; i++) {
-            if (auctionIndices[i] > 0) {
-                returned += claimBuyerFunds(user, auctionIndices[i]);
-            }
-        }
-    }
-
-    function claimAllBuyerFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
-        public
-        returns (uint256 returned)
-    {
-        uint256[] memory auctionIndices = getIndicesOfAuctionsContainingUnclaimedBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
-        returned = claimBuyerFundsOfAuctions(user, auctionIndices);
-    }
-
-    function claimAllFunds(address user, uint256 auctionIndexStart, uint256 auctionIndexEnd)
-        public
-        returns (uint256 returnedSellerFunds, uint256 returnedBuyerFunds)
-    {
-        returnedSellerFunds = claimAllSellerFunds(user, auctionIndexStart, auctionIndexEnd);
-        returnedBuyerFunds = claimAllBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
+        // Claim tokens
+        balances[sellToken][user] += returned;
+        NewBuyerFundsClaim(sellToken, buyToken, user, auctionIndex, returned);
     }
 
     /// @dev Claim buyer funds for one auction 
-    function getUnclaimedBuyerFunds(address user, uint256 _auctionIndex)
+    function getUnclaimedBuyerFunds(
+        address sellToken,
+        address buyToken,
+        address user,
+        uint auctionIndex
+    )
         public
         constant
-        returns (uint256 unclaimedFunds)
+        returns (uint unclaimedBuyerFunds)
     {
         // Checks if particular auction has ever run
-        require(auctionIndex >= _auctionIndex);
+        require(auctionIndex <= latestAuctionIndices[sellToken][buyToken]);
 
-        uint256 buyerBalance = buyerBalances[_auctionIndex][user];
+        uint buyerBalance = buyerBalances[sellToken][buyToken][user][auctionIndex];
 
-        uint256 num;
-        uint256 den;
-        (num, den) = getPrice(_auctionIndex);
+        if (buyerBalance == 0) {
+            unclaimedBuyerFunds = 0;
+        } else {
+            uint num;
+            uint den;
+            (num, den) = getPrice(sellToken, buyToken, auctionIndex);
 
-        unclaimedFunds = buyerBalance * den / num - claimedAmounts[_auctionIndex][user];
-    }
-
-    function getIndicesOfAuctionsContainingUnclaimedSellerFunds(
-        address user,
-        uint256 auctionIndexStart,
-        uint256 auctionIndexEnd
-    )
-        public
-        constant
-        returns (uint256[] arrayOfAuctionIndices)
-    {
-        arrayOfAuctionIndices = new uint256[](auctionIndexEnd - auctionIndexStart);
-        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
-            if (sellerBalances[i][user] > 0) {
-                // e.g. if auctionIndexStart is 50 and auctionIndexEnd is 100 
-                // and there are funds in auctions 100 and 96, this will output A[0] = 100, A[4] = 96.
-                // (it's done this way because memory arrays cannot have dynamic length)
-                arrayOfAuctionIndices[auctionIndexEnd - i] = i;
+            if (num <= 0) {
+                // Actually this should never happen - as long as there is >= 1 buy order,
+                // auction will clear before price = 0. So this is just fail-safe
+                unclaimedBuyerFunds = 0;
+            } else {
+                unclaimedBuyerFunds = buyerBalance * den / num - claimedAmounts[sellToken][buyToken][user][auctionIndex];
             }
         }
     }
 
-
-    function getIndicesOfAuctionsContainingUnclaimedBuyerFunds(
-        address user,
-        uint256 auctionIndexStart,
-        uint256 auctionIndexEnd
+    function getPrice(
+        address sellToken,
+        address buyToken,
+        uint auctionIndex
     )
         public
         constant
-        returns (uint256[] arrayOfAuctionIndices)
+        returns (uint num, uint den)
     {
-        arrayOfAuctionIndices = new uint256[](auctionIndexEnd - auctionIndexStart);
-        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
-            // since we reset buyerBalances when a user claims from a closed auction,
-            // this also takes care of the case when a user has partially claimed
-            // from current auction
-            if (buyerBalances[i][user] > 0) {
-                arrayOfAuctionIndices[auctionIndexEnd - i] = i;
-            }
-        }
-    }
+        // Check if auction has been initialised
+        require(auctionIndex <= latestAuctionIndices[sellToken][buyToken]);
 
-    function getAllUnclaimedSellerFunds(
-        address user,
-        uint256 auctionIndexStart,
-        uint256 auctionIndexEnd
-    )
-        public
-        constant
-        returns (uint256 unclaimedSellerFunds)
-    {
-        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
-            uint256 balance = sellerBalances[i][user];
-            if (balance > 0) {
-                // Fetch price
-                uint256 num;
-                uint256 den;
-                (num, den) = getPrice(i);
-
-                // Add converted amount
-                unclaimedSellerFunds += balance * num / den;
-            }
-        }
-    }
-
-    function getAllUnclaimedBuyerFunds(
-        address user,
-        uint256 auctionIndexStart,
-        uint256 auctionIndexEnd
-    )
-        public
-        constant
-        returns (uint256 unclaimedBuyerFunds)
-    {
-        for (uint i = auctionIndexStart + 1; i <= auctionIndexEnd; i++) {
-            uint256 balance = buyerBalances[i][user];
-
-            if (balance > 0) {
-                // if we're talking about the current auction, we have to subtract claimedAmount
-                if (i == auctionIndex) {
-                    unclaimedBuyerFunds -= claimedAmounts[i][user];
-                }
-
-                // Fetch price
-                uint256 num;
-                uint256 den;
-                (num, den) = getPrice(i);
-
-                // Add converted amount
-                unclaimedBuyerFunds += balance * den / num;
-            }
-        }
-    }
-
-    function getAllUnclaimedFunds(
-        address user,
-        uint256 auctionIndexStart,
-        uint256 auctionIndexEnd
-    )
-        public
-        constant
-        returns (uint256 unclaimedSellerFunds, uint256 unclaimedBuyerFunds)
-    {
-        unclaimedSellerFunds = getAllUnclaimedSellerFunds(user, auctionIndexStart, auctionIndexEnd);
-        unclaimedBuyerFunds = getAllUnclaimedBuyerFunds(user, auctionIndexStart, auctionIndexEnd);
-    }
-
-    function getPrice(uint256 _auctionIndex)
-        public
-        constant
-        returns (uint256 num, uint256 den) 
-    {
-        // Checks if particular auction has been initialised
-        require(auctionIndex >= _auctionIndex);
-
-        if (auctionIndex > _auctionIndex) {
+        if (auctionIndex < latestAuctionIndices[sellToken][buyToken]) {
             // Auction has closed
-            fraction memory closingPrice = closingPrices[_auctionIndex];
+            fraction memory closingPrice = closingPrices[sellToken][buyToken][auctionIndex];
             num = closingPrice.num;
             den = closingPrice.den;
         } else {
-            // We need to check whether auction has begun:
-            require(auctionStart <= now);
-
             // Next we calculate current price by first getting the last closing price
-            fraction memory lastClosingPrice = closingPrices[_auctionIndex - 1];
-            uint256 numOfLastClosingPrice = lastClosingPrice.num;
-            uint256 denOfLastClosingPrice = lastClosingPrice.den;
+            fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
+            uint numOfLastClosingPrice = lastClosingPrice.num;
+            uint denOfLastClosingPrice = lastClosingPrice.den;
 
-            // The numbers 36k and 18k are chosen such that the initial price is double the last closing price,
-            // And after 5 hours (18000 s), the price is the same as last closing price
-            num = 36000 * numOfLastClosingPrice;
-            den = (now - auctionStart + 18000) * denOfLastClosingPrice;
-        }  
-    }
+            // If the previous closing price was 0, for calculations we assume it was
+            // 10% of the closing price of the last auction that closed above 0 
+            if (numOfLastClosingPrice <= 0) {
+                fraction memory previousClosingPrice;
+                uint i = 1;
 
-    function clearAuction(uint256 currentPriceNum, uint256 currentPriceDen)
-        internal
-        returns (bool success) 
-    {
-        if (sellVolumeNext == 0) {
-            // No sell orders were submitted
-            closingPrices[auctionIndex].num = closingPrices[auctionIndex - 1].num;
-            closingPrices[auctionIndex].den = closingPrices[auctionIndex - 1].den;
-        } else {
-            // We need to make the numbers smaller to prevent overflow
-            if (currentPriceNum > 10**18 || currentPriceDen > 10**18) {
-                currentPriceNum = currentPriceNum / 10**9;
-                currentPriceDen = currentPriceDen / 10**9;
+                while (numOfLastClosingPrice <= 0) {
+                    i++;
+                    previousClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - i];
+                    numOfLastClosingPrice = previousClosingPrice.num;
+                }
+
+                denOfLastClosingPrice = previousClosingPrice.den * 10;
             }
-            
-            // Update state variables
-            closingPrices[auctionIndex].num = currentPriceNum;
-            closingPrices[auctionIndex].den = currentPriceDen;
-            sellVolumeNext = 0;
+
+            uint timeElapsed = now - auctionStarts[sellToken][buyToken];
+
+            // The numbers below are chosen such that
+            // P(0 hrs) = 2 * lastClosingPrice, P(6 hrs) = lastClosingPrice, P(24 hrs) = 0
+            num = (86400 - timeElapsed) * numOfLastClosingPrice;
+            den = (timeElapsed + 43200) * denOfLastClosingPrice;
+
+            num = Math.max(num, 0);
         }
-
-        sellVolumeCurrent = sellVolumeNext;
-        auctionIndex++;
-
-        AuctionCleared(auctionIndex - 1);
-        success = true;
     }
 
-    function scheduleNextAuction()
+    function clearAuction(
+        address sellToken,
+        address buyToken,
+        uint currentPriceNum,
+        uint currentPriceDen
+    )
         internal
     {
-        // Number of elapsed 6-hour periods since 1/1/1970
-        uint256 elapsedPeriods = now / 1 hours / 6;
-        // Set start period to following one
-        auctionStart = (elapsedPeriods + 1) * 6 * 1 hours;
+        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+
+        if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0) {
+            // No sell orders were submitted
+            // First sell order will notice this and schedule next auction in 6 hrs
+            auctionStarts[sellToken][buyToken] = 0;
+        } else {
+            auctionStarts[sellToken][buyToken] = now;
+        }
+        
+        // Update extra tokens 
+        extraBuyTokensNext[sellToken][buyToken] = 0;
+        extraSellTokens[sellToken][buyToken] = 0;
+
+        // Update other state variables
+        closingPrices[sellToken][buyToken][latestAuctionIndex].num = currentPriceNum;
+        closingPrices[sellToken][buyToken][latestAuctionIndex].den = currentPriceDen;
+        latestAuctionIndices[sellToken][buyToken] = latestAuctionIndex + 1;
+        AuctionCleared(sellToken, buyToken, latestAuctionIndex - 1);
     }
 
-    // --- For Testing only! ---
+    function calculateFee(
+        address sellToken,
+        address buyToken,
+        address user,
+        uint amount,
+        uint amountOfWIZBurnedSubmitted
+    )
+        internal
+        constant
+        returns (uint fee)
+    {
+        // Calculate fee based on proportion of all TUL tokens owned
+        uint supplyOfTUL = TUL.getTotalSupply();
+        uint balanceOfTUL = TUL.balanceOf(user);
 
-    // uint256 public now = 1508473469;
-    // function increaseTimeBy(uint256 byHours, uint256 bySeconds) public {
-    //     now += byHours * 1 hours;
-    //     now += bySeconds;
-    // }
+        // The fee function is chosen such that
+        // F(0) = 0.5%, F(1%) = 0.25%, F(>=10%) = 0
+        // (Takes in my ratio of all TUL tokens, outputs fee ratio)
+        // We then multiply by amount to get fee:
+        uint fee = (supplyOfTUL - 10 * balanceOfTUL) * amount / (16000 * balanceOfTUL + 200 * supplyOfTUL);
+        fee = Math.max(fee, 0);
 
-    // function setTime(uint256 newTime) public {
-    //     now = newTime;
-    // }
+        if (fee > 0) {
+            // Allow user to reduce up to half of the fee with WIZ
+
+            // Convert fee to ETH, then USD
+            feeInETH = priceOracles[buyToken].convert(fee);
+            feeInUSD = ETHUSDOracle.convert(feeInETH);
+            uint amountOfWIZBurned = Math.max(amountOfWIZBurnedSubmitted, feeInUSD / 2);
+            // ERC-20
+            WIZ.spend(user, amountOfWIZBurned);
+
+            // Adjust fee
+            fee = amountOfWIZBurned * fee / feeInUSD;
+        }
+    }
 }

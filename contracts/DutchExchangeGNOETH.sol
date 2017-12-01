@@ -1,7 +1,6 @@
-pragma solidity 0.4.15;
+pragma solidity ^0.4.18;
 
 import "./DutchExchange.sol";
-import "./Token.sol";
 
 /// @title GNO - ETH Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik.teiml@gnosis.pm>
