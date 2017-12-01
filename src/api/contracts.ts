@@ -9,13 +9,22 @@ const contractNames = [
   'TokenGNO',
 ]
 
+type ContractName = 'DutchExchange' |
+  'DutchExchangeETHGNO' |
+  'DutchExchangeGNOETH' |
+  'Token' |
+  'TokenETH' |
+  'TokenGNO'
+
+type ContractsMap = {[P in ContractName]: object}
+
 const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
   acc[name] = Contracts[i]
   return acc
-}, {})
+}, {}) as ContractsMap
 
 export const setProvider = (provider: any) => Contracts.forEach((contract) => {
   contract.setProvider(provider)
@@ -33,5 +42,5 @@ async function init() {
   return contractNames.reduce((acc, name, i) => {
     acc[name] = instances[i]
     return acc
-  }, {})
+  }, {}) as ContractsMap
 }
