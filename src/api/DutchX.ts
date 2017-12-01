@@ -98,19 +98,19 @@ async function init(): Promise<DutchExchange> {
   const postSellOrder = async (pair: TokenPair, amount: Balance, account?: Account) => {
     if (account === undefined) account = await getCurrentAccount()
 
-    return getExchange(pair).postSellOrder(amount, { from: account })
+    return getExchange(pair).postSellOrder(amount, { from: account, gas: 4712388 })
   }
 
   const postBuyOrder = async (pair: TokenPair, amount: Balance, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    return getExchange(pair).postBuyOrder(amount, index, { from: account })
+    return getExchange(pair).postBuyOrder(amount, index, { from: account, gas: 4712388 })
   }
 
   const postBuyOrderAndClaim = async (pair: TokenPair, amount: Balance, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    return getExchange(pair).postBuyorderAndClaim(amount, index, { from: account })
+    return getExchange(pair).postBuyorderAndClaim(amount, index, { from: account, gas: 4712388 })
   }
 
   const claimSellerFunds = async (pair: TokenPair, index?: number, account?: Account) => {
