@@ -2,12 +2,23 @@ import expect from 'expect'
 import { delay, metamaskWarning } from '../utils'
 import web3Utils from '../../../trufflescripts/utils'
 
-import { initDutchXConnection } from 'api/dutchx'
-import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
-import TC from 'truffle-contract'
+import {
+  // getCurrentAccount,
+  getAllAccounts,
+  // getCurrentBalance,
+  // getETHBalance,
+  // getTokenBalances,
+  // postSellOrder,
+  // closingPrice,
+} from 'api/'
+
+import { contractsMap, promisedContractsMap } from 'api/contracts'
+
+// import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
+// import TC from 'truffle-contract'
 import Web3 from 'web3'
 // Truffle-Contract: DutchExchange 
-const DX: any = TC(DXart)
+// const DX: any = TC(DXart)
 
 // Check curr Provider - useful when switching between local and Metamask Providers
 const currentProvider = typeof window !== 'undefined' && window.web3 && window.web3.currentProvider
@@ -17,15 +28,13 @@ const localProvider = new Web3.providers.HttpProvider('http://localhost:8545')
 // Metamask returns only current account from web3.eth.accounts
 // so we get all accounts from local testrpc instance
 const web3 = new Web3(localProvider)
-
-// Set ONLY DutchExchangeETHGNO to the localProvider
-DX.setProvider(localProvider)
-
 const { getTime, increaseTimeBy, setTime } = web3Utils(web3)
+
 
 describe('ETH 2 GNO contract via DutchX Class', () => {
   // TODO: proper types
-  let dxClass: any
+  // let dxClass: any
+  let DX: any
   let ETH: any; let GNO: any; let TUL: any
   let dxa: string
   let dx: any; let eth: any; let gno: any; let tul: any
@@ -40,23 +49,22 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   before(async () => {
-    dxClass = await initDutchXConnection({ ethereum: 'http://localhost:8545' })
+    ({ DutchExchangeETHGNO: DX, Token: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
+    ({ DutchExchangeETHGNO: dx, Token: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
 
-    dx = await DX.deployed()
     dxa = DX.address
 
-    // Truffle-loaded Contracts
-    ETH = dxClass.contracts.TokenETH
-    GNO = dxClass.contracts.TokenGNO
-    TUL = dxClass.contracts.Token
+    // if currentProvider was injected by browser
+    if (currentProvider) {
+      // can't expect getAllAccounts() to return anything but the current account
+      // so we get all accounts from local testrpc
+      accounts = [...web3.eth.accounts]
 
-    // Deployed Class instance Contracts
-    eth = dxClass.TokenETH
-    gno = dxClass.TokenGNO
-    tul = dxClass.Token
-
-    // Set master Account from masterDX and accounts from dxClass
-    accounts = [...web3.eth.accounts]
+      // explicitly set ONLY DutchExchangeETHGNO to the localProvider
+      DX.setProvider(localProvider)
+    } else {
+      accounts = await getAllAccounts()
+    }
 
     master = accounts[0]
     seller = accounts[1]
