@@ -7,8 +7,9 @@ import {
   getAllAccounts,
   // getCurrentBalance,
   // getETHBalance,
+  // getTokenBalance,
   // getTokenBalances,
-  // postSellOrder,
+  postSellOrder,
   // closingPrice,
 } from 'api/'
 
@@ -170,7 +171,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('seller can submit order to an auction', async () => {
-    const amount = 30
+    const amount = '30'
 
     // allow the contract to move tokens
     await eth.approve(dxa, amount, { from: seller })
@@ -181,23 +182,23 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     // seller submits order and returns transaction object
     // that includes logs of events that fired during function execution
-    const { logs: [log] } = await dx.postSellOrder(amount, { from: seller, gas: 4712388 })
+    const { logs: [log] } = await postSellOrder(seller, amount, 'ETH', 'GNO')
     const { _auctionIndex, _from, amount: submittedAmount } = log.args
 
     // submitter is indeed the seller
     expect(_from).toBe(seller)
     // amount is the same
-    expect(submittedAmount.toNumber()).toBe(amount)
+    expect(submittedAmount.toString()).toBe(amount)
 
     // currently in auction
     const filledAuctionVol = await dx.sellVolumeCurrent()
 
     // auction received the exact sum from the seller
-    expect(filledAuctionVol.add(emptyAuctionVol).toNumber()).toEqual(amount)
+    expect(filledAuctionVol.add(emptyAuctionVol).toString()).toEqual(amount)
 
     // seller is now assigned a balance
     const sellerBalance = await dx.sellerBalances(_auctionIndex, seller)
-    expect(sellerBalance.toNumber()).toEqual(amount)
+    expect(sellerBalance.toString()).toEqual(amount)
   })
 
   it('auction is started', async () => {
