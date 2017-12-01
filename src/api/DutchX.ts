@@ -76,7 +76,7 @@ async function init(): Promise<DutchExchange> {
 
     const balance = await getExchange(pair).sellerBalances(index, account)
 
-    return await balance.toString()
+    return balance.toString()
   }
 
   const getBuyerBalances = async (pair: TokenPair, index?: number, account?: Account) => {
