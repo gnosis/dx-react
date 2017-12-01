@@ -2,7 +2,6 @@ import TruffleContract from 'truffle-contract'
 
 const contractNames = [
   'DutchExchange',
-  'DutchExchangeFactory',
   'DutchExchangeETHGNO',
   'DutchExchangeGNOETH',
   'Token',
