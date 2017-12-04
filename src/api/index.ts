@@ -68,6 +68,7 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
  * @param sellToken 
  * @param buyToken 
  * @param aDiff - Number to offset auctionIndex by - if left blank defaults to lastAuction (-1)
+ * @returns [BigNumber(num), BigNumber(den)]
  */
 // TODO: pass in the whole TokenPair from the action
 export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: number = -1) => {
@@ -76,9 +77,9 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
 
   const currentAuctionIdx = await DutchX.getAuctionIndex(pair)
 
-  const auctionIdx = currentAuctionIdx - aDiff
+  const auctionIdx = currentAuctionIdx.add(aDiff)
   // Guard against negative index
-  if (auctionIdx < 0 || auctionIdx === currentAuctionIdx) {
+  if (auctionIdx.lessThan(0) || auctionIdx.eq(currentAuctionIdx)) {
     return Promise.reject(`Invalid auction index ${auctionIdx}. Auction index must be >= 0 and < ${currentAuctionIdx}`)
   }
 

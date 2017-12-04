@@ -29,70 +29,46 @@ async function init(): Promise<DutchExchange> {
 
   const getAddress = (pair: TokenPair) => getExchange(pair).address
 
-  const getAuctionIndex = async (pair: TokenPair) => {
-    const index = await getExchange(pair).auctionIndex()
-
-    return index.toNumber()
-  }
+  const getAuctionIndex = async (pair: TokenPair) => getExchange(pair).auctionIndex()
 
   const getClosingPrice = async (pair: TokenPair, index?: number) => {
     if (index === undefined) index = await getAuctionIndex(pair) - 1
 
-    const [num, den] = getExchange(pair).closingPrices(index)
-
-    return num.div(den).toString()
+    return getExchange(pair).closingPrices(index)
   }
 
   const getPrice = async (pair: TokenPair, index?: number) => {
     if (index === undefined) index = await getAuctionIndex(pair)
 
-    const [num, den] = getExchange(pair).getPrice(index)
-
-    return num.div(den).toString()
+    return getExchange(pair).getPrice(index)
   }
 
-  const getSellVolumeCurrent = async (pair: TokenPair) => {
-    const vol = await getExchange(pair).sellVolumeCurrent()
+  const getSellVolumeCurrent = async (pair: TokenPair) => getExchange(pair).sellVolumeCurrent()
 
-    return vol.toString()
-  }
-
-  const getSellVolumeNext = async (pair: TokenPair) => {
-    const vol = await getExchange(pair).sellVolumeNext()
-
-    return vol.toString()
-  }
+  const getSellVolumeNext = (pair: TokenPair) => getExchange(pair).sellVolumeNext()
 
   const getBuyVolume = async (pair: TokenPair, index?: number) => {
     if (index === undefined) index = await getAuctionIndex(pair)
 
-    const vol = await getExchange(pair).buyVolumes(index)
-
-    return vol.toString()
+    return getExchange(pair).buyVolumes(index)
   }
 
   const getSellerBalances = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    const balance = await getExchange(pair).sellerBalances(index, account)
-
-    return balance.toString()
+    return getExchange(pair).sellerBalances(index, account)
   }
 
   const getBuyerBalances = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    const balance = await getExchange(pair).buyerBalances(index, account)
-
-    return balance.toString()
+    return getExchange(pair).buyerBalances(index, account)
   }
 
   const getClaimedAmounts = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    const balance = await getExchange(pair).buyerBalances(index, account)
-
-    return balance.toString()
+    return getExchange(pair).buyerBalances(index, account)
   }
 
   const postSellOrder = async (pair: TokenPair, amount: Balance, account?: Account) => {

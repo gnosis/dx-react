@@ -1,7 +1,10 @@
-import { Account, Balance, TokenCode, TokenPair as TP } from 'types'
+import { Account, Balance as B, TokenCode, TokenPair as TP } from 'types'
+import { BigNumber } from 'bignumber.js'
 
 // TokenPair without sellAmout
 type TokenPair = Pick<TP, 'sell' | 'buy'>
+type Balance = B | BigNumber
+type Index = number | BigNumber
 
 
 export interface ProviderInterface {
@@ -27,12 +30,12 @@ export interface TransactionObject {
 }
 
 export interface TokensInterface {
-  getTokenBalance(code: TokenCode, account: Account): Promise<Balance>,
-  getTotalSupply(code: TokenCode): Promise<Balance>,
+  getTokenBalance(code: TokenCode, account: Account): Promise<BigNumber>,
+  getTotalSupply(code: TokenCode): Promise<BigNumber>,
   transfer(code: TokenCode, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  allowance(code: TokenCode, owner: Account, spender: Account): Promise<Balance>,
+  allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
 }
 
 interface ErrorFirstCallback {
@@ -54,12 +57,12 @@ interface EventInstance {
 }
 
 export interface ERC20Interface {
-  getTotalSupply(): Promise<Balance>,
-  balanceOf(account?: Account): Promise<Balance>,
+  getTotalSupply(): Promise<BigNumber>,
+  balanceOf(account?: Account): Promise<BigNumber>,
   transfer(to: Account, value: Balance, sender: Account): Promise<Receipt>,
   transferFrom(sender: Account, to: Account, value: Balance): Promise<Receipt>,
   approve(spender: Account, value: Balance, sender: Account): Promise<Receipt>,
-  allowance(owner: Account, spender: Account): Promise<Balance>,
+  allowance(owner: Account, spender: Account): Promise<BigNumber>,
   Transfer(filter: object | null, extraFilter: object | null, cb?: ErrorFirstCallback): void,
   Transfer(filter: object | null, extraFilter: object | null): EventInstance,
   Approval: ContractEvent | ImmediateContractEvent,
@@ -104,32 +107,32 @@ export interface DutchExchange {
 
   getAddress(pair: TokenPair): Account,
 
-  getAuctionIndex(pair: TokenPair): Promise<number>,
-  getClosingPrice(pair: TokenPair, index?: number): Promise<Balance>,
-  getPrice(pair: TokenPair, index?: number): Promise<Balance>,
-  getSellVolumeCurrent(pair: TokenPair): Promise<Balance>,
-  getSellVolumeNext(pair: TokenPair): Promise<Balance>,
-  getBuyVolume(pair: TokenPair, index?: number): Promise<Balance>,
-  getSellerBalances(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
-  getBuyerBalances(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
-  getClaimedAmounts(pair: TokenPair, index?: number, account?: Account): Promise<Balance>,
+  getAuctionIndex(pair: TokenPair): Promise<BigNumber>,
+  getClosingPrice(pair: TokenPair, index?: Index): Promise<[BigNumber, BigNumber]>,
+  getPrice(pair: TokenPair, index?: Index): Promise<BigNumber>,
+  getSellVolumeCurrent(pair: TokenPair): Promise<BigNumber>,
+  getSellVolumeNext(pair: TokenPair): Promise<BigNumber>,
+  getBuyVolume(pair: TokenPair, index?: Index): Promise<BigNumber>,
+  getSellerBalances(pair: TokenPair, index?: Index, account?: Account): Promise<BigNumber>,
+  getBuyerBalances(pair: TokenPair, index?: Index, account?: Account): Promise<BigNumber>,
+  getClaimedAmounts(pair: TokenPair, index?: Index, account?: Account): Promise<BigNumber>,
   postSellOrder(pair: TokenPair, amount: Balance, account?: Account): Promise<Receipt>,
-  postBuyOrder(pair: TokenPair, amount: Balance, index?: number, account?: Account): Promise<Receipt>,
-  postBuyOrderAndClaim(pair: TokenPair, amount: Balance, index?: number, account?: Account): Promise<Receipt>,
-  claimSellerFunds(pair: TokenPair, index?: number, account?: Account): Promise<Receipt>,
-  claimBuyerFunds(pair: TokenPair, index?: number, account?: Account): Promise<Receipt>,
-  // getUnclaimedBuyerFunds(pair: TokenPair, index?: number, account?: Account): Receipt,
-  // getUnclaimedSellerFunds(pair: TokenPair, index?: number, account?: Account): Receipt,
-  // claimSellerFundsOfAuctions(pair: TokenPair, indices: number[], account?: Account): Receipt,
-  // claimBuyerFundsOfAuctions(pair: TokenPair, indices: number[], account?: Account): Receipt,
-  // claimAllSellerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // claimAllBuyerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedSellerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedBuyerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getIndicesOfAuctionsContainingUnclaimedBuyerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getIndicesOfAuctionsContainingUnclaimedSellerFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // claimAllFunds(pair: TokenPair, indexStart: number, indexEnd: number, account?: Account): Receipt,
+  postBuyOrder(pair: TokenPair, amount: Balance, index?: Index, account?: Account): Promise<Receipt>,
+  postBuyOrderAndClaim(pair: TokenPair, amount: Balance, index?: Index, account?: Account): Promise<Receipt>,
+  claimSellerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
+  claimBuyerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
+  // getUnclaimedBuyerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
+  // getUnclaimedSellerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
+  // claimSellerFundsOfAuctions(pair: TokenPair, indices: Index[], account?: Account): Promise<Receipt>,
+  // claimBuyerFundsOfAuctions(pair: TokenPair, indices: Index[], account?: Account): Promise<Receipt>,
+  // claimAllSellerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // claimAllBuyerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // getAllUnclaimedSellerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // getAllUnclaimedBuyerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // getAllUnclaimedFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // getIndicesOfAuctionsContainingUnclaimedBuyerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // getIndicesOfAuctionsContainingUnclaimedSellerFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
+  // claimAllFunds(pair: TokenPair, indexStart: Index, indexEnd: Index, account?: Account): Promise<Receipt>,
 
 }
 
