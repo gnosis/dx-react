@@ -43,6 +43,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let dx: any; let eth: any; let gno: any; let tul: any
 
   let getTotalSupply: TokensInterface['getTotalSupply']
+  let approve: TokensInterface['approve']
+  let transfer: TokensInterface['transfer']
+  let transferFrom: TokensInterface['transferFrom']
 
   let accounts: any; let accs: any
 
@@ -59,7 +62,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     dxa = DX.address;
 
-    ({ getTotalSupply } = await promisedTokens)
+    ({ getTotalSupply, approve, transfer, transferFrom } = await promisedTokens)
 
     // if currentProvider was injected by browser
     if (currentProvider) {
@@ -93,23 +96,21 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     // seller must have initial balance of ETH
     // allow a transfer
-    await eth.approve(seller, 100, { from: master })
+    await approve('ETH', seller, 100, { from: master })
     console.log('master approved seller to withdraw 100 ETH')
 
     // transfer initial balance of 100 ETH
-    await eth.transferFrom(master, seller, 100, { from: seller })
-    // same as
-    // await eth.transfer(seller, 100, { from: master })
+    await transferFrom('ETH', master, seller, 100, { from: seller })
     console.log('seller', seller, 'received 100 ETH')
 
 
     // buyer must have initial balance of GNO
     // allow a transfer
-    await gno.approve(buyer, 1000, { from: master })
+    await approve('GNO', buyer, 1000, { from: master })
     console.log('master approved buyer to withdraw 1000 GNO')
 
     // transfer initial balance of 1000 GNO
-    await gno.transferFrom(master, buyer, 1000, { from: buyer })
+    await transferFrom('GNO', master, buyer, 1000, { from: buyer })
     console.log('buyer', buyer, 'received 1000 GNO')
 
     // ONLY set Tokens to Metamask for approving txs
@@ -247,7 +248,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     expect(buyVolume).toBe(0)
 
     // allow DX to withdraw GNO from buyer's account
-    await gno.approve(dxa, amount, { from: buyer })
+    await approve('GNO', dxa, amount, { from: buyer })
 
     // submit a buy order for the current auction
     await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
@@ -338,7 +339,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     setTime(timeWhenAuctionClears)
     const buyerBalance = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()
     const amount = 1
-    await gno.approve(dxa, amount, { from: buyer })
+    await approve('GNO', dxa, amount, { from: buyer })
     await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
     const buyVolumeAfter = (await dx.buyVolumes(auctionIndex)).toNumber()
     const buyerBalanceAfter = (await dx.buyerBalances(auctionIndex, buyer)).toNumber()

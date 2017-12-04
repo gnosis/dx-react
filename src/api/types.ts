@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js'
 
 // TokenPair without sellAmout
 type TokenPair = Pick<TP, 'sell' | 'buy'>
-type Balance = B | BigNumber
+type Balance = B | BigNumber | number
 type Index = number | BigNumber
 
 
