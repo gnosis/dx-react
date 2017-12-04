@@ -526,7 +526,7 @@ contract DutchExchange {
         // Update other state variables
         // not yet correct....
         closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
-        closingPrices[sellToken][buyToken][auctionIndex].den =(sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
+        closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
         latestAuctionIndices[sellToken][buyToken] = auctionIndex + 1;
 
         AuctionCleared(sellToken, buyToken, auctionIndex - 1);
