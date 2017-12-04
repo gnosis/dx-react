@@ -254,6 +254,7 @@ contract DutchExchange {
     function postBuyOrder(
         address sellToken,
         address buyToken,
+        uint auctionIndex,
         uint amountSubmitted,
         uint amountOfWIZToBurn
     )
@@ -263,6 +264,9 @@ contract DutchExchange {
         // Requirements
         // TODO
         require(auctionStarts[sellToken][buyToken] >= now);
+
+        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+        require(auctionIndex == latestAuctionIndex);
 
         uint auctionIndex = latestAuctionIndices[sellToken][buyToken];
         checkReziproityMarket(auctionIndex,sellToken,buyToken);
