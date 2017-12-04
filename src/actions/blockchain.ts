@@ -2,24 +2,27 @@
 import {
   getCurrentBalance,
   getCurrentAccount,
-  initDutchXConnection,
+  // initDutchXConnection,
   getTokenBalances,
   // tokenPairSelect,
   postSellOrder,
   closingPrice,
-} from 'api/dutchx'
+} from 'api'
 
 import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
 import { setSellTokenAmount } from 'actions/tokenPair'
 
-import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
+import {
+  timeoutCondition,
+  // getDutchXOptions,
+} from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
 import { findDefaultProvider } from 'selectors/blockchain'
 
-import { TokenBalances } from 'types'
+import { TokenBalances, Account, Balance, TokenCode } from 'types'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -39,7 +42,7 @@ export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CO
 export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
-export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: number }>('SET_CURRENT_BALANCE')
+export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: Balance }>('SET_CURRENT_BALANCE')
 export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
@@ -59,13 +62,13 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     const state = getState()
 
     // determine new provider
-    const newProvider = findDefaultProvider(state)
+    const newProvider: any = findDefaultProvider(state)
     if (newProvider) {
       await dispatch(setActiveProvider(newProvider.name))
 
       // init DutchX connection
-      const opts = getDutchXOptions(newProvider)
-      await initDutchXConnection(opts)
+      // const opts = getDutchXOptions(newProvider)
+      // await initDutchXConnection(opts)
       dispatch(setDutchXInitialized({ initialized: true }))
       // await requestEtherTokens()
     }
@@ -76,16 +79,19 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
 
   // connect
   try {
-    let account: any
-    let currentBalance: any
-    let tokenBalance: any
+    let account: Account
+    let currentBalance: Balance
+    let tokenBalances: { name: TokenCode, balance: Balance }[]
 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
         account = await getCurrentAccount()
-        currentBalance = await getCurrentBalance(account)
-        tokenBalance = await getTokenBalances(account)
+        currentBalance = (await getCurrentBalance(account)).toString()
+        // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
+        tokenBalances = (await getTokenBalances(undefined, account))
+          .map(({ name, balance }) => ({ name, balance: balance.toString() }))
+        console.log(tokenBalances)
         await dispatch(getClosingPrice())
       } catch (e) {
         console.log(e)
@@ -98,7 +104,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     await dispatch(setCurrentBalance({ currentBalance }))
 
     // Grab each TokenBalance and dispatch
-    tokenBalance.forEach(async (token: any) =>
+    tokenBalances.forEach(async token =>
       await dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
 
     return dispatch(setConnectionStatus({ connected: true }))
@@ -132,12 +138,12 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
 
     console.log('Submit order receipt', receipt)
 
-    // TODO: function to get specific Token's balance, also actions for such functions
-    const tokenBalances = await getTokenBalances(currentAccount)
+    // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
+    const tokenBalances = await getTokenBalances(undefined, currentAccount)
     const { name, balance } = tokenBalances.find(({ name }) => name === sell)
 
     // new balance for the token just sold
-    dispatch(setTokenBalance({ tokenName: name, balance }))
+    dispatch(setTokenBalance({ tokenName: name, balance: balance.toString() }))
 
     // proceed to /auction/0x03494929349594
     dispatch(push(proceedTo))

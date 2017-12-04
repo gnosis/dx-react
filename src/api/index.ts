@@ -4,6 +4,7 @@ import { promisedDutchX } from './DutchX'
 
 import { TokenCode, Account, Balance } from 'types'
 import { dxAPI } from './types'
+import { BigNumber } from 'bignumber.js'
 
 const promisedAPI = initAPI()
 
@@ -53,12 +54,12 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
 
   if (!account) account = await web3.getCurrentAccount()
 
-  const balances = Promise.all(tokenList.map(code => Tokens.getTokenBalance(code, account)))
+  const balances = await Promise.all(tokenList.map(code => Tokens.getTokenBalance(code, account)))
 
   // [{name: 'ETH': balance: Balance}, {...}]
   return tokenList.map((code, i) => ({
     name: code,
-    balance: balances[i],
+    balance: balances[i] as BigNumber,
   }))
 }
 
