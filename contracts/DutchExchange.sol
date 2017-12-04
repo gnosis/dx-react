@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 import "./Math.sol";
-// import "./Token.sol";
+import "./Tokens/Token.sol";
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik@gnosis.pm>
@@ -174,30 +174,30 @@ contract DutchExchange {
     }
 
     function deposit(
-        address token,
+        address tokenAddress,
         uint amount
     )
         public
-        existingToken(token)
+        existingToken(tokenAddress)
     {
-        require(token.transferFrom(msg.sender, this, amount));
-        balances[token][msg.sender] += amount;
-        NewDeposit(token, amount);
+        require(Token(tokenAddress).transferFrom(msg.sender, this, amount));
+        balances[tokenAddress][msg.sender] += amount;
+        NewDeposit(tokenAddress, amount);
     }
 
     function withdraw(
-        address token,
+        address tokenAddress,
         uint amount
     )
         public
-        existingToken(token)
+        existingToken(tokenAddress)
     {
-        amount = Math.min(amount, balances[token][msg.sender]);
+        amount = Math.min(amount, balances[tokenAddress][msg.sender]);
         require(amount > 0);
 
-        balances[token][msg.sender] -= amount;
-        require(token.transfer(msg.sender, amount));
-        NewWithdrawal(token, amount);
+        balances[tokenAddress][msg.sender] -= amount;
+        require(Token(tokenAddress).transfer(msg.sender, amount));
+        NewWithdrawal(tokenAddress, amount);
     }
 
     function postSellOrder(
@@ -247,7 +247,7 @@ contract DutchExchange {
         balances[sellToken][msg.sender] -= amount;
         sellerBalances[auctionIndex][msg.sender] += amountAfterFee;
         sellVolumes[auctionIndex] += amountAfterFee;
-        waitOrScheduleNextAuction(sellToken,buyToken);
+        waitOrScheduleNextAuction(sellToken,buyToken,latestAuctionIndex);
         NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
     }
 
@@ -535,11 +535,11 @@ contract DutchExchange {
         latestAuctionIndices[sellToken][buyToken] = latestAuctionIndex + 1;
 
         AuctionCleared(sellToken, buyToken, latestAuctionIndex - 1);
-
+        waitOrScheduleNextAuction(sellToken, buyToken,latestAuctionIndex);
     }
 
-    function waitOrScheduleNextAuction(address sellToken,address buyToken) internal {
-      uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+    function waitOrScheduleNextAuction(address sellToken,address buyToken,uint latestAuctionIndex) internal
+    {
 
       if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0 ) {
           // No sell orders were submitted
