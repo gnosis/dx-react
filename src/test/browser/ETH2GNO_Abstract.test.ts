@@ -178,9 +178,6 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   it('seller can submit order to an auction', async () => {
     const amount = '30'
 
-    // allow the contract to move tokens
-    await eth.approve(dxa, amount, { from: seller })
-
     // currently in auction
     const emptyAuctionVol = await dx.sellVolumeCurrent()
     expect(emptyAuctionVol.toNumber()).toBe(0)
