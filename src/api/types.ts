@@ -1,8 +1,6 @@
-import { Account, Balance as B, TokenCode, TokenPair as TP } from 'types'
+import { Account, Balance as B, TokenCode, TokenPair } from 'types'
 import { BigNumber } from 'bignumber.js'
 
-// TokenPair without sellAmout
-type TokenPair = Pick<TP, 'sell' | 'buy'>
 type Balance = B | BigNumber | number
 type Index = number | BigNumber
 
@@ -108,6 +106,7 @@ export interface DutchExchange {
   getAddress(pair: TokenPair): Account,
 
   getAuctionIndex(pair: TokenPair): Promise<BigNumber>,
+  getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index?: Index): Promise<[BigNumber, BigNumber]>,
   getPrice(pair: TokenPair, index?: Index): Promise<BigNumber>,
   getSellVolumeCurrent(pair: TokenPair): Promise<BigNumber>,
