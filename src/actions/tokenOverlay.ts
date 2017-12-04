@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
 import { TokenMod, TokenCode, TokenPair } from 'types'
 
-import { closingPrice } from 'api/dutchx' 
+import { closingPrice } from 'api/'
 import { setClosingPrice } from 'actions/ratioPairs'
 
 export const openOverlay = createAction<{ mod: TokenMod }>('OPEN_OVERLAY')
@@ -13,7 +13,7 @@ export const selectTokenPairAndRatioPair = (props: any) => async (dispatch: Func
   const { tokenPair } = getState()
   const { code, mod } = props
   const { sell, buy }: TokenPair = { ...tokenPair, [mod]: code }
-  
+
   try {
     const price = (await closingPrice(sell, buy)).toString()
 

@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
 import { TokenPair } from 'types'
 
-import { closingPrice } from 'api/dutchx'
+import { closingPrice } from 'api/'
 import { setClosingPrice } from 'actions/ratioPairs'
 
 export const selectTokenPair = createAction<TokenPair>('SELECT_TOKEN_PAIR')
