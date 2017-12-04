@@ -9,10 +9,11 @@ const mapStateToProps = () => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  submitOrder(proceedTo: string) {
+  
+  submitOrder(proceedTo: string, modalName: string) {
     console.log('Submitting order')
 
-    dispatch(submitSellOrder(proceedTo))
+    dispatch(submitSellOrder(proceedTo, modalName))
   },
 })
 
@@ -25,7 +26,8 @@ const mergeProps = (
   submitOrder(e: MouseEvent) {
     // don't go to /auction/0x03494929349594 just yet
     e.preventDefault()
-    dispatchProps.submitOrder(`/auction/${stateProps.auctionAddress}`)
+
+    dispatchProps.submitOrder(`/auction/${stateProps.auctionAddress}`, 'TransactionModal')
   },
   ...ownProps,
 })
