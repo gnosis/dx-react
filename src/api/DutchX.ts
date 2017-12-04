@@ -70,7 +70,7 @@ async function init(): Promise<DutchExchange> {
   const getClaimedAmounts = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
-    return getExchange(pair).buyerBalances(index, account)
+    return getExchange(pair).claimedAmounts(index, account)
   }
 
   const postSellOrder = async (pair: TokenPair, amount: Balance, account?: Account) => {
