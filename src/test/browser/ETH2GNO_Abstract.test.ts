@@ -7,7 +7,7 @@ import {
   getAllAccounts,
   // getCurrentBalance,
   // getETHBalance,
-  // getTokenBalance,
+  getTokenBalance,
   // getTokenBalances,
   postSellOrder,
   closingPrice,
@@ -156,14 +156,14 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('all accounts have the right balance', async () => {
     const ETHtotal = await eth.getTotalSupply()
-    const masterETHBalance = await eth.balanceOf(master)
-    const sellerETHBalance = await eth.balanceOf(seller)
-    const buyerETHBalance = await eth.balanceOf(buyer)
+    const masterETHBalance = await getTokenBalance('ETH', master)
+    const sellerETHBalance = await getTokenBalance('ETH', seller)
+    const buyerETHBalance = await getTokenBalance('ETH', buyer)
 
     const GNOtotal = await gno.getTotalSupply()
-    const masterGNOBalance = await gno.balanceOf(master)
-    const sellerGNOBalance = await gno.balanceOf(seller)
-    const buyerGNOBalance = await gno.balanceOf(buyer)
+    const masterGNOBalance = await getTokenBalance('GNO', master)
+    const sellerGNOBalance = await getTokenBalance('GNO', seller)
+    const buyerGNOBalance = await getTokenBalance('GNO', buyer)
 
     expect(masterETHBalance.add(sellerETHBalance).add(buyerETHBalance)).toEqual(ETHtotal)
     expect(masterGNOBalance.add(sellerGNOBalance).add(buyerGNOBalance)).toEqual(GNOtotal)
@@ -416,13 +416,13 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   it('seller has some GNO tokens, buyer has some ETH', async () => {
-    const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
-    const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
-    const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
-    const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
+    const buyerETHBalance = (await getTokenBalance('ETH', buyer)).toNumber()
+    const sellerGNOBalance = (await getTokenBalance('GNO', seller)).toNumber()
+    const buyerGNOBalance = (await getTokenBalance('GNO', buyer)).toNumber()
+    const sellerETHBalance = (await getTokenBalance('ETH', seller)).toNumber()
 
-    const masterGNOBalance = (await gno.balanceOf(master)).toNumber()
-    const masterETHBalance = (await eth.balanceOf(master)).toNumber()
+    const masterGNOBalance = (await getTokenBalance('GNO', master)).toNumber()
+    const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
 
     const totalETH = (await eth.getTotalSupply()).toNumber()
     const totalGNO = (await gno.getTotalSupply()).toNumber()
@@ -445,12 +445,12 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // don't spam browser console
     if (currentProvider) return
 
-    const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
-    const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
-    const masterGNOBalance = (await gno.balanceOf(master)).toNumber()
-    const masterETHBalance = (await eth.balanceOf(master)).toNumber()
-    const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
-    const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
+    const buyerETHBalance = (await getTokenBalance('ETH', buyer)).toNumber()
+    const sellerGNOBalance = (await getTokenBalance('GNO', seller)).toNumber()
+    const masterGNOBalance = (await getTokenBalance('GNO', master)).toNumber()
+    const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
+    const buyerGNOBalance = (await getTokenBalance('GNO', buyer)).toNumber()
+    const sellerETHBalance = (await getTokenBalance('ETH', seller)).toNumber()
     const totalETH = (await eth.getTotalSupply()).toNumber()
     const totalGNO = (await gno.getTotalSupply()).toNumber()
 
