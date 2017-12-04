@@ -10,7 +10,7 @@ import {
   // getTokenBalance,
   // getTokenBalances,
   postSellOrder,
-  // closingPrice,
+  closingPrice,
 } from 'api/'
 
 import { contractsMap, promisedContractsMap } from 'api/contracts'
@@ -129,8 +129,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
-    let initialClosingPrice = await dx.closingPrices(0, { from: master })
-    initialClosingPrice = initialClosingPrice.map((x: any) => x.toNumber())
+    const initialClosingPrice = (await closingPrice('ETH', 'GNO', -1)).map(n => n.toNumber())
 
     expect(initialClosingPrice).toEqual([2, 1])
 
