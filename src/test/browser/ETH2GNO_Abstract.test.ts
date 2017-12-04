@@ -12,8 +12,10 @@ import {
   postSellOrder,
   closingPrice,
 } from 'api/'
+import { promisedTokens } from 'api/Tokens'
 
 import { contractsMap, promisedContractsMap } from 'api/contracts'
+import { TokensInterface } from 'api/types'
 
 // import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 // import TC from 'truffle-contract'
@@ -40,6 +42,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let dxa: string
   let dx: any; let eth: any; let gno: any; let tul: any
 
+  let getTotalSupply: TokensInterface['getTotalSupply']
+
   let accounts: any; let accs: any
 
   let master: any; let seller: any; let buyer: any
@@ -53,7 +57,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     ({ DutchExchangeETHGNO: DX, Token: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
     ({ DutchExchangeETHGNO: dx, Token: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
 
-    dxa = DX.address
+    dxa = DX.address;
+
+    ({ getTotalSupply } = await promisedTokens)
 
     // if currentProvider was injected by browser
     if (currentProvider) {
@@ -155,12 +161,12 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('all accounts have the right balance', async () => {
-    const ETHtotal = await eth.getTotalSupply()
+    const ETHtotal = await getTotalSupply('ETH')
     const masterETHBalance = await getTokenBalance('ETH', master)
     const sellerETHBalance = await getTokenBalance('ETH', seller)
     const buyerETHBalance = await getTokenBalance('ETH', buyer)
 
-    const GNOtotal = await gno.getTotalSupply()
+    const GNOtotal = await getTotalSupply('GNO')
     const masterGNOBalance = await getTokenBalance('GNO', master)
     const sellerGNOBalance = await getTokenBalance('GNO', seller)
     const buyerGNOBalance = await getTokenBalance('GNO', buyer)
@@ -424,8 +430,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const masterGNOBalance = (await getTokenBalance('GNO', master)).toNumber()
     const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
 
-    const totalETH = (await eth.getTotalSupply()).toNumber()
-    const totalGNO = (await gno.getTotalSupply()).toNumber()
+    const totalETH = (await getTotalSupply('ETH')).toNumber()
+    const totalGNO = (await getTotalSupply('GNO')).toNumber()
 
     const sellerStartETH = totalETH - masterETHBalance
     const buyerStartGNO = totalGNO - masterGNOBalance
@@ -451,8 +457,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
     const buyerGNOBalance = (await getTokenBalance('GNO', buyer)).toNumber()
     const sellerETHBalance = (await getTokenBalance('ETH', seller)).toNumber()
-    const totalETH = (await eth.getTotalSupply()).toNumber()
-    const totalGNO = (await gno.getTotalSupply()).toNumber()
+    const totalETH = (await getTotalSupply('ETH')).toNumber()
+    const totalGNO = (await getTotalSupply('GNO')).toNumber()
 
     console.log()
     console.log('  ETH\tGNO')
