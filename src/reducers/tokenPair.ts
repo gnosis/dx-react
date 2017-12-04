@@ -1,10 +1,10 @@
 import { handleActions } from 'redux-actions'
 
 import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount } from 'actions'
-import { TokenPair } from 'types'
+import { TokenPair, Balance } from 'types'
 import { TokenItemProps } from 'components/TokenItem'
 
-export default handleActions<TokenPair, TokenItemProps & TokenPair>(
+export default handleActions<TokenPair & { sellAmount: Balance }, TokenItemProps & TokenPair>(
   {
     [selectTokenAndCloseOverlay.toString()]: (state, action) => {
       const { mod, code } = action.payload as TokenItemProps
