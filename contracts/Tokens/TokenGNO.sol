@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "./Tokens/StandardToken.sol";
+import "./StandardToken.sol";
 
 contract TokenGNO is StandardToken {
     string public constant symbol = "GNO";

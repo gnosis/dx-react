@@ -213,19 +213,19 @@ contract DutchExchange {
         uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
 
         // The following logic takes care primarily of first auctions
-        // or when an auction receives 0 sell orders
+        // or when an auction receives 0 sell orders or rezi receives zero sell orders
         // In those two cases, auctionIndex will be latestAuctionIndex
         // (In all other cases, it will be latestAuctionIndex + 1)
-        if (auctionStarts[sellToken][buyToken] == 0) {
+        if (auctionStarts[sellToken][buyToken] <= 1) {
             // If no auction is scheduled, we accept sell orders only for current auction
             require(auctionIndex == latestAuctionIndex);
-            // Schedule auction in 6 hours
-            auctionStarts[sellToken][buyToken] = now + 6 * 1 hours;
+
         } else if (auctionStarts[sellToken][buyToken] > now) {
             // There is a scheduled action, we accept sell orders only for that auction
             require(auctionIndex == latestAuctionIndex);
             // We accept sell orders only in the first 6 hours
-            require(auctionStarts[sellToken][buyToken] < now + 6 * 1 hours);
+            //require(auctionStarts[sellToken][buyToken] < now + 6 * 1 hours);
+            // NOT NEEDED I THINK
         } else {
             // This case happens more than 99% of the time
             // Sell orders are accepted only for next auction
@@ -247,6 +247,7 @@ contract DutchExchange {
         balances[sellToken][msg.sender] -= amount;
         sellerBalances[auctionIndex][msg.sender] += amountAfterFee;
         sellVolumes[auctionIndex] += amountAfterFee;
+        waitOrScheduleNextAuction(sellToken,buyToken);
         NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
     }
 
@@ -522,24 +523,40 @@ contract DutchExchange {
     {
         uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
 
-        if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0) {
-            // No sell orders were submitted
-            // First sell order will notice this and schedule next auction in 6 hrs
-            auctionStarts[sellToken][buyToken] = 0;
-        } else {
-            auctionStarts[sellToken][buyToken] = now;
-        }
-
+        buyVolumes[sellToken][buyToken][latestAuctionIndex]+=extraBuyTokens[sellToken][buyToken] ;
+        sellVolumes[sellToken][buyToken][latestAuctionIndex]+=extraSellTokens[sellToken][buyToken];
         // Update extra tokens
-        extraBuyTokensNext[sellToken][buyToken] = 0;
+        extraBuyTokens[sellToken][buyToken] = 0;
         extraSellTokens[sellToken][buyToken] = 0;
 
         // Update other state variables
         closingPrices[sellToken][buyToken][latestAuctionIndex].num = currentPriceNum;
         closingPrices[sellToken][buyToken][latestAuctionIndex].den = currentPriceDen;
         latestAuctionIndices[sellToken][buyToken] = latestAuctionIndex + 1;
+
         AuctionCleared(sellToken, buyToken, latestAuctionIndex - 1);
+
     }
+
+    function waitOrScheduleNextAuction(address sellToken,address buyToken) internal {
+      uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
+
+      if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0 ) {
+          // No sell orders were submitted
+          // First sell order will notice this and push auction state into waiting period -> auctionStarts[sellToken][buyToken] = 1;
+          auctionStarts[sellToken][buyToken] = 0;
+      } else{
+        // putting auction in waiting state for ReziproAuction
+        auctionStarts[sellToken][buyToken] = 1;
+      }
+      // If both Auctions are waiting, start them in 1 hour and clear all states
+      if(auctionStarts[sellToken][buyToken] = 1 && auctionStarts[buyToken][sellToken] = 1){ // Maybe or is wanted by design
+        //set starting point in 1 hour
+        auctionStarts[buyToken][sellToken] = now+3600;
+        auctionStarts[sellToken][buyToken] = now+3600;
+      }
+    }
+
 
     function calculateFee(
         address sellToken,
@@ -566,8 +583,8 @@ contract DutchExchange {
             // Allow user to reduce up to half of the fee with WIZ
 
             // Convert fee to ETH, then USD
-            feeInETH = priceOracles[buyToken].convert(fee);
-            feeInUSD = ETHUSDOracle.convert(feeInETH);
+            uint feeInETH = priceOracles[buyToken].convert(fee);
+            uint feeInUSD = ETHUSDOracle.convert(feeInETH);
             uint amountOfWIZBurned = Math.min(amountOfWIZBurnedSubmitted, feeInUSD / 2);
             // ERC-20
             WIZ.spend(user, amountOfWIZBurned);
