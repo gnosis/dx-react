@@ -53,9 +53,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let getAuctionStart: DutchExchange['getAuctionStart']
   let getPrice: DutchExchange['getPrice']
   let getBuyVolume: DutchExchange['getBuyVolume']
-  let getSellerBalances: DutchExchange['getSellerBalances']
-  let getBuyerBalances: DutchExchange['getBuyerBalances']
-  let getClaimedAmounts: DutchExchange['getClaimedAmounts']
+  let getSellerBalance: DutchExchange['getSellerBalance']
+  let getBuyerBalance: DutchExchange['getBuyerBalance']
+  let getClaimedAmount: DutchExchange['getClaimedAmount']
 
   const pair: TokenPair = { sell: 'ETH', buy: 'GNO' }
 
@@ -82,9 +82,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
       getSellVolumeNext,
       getPrice,
       getBuyVolume,
-      getSellerBalances,
-      getBuyerBalances,
-      getClaimedAmounts,
+      getSellerBalance,
+      getBuyerBalance,
+      getClaimedAmount,
     } = await promisedDutchX)
 
     // if currentProvider was injected by browser
@@ -223,7 +223,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     expect(filledAuctionVol.add(emptyAuctionVol).toString()).toEqual(amount)
 
     // seller is now assigned a balance
-    const sellerBalance = await getSellerBalances(pair, _auctionIndex, seller)
+    const sellerBalance = await getSellerBalance(pair, _auctionIndex, seller)
     expect(sellerBalance.toString()).toEqual(amount)
   })
 
@@ -261,8 +261,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const amount = 10
 
     const auctionIndex = (await getAuctionIndex(pair)).toNumber()
-    const claimed = (await getClaimedAmounts(pair, auctionIndex, buyer)).toNumber()
-    const buyerBalance = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const claimed = (await getClaimedAmount(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalance = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, auctionIndex)).toNumber()
 
     // nothing yet claimed or bought
@@ -276,7 +276,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // submit a buy order for the current auction
     await dx.postBuyOrder(amount, auctionIndex, { from: buyer, gas: 4712388 })
 
-    const buyerBalancesAfter = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalancesAfter = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const buyVolumeAfter = (await getBuyVolume(pair, auctionIndex)).toNumber()
 
     // buyer's balance increased
@@ -290,8 +290,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('buyer can claim the amount bought', async () => {
     const auctionIndex = (await getAuctionIndex(pair)).toNumber()
-    const claimed = (await getClaimedAmounts(pair, auctionIndex, buyer)).toNumber()
-    const buyerBalance = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const claimed = (await getClaimedAmount(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalance = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, auctionIndex)).toNumber()
 
     // nothing yet claimed
@@ -305,8 +305,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
     await dx.claimBuyerFunds(auctionIndex, { from: buyer })
-    const claimedAmountAfter = (await getClaimedAmounts(pair, auctionIndex, buyer)).toNumber()
-    const buyerBalancesAfter = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const claimedAmountAfter = (await getClaimedAmount(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalancesAfter = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
 
     // return is a function of price, which itself is a function of time passed
     const expectedReturn = Math.floor(buyerBalancesAfter * den / num) - claimed
@@ -360,12 +360,12 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
     setTime(timeWhenAuctionClears)
-    const buyerBalance = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalance = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const amount = 1
     await approve('GNO', dxa, amount, { from: buyer })
     await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
     const buyVolumeAfter = (await getBuyVolume(pair, auctionIndex)).toNumber()
-    const buyerBalanceAfter = (await getBuyerBalances(pair, auctionIndex, buyer)).toNumber()
+    const buyerBalanceAfter = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
 
     // no changes, as the auction has ended
     expect(buyVolume).toBe(buyVolumeAfter)
@@ -392,8 +392,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('buyer can claim the remainder of the funds', async () => {
     const lastAuctionIndex = (await getAuctionIndex(pair)).toNumber() - 1
-    let claimed = (await getClaimedAmounts(pair, lastAuctionIndex, buyer)).toNumber()
-    const buyerBalance = (await getBuyerBalances(pair, lastAuctionIndex, buyer)).toNumber()
+    let claimed = (await getClaimedAmount(pair, lastAuctionIndex, buyer)).toNumber()
+    const buyerBalance = (await getBuyerBalance(pair, lastAuctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, lastAuctionIndex)).toNumber()
 
     // some funds were claimed
@@ -408,7 +408,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     // claim what can be claimed
     await dx.claimBuyerFunds(lastAuctionIndex, { from: buyer })
-    claimed = (await getClaimedAmounts(pair, lastAuctionIndex, buyer)).toNumber()
+    claimed = (await getClaimedAmount(pair, lastAuctionIndex, buyer)).toNumber()
 
     const [num, den] = (await getPrice(pair, lastAuctionIndex)).map((n: any) => n.toNumber())
     // assuming all buyerBalance got converted toETH at the closing price
@@ -423,7 +423,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   it('seller can claim funds', async () => {
 
     const lastAuctionIndex = (await getAuctionIndex(pair)).toNumber() - 1
-    let sellerBalance = (await getSellerBalances(pair, lastAuctionIndex, seller)).toNumber()
+    let sellerBalance = (await getSellerBalance(pair, lastAuctionIndex, seller)).toNumber()
     const [num, den] = (await getPrice(pair, lastAuctionIndex)).map((n: any) => n.toNumber())
 
     // transaction receipt includes amount returned
@@ -436,7 +436,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const expectedReturn = Math.floor(sellerBalance * num / den)
     expect(expectedReturn).toBe(returned)
 
-    sellerBalance = (await getSellerBalances(pair, lastAuctionIndex, seller)).toNumber()
+    sellerBalance = (await getSellerBalance(pair, lastAuctionIndex, seller)).toNumber()
     // balance is drained
     expect(sellerBalance).toBe(0)
   })

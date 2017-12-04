@@ -55,19 +55,19 @@ async function init(): Promise<DutchExchange> {
     return getExchange(pair).buyVolumes(index)
   }
 
-  const getSellerBalances = async (pair: TokenPair, index?: number, account?: Account) => {
+  const getSellerBalance = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
     return getExchange(pair).sellerBalances(index, account)
   }
 
-  const getBuyerBalances = async (pair: TokenPair, index?: number, account?: Account) => {
+  const getBuyerBalance = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
     return getExchange(pair).buyerBalances(index, account)
   }
 
-  const getClaimedAmounts = async (pair: TokenPair, index?: number, account?: Account) => {
+  const getClaimedAmount = async (pair: TokenPair, index?: number, account?: Account) => {
     [index, account] = await fillDefaultIndexAndAccount(pair, index, account)
 
     return getExchange(pair).claimedAmounts(index, account)
@@ -112,9 +112,9 @@ async function init(): Promise<DutchExchange> {
     getSellVolumeCurrent,
     getSellVolumeNext,
     getBuyVolume,
-    getSellerBalances,
-    getBuyerBalances,
-    getClaimedAmounts,
+    getSellerBalance,
+    getBuyerBalance,
+    getClaimedAmount,
     postSellOrder,
     postBuyOrder,
     postBuyOrderAndClaim,
