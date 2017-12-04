@@ -14,6 +14,8 @@ import AppRouter from 'router'
 import walletIntegrationCallback from 'integrations/WalletIntegration'
 import createStoreWithHistory from 'store'
 
+import ModalContainer from 'containers/Modals'
+
 const history = createHistory()
 const store = createStoreWithHistory(history)
 
@@ -29,7 +31,9 @@ const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: () => {}) 
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <App history={history} />
+        <ModalContainer>
+          <App history={history} />
+        </ModalContainer>
       </Provider>
     </AppContainer>,
     rootElement,

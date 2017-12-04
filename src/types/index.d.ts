@@ -32,6 +32,15 @@ export interface Blockchain {
   dutchXInitialized?: boolean,
 }
 
+export interface Modal {
+  modalName: string,
+  modalProps: {
+    header: string,
+    body: string,
+  }
+  isOpen: boolean
+}
+
 export type OngoingAuctions = AuctionObject[]
 
 /**
@@ -104,6 +113,7 @@ export interface TokenOverlay {
  */
 export interface State {
   blockchain: Blockchain,
+  modal: Modal,
   tokenPair: TokenPair,
   tokenBalances: TokenBalances,
   tokenOverlay: TokenOverlay,

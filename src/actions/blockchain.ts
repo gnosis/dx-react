@@ -13,6 +13,8 @@ import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
 import { setSellTokenAmount } from 'actions/tokenPair'
 
+import { openModal, closeModal } from 'actions/modal'
+
 import { timeoutCondition, getDutchXOptions } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
@@ -120,7 +122,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
   }
 }
 
-export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
+export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
   const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
@@ -128,9 +130,18 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
   if (sellAmount <= 0) return false
 
   try {
+    // open modal
+    dispatch(openModal({
+      modalName,
+      modalProps: {},
+    }))
+
     const receipt = await postSellOrder(currentAccount, sellAmount, sell, buy)
 
     console.log('Submit order receipt', receipt)
+
+    // close modal
+    dispatch(closeModal())
 
     // TODO: function to get specific Token's balance, also actions for such functions
     const tokenBalances = await getTokenBalances(currentAccount)
