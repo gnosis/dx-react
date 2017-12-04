@@ -312,19 +312,16 @@ contract DutchExchange {
         uint num;
         uint den;
         (num, den) = getPrice(sellToken, buyToken, auctionIndex);
-        uint numRezi;
-        uint denRezi;
-        (numRezi, denRezi) = getPrice( buyToken, sellToken, auctionIndex);
+        fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
+        uint numLastAuction= lastClosingPrice.num;
+        uint denLastAuction= lastClosingPrice.den;
 
         // Check wheter there is an arbitrage possibility
         // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
-        if(num*denRezi<den*numRezi){
+        if(num*denLastAuction<den*numLastAuction){
           //calculate outstanding volumes for both makets at time of priceCrossing:
-          fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
-          num= lastClosingPrice.num/2;
-          den= lastClosingPrice.den/2;
-          numRezi=lastClosingPrice.den/2;
-          denRezi=lastClosingPrice.num/2;
+          uint numRezi=denLastAuction;
+          uint denRezi=numLastAuction;
           uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
           uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
           int missingVolume= int(buyVolume  - sellVolume * num / den);
@@ -336,7 +333,7 @@ contract DutchExchange {
           // fill up the Auction with smaller missing volume
           if( missingVolume>0 && missingVolumeRezi>0)
           {
-              if(missingVolume>missingVolumeRezi){
+              if(missingVolumeRezi<missingVolume){
                 fillUpReziAuction(sellToken,buyToken,missingVolumeRezi,num,den,auctionIndex);
               }
               else{
@@ -344,11 +341,12 @@ contract DutchExchange {
               }
           }
           else{
+            //edge cases where the last BuyOrder were not enough to fill the sell order, but then price decreased laster and with the later price, acutally it would have been enough
             if(missingVolume<=0){
               clearAuction(sellToken, buyToken, buyVolume, sellVolume);
             }
             if(missingVolumeRezi<=0){
-              clearAuction(buyToken, sellToken, buyVolumeRezi, sellVolumeRezi);
+              clearAuction(buyToken, sellToken, buyVolumeRezi* den / num, sellVolumeRezi);
               }
           }
       }
@@ -357,7 +355,7 @@ contract DutchExchange {
     function fillUpReziAuction(address sellToken,address buyToken, uint volume, uint numClearing, uint denClearing, uint auctionIndex)
     internal
     {
-      buyVolumes[sellToken][buyToken][auctionIndex] += volume*numClearing/denClearing;
+      buyVolumes[sellToken][buyToken][auctionIndex] += volume;
       sellVolumes[sellToken][buyToken][auctionIndex] -= volume*denClearing/numClearing;
       clearAuction(sellToken , buyToken, buyVolumes[sellToken][buyToken][auctionIndex], buyVolumes[sellToken][buyToken][auctionIndex]*denClearing/numClearing);
     }
