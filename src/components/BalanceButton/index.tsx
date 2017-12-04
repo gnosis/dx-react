@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 import React from 'react'
-import { getAllAccounts } from 'api/dutchx'
+import { getAllAccounts } from 'api/'
 // const Web3 = require('web3')
 
 interface Currency {
@@ -16,11 +16,11 @@ interface BalanceButtonProps {
 const BalanceButton = ({ balance, getBalance, provider }: BalanceButtonProps) => (
   <div>
     <br />
-    <button onClick={() => getBalance('DutchExchange', provider)}>Click me for your balance!</button>
+    <button onClick={() => getBalance(provider)}>Click me for your balance!</button>
     <h3>Current Balance = {balance ? `${balance.e} Ether` : 'Unavailable'}</h3>
     <br />
     <br />
-    <button onClick={() => getAllAccounts() }>Click me for ALL ACCOUNTS</button>
+    <button onClick={() => (console.log(getAllAccounts()))}>Click me for ALL ACCOUNTS</button>
   </div>
 )
 
