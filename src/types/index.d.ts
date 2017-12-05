@@ -68,7 +68,7 @@ export type TokenBalances = {[code in TokenCode]?: Balance }
 export interface TokenPair {
   sell: TokenCode,
   buy: TokenCode,
-  sellAmount: Balance,
+  sellAmount?: Balance,
 }
 
 /**

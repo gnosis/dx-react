@@ -1,6 +1,6 @@
 import { Component } from 'react'
-import { /* connectBlockchain,*/ initDutchXConnection } from 'api/dutchx'
-import { getSelectedProvider } from 'selectors/blockchain'
+// import { /* connectBlockchain,*/ initDutchXConnection } from 'api/dutchx'
+// import { getSelectedProvider } from 'selectors/blockchain'
 import { WALLET_PROVIDER } from 'integrations/constants'
 
 const Web3 = require('web3')
@@ -30,10 +30,10 @@ export default class WalletIntegrationProvider extends Component<WalletIntegrati
           () => init(funcs.slice(1), reactStore),
         )
       }
-      const selectedProvider = getSelectedProvider(reactStore.getState())
-      const opts = this.getDutchXOptions(selectedProvider)
+      // const selectedProvider = getSelectedProvider(reactStore.getState())
+      // const opts = this.getDutchXOptions(selectedProvider)
       console.log(' ===> FIRING WalletIntegration.dispatch(initDutchX)')
-      reactStore.dispatch(initDutchXConnection(opts)) // .then(() => reactStore.dispatch(connectBlockchain()))
+      // reactStore.dispatch(initDutchXConnection(opts)) // .then(() => reactStore.dispatch(connectBlockchain()))
 
       return null
     }

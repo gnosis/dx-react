@@ -461,7 +461,9 @@ describe('ETH 2 GNO contract standalone', () => {
     // buyer received all ETH seller sent to aucion
     expect(sellerStartETH - sellerETHBalance).toBe(buyerETHBalance)
     // seller received all GNO buyer sent to auction
-    expect(buyerStartGNO - buyerGNOBalance).toBe(sellerGNOBalance)
+    const buyerGNODiff = buyerStartGNO - buyerGNOBalance
+    expect(sellerGNOBalance).toBeLessThanOrEqual(buyerGNODiff)
+    expect(sellerGNOBalance).toBeGreaterThanOrEqual(buyerGNODiff - 1)
   })
 
   async function checkBalances() {
