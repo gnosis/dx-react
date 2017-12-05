@@ -307,57 +307,61 @@ contract DutchExchange {
             //clearAuction(sellToken, buyToken, buyVolumes[sellToken][buyToken][auctionIndex] + amountAfterFee - uint(overbuy), sellVolumes[sellToken][buyToken][auctionIndex]);
         }
     }
-    function checkArbitragePossibilityInOppositeMarket(uint auctionIndex, address sellToken, address buyToken) internal
-    {
-      // Check whether ReziproAuction already closed:
-      if((closingPrices[sellToken][buyToken][auctionIndex]).den!=0)
-      {
-        uint num;
-        uint den;
-        (num, den) = getPrice(sellToken, buyToken, auctionIndex);
-        fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
-        uint numLastAuction= lastClosingPrice.num;
-        uint denLastAuction= lastClosingPrice.den;
 
-        // Check wheter there is an arbitrage possibility
-        // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
-        if(num*denLastAuction<den*numLastAuction){
-          //calculate outstanding volumes for both makets at time of priceCrossing:
-          int missingVolume = int(buyVolumes[sellToken][buyToken][auctionIndex] - sellVolumes[sellToken][buyToken][auctionIndex] * numLastAuction / denLastAuction);
-          int missingVolumeRezi = int(buyVolumes[buyToken][sellToken][auctionIndex]  - sellVolumes[buyToken][sellToken][auctionIndex] *  denLastAuction/numLastAuction)* int(numLastAuction) / int(denLastAuction);
-
-          // fill up the Auction with smaller missing volume
-          if( missingVolume>0 && missingVolumeRezi>0)
-          {
-              if(missingVolumeRezi<missingVolume){
-                fillUpReziAuction(sellToken,buyToken,uint(missingVolumeRezi),numLastAuction,denLastAuction,auctionIndex);
-              }
-              else{
-                fillUpReziAuction(buyToken,sellToken,uint(missingVolume),denLastAuction,numLastAuction,auctionIndex);
-              }
-          }
-          else{
-            //edge cases where the last BuyOrder were not enough to fill the sell order, but then price decreased laster and with the later price, acutally it would have been enough
-            if(missingVolume<=0){
-              clearAuction(sellToken, buyToken, auctionIndex);
-            }
-            if(missingVolumeRezi<=0){
-              clearAuction(buyToken, sellToken, auctionIndex);
-              }
-          }
-      }
-      }
-    }
-
-    function fillUpReziAuction(address sellToken,address buyToken, uint volume, uint numClearing, uint denClearing, uint auctionIndex)
+    function checkArbitragePossibilityInOppositeMarket(uint auctionIndex, address sellToken, address buyToken) 
     internal
     {
-      buyVolumes[sellToken][buyToken][auctionIndex] += volume;
-      sellVolumes[sellToken][buyToken][auctionIndex] -= volume*denClearing/numClearing;
-      clearAuction(sellToken , buyToken,  auctionIndex);
+      // Check whether ReziproAuction already closed:
+        if ((closingPrices[sellToken][buyToken][auctionIndex]).den != 0) {
+            uint num;
+            uint den;
+            (num, den) = getPrice(sellToken, buyToken, auctionIndex);
+            fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
+            uint numLastAuction= lastClosingPrice.num;
+            uint denLastAuction= lastClosingPrice.den;
+
+            // Check wheter there is an arbitrage possibility
+            // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
+            if (num*denLastAuction < den*numLastAuction) {
+                  //calculate outstanding volumes for both makets at time of priceCrossing:
+                int missingVolume = int(buyVolumes[sellToken][buyToken][auctionIndex] - sellVolumes[sellToken][buyToken][auctionIndex] * numLastAuction / denLastAuction);
+                int missingVolumeRezi = int(buyVolumes[buyToken][sellToken][auctionIndex] - sellVolumes[buyToken][sellToken][auctionIndex] * denLastAuction/numLastAuction) * int(numLastAuction) / int(denLastAuction);
+
+                  // fill up the Auction with smaller missing volume
+                if (missingVolume > 0 && missingVolumeRezi > 0) {
+                    if (missingVolumeRezi < missingVolume) {
+                        fillUpReziAuction(sellToken, buyToken, uint(missingVolumeRezi), numLastAuction, denLastAuction, auctionIndex);
+                    } else {
+                        fillUpReziAuction(buyToken, sellToken, uint(missingVolume), denLastAuction, numLastAuction, auctionIndex);
+                    }
+                } else {
+                    //edge cases where the last BuyOrder were not enough to fill the sell order,
+                    // but then price decreased laster and with the later price, acutally it would have been enough
+                    if (missingVolume <= 0) {
+                        clearAuction(sellToken, buyToken, auctionIndex);
+                    }
+                    if (missingVolumeRezi <= 0) {
+                        clearAuction(buyToken, sellToken, auctionIndex);
+                    }
+                }
+            }
+        }
     }
 
-
+    function fillUpReziAuction(
+        address sellToken,
+        address buyToken,
+        uint volume,
+        uint numClearing,
+        uint denClearing,
+        uint auctionIndex
+        )
+    internal
+    {
+        buyVolumes[sellToken][buyToken][auctionIndex] += volume;
+        sellVolumes[sellToken][buyToken][auctionIndex] -= volume * denClearing / numClearing;
+        clearAuction(sellToken, buyToken, auctionIndex);
+    }
 
     function claimSellerFunds(
         address sellToken,
@@ -517,43 +521,46 @@ contract DutchExchange {
         internal
     {
 
-        buyVolumes[sellToken][buyToken][auctionIndex+1]+=extraBuyTokens[sellToken][buyToken] [auctionIndex];
-        sellVolumes[sellToken][buyToken][auctionIndex+1]+=extraSellTokens[sellToken][buyToken][auctionIndex];
+        buyVolumes[sellToken][buyToken][auctionIndex+1] += extraBuyTokens[sellToken][buyToken] [auctionIndex];
+        sellVolumes[sellToken][buyToken][auctionIndex+1] += extraSellTokens[sellToken][buyToken][auctionIndex];
         // Update extra tokens
         extraBuyTokens[sellToken][buyToken][auctionIndex] = 0;
         extraSellTokens[sellToken][buyToken][auctionIndex] = 0;
 
-        // Update other state variables
-        // not yet correct....
-        closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
-        closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
-        latestAuctionIndices[sellToken][buyToken] = auctionIndex + 1;
-
         AuctionCleared(sellToken, buyToken, auctionIndex - 1);
-        waitOrScheduleNextAuction(sellToken, buyToken,auctionIndex);
+        waitOrScheduleNextAuction(sellToken, buyToken, auctionIndex);
     }
 
     function waitOrScheduleNextAuction(
-      address sellToken,
-      address buyToken,
-      uint latestAuctionIndex)
-      internal
+        address sellToken,
+        address buyToken,
+        uint auctionIndex)
+    internal
     {
 
-      if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0 ) {
-          // No sell orders were submitted
-          // First sell order will notice this and push auction state into waiting period -> auctionStarts[sellToken][buyToken] = 1;
-          auctionStarts[sellToken][buyToken] = 0;
-      } else{
-        // putting auction in waiting state for ReziproAuction
-        auctionStarts[sellToken][buyToken] = 1;
-      }
-      // If both Auctions are waiting, start them in 1 hour and clear all states
-      if(auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1){ // Maybe or is wanted by design
-        //set starting point in 10 minutes
-        auctionStarts[buyToken][sellToken] = now+600;
-        auctionStarts[sellToken][buyToken] = now+600;
-      }
+        if (sellVolumes[sellToken][buyToken][auctionIndex+1] == 0) {
+            // No sell orders were submitted
+            // First sell order will notice this and push auction state into waiting period 
+            // -> auctionStarts[sellToken][buyToken] = 1;
+            auctionStarts[sellToken][buyToken] = 0;
+        } else {
+            // putting auction in waiting state for OppositeAuction
+            auctionStarts[sellToken][buyToken] = 1;
+        }
+        // If both Auctions are waiting, start them in 1 hour and clear all states
+        if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
+            // Maybe or is wanted by design
+            
+            // not yet correct....
+            closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
+            closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
+            latestAuctionIndices[sellToken][buyToken] = auctionIndex + 1;
+
+
+            //set starting point in 10 minutes
+            auctionStarts[buyToken][sellToken] = now+600;
+            auctionStarts[sellToken][buyToken] = now+600;
+        }
     }
 
 
@@ -586,7 +593,8 @@ contract DutchExchange {
             uint feeInUSD = feeInETH*PriceOracle(ETHUSDOracle).getUSDvsETHPrice();
             uint amountOfWIZBurned = Math.min(amountOfWIZBurnedSubmitted, feeInUSD / 2);
 
-            //burning OWL tokens with delegatecall is risky, because this allows OWL token to modify the storage of this contract.
+            //burning OWL tokens with delegatecall is risky,
+            // because this allows OWL token to modify the storage of this contract.
             // OWL.delegatecall(bytes4(sha3("burnOWL(uint256)")), amount);
 
 
