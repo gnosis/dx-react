@@ -27,15 +27,19 @@ contract DutchExchange {
     // Only tokens approved by owner generate TUL tokens
     mapping (address => bool) public approvedTokens;
 
+
+
     // The following three mappings are symmetric - m[t1][t2] = m[t2][t1]
     // The order depends on in which order the tokens were submitted in addTokenPair()
     // ETH-Token pairs will always have ETH first, T-T pairs will have arbitrary order 
     // Token => Token => index
     mapping (address => mapping (address => uint)) public latestAuctionIndices;
-    // Token => Token => auctionIndex => price
-    mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
     // Token => Token => time
     mapping (address => mapping (address => uint)) public auctionStarts;
+
+    
+    // Token => Token => auctionIndex => price
+    mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
 
     // Token => user => amount
     // balances stores a user's balance in the DutchX
@@ -305,7 +309,7 @@ contract DutchExchange {
         // To calculate overbuy, we first get current price
         uint num;
         uint den;
-        (num, den) = getPrice(sellToken,buyToken,auctionIndex);
+        (num, den) = getPrice(sellToken, buyToken, auctionIndex);
 
         //uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
         //uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
@@ -323,7 +327,7 @@ contract DutchExchange {
             balances[buyToken][msg.sender] -= amount;
             buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
             buyVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
-            NewBuyOrder(sellToken,buyToken, msg.sender, auctionIndex, amount);
+            NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
         }
 
         if (overbuy >= 0) {
@@ -342,7 +346,7 @@ contract DutchExchange {
     internal
     {
       // Check whether OppositeAuction already closed:
-        if ((closingPrices[sellToken][buyToken][auctionIndex]).den != 0) {
+        if ((closingPrices[sellToken][buyToken][auctionIndex]).den == 0) {
             uint num;
             uint den;
             (num, den) = getPrice(sellToken, buyToken, auctionIndex);
@@ -519,8 +523,10 @@ contract DutchExchange {
         } else {
             // Next we calculate current price by first getting the last closing price
             fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
-            uint numOfLastClosingPrice = lastClosingPrice.num;
-            uint denOfLastClosingPrice = lastClosingPrice.den;
+            fraction memory lastClosingPrice2 = closingPrices[buyToken][sellToken][auctionIndex - 1];
+            
+            uint numOfLastClosingPrice = (lastClosingPrice.num + lastClosingPrice2.den)/2;
+            uint denOfLastClosingPrice = (lastClosingPrice.den + lastClosingPrice2.num)/2;
 
             // If the previous closing price was 0, for calculations we assume it was
             // 10% of the closing price of the last auction that closed above 0
@@ -557,15 +563,15 @@ contract DutchExchange {
     {
 
         // set the final prices as average from both auctions: usual auction + opposite auction
-        closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
-        closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
+        closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]);
+        closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]);
 
 
         // increasing to next auction
         latestAuctionIndices[sellToken][buyToken] += 1;
         auctionStarts[sellToken][buyToken] = 0;
 
-        AuctionCleared(sellToken, buyToken, auctionIndex - 1);
+        AuctionCleared(sellToken, buyToken, auctionIndex);
         waitOrScheduleNextAuction(sellToken, buyToken, auctionIndex+1);
     }
 
@@ -583,24 +589,30 @@ contract DutchExchange {
 
          // should we use a treshold instead of !=0 ? 
          //uint public tresholdForStartingAuction=10  
+
+
         if (sellVolumes[sellToken][buyToken][auctionIndex] == 0) {
             // No sell orders were submitted
             // First sell order will notice this and push auction state into waiting period 
             // -> auctionStarts[sellToken][buyToken] = 1;
             auctionStarts[sellToken][buyToken] = 0;
-        } else {
+        }
+
+        if (sellVolumes[sellToken][buyToken][auctionIndex] > 0) {
             // putting auction in waiting state for OppositeAuction
             auctionStarts[sellToken][buyToken] = 1;
         }
+
+
         // If both Auctions are waiting, start them in 10 mins and clear all states
         if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
             // Maybe OR is wanted by design
             
             // set the starting prices for the next auction
-            ClosingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
-            ClosingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[sellToken][buyToken][auctionIndex-1])/2;
-            ClosingPrices[buyToken][sellToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
-            ClosingPrices[buyToken][sellToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[buyToken][sellToken][auctionIndex-1])/2;
+            //startingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
+            //startingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[sellToken][buyToken][auctionIndex-1])/2;
+            //ClosingPrices[buyToken][sellToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
+            //ClosingPrices[buyToken][sellToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[buyToken][sellToken][auctionIndex-1])/2;
 
             // Update extra tokens
             buyVolumes[sellToken][buyToken][auctionIndex] += extraBuyTokens[sellToken][buyToken][auctionIndex-1];
