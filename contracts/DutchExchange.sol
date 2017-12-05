@@ -58,6 +58,7 @@ contract DutchExchange {
     // Events
     event NewDeposit(address indexed token, uint indexed amount);
     event NewWithdrawal(address indexed token, uint indexed amount);
+    
     event NewSellOrder(
         address indexed sellToken,
         address indexed buyToken,
@@ -65,6 +66,7 @@ contract DutchExchange {
         uint auctionIndex,
         uint amount
     );
+
     event NewBuyOrder(
         address indexed sellToken,
         address indexed buyToken,
@@ -72,6 +74,7 @@ contract DutchExchange {
         uint auctionIndex,
         uint amount
     );
+
     event NewSellerFundsClaim(
         address indexed sellToken,
         address indexed buyToken,
@@ -79,6 +82,7 @@ contract DutchExchange {
         uint auctionIndex,
         uint amount
     );
+
     event NewBuyerFundsClaim(
         address indexed sellToken,
         address indexed buyToken,
@@ -86,6 +90,7 @@ contract DutchExchange {
         uint auctionIndex,
         uint amount
     );
+
     event AuctionCleared(address indexed sellToken, address indexed buyToken, uint indexed auctionIndex);
 
     // Modifiers
@@ -232,7 +237,7 @@ contract DutchExchange {
         uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
 
         // // The following logic takes care primarily of first auctions
-        // // or when an auction receives 0 sell orders or rezi receives zero sell orders
+        // // or when an auction receives 0 sell orders or opposite receives zero sell orders
         // // In those two cases, auctionIndex will be latestAuctionIndex
         // // (In all other cases, it will be latestAuctionIndex + 1)
         // if (auctionStarts[sellToken][buyToken] <= 1) {
@@ -268,7 +273,7 @@ contract DutchExchange {
         balances[sellToken][msg.sender] -= amount;
         sellerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
         sellVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
-        waitOrScheduleNextAuction(sellToken,buyToken,latestAuctionIndex);
+        waitOrScheduleNextAuction(sellToken, buyToken, latestAuctionIndex);
         NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
     }
 
@@ -346,7 +351,6 @@ contract DutchExchange {
             uint denLastAuction= lastClosingPrice.den;
 
             // Check wheter there is an arbitrage possibility
-            // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
             if (num*denLastAuction < den*numLastAuction) {
                   //calculate outstanding volumes for both markets at time of priceCrossing:
                 int missingVolume = int(buyVolumes[sellToken][buyToken][auctionIndex] - sellVolumes[sellToken][buyToken][auctionIndex] * numLastAuction / denLastAuction);
@@ -354,7 +358,7 @@ contract DutchExchange {
 
                   // fill up the Auction with smaller missing volume
                 if (missingVolume > 0 && missingVolumeOpposite > 0) {
-                    if (missingVolumeRezi < missingVolume) {
+                    if (missingVolumeOpposite < missingVolume) {
                         fillUpOppositeAuction(sellToken, buyToken, uint(missingVolumeOpposite), numLastAuction, denLastAuction, auctionIndex);
                     } else {
                         fillUpOppositeAuction(buyToken, sellToken, uint(missingVolume)*denLastAuction/numLastAuction, denLastAuction, numLastAuction, auctionIndex);
@@ -365,7 +369,7 @@ contract DutchExchange {
                     if (missingVolume <= 0) {
                         clearAuction(sellToken, buyToken, auctionIndex);
                     }
-                    if (missingVolumeRezi <= 0) {
+                    if (missingVolumeOpposite <= 0) {
                         clearAuction(buyToken, sellToken, auctionIndex);
                     }
                 }
@@ -376,7 +380,7 @@ contract DutchExchange {
         }
     }
 
-    function fillUpReziAuction(
+    function fillUpOppositeAuction(
         address sellToken,
         address buyToken,
         uint volume,
@@ -599,17 +603,17 @@ contract DutchExchange {
             ClosingPrices[buyToken][sellToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[buyToken][sellToken][auctionIndex-1])/2;
 
             // Update extra tokens
-            buyVolumes[sellToken][buyToken][auctionIndex+1] += extraBuyTokens[sellToken][buyToken][auctionIndex];
-            sellVolumes[sellToken][buyToken][auctionIndex+1] += extraSellTokens[sellToken][buyToken][auctionIndex];
+            buyVolumes[sellToken][buyToken][auctionIndex] += extraBuyTokens[sellToken][buyToken][auctionIndex-1];
+            sellVolumes[sellToken][buyToken][auctionIndex] += extraSellTokens[sellToken][buyToken][auctionIndex-1];
             
-            extraBuyTokens[sellToken][buyToken][auctionIndex] = 0;
-            extraSellTokens[sellToken][buyToken][auctionIndex] = 0;
+            extraBuyTokens[sellToken][buyToken][auctionIndex-1] = 0;
+            extraSellTokens[sellToken][buyToken][auctionIndex-1] = 0;
 
-            buyVolumes[buyToken][sellToken][auctionIndex+1] += extraBuyTokens[buyToken][sellToken][auctionIndex];
-            sellVolumes[buyToken][sellToken][auctionIndex+1] += extraSellTokens[buyToken][sellToken][auctionIndex];
-            
-            extraBuyTokens[buyToken][sellToken][auctionIndex] = 0;
-            extraSellTokens[buyToken][sellToken][auctionIndex] = 0;
+            buyVolumes[buyToken][sellToken][auctionIndex] += extraBuyTokens[buyToken][sellToken][auctionIndex-1];
+            sellVolumes[buyToken][sellToken][auctionIndex] += extraSellTokens[buyToken][sellToken][auctionIndex-1];
+
+            extraBuyTokens[buyToken][sellToken][auctionIndex-1] = 0;
+            extraSellTokens[buyToken][sellToken][auctionIndex-1] = 0;
 
             //set starting point in 10 minutes
             auctionStarts[buyToken][sellToken] = now+600;
