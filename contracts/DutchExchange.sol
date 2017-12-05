@@ -233,6 +233,10 @@ contract DutchExchange {
             require(auctionIndex == latestAuctionIndex + 1);
         }
 
+        // auctionStarts[sellToken][buyToken]>1 -> auction is running
+        // auctionStarts[sellToken][buyToken]==0 -> auction is waiting for bids
+        // auctionStarts[sellToken][buyToken]==1 -> auction is waiting for OppositeAuction
+
         uint amount = Math.min(amountSubmitted, balances[sellToken][msg.sender]);
 
         require(amount > 0);
@@ -267,7 +271,7 @@ contract DutchExchange {
         require(auctionStarts[sellToken][buyToken] >= now);
         require(auctionIndex == latestAuctionIndices[sellToken][buyToken]);
 
-        checkArbitragePossibilityInOppositeMarket(auctionIndex,sellToken,buyToken);
+        checkArbitragePossibilityInOppositeMarket(auctionIndex, sellToken, buyToken);
         amount = Math.min(amount, balances[buyToken][msg.sender]);
 
         // Fee mechanism
@@ -307,7 +311,12 @@ contract DutchExchange {
             //clearAuction(sellToken, buyToken, buyVolumes[sellToken][buyToken][auctionIndex] + amountAfterFee - uint(overbuy), sellVolumes[sellToken][buyToken][auctionIndex]);
         }
     }
-
+    
+    ///@dev  Checks whether there is an arbitrage possibility between an auction and the opposite auction
+    // its called everytime, when a buy order is made
+    // @param auctionIndex, is the index of the uaction to be checked
+    // @param sellToken, is the token which is bidded for
+    // @param buyToken is the token used for bidding
     function checkArbitragePossibilityInOppositeMarket(uint auctionIndex, address sellToken, address buyToken) 
     internal
     {
@@ -330,9 +339,9 @@ contract DutchExchange {
                   // fill up the Auction with smaller missing volume
                 if (missingVolume > 0 && missingVolumeRezi > 0) {
                     if (missingVolumeRezi < missingVolume) {
-                        fillUpReziAuction(sellToken, buyToken, uint(missingVolumeRezi), numLastAuction, denLastAuction, auctionIndex);
+                        fillUpOppositeAuction(sellToken, buyToken, uint(missingVolumeRezi), numLastAuction, denLastAuction, auctionIndex);
                     } else {
-                        fillUpReziAuction(buyToken, sellToken, uint(missingVolume), denLastAuction, numLastAuction, auctionIndex);
+                        fillUpOppositeAuction(buyToken, sellToken, uint(missingVolume), denLastAuction, numLastAuction, auctionIndex);
                     }
                 } else {
                     //edge cases where the last BuyOrder were not enough to fill the sell order,
@@ -348,7 +357,8 @@ contract DutchExchange {
         }
     }
 
-    function fillUpReziAuction(
+    ///@dev  Shifts the sell volume to a buy volume in the opposite auction
+    function fillUpOppositeAuction(
         address sellToken,
         address buyToken,
         uint volume,
@@ -521,16 +531,19 @@ contract DutchExchange {
         internal
     {
 
-        buyVolumes[sellToken][buyToken][auctionIndex+1] += extraBuyTokens[sellToken][buyToken] [auctionIndex];
+        buyVolumes[sellToken][buyToken][auctionIndex+1] += extraBuyTokens[sellToken][buyToken][auctionIndex];
         sellVolumes[sellToken][buyToken][auctionIndex+1] += extraSellTokens[sellToken][buyToken][auctionIndex];
         // Update extra tokens
         extraBuyTokens[sellToken][buyToken][auctionIndex] = 0;
         extraSellTokens[sellToken][buyToken][auctionIndex] = 0;
+        // increasing to next auction
+        latestAuctionIndices[sellToken][buyToken] += 1;
 
         AuctionCleared(sellToken, buyToken, auctionIndex - 1);
         waitOrScheduleNextAuction(sellToken, buyToken, auctionIndex);
     }
 
+    
     function waitOrScheduleNextAuction(
         address sellToken,
         address buyToken,
@@ -538,6 +551,14 @@ contract DutchExchange {
     internal
     {
 
+
+        // auctionStarts[sellToken][buyToken]>1 -> auction is running
+        // auctionStarts[sellToken][buyToken]==0 -> auction is waiting for bids
+        // auctionStarts[sellToken][buyToken]==1 -> auction is waiting for OppositeAuction
+
+        
+         // should we use a treshold instead of !=0 ? 
+         //uint public tresholdForStartingAuction=10  
         if (sellVolumes[sellToken][buyToken][auctionIndex+1] == 0) {
             // No sell orders were submitted
             // First sell order will notice this and push auction state into waiting period 
@@ -551,11 +572,13 @@ contract DutchExchange {
         if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
             // Maybe or is wanted by design
             
-            // not yet correct....
+            // set the final prices as average from both auctions: usual auction + opposite auction
             closingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
             closingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
-            latestAuctionIndices[sellToken][buyToken] = auctionIndex + 1;
-
+            closingPrices[buyToken][sellToken][auctionIndex].den = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
+            closingPrices[buyToken][sellToken][auctionIndex].num = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
+            //TODO 
+            //final price only needs to be saved in one auction, eather the final one or the opposite one 
 
             //set starting point in 10 minutes
             auctionStarts[buyToken][sellToken] = now+600;
