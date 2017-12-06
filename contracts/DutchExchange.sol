@@ -37,7 +37,7 @@ contract DutchExchange {
     // Token => Token => time
     mapping (address => mapping (address => uint)) public auctionStarts;
 
-    
+
     // Token => Token => auctionIndex => price
     mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
 
@@ -332,9 +332,9 @@ contract DutchExchange {
 
         if (overbuy >= 0) {
             // Clear auction
-            //uint finalBuyVolume = buyVolume + amountAfterFee - uint(overbuy);
-            //clearAuction(sellToken, buyToken, buyVolumes[sellToken][buyToken][auctionIndex] + 
-            // amountAfterFee - uint(overbuy) - sellVolumes[sellToken][buyToken][auctionIndex]);
+            uint finalBuyVolume = buyVolume + amountAfterFee - uint(overbuy);
+            clearAuction(sellToken, buyToken, buyVolumes[sellToken][buyToken][auctionIndex] + 
+            amountAfterFee - uint(overbuy) - sellVolumes[sellToken][buyToken][auctionIndex]);
         }
     }
 
@@ -568,7 +568,6 @@ contract DutchExchange {
 
 
         // increasing to next auction
-        latestAuctionIndices[sellToken][buyToken] += 1;
         auctionStarts[sellToken][buyToken] = 0;
 
         AuctionCleared(sellToken, buyToken, auctionIndex);
@@ -590,14 +589,6 @@ contract DutchExchange {
          // should we use a treshold instead of !=0 ? 
          //uint public tresholdForStartingAuction=10  
 
-
-        if (sellVolumes[sellToken][buyToken][auctionIndex] == 0) {
-            // No sell orders were submitted
-            // First sell order will notice this and push auction state into waiting period 
-            // -> auctionStarts[sellToken][buyToken] = 1;
-            auctionStarts[sellToken][buyToken] = 0;
-        }
-
         if (sellVolumes[sellToken][buyToken][auctionIndex] > 0) {
             // putting auction in waiting state for OppositeAuction
             auctionStarts[sellToken][buyToken] = 1;
@@ -606,14 +597,9 @@ contract DutchExchange {
 
         // If both Auctions are waiting, start them in 10 mins and clear all states
         if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
-            // Maybe OR is wanted by design
-            
-            // set the starting prices for the next auction
-            //startingPrices[sellToken][buyToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
-            //startingPrices[sellToken][buyToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[sellToken][buyToken][auctionIndex-1])/2;
-            //ClosingPrices[buyToken][sellToken][auctionIndex].num = (buyVolumes[sellToken][buyToken][auctionIndex-1]+buyVolumes[buyToken][sellToken][auctionIndex-1])/2;
-            //ClosingPrices[buyToken][sellToken][auctionIndex].den = (sellVolumes[sellToken][buyToken][auctionIndex-1]+sellVolumes[buyToken][sellToken][auctionIndex-1])/2;
+            // if ((auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] >= 0) || (auctionStarts[sellToken][buyToken] >= 0 && auctionStarts[buyToken][sellToken] == 1)) { 
 
+            
             // Update extra tokens
             buyVolumes[sellToken][buyToken][auctionIndex] += extraBuyTokens[sellToken][buyToken][auctionIndex-1];
             sellVolumes[sellToken][buyToken][auctionIndex] += extraSellTokens[sellToken][buyToken][auctionIndex-1];
@@ -630,6 +616,10 @@ contract DutchExchange {
             //set starting point in 10 minutes
             auctionStarts[buyToken][sellToken] = now+600;
             auctionStarts[sellToken][buyToken] = now+600;
+
+            // update latest auctions
+            latestAuctionIndices[buyToken][sellToken] += 1;
+            latestAuctionIndices[sellToken][buyToken] += 1;
         }
 
     }
