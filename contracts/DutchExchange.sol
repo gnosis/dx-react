@@ -314,6 +314,7 @@ contract DutchExchange {
 
         // Fee mechanism
         uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
+
         // Fees are added to extraSellTokens
         extraSellTokens[sellToken][buyToken][auctionIndex] += fee;
         uint amountAfterFee = amount - fee;
@@ -330,7 +331,7 @@ contract DutchExchange {
         address sellToken,
         address buyToken,
         uint auctionIndex,
-        uint amount, // originally amountSubmitted
+        uint amountOfBuyToken, // originally amountSubmitted
         uint amountOfWIZToBurn
     )
         public
@@ -340,8 +341,8 @@ contract DutchExchange {
         require(auctionStarts[sellToken][buyToken] >= now);
         require(auctionIndex == latestAuctionIndices[sellToken][buyToken]);
 
-        checkArbitragePossibilityInOppositeMarket(auctionIndex,sellToken,buyToken);
-        amount = Math.min(amount, balances[buyToken][msg.sender]);
+        checkArbitragePossibilityInOppositeMarket(auctionIndex, sellToken, buyToken);
+        amount = Math.min(amountOfBuyToken, balances[buyToken][msg.sender]);
 
         // Fee mechanism
         uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
@@ -619,6 +620,7 @@ contract DutchExchange {
         waitOrScheduleNextAuction(sellToken, buyToken, auctionIndex+1);
     }
 
+    uint public tresholdInUSD=1000;
     ///@dev checks whether the next auction and opposite auction can be started
     ///@param sellToken sellToken of the auction
     ///@param buyToken  buyToken of the auction
@@ -637,38 +639,46 @@ contract DutchExchange {
 
          // should we use a treshold instead of !=0 ? 
          //uint public tresholdForStartingAuction=10  
-
-        if (sellVolumes[sellToken][buyToken][auctionIndex] > 0) {
+        uint tresholdVolume=priceOracle.getTokensValueInCENTS(sellToken, sellVolumes[sellToken][buyToken][auctionIndex]);
+        if (tresholdVolume/100 > tresholdInUSD) {
             // putting auction in waiting state for OppositeAuction
             auctionStarts[sellToken][buyToken] = 1;
         }
 
 
         // If both Auctions are waiting, start them in 10 mins and clear all states
-        if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
-            // if ((auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] >= 0) || (auctionStarts[sellToken][buyToken] >= 0 && auctionStarts[buyToken][sellToken] == 1)) { 
+        // if (auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1) { 
+        if ((auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] >= 0) || (auctionStarts[sellToken][buyToken] >= 0 && auctionStarts[buyToken][sellToken] == 1)) { 
 
             
-            // Update extra tokens
-            buyVolumes[sellToken][buyToken][auctionIndex] += extraBuyTokens[sellToken][buyToken][auctionIndex-1];
-            sellVolumes[sellToken][buyToken][auctionIndex] += extraSellTokens[sellToken][buyToken][auctionIndex-1];
             
-            extraBuyTokens[sellToken][buyToken][auctionIndex-1] = 0;
-            extraSellTokens[sellToken][buyToken][auctionIndex-1] = 0;
+            if (auctionStarts[sellToken][buyToken] == 1) {
+                // Update extra tokens
+                buyVolumes[sellToken][buyToken][auctionIndex] += extraBuyTokens[sellToken][buyToken][auctionIndex-1];
+                sellVolumes[sellToken][buyToken][auctionIndex] += extraSellTokens[sellToken][buyToken][auctionIndex-1];
+            
+                extraBuyTokens[sellToken][buyToken][auctionIndex-1] = 0;
+                extraSellTokens[sellToken][buyToken][auctionIndex-1] = 0;
+                
+                //set starting point in 10 minutes
+                auctionStarts[buyToken][sellToken] = now+600;
 
-            buyVolumes[buyToken][sellToken][auctionIndex] += extraBuyTokens[buyToken][sellToken][auctionIndex-1];
-            sellVolumes[buyToken][sellToken][auctionIndex] += extraSellTokens[buyToken][sellToken][auctionIndex-1];
+                // update latest auctions
+                latestAuctionIndices[buyToken][sellToken] += 1;
+            } 
 
-            extraBuyTokens[buyToken][sellToken][auctionIndex-1] = 0;
-            extraSellTokens[buyToken][sellToken][auctionIndex-1] = 0;
+            if (auctionStarts[buyToken][sellToken] == 1) {
+                // Update extra tokens
+                buyVolumes[buyToken][sellToken][auctionIndex] += extraBuyTokens[buyToken][sellToken][auctionIndex-1];
+                sellVolumes[buyToken][sellToken][auctionIndex] += extraSellTokens[buyToken][sellToken][auctionIndex-1];
 
-            //set starting point in 10 minutes
-            auctionStarts[buyToken][sellToken] = now+600;
-            auctionStarts[sellToken][buyToken] = now+600;
-
-            // update latest auctions
-            latestAuctionIndices[buyToken][sellToken] += 1;
-            latestAuctionIndices[sellToken][buyToken] += 1;
+                extraBuyTokens[buyToken][sellToken][auctionIndex-1] = 0;
+                extraSellTokens[buyToken][sellToken][auctionIndex-1] = 0;
+                //set starting point in 10 minutes
+                auctionStarts[sellToken][buyToken] = now+600;
+                // update latest auctions
+                latestAuctionIndices[sellToken][buyToken] += 1;
+            }
         }
     }
 
