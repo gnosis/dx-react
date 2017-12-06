@@ -19,5 +19,6 @@
   "bugs": {
     "url": "https://github.com/gnosis/dutch-exchange/issues"
   },
-  "homepage": "https://github.com/gnosis/dutch-exchange#readme"
+  "homepage": "https://github.com/gnosis/dutch-exchange#readme",
+  "dependencies": {}
 }

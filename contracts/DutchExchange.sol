@@ -1,11 +1,13 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
-import "./Math.sol";
-// import "./Token.sol";
+import "./Utils/Math.sol" as Math;
+import "./Tokens/Token.sol";
+import "./Oracle/PriceOracle.sol";  
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik@gnosis.pm>
-
+    
+    
 contract DutchExchange {
 
     // The price is a rational number, so we need a concept of a fraction
@@ -15,26 +17,29 @@ contract DutchExchange {
     }
 
     address public owner;
+    // Ether ERC-20 token
     address public ETH;
     address public ETHUSDOracle;
     address public TUL;
-    address public WIZ;
+    address public OWL;
 
+    // Token => approved
+    // Only tokens approved by owner generate TUL tokens
+    mapping (address => bool) public approvedTokens;
+
+    // The following two mappings are symmetric - m[t1][t2] = m[t2][t1]
+    // The order depends on in which order the tokens were submitted in addTokenPair()
+    // ETH-Token pairs will always have ETH first, T-T pairs will have arbitrary order 
     // Token => Token => index
     mapping (address => mapping (address => uint)) public latestAuctionIndices;
-    // Token => Token => auctionIndex => price
-    mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
-    // Token => oracle
-    mapping (address => address) public priceOracles;
-
     // Token => Token => time
-    // Will always be in the past except when:
-    // 1. A new token pair is added
-    // 2. An auction doesn't receive any sellOrders
-    // In both cases, the first sellOrder will schedule the auction to begin in 6 hours
     mapping (address => mapping (address => uint)) public auctionStarts;
 
+    // Token => Token => auctionIndex => price
+    mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
+
     // Token => user => amount
+    // balances stores a user's balance in the DutchX
     mapping (address => mapping (address => uint)) public balances;
 
     // Token => Token => auctionIndex => amount
@@ -46,7 +51,7 @@ contract DutchExchange {
     mapping (address => mapping (address => mapping (uint => uint))) public extraSellTokens;
     mapping (address => mapping (address => mapping (uint => uint))) public extraBuyTokens;
 
-    // Token => Token => user => auctionIndex => amount
+    // Token => Token =>  auctionIndex => user => amount
     mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public sellerBalances;
     mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public buyerBalances;
     mapping (address => mapping (address => mapping (uint => mapping (address => uint)))) public claimedAmounts;
@@ -91,7 +96,7 @@ contract DutchExchange {
     }
 
     modifier existingToken(address token) {
-        require(priceOracles[token] > 0);
+        require(latestAuctionIndices[ETH][token] > 0);
         _;
     }
 
@@ -101,17 +106,17 @@ contract DutchExchange {
     }
 
     /// @dev Constructor creates exchange
-    /// @param owner address. Only owner can set up new token pairs and halt trading
-    /// @param address of ETH ERC-20 token
-    /// @param address of ETH/USD price oracle
-    /// @param address of TUL ERC-20 token. Tulips are a loyalty scheme
-    /// @param address of WIZ tokens
+    /// @param _owner
+    /// @param _ETH - address of ETH ERC-20 token
+    /// @param _ETHUSDOracle
+    /// @param _TUL - address of TUL ERC-20 token
+    /// @param _OWL - address of OWL ERC-20 token
     function DutchExchange(
-        address _owner,
+        address _owner, 
         address _ETH,
         address _ETHUSDOracle,
         address _TUL,
-        address _WIZ
+        address _OWL
     )
         public
     {
@@ -119,85 +124,145 @@ contract DutchExchange {
         ETH = _ETH;
         ETHUSDOracle = _ETHUSDOracle;
         TUL = _TUL;
-        WIZ = _WIZ;
+        OWL = _OWL;
     }
 
-    /// @param Address of Token that is used to fund auction
-    /// @param Address of price oracle between sellToken and ETH. If sellToken == ETH, can be arbitrary address
-    /// @param Address of Token that is used to buy into auctions
-    /// @param Address of price oracle between buyToken and ETH. If buyToken == ETH, can be arbitrary address
-    /// @param The initial price will be 2 * initialClosingPrice. This is its numerator
-    /// @param The initial price will be 2 * initialClosingPrice. This is its denominator
-    function addTokenPair(
-        address sellToken,
-        address sellTokenETHOracle,
-        address buyToken,
-        address buyTokenETHOracle,
-        uint initialClosingPriceNum,
-        uint initialClosingPriceDen
+    function updateOwner(
+        address newOwner
     )
         public
         onlyOwner()
     {
+        owner = newOwner;
+    }
+
+    function updateApprovalOfToken(
+        address token,
+        bool approved
+    )
+        public
+        onlyOwner()
+    {
+        approvedTokens[token] = approved;
+    }
+
+    function updateETHUSDPriceOracle(
+        address _ETHUSDOracle
+    )
+        public
+        onlyOwner()
+    {
+        ETHUSDOracle = _ETHUSDOracle;
+    }
+
+    /// @param token1. For ETH-Token pairs, this has to be ETH ERC-20 token
+    /// @param token2
+    /// @param initialClosingPriceNum initial price will be 2 * initialClosingPrice. This is its numerator
+    /// @param initialClosingPriceDen initial price will be 2 * initialClosingPrice. This is its denominator
+    function addTokenPair(
+        address token1,
+        address token2,
+        uint initialClosingPriceNum,
+        uint initialClosingPriceDen,
+        uint token1Funding,
+        uint token2Funding
+    )
+        public
+    {
+        // Price can't be negative, 0, and has to be bounded
         require(initialClosingPriceNum != 0);
         require(initialClosingPriceDen != 0);
 
-        // If neither token is ETH, we require there to exist ETH-Token auctions
-        if (sellToken != ETH && buyToken != ETH) {
-            require(latestAuctionIndices[sellToken][ETH] > 0);
-            require(latestAuctionIndices[ETH][sellToken] > 0);
-            require(latestAuctionIndices[buyToken][ETH] > 0);
-            require(latestAuctionIndices[ETH][buyToken] > 0);
+        uint fundedValueUSD;
+        uint ETHUSDPrice = ETHUSDOracle.getETHUSDPrice();
+        uint latestAuctionIndex = latestAuctionIndices[token1][token2];
+
+        // ETH-Token pairs must have ETH as first argument
+        require(token2 != ETH);
+
+        if (token1 == ETH) {
+            fundedValueUSD = token1Funding * ETHUSDPrice;
+        } else {
+            // Neither token is ETH
+            // We require there to exist ETH-Token auctions
+            require(latestAuctionIndices[ETH][token1] > 0);
+            require(latestAuctionIndices[ETH][token2] > 0);
+
+            // Price of Token 1
+            uint priceToken1Num;
+            uint priceToken1Den;
+            (priceToken1Num, priceToken1Den) = priceOracle(token1);
+
+            // Price of Token 2
+            uint priceToken2Num;
+            uint priceToken2Den;
+            (priceToken2Num, priceToken2Den) = priceOracle(token2);
+
+            // Compute funded value in ETH and USD
+            uint fundedValueETH = token1Funding * priceToken1Num / priceToken1Den + token2Funding * priceToken2Num / priceToken2Den;
+            fundedValueUSD = fundedValueETH * ETHUSDPrice;
         }
 
-        if (sellToken != ETH) {
-            priceOracles[sellToken] = sellTokenETHOracle;
+        if (latestAuctionIndex > 0) {
+            // Token pair has run at some point in the past
+            // Sell funding must be at least $1000
+            require(fundedValueUSD >= 1000);
+        } else {
+            // Token pairs have to either be new,
+            // or (if it is renewing), be in same order as before
+            require(latestAuctionIndices[token2][token1] == 0)
+
+            // Now we can be sure it is a new pair
+            // In that case, we require sell funding to be at least $10,000
+            require(fundedValueUSD >= 10000);
         }
 
-        if (buyToken != ETH) {
-            priceOracles[buyToken] = buyTokenETHOracle;
-        }
+        require(Token(token1).transferFrom(token1Funding));
+        require(Token(token2).transferFrom(token2Funding));
 
-        // If Solidity was to change, this ensures the next sellOrder
-        // will still schedule the next auction in 6 hrs as required
-        auctionStarts[sellToken][buyToken] = 0;
-        auctionStarts[buyToken][sellToken] = 0;
-        // Save price
+        // Update variables
+        sellVolumes[token1][token2][latestAuctionIndex + 1] = token1Funding;
+        sellVolumes[token2][token1][latestAuctionIndex + 1] = token2Funding;
+
+        auctionStarts[token1][token2] = now + 6 * 1 hours;
+
+        // Save prices of opposite auctions
         fraction memory initialClosingPrice = fraction(initialClosingPriceNum, initialClosingPriceDen);
-        closingPrices[sellToken][buyToken][0] = initialClosingPrice;
-        initialClosingPrice = fraction( initialClosingPriceDen,initialClosingPriceNum);
-        closingPrices[buyToken][sellToken][0] = initialClosingPrice;
+        closingPrices[token1][token2][latestAuctionIndex + 1] = initialClosingPrice;
+        fraction memory initialClosingPriceOpposite = fraction(initialClosingPriceDen, initialClosingPriceNum);
+        closingPrices[token2][token1][latestAuctionIndex + 1] = initialClosingPriceOpposite;
 
-        // Update other variables
-        latestAuctionIndices[sellToken][buyToken] = 1;
-        latestAuctionIndices[buyToken][sellToken] = 1;
+        // latestAuctionIndex has to go up by 2
+        // If we were renewing a token pair, the next index will save the price
+        // and the next index represents the scheduled auction
+        latestAuctionIndices[token1][token2] = latestAuctionIndex + 2;
     }
 
     function deposit(
-        address token,
+        address tokenAddress,
         uint amount
     )
         public
-        existingToken(token)
+        existingToken(tokenAddress) 
     {
-        require(token.transferFrom(msg.sender, this, amount));
-        balances[token][msg.sender] += amount;
-        NewDeposit(token, amount);
+        require(Token(tokenAddress).transferFrom(msg.sender, this, amount));
+        balances[tokenAddress][msg.sender] += amount;
+        NewDeposit(tokenAddress, amount);
     }
 
     function withdraw(
-        address token,
+        address tokenAddress,
         uint amount
     )
         public
-        existingToken(token)
+        existingToken(tokenAddress)
     {
-        amount = Math.min(amount, balances[token][msg.sender]);
+        amount = Math.min(amount, balances[tokenAddress][msg.sender]);
         require(amount > 0);
 
-        balances[token][msg.sender] -= amount;
-        require(token.transfer(msg.sender, amount));
-        NewWithdrawal(token, amount);
+        balances[tokenAddress][msg.sender] -= amount;
+        require(Token(tokenAddress).transfer(msg.sender, amount));
+        NewWithdrawal(tokenAddress, amount);
     }
 
     function postSellOrder(
@@ -210,27 +275,9 @@ contract DutchExchange {
         public
         existingTokenPair(sellToken, buyToken)
     {
+        // Requirements
         uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
-
-        // The following logic takes care primarily of first auctions
-        // or when an auction receives 0 sell orders
-        // In those two cases, auctionIndex will be latestAuctionIndex
-        // (In all other cases, it will be latestAuctionIndex + 1)
-        if (auctionStarts[sellToken][buyToken] == 0) {
-            // If no auction is scheduled, we accept sell orders only for current auction
-            require(auctionIndex == latestAuctionIndex);
-            // Schedule auction in 6 hours
-            auctionStarts[sellToken][buyToken] = now + 6 * 1 hours;
-        } else if (auctionStarts[sellToken][buyToken] > now) {
-            // There is a scheduled action, we accept sell orders only for that auction
-            require(auctionIndex == latestAuctionIndex);
-            // We accept sell orders only in the first 6 hours
-            require(auctionStarts[sellToken][buyToken] < now + 6 * 1 hours);
-        } else {
-            // This case happens more than 99% of the time
-            // Sell orders are accepted only for next auction
-            require(auctionIndex == latestAuctionIndex + 1);
-        }
+        require(auctionIndex == latestAuctionIndex + 1);
 
         uint amount = Math.min(amountSubmitted, balances[sellToken][msg.sender]);
 
@@ -238,34 +285,34 @@ contract DutchExchange {
 
         // Fee mechanism
         uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
-        // Fees are added to extraSellTokens -> current auction in the edge cases,
-        // next auction in the majority case
+        // Fees are added to extraSellTokens
         extraSellTokens[sellToken][buyToken][auctionIndex] += fee;
         uint amountAfterFee = amount - fee;
 
         // Update variables
         balances[sellToken][msg.sender] -= amount;
-        sellerBalances[auctionIndex][msg.sender] += amountAfterFee;
-        sellVolumes[auctionIndex] += amountAfterFee;
+        sellerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
+        sellVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
+        waitOrScheduleNextAuction(sellToken,buyToken,latestAuctionIndex);
         NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
     }
 
     function postBuyOrder(
         address sellToken,
         address buyToken,
-        uint amountSubmitted,
+        uint auctionIndex,
+        uint amount, // originally amountSubmitted
         uint amountOfWIZToBurn
     )
         public
         existingTokenPair(sellToken, buyToken)
     {
         // Requirements
-        // TODO
         require(auctionStarts[sellToken][buyToken] >= now);
+        require(auctionIndex == latestAuctionIndices[sellToken][buyToken]);
 
-        uint auctionIndex = latestAuctionIndices[sellToken][buyToken];
-        checkReziproityMarket(auctionIndex,sellToken,buyToken);
-        uint amount = Math.min(amountSubmitted, balances[buyToken][msg.sender]);
+        checkArbitragePossibilityInOppositeMarket(auctionIndex,sellToken,buyToken);
+        amount = Math.min(amount, balances[buyToken][msg.sender]);
 
         // Fee mechanism
         uint fee = calculateFee(sellToken, buyToken, msg.sender, amount, amountOfWIZToBurn);
@@ -278,12 +325,13 @@ contract DutchExchange {
         // To calculate overbuy, we first get current price
         uint num;
         uint den;
-        (num, den) = getPrice(auctionIndex);
+        (num, den) = getPrice(sellToken,buyToken,auctionIndex);
 
-        uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
-        uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
-        int overbuy = int(buyVolume + amountAfterFee - sellVolume * num / den);
-
+        //uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
+        //uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
+        //int overbuy = int(buyVolume + amountAfterFee - sellVolume * num / den);
+        int overbuy = int(buyVolumes[sellToken][buyToken][auctionIndex] + amountAfterFee 
+            - sellVolumes[sellToken][buyToken][auctionIndex] * num / den);
         if (int(amountAfterFee) > overbuy) {
             // We must process the buy order
             if (overbuy > 0) {
@@ -293,73 +341,76 @@ contract DutchExchange {
 
             // Update variables
             balances[buyToken][msg.sender] -= amount;
-            buyerBalances[auctionIndex][msg.sender] += amountAfterFee;
+            buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
             buyVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
-            NewBuyOrder(auctionIndex, msg.sender, amount);
+            NewBuyOrder(sellToken,buyToken, msg.sender, auctionIndex, amount);
         }
 
         if (overbuy >= 0) {
             // Clear auction
-            uint finalBuyVolume = buyVolume + amountAfterFee - overbuy;
-            clearAuction(sellToken, buyToken, finalBuyVolume, sellVolume);
+            //uint finalBuyVolume = buyVolume + amountAfterFee - uint(overbuy);
+            //clearAuction(sellToken, buyToken, buyVolumes[sellToken][buyToken][auctionIndex] + 
+            // amountAfterFee - uint(overbuy) - sellVolumes[sellToken][buyToken][auctionIndex]);
         }
     }
-    function checkReziproityMarket(uint auctionIndex, address sellToken, address buyToken) public
+    function checkArbitragePossibilityInOppositeMarket(uint auctionIndex, address sellToken, address buyToken) internal
     {
       // Check whether ReziproAuction already closed:
-      if(closingPrices[sellToken][buyToken][auctionIndex].den!=0)
+      if((closingPrices[sellToken][buyToken][auctionIndex]).den!=0)
       {
         uint num;
         uint den;
         (num, den) = getPrice(sellToken, buyToken, auctionIndex);
-        uint numRezi;
-        uint denRezi;
-        (numRezi, denRezi) = getPrice( buyToken, sellToken, auctionIndex);
+        fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
+        uint numLastAuction= lastClosingPrice.num;
+        uint denLastAuction= lastClosingPrice.den;
 
         // Check wheter there is an arbitrage possibility
         // num*denRezi<den*numRezi ensures that DutchAuction prices have crossed
-        if(num*denRezi<den*numRezi){
+        if (num * denLastAuction < den * numLastAuction) {
           //calculate outstanding volumes for both makets at time of priceCrossing:
-          fraction memory lastClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - 1];
-          num= lastClosingPrice.num/2;
-          den= lastClosingPrice.den/2;
-          numRezi=lastClosingPrice.den/2;
-          denRezi=lastClosingPrice.num/2;
-          uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
-          uint buyVolume = buyVolumes[sellToken][buyToken][auctionIndex];
-          int missingVolume= int(buyVolume  - sellVolume * num / den);
-
-          uint sellVolumeRezi = sellVolumes[buyToken][sellToken][auctionIndex];
-          uint buyVolumeRezi = buyVolumes[buyToken][sellToken][auctionIndex];
-          int missingVolumeRezi= int(buyVolumeRezi  - sellVolumeRezi * numRezi / denRezi)* num / den;
+          int missingVolume = int(buyVolumes[sellToken][buyToken][auctionIndex] - sellVolumes[sellToken][buyToken][auctionIndex] * numLastAuction / denLastAuction);
+          int missingVolumeRezi = int(buyVolumes[buyToken][sellToken][auctionIndex]  
+            - sellVolumes[buyToken][sellToken][auctionIndex] *  denLastAuction/numLastAuction)* int(numLastAuction) / int(denLastAuction);
 
           // fill up the Auction with smaller missing volume
           if( missingVolume>0 && missingVolumeRezi>0)
           {
-              if(missingVolume>missingVolumeRezi){
-                fillUpReziAuction(sellToken,buyToken,missingVolumeRezi,num,den,auctionIndex);
+              if(missingVolumeRezi<missingVolume){
+                fillUpReziAuction(sellToken,buyToken,uint(missingVolumeRezi),numLastAuction,denLastAuction,auctionIndex);
               }
               else{
-                fillUpReziAuction(buyToken,sellToken,missingVolume,numRezi,denRezi,auctionIndex);
+                fillUpReziAuction(buyToken,sellToken,uint(missingVolume),denLastAuction,numLastAuction,auctionIndex);
               }
           }
           else{
+            //edge cases where the last BuyOrder were not enough to fill the sell order, 
+            // 
+            // but then price decreased laster and with the later price, acutally it would have been enough
             if(missingVolume<=0){
-              clearAuction(sellToken, buyToken, buyVolume, sellVolume);
+              clearAuction(sellToken, buyToken, auctionIndex);
             }
             if(missingVolumeRezi<=0){
-              clearAuction(buyToken, sellToken, buyVolumeRezi, sellVolumeRezi);
+              clearAuction(buyToken, sellToken, auctionIndex);
               }
           }
       }
       }
     }
-    function fillUpReziAuction(address sellToken,address buyToken, uint volume, uint numClearing, uint denClearing, uint auctionIndex)
-    internal
+
+    function fillUpReziAuction(
+        address sellToken,
+        address buyToken,
+        uint volume, 
+        uint numClearing, 
+        uint denClearing,
+        uint auctionIndex
+    )
+        internal
     {
-      buyVolumes[sellToken][buyToken][auctionIndex] += volume*numClearing/denClearing;
-      sellVolumes[sellToken][buyToken][auctionIndex] -= volume*denClearing/numClearing;
-      clearAuction(sellToken , buyToken, buyVolumes[sellToken][buyToken][auctionIndex], buyVolumes[sellToken][buyToken][auctionIndex]*denClearing/numClearing);
+        buyVolumes[sellToken][buyToken][auctionIndex] += volume;
+        sellVolumes[sellToken][buyToken][auctionIndex] -= volume*denClearing/numClearing;
+        clearAuction(sellToken , buyToken,  auctionIndex);
     }
 
 
@@ -374,7 +425,7 @@ contract DutchExchange {
         returns (uint returned)
     {
         // Requirements
-        uint256 sellerBalance = sellerBalances[sellToken][buyToken][user][auctionIndex];
+        uint256 sellerBalance = sellerBalances[sellToken][buyToken][auctionIndex][user];
         require(sellerBalance > 0);
 
         // Checks if particular auction has cleared
@@ -392,7 +443,7 @@ contract DutchExchange {
         returned += extraTokens;
 
         // Claim tokens
-        sellerBalances[sellToken][buyToken][user][auctionIndex] = 0;
+        sellerBalances[sellToken][buyToken][auctionIndex][user] = 0;
         balances[buyToken][user] += returned;
         NewSellerFundsClaim(sellToken, buyToken, user, auctionIndex, returned);
     }
@@ -412,16 +463,16 @@ contract DutchExchange {
         uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
         if (auctionIndex == latestAuctionIndex) {
             // Auction is running
-            claimedAmounts[sellToken][buyToken][user][auctionIndex] += returned;
+            claimedAmounts[sellToken][buyToken][auctionIndex][user] += returned;
         } else {
             // Auction has closed
             // Reset buyerBalances and claimedAmounts
-            buyerBalances[sellToken][buyToken][user][auctionIndex] = 0;
-            claimedAmounts[sellToken][buyToken][user][auctionIndex] = 0;
+            buyerBalances[sellToken][buyToken][auctionIndex][user] = 0;
+            claimedAmounts[sellToken][buyToken][auctionIndex][user] = 0;
 
             // Assign extra tokens (this is possible only after auction has cleared,
             // because buyVolume could still increase before that)
-            uint buyerBalance = buyerBalances[sellToken][buyToken][user][auctionIndex];
+            uint buyerBalance = buyerBalances[sellToken][buyToken][auctionIndex][user];
             uint extraTokensTotal = extraSellTokens[sellToken][buyToken][auctionIndex];
             uint extraTokens = buyerBalance * extraTokensTotal / buyVolumes[sellToken][buyToken][auctionIndex];
             returned += extraTokens;
@@ -446,22 +497,18 @@ contract DutchExchange {
         // Checks if particular auction has ever run
         require(auctionIndex <= latestAuctionIndices[sellToken][buyToken]);
 
-        uint buyerBalance = buyerBalances[sellToken][buyToken][user][auctionIndex];
+        uint buyerBalance = buyerBalances[sellToken][buyToken][auctionIndex][user];
 
-        if (buyerBalance == 0) {
+        uint num;
+        uint den;
+        (num, den) = getPrice(sellToken, buyToken, auctionIndex);
+
+        if (num == 0) {
+            // This should never happen - as long as there is >= 1 buy order,
+            // auction will clear before price = 0. So this is just fail-safe
             unclaimedBuyerFunds = 0;
         } else {
-            uint num;
-            uint den;
-            (num, den) = getPrice(sellToken, buyToken, auctionIndex);
-
-            if (num <= 0) {
-                // Actually this should never happen - as long as there is >= 1 buy order,
-                // auction will clear before price = 0. So this is just fail-safe
-                unclaimedBuyerFunds = 0;
-            } else {
-                unclaimedBuyerFunds = buyerBalance * den / num - claimedAmounts[sellToken][buyToken][user][auctionIndex];
-            }
+            unclaimedBuyerFunds = buyerBalance * den / num - claimedAmounts[sellToken][buyToken][auctionIndex][user];
         }
     }
 
@@ -490,11 +537,11 @@ contract DutchExchange {
 
             // If the previous closing price was 0, for calculations we assume it was
             // 10% of the closing price of the last auction that closed above 0
-            if (numOfLastClosingPrice <= 0) {
+            if (numOfLastClosingPrice == 0) {
                 fraction memory previousClosingPrice;
                 uint i = 1;
 
-                while (numOfLastClosingPrice <= 0) {
+                while (numOfLastClosingPrice == 0) {
                     i++;
                     previousClosingPrice = closingPrices[sellToken][buyToken][auctionIndex - i];
                     numOfLastClosingPrice = previousClosingPrice.num;
@@ -503,45 +550,66 @@ contract DutchExchange {
                 denOfLastClosingPrice = previousClosingPrice.den * 10;
             }
 
-            uint timeElapsed = now - auctionStarts[sellToken][buyToken];
+            // If we're calling the function into an unstarted auction,
+            // it will return the starting price of that auction
+            uint timeElapsed = Math.max(0, now - auctionStarts[sellToken][buyToken]);
 
             // The numbers below are chosen such that
-            // P(0 hrs) = 2 * lastClosingPrice, P(6 hrs) = lastClosingPrice, P(24 hrs) = 0
-            num = (86400 - timeElapsed) * numOfLastClosingPrice;
+            // P(0 hrs) = 2 * lastClosingPrice, P(6 hrs) = lastClosingPrice, P(>=24 hrs) = 0
+            num = Math.max(0, 86400 - timeElapsed) * numOfLastClosingPrice);
             den = (timeElapsed + 43200) * denOfLastClosingPrice;
-
-            num = Math.max(num, 0);
         }
     }
 
     function clearAuction(
         address sellToken,
         address buyToken,
-        uint currentPriceNum,
-        uint currentPriceDen
+        uint auctionIndex
     )
         internal
     {
-        uint latestAuctionIndex = latestAuctionIndices[sellToken][buyToken];
 
-        if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0) {
-            // No sell orders were submitted
-            // First sell order will notice this and schedule next auction in 6 hrs
-            auctionStarts[sellToken][buyToken] = 0;
-        } else {
-            auctionStarts[sellToken][buyToken] = now;
-        }
-
+        buyVolumes[sellToken][buyToken][auctionIndex+1]+=extraBuyTokens[sellToken][buyToken] [auctionIndex];
+        sellVolumes[sellToken][buyToken][auctionIndex+1]+=extraSellTokens[sellToken][buyToken][auctionIndex];
         // Update extra tokens
-        extraBuyTokensNext[sellToken][buyToken] = 0;
-        extraSellTokens[sellToken][buyToken] = 0;
+        extraBuyTokens[sellToken][buyToken][auctionIndex] = 0;
+        extraSellTokens[sellToken][buyToken][auctionIndex] = 0;
 
         // Update other state variables
-        closingPrices[sellToken][buyToken][latestAuctionIndex].num = currentPriceNum;
-        closingPrices[sellToken][buyToken][latestAuctionIndex].den = currentPriceDen;
-        latestAuctionIndices[sellToken][buyToken] = latestAuctionIndex + 1;
-        AuctionCleared(sellToken, buyToken, latestAuctionIndex - 1);
+        // not yet correct....
+        closingPrices[sellToken][buyToken][auctionIndex].num 
+        = (buyVolumes[sellToken][buyToken][auctionIndex]+buyVolumes[buyToken][sellToken][auctionIndex])/2;
+        closingPrices[sellToken][buyToken][auctionIndex].den 
+        = (sellVolumes[sellToken][buyToken][auctionIndex]+sellVolumes[sellToken][buyToken][auctionIndex])/2;
+        latestAuctionIndices[sellToken][buyToken] = auctionIndex + 1;
+
+        AuctionCleared(sellToken, buyToken, auctionIndex - 1);
+        waitOrScheduleNextAuction(sellToken, buyToken,auctionIndex);
     }
+
+    function waitOrScheduleNextAuction(
+        address sellToken,
+        address buyToken,
+        uint latestAuctionIndex
+    )
+        internal
+    {
+        if (sellVolumes[sellToken][buyToken][latestAuctionIndex + 1] == 0 ) {
+            // No sell orders were submitted
+            // First sell order will notice this and push auction state into waiting period -> auctionStarts[sellToken][buyToken] = 1;
+            auctionStarts[sellToken][buyToken] = 0;
+        } else{
+          // putting auction in waiting state for ReziproAuction
+          auctionStarts[sellToken][buyToken] = 1;
+        }
+        // If both Auctions are waiting, start them in 1 hour and clear all states
+        if(auctionStarts[sellToken][buyToken] == 1 && auctionStarts[buyToken][sellToken] == 1){ // Maybe or is wanted by design
+          //set starting point in 10 minutes
+          auctionStarts[buyToken][sellToken] = now+600;
+          auctionStarts[sellToken][buyToken] = now+600;
+        }
+    }
+
 
     function calculateFee(
         address sellToken,
@@ -554,28 +622,56 @@ contract DutchExchange {
         returns (uint fee)
     {
         // Calculate fee based on proportion of all TUL tokens owned
-        uint supplyOfTUL = TUL.getTotalSupply();
-        uint balanceOfTUL = TUL.balanceOf(user);
+        uint supplyOfTUL = Token(TUL).totalSupply();
+        uint balanceOfTUL = Token(TUL).balanceOf(user);
 
         // The fee function is chosen such that
         // F(0) = 0.5%, F(1%) = 0.25%, F(>=10%) = 0
         // (Takes in my ratio of all TUL tokens, outputs fee ratio)
         // We then multiply by amount to get fee:
-        fee = (supplyOfTUL - 10 * balanceOfTUL) * amount / (16000 * balanceOfTUL + 200 * supplyOfTUL);
-        fee = Math.max(fee, 0);
+        fee = Math.max(0, (supplyOfTUL - 10 * balanceOfTUL) * amount / (16000 * balanceOfTUL + 200 * supplyOfTUL));
 
         if (fee > 0) {
             // Allow user to reduce up to half of the fee with WIZ
 
             // Convert fee to ETH, then USD
-            feeInETH = priceOracles[buyToken].convert(fee);
-            feeInUSD = ETHUSDOracle.convert(feeInETH);
+            uint feeInETH = PriceOracle(ETHUSDOracle).getETHvsTokenPrice(buyToken)*(fee);
+            uint feeInUSD = feeInETH * PriceOracle(ETHUSDOracle).getETHUSDPrice();
             uint amountOfWIZBurned = Math.min(amountOfWIZBurnedSubmitted, feeInUSD / 2);
-            // ERC-20
-            WIZ.spend(user, amountOfWIZBurned);
+
+            //burning OWL tokens with delegatecall is risky, because this allows OWL token to modify the storage of this contract.
+            // OWL.delegatecall(bytes4(sha3("burnOWL(uint256)")), amount);
+
 
             // Adjust fee
             fee = amountOfWIZBurned * fee / feeInUSD;
         }
+    }
+
+    /// @dev Gives best estimate for market price of a token in ETH of any price oracle on the Ethereum network
+    /// @param address of ERC-20 token
+    /// @return Weighted average of closing prices of opposite Token-ETH auctions, based on their sellVolume  
+    function priceOracle(
+        address token
+    )
+        public
+        constant
+        existingToken(token)
+        returns (uint num, uint den)
+    {
+        // Get variables
+        uint latestAuctionIndex = latestAuctionIndices[ETH][token];
+        fraction memory closingPriceETH = closingPrices[ETH][token][latestAuctionIndex - 1];
+        fraction memory closingPriceToken = closingPrices[token][ETH][latestAuctionIndex - 1];
+
+        // We will compute weighted average by considering ETH value of both auctions
+        uint sellVolumeETH = sellVolumes[ETH][token][latestAuctionIndex - 1];
+        uint buyVolumeToken = buyVolumes[token][ETH][latestAuctionIndex - 1];
+
+        // Compute weighted average
+        uint numFirstPart = sellVolumeETH * closingPriceETH.den * closingPriceToken.den;
+        uint numSecondPart = buyVolumeToken * closingPriceToken.num * closingPriceETH.num;
+        num = numFirstPart + numSecondPart;
+        den = closingPriceETH.num * closingPriceToken.den * (sellVolumeETH + buyVolumeToken);
     }
 }
