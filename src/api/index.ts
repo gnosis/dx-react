@@ -2,8 +2,8 @@ import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './DutchX'
 
-import { TokenCode, Account, Balance } from 'types'
-import { dxAPI } from './types'
+import { TokenCode, TokenPair, Account, Balance } from 'types'
+import { dxAPI, Index } from './types'
 import { BigNumber } from 'bignumber.js'
 
 const promisedAPI = initAPI()
@@ -98,6 +98,79 @@ export const postSellOrder = async (account: Account, amount: Balance, sell: Tok
   console.log('approved tx', receipt)
 
   return DutchX.postSellOrder(pair, amount, account)
+}
+
+/*
+ * get seller balance from auction corresponding to a pair of tokens at an index
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const getSellerBalance = async (pair: TokenPair, index?: Index, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getSellerBalance(pair, index, account)
+}
+
+/*
+ * claim seller funds from auction corresponding to a pair of tokens at an index
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.claimSellerFunds(pair, index, account)
+}
+
+/*
+ * get amount of funds already claimed for auction corresponding to a pair of tokens at an index
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const getClaimedAmount = async (pair: TokenPair, index?: Index, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getClaimedAmount(pair, index, account)
+}
+
+// TODO: implement when available on contract
+/*
+ * get amount of funds available for claiming for auction corresponding to a pair of tokens at an index
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+// export const getUnclaimedSellerFunds = async (pair: TokenPair, index ?: Index, account ?: Account) => {
+//   const { DutchX } = await promisedAPI
+
+//   return DutchX.getUnclaimedSellerFunds(pair, index, account)
+// }
+
+/*
+ * deposit amount of a tokens for the DutchExchange auction to hold in the account's name
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const deposit = async (code: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.deposit(code, amount, account)
+}
+
+/*
+ * withdraw tokens that the DutchExchange auction is holding in the account's name
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const withdraw = async (code: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.withdraw(code, amount, account)
 }
 
 
