@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import "./../DutchExchange/DutchExchangeInterface.sol";
 import "./../Utils/Math.sol";
 
-contract OracleContract {
+contract PriceOracle {
     using Math for *;
 
     mapping (address => uint)lastPrices;

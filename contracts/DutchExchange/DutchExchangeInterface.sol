@@ -131,8 +131,6 @@ contract DutchExchangeInterface {
         public
         onlyOwner();
 
-    /// @param token1. For ETH-Token pairs, this has to be ETH ERC-20 token
-    /// @param token2
     /// @param initialClosingPriceNum initial price will be 2 * initialClosingPrice. This is its numerator
     /// @param initialClosingPriceDen initial price will be 2 * initialClosingPrice. This is its denominator
     function addTokenPair(
