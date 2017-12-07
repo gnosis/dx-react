@@ -1,6 +1,6 @@
 import { promisedContractsMap } from './contracts'
 import { promisedWeb3 } from './web3Provider'
-import { DutchExchange, Index } from './types'
+import { DutchExchange, Index, Filter, ErrorFirstCallback, DutchExchangeEvents } from './types'
 import { TokenPair, Account, Balance, TokenCode } from 'types'
 
 export const promisedDutchX = init()
@@ -220,6 +220,22 @@ async function init(): Promise<DutchExchange> {
     return Dx.balances(token, account)
   }
 
+  const event: DutchExchange['event'] = (
+    eventName: DutchExchangeEvents,
+    valueFilter: object | void,
+    filter: Filter,
+    cb?: ErrorFirstCallback,
+  ): any => {
+    const event = Dx[eventName]
+
+    if (typeof event !== 'function') throw new Error(`No event with ${eventName} name found on DutchExchange contract`)
+
+    return event(valueFilter, filter, cb)
+  }
+
+
+  const allEvents: DutchExchange['allEvents'] = Dx.allEvents.bind(Dx)
+
   return {
     get address() {
       return Dx.address
@@ -248,5 +264,7 @@ async function init(): Promise<DutchExchange> {
     // getUnclaimedSellerFunds,
     deposit,
     withdraw,
+    event,
+    allEvents,
   }
 }

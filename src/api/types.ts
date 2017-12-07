@@ -36,23 +36,29 @@ export interface TokensInterface {
   allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
 }
 
-interface ErrorFirstCallback {
+export interface ErrorFirstCallback {
   (err: Error, result: any): void
 }
 
-interface ContractEvent {
-  (filter: object | null, extraFilter: object | null): EventInstance,
+export interface ContractEvent {
+  (valueFilter: object | void, filter: Filter): EventInstance,
+  (valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,
 }
 
-interface ImmediateContractEvent {
-  (filter: object | null, extraFilter: object | null, cb?: ErrorFirstCallback): void,
-}
-
-interface EventInstance {
+export interface EventInstance {
   watch(cb: ErrorFirstCallback): void,
   stopWatching(): void,
   get(cb: ErrorFirstCallback): void,
 }
+
+interface FilterObject {
+  fromBlock?: number | 'latest' | 'pending',
+  toBlock?: number | 'latest' | 'pending',
+  address?: Account,
+  topics?: (string | null)[],
+}
+
+export type Filter = 'latest' | 'pending' | FilterObject | void
 
 export interface ERC20Interface {
   address: Account,
@@ -62,11 +68,11 @@ export interface ERC20Interface {
   transferFrom(sender: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
   approve(spender: Account, value: Balance, sender: Account, tx?: TransactionObject): Promise<Receipt>,
   allowance(owner: Account, spender: Account): Promise<BigNumber>,
-  Transfer(filter: object | null, extraFilter: object | null, cb?: ErrorFirstCallback): void,
-  Transfer(filter: object | null, extraFilter: object | null): EventInstance,
-  Approval: ContractEvent | ImmediateContractEvent,
-  allEvents(filter: object | null, cb?: ErrorFirstCallback): void,
-  allEvents(filter: object | null): EventInstance,
+  Transfer(valueFilter: object | void, filter: Filter, cb?: ErrorFirstCallback): void,
+  Transfer(valueFilter: object | void, filter: Filter): EventInstance,
+  Approval: ContractEvent,
+  allEvents(filter?: Filter, cb?: ErrorFirstCallback): void,
+  allEvents(filter?: Filter): EventInstance,
 }
 
 export interface Receipt {
@@ -93,15 +99,15 @@ export interface DXAuction {
   buyerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   claimedBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
 
-  NewDeposit: ContractEvent | ImmediateContractEvent,
-  NewWithdrawal: ContractEvent | ImmediateContractEvent,
-  NewSellOrder: ContractEvent | ImmediateContractEvent,
-  NewBuyOrder: ContractEvent | ImmediateContractEvent,
-  NewSellerFundsClaim: ContractEvent | ImmediateContractEvent,
-  NewBuyerFundsClaim: ContractEvent | ImmediateContractEvent,
-  AuctionCleared: ContractEvent | ImmediateContractEvent,
-  allEvents(filter: object | null, cb?: ErrorFirstCallback): void,
-  allEvents(filter: object | null): EventInstance,
+  NewDeposit: ContractEvent,
+  NewWithdrawal: ContractEvent,
+  NewSellOrder: ContractEvent,
+  NewBuyOrder: ContractEvent,
+  NewSellerFundsClaim: ContractEvent,
+  NewBuyerFundsClaim: ContractEvent,
+  AuctionCleared: ContractEvent,
+  allEvents(filter: Filter, cb: ErrorFirstCallback): void,
+  allEvents(filter: Filter): EventInstance,
 
   updateOwner(account: Account, tx?: TransactionObject): Promise<Receipt>,
   updateApprovalOfToken(token: Account, approved: boolean, tx?: TransactionObject): Promise<Receipt>,
@@ -218,7 +224,19 @@ export interface DutchExchange {
   deposit(code: TokenCode, amount: Balance, account?: Account): Promise<Receipt>,
   withdraw(code: TokenCode, amount: Balance, account?: Account): Promise<Receipt>,
 
+  event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
+  event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,
+  allEvents(filter?: Filter): EventInstance,
+  allEvents(filter?: Filter, cb?: ErrorFirstCallback): void,
 }
+
+export type DutchExchangeEvents = 'NewDeposit' |
+  'NewWithdrawal' |
+  'NewSellOrder' |
+  'NewBuyOrder' |
+  'NewSellerFundsClaim' |
+  'NewBuyerFundsClaim' |
+  'AuctionCleared'
 
 
 export interface dxAPI {
