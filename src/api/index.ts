@@ -76,7 +76,7 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
   const { DutchX } = await promisedAPI
   const pair = { sell, buy }
 
-  const currentAuctionIdx = await DutchX.getAuctionIndex(pair)
+  const currentAuctionIdx = await DutchX.getLatestAuctionIndex(pair)
 
   const auctionIdx = currentAuctionIdx.add(aDiff)
   // Guard against negative index
@@ -94,7 +94,7 @@ export const postSellOrder = async (account: Account, amount: Balance, sell: Tok
   const pair = { sell, buy }
 
   // TODO: in future ask for a larger allowance
-  const receipt = await Tokens.approve(sell, DutchX.getAddress(pair), amount, { from: account })
+  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
   console.log('approved tx', receipt)
 
   return DutchX.postSellOrder(pair, amount, account)
