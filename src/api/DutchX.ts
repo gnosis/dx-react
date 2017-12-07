@@ -38,9 +38,9 @@ const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => 
 async function init(): Promise<DutchExchange> {
   const { DutchExchange: Dx } = await promisedContractsMap
 
-  const fillDefaultIndexAndAccount = (pair: TokenPair, index?: Index, account?: Account): Promise<[Index, Account]> =>
-    Promise.all([
-      index === undefined ? getLatestAuctionIndex(pair) : Promise.resolve(index),
+  const fillDefaultIndexAndAccount = (pair: TokenPair, index?: Index, account?: Account) =>
+    Promise.all<Index, Account>([
+      index === undefined ? getLatestAuctionIndex(pair) : index,
       account === undefined ? getCurrentAccount() : account,
     ])
 
