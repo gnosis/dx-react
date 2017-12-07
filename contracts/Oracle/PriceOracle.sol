@@ -4,13 +4,13 @@ import "./../DutchExchange/DutchExchangeInterface.sol";
 import "./../Utils/Math.sol";
 
 contract PriceOracle {
-    using Math for *;
+    //using Math for *;
 
     mapping (address => uint)lastPrices;
     uint public lastPriceETHUSD = 0;
-    DutchExchangeInterface dutchExchange ;
-    address etherToken;
-    address owner;
+    DutchExchangeInterface dutchExchange;
+    address public etherToken;
+    address public owner;
     
 
      // Modifiers
@@ -20,15 +20,16 @@ contract PriceOracle {
     }
 
     ///@dev constructor of the contract, 
-    function OracleContract(address _owner)
+    function OracleContract(address _owner, address _etherToken)
         public
     {
         owner = _owner;
+        etherToken = _etherToken;
     }
-    
+   
     function updateDutchExchange(address _dutchExchange)
         public
-        onlyOwner()
+        //onlyOwner()
     {
         dutchExchange = DutchExchangeInterface(_dutchExchange);
     }

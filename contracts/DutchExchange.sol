@@ -2,7 +2,7 @@ pragma solidity 0.4.18;
 
 import "./Utils/Math.sol";
 import "./Tokens/Token.sol";
-import "./Oracle/PriceOracle.sol";  
+import "./Oracle/PriceOracleInterface.sol";  
 
 /// @title Dutch Exchange - exchange token pairs with the clever mechanism of the dutch auction
 /// @author Dominik Teiml - <dominik@gnosis.pm>
@@ -177,7 +177,6 @@ contract DutchExchange {
     )
         public
     {
-        /*
         //TODO 
         ///check that token has not already been added
 
@@ -200,7 +199,7 @@ contract DutchExchange {
         require(token2 != ETH);
 
         if (token1 == ETH) {
-            fundedValueUSD = token1Funding * PriceOracle(priceOracleAddress).getUSDETHPrice();  
+            fundedValueUSD = token1Funding * PriceOracleInterface(priceOracleAddress).getUSDETHPrice();  
         } else {
             // Neither token is ETH
             // We require there to exist ETH-Token auctions
@@ -218,7 +217,7 @@ contract DutchExchange {
             (priceToken2Num, priceToken2Den) = priceOracle(token2);
 
             // Compute funded value in ETH and USD
-            fundedValueUSD = PriceOracle(priceOracleAddress).getTokensValueInCENTS(token1, token1Funding)+PriceOracle(priceOracleAddress).getTokensValueInCENTS(token2, token2Funding);
+            fundedValueUSD = PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(token1, token1Funding)+PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(token2, token2Funding);
         }
 
         if (latestAuctionIndex > 0) {
@@ -250,9 +249,8 @@ contract DutchExchange {
 
         // Update other variables
         latestAuctionIndices[token1][token2] = 1;
-        */
     }
-
+    
     function deposit(
         address tokenAddress,
         uint amount
@@ -284,8 +282,7 @@ contract DutchExchange {
         address sellToken,
         address buyToken,
         uint auctionIndex,
-        uint amountSubmitted,
-        uint amountOfWIZToBurn
+        uint amountSubmitted
     )
         public
         existingTokenPair(sellToken, buyToken)
@@ -325,24 +322,27 @@ contract DutchExchange {
         public
         existingTokenPair(sellToken, buyToken)
     {
+        
         // Requirements
         require(auctionStarts[sellToken][buyToken] >= now);
         require(auctionIndex == latestAuctionIndices[sellToken][buyToken]);
 
         amount = Math.min(amount, balances[buyToken][msg.sender]);
 
+
         // Fee mechanism
         uint fee = calculateFee(sellToken, buyToken, msg.sender, amount);
         // Fees are always added to next auction
         extraBuyTokens[sellToken][buyToken][auctionIndex + 1] += fee;
         uint amountAfterFee = amount - fee;
-
+        
         // Overbuy is when a part of a buy order clears an auction
         // In that case we only priceOracleAddress the part before the overbuy
         // To calculate overbuy, we first get current price
         uint num;
         uint den;
         (num, den) = getPrice(sellToken, buyToken, auctionIndex);
+
 
         checkArbitragePossibilityInOppositeMarket(auctionIndex, sellToken, buyToken, num, den);
         //uint sellVolume = sellVolumes[sellToken][buyToken][auctionIndex];
@@ -632,7 +632,7 @@ contract DutchExchange {
          // should we use a treshold instead of !=0 ? 
          //uint public tresholdForStartingAuction=10
         if( auctionStarts[sellToken][buyToken] == 0) {   
-            uint tresholdVolume=PriceOracle(priceOracleAddress).getTokensValueInCENTS(sellToken, sellVolumes[sellToken][buyToken][auctionIndex]);
+            uint tresholdVolume=PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(sellToken, sellVolumes[sellToken][buyToken][auctionIndex]);
             if (tresholdVolume/100 > tresholdInUSD) {
                 // putting auction in waiting state for OppositeAuction
                 auctionStarts[sellToken][buyToken] = 1;
@@ -700,7 +700,7 @@ contract DutchExchange {
             // Allow user to reduce up to half of the fee with WIZ
 
             // Convert fee to ETH, then USD
-            uint amountOfWIZBurned = Math.min(Token(OWL).allowance(msg.sender,this), PriceOracle(priceOracleAddress).getTokensValueInCENTS(buyToken, fee)/100);
+            uint amountOfWIZBurned = Math.min(Token(OWL).allowance(msg.sender,this), PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(buyToken, fee)/100);
 
             //burning OWL tokens with delegatecall is risky, because this allows OWL token to modify the storage of this contract.
             // OWL.delegatecall(bytes4(sha3("burnOWL(uint256)")), amount);
@@ -710,13 +710,14 @@ contract DutchExchange {
             fee = amountOfWIZBurned;
         }
     }
-
+    
     function getClosingPriceNum(
         address buyToken,
         address sellToken,
         uint auctionIndex
     )
         public 
+        view
         returns (uint) 
     {
         return closingPrices[sellToken][buyToken][auctionIndex].num;
@@ -729,6 +730,7 @@ contract DutchExchange {
         uint auctionIndex
     )
         public 
+        view
         returns (uint) 
     {
         return closingPrices[sellToken][buyToken][auctionIndex].num;
@@ -739,6 +741,7 @@ contract DutchExchange {
         address sellToken
     )
         public 
+        view
         returns (uint) 
     {
         return latestAuctionIndices[sellToken][buyToken];

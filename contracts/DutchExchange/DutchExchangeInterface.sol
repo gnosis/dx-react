@@ -260,6 +260,7 @@ contract DutchExchangeInterface {
         uint auctionIndex
     )
         public 
+        view
         returns (uint); 
    
 
@@ -268,7 +269,8 @@ contract DutchExchangeInterface {
         address sellToken,
         uint auctionIndex
     )
-        public 
+        public
+        view 
         returns (uint);
 
     function getLatestAuctionIndex(
@@ -276,6 +278,7 @@ contract DutchExchangeInterface {
         address sellToken
     )
         public 
+        view
         returns (uint);
     
 }

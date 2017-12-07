@@ -12,6 +12,6 @@ contract TokenGNO is StandardToken {
     )
     	public 
     {
-    	balances[msg.sender] = amount;
+    	//balances[msg.sender] = amount;
     }
 }
