@@ -6,13 +6,14 @@ let EtherToken = artifacts.require('EtherToken')
 let PriceOracle = artifacts.require('PriceOracle');
 let StandardToken = artifacts.require('StandardToken');
 let TokenGNO = artifacts.require('TokenGNO');
-let Owl = artifacts.require('OWL');
+let OWL = artifacts.require('OWL');
 
 module.exports = function (deployer, networks, accounts) {
 
 	var TokenGNOInstance,PriceOracleInstance;
+
     deployer.deploy(Math)
-    deployer.link(Math, [Owl, PriceOracle, DutchExchange, StandardToken,EtherToken, TokenGNO])
+    deployer.link(Math, [OWL, PriceOracle, DutchExchange, StandardToken,EtherToken, TokenGNO])
 
     deployer.deploy(EtherToken).then(function() {
 
@@ -23,12 +24,22 @@ module.exports = function (deployer, networks, accounts) {
     return deployer.deploy(StandardToken)
 	
 	}).then(function(p) {
-		owner=accounts[0]
-	return deployer.deploy(PriceOracle, owner, EtherToken.address)
+	
+	return deployer.deploy(PriceOracle, accounts[0], EtherToken.address)
 
-	}).then(function() {
+	}).then(function(){
+	
+	return PriceOracle.deployed();					     	
 
-	return 	deployer.deploy(Owl,TokenGNO.address/*,TokenGNO.adress*/)
+	}).then(function(p){
+		PriceOracleInstance=p;
+		return PriceOracleInstance.owner.call();
+
+	}).then(function(oI){
+
+		console.log(oI)
+		console.log(accounts[0])
+	return 	deployer.deploy(OWL,TokenGNO.address /*,PriceOracle.adress*/)
 
 	}).then(function() {
 			    		
@@ -37,26 +48,18 @@ module.exports = function (deployer, networks, accounts) {
 					        PriceOracle.address,
 					        StandardToken.address,
 					        TokenGNO.address)
-	}).then(function() {					     	
 	
-	return PriceOracle.deployed();					     	
-
-	}).then(function(p){
-
-		return p.updateDutchExchange(DutchExchange.address,{from: accounts[0]});
-
+	}).then(function(){
+		console.log(DutchExchange.address)
+		console.log(PriceOracleInstance.address)
+		return PriceOracleInstance.updateDutchExchange(DutchExchange.address,{from: accounts[0]})
 	}).then(function(){
 
-		return PriceOracle.deployed();					     	
+		return PriceOracleInstance.getCurrentDutchExchange.call();
 
-	}).then(function(p){
-		console.log(p.address);
-		console.log(DutchExchange.address)
-		return p.owner.call();
+	}).then(function(DutchExchangeAddress){
 
-	}).then(function(o){
+		console.log(DutchExchangeAddress)
 
-		console.log(o)
-		console.log(accounts[0])
 	}); 						        
 }

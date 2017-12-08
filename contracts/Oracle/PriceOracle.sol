@@ -10,7 +10,8 @@ contract PriceOracle {
     uint public lastPriceETHUSD = 0;
     DutchExchangeInterface dutchExchange;
     address public etherToken;
-    address public owner;
+    address public owner2=0x0;
+    address public owner=0x0;
     
 
      // Modifiers
@@ -20,18 +21,18 @@ contract PriceOracle {
     }
 
     ///@dev constructor of the contract, 
-    function OracleContract(address _owner, address _etherToken)
+    function PriceOracle(address _owner, address _etherToken)
         public
     {
         owner = _owner;
         etherToken = _etherToken;
     }
    
-    function updateDutchExchange(address _dutchExchange)
+    function updateDutchExchange(DutchExchangeInterface _dutchExchange)
         public
-        //onlyOwner()
+        onlyOwner()
     {
-        dutchExchange = DutchExchangeInterface(_dutchExchange);
+        dutchExchange = _dutchExchange;
     }
 
     /// @dev returns the USDETH price in Cents, ie current value would be 45034 == 450 USD and 34 Cents
@@ -107,4 +108,7 @@ contract PriceOracle {
         return getTokensValueInETH(token1, amount1) / getTokensValueInETH(token2, amount2);
     }
 
+    function getCurrentDutchExchange() public view returns(address){
+        return address(dutchExchange);
+    }
 }

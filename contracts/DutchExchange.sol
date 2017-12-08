@@ -700,7 +700,7 @@ contract DutchExchange {
             // Allow user to reduce up to half of the fee with WIZ
 
             // Convert fee to ETH, then USD
-            uint amountOfWIZBurned = Math.min(Token(OWL).allowance(msg.sender,this), PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(buyToken, fee)/100);
+            uint amountOfWIZBurned = Math.min(Token(OWL).allowance(msg.sender, this), PriceOracleInterface(priceOracleAddress).getTokensValueInCENTS(buyToken, fee)/100);
 
             //burning OWL tokens with delegatecall is risky, because this allows OWL token to modify the storage of this contract.
             // OWL.delegatecall(bytes4(sha3("burnOWL(uint256)")), amount);
