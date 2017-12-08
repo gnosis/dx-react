@@ -1,5 +1,4 @@
 import { ETHEREUM_NETWORKS } from './constants'
-import { weiToEth } from 'utils/helpers'
 // const autobind = require('autobind-decorator')
 
 const WATCHER_INTERVAL = 10000
@@ -116,7 +115,7 @@ export default class InjectedParent {
       if (this.account) {
         this.web3.eth.getBalance(
           this.account,
-          (e: Error, balance: any) => (e ? reject(e) : resolve(weiToEth(balance.toString()))),
+          (e: Error, balance: any) => (e ? reject(e) : resolve(this.web3.fromWei(balance, 'ether'))),
         )
       } else {
         reject(new Error('No Account available'))
