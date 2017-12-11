@@ -66,16 +66,20 @@
         int overbuy=0;
 
         // verifiy that input is correct and auction is really closed:
-        for(uint i=lastHashes.size();i>=1;i--){
+        for(uint i=lastHashes.length();i>=1;i--){
             break;
-            require(lastHashes[i-1]==keccak256(lastHashes[i], address senders[i], uint amount[i], bool areSellOrders[i], uint timings[i]));
+            require(lastHashes[i]==keccak256(lastHashes[i-1], address senders[i], uint amount[i], bool areSellOrders[i], uint timings[i]));
             if(areSellOrders[i]) sellVolume+=amount[i];
             else {
              
-                overbuy=int(buyVolumes + amountAfterFee - sellVolumes * getCurrentPrice(timings[i]));
-                buyVolume += amount[i]-overbuy;
+                overbuy=int(buyVolumes + amount[i] - sellVolumes * getCurrentPrice(timings[i]));
+                
                 if(overbuy<0){
+                    buyVolume += amount[i]+overbuy;
                     break;
+                }
+                else{
+                    buyVolume += amount[i];
                 }
            }
 
