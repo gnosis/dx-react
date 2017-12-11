@@ -7,5 +7,11 @@ contract TokenGNO is StandardToken {
     string public constant name = "Gnosis";
     uint8 public constant decimals = 18;
 
-
+    function TokenGNO(
+    	uint amount
+    )
+    	public 
+    {
+    	//balances[msg.sender] = amount;
+    }
 }

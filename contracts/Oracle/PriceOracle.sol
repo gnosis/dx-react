@@ -1,28 +1,38 @@
 pragma solidity ^0.4.18;
 
 import "./../DutchExchange/DutchExchangeInterface.sol";
+import "./../Utils/Math.sol";
 
-contract OracleContract {
-    using Math *;
+contract PriceOracle {
+    //using Math for *;
 
     mapping (address => uint)lastPrices;
     uint public lastPriceETHUSD = 0;
-    DutchExchangeInterface dutchExchange = 0;
-    address etherToken;
-    address owner;
+    DutchExchangeInterface dutchExchange;
+    address public etherToken;
+    address public owner2=0x0;
+    address public owner=0x0;
     
+
+     // Modifiers
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
     ///@dev constructor of the contract, 
-    function OracleContract(address _owner)
+    function PriceOracle(address _owner, address _etherToken)
         public
     {
         owner = _owner;
+        etherToken = _etherToken;
     }
-    
-    function updateDutchExchange(address _dutchExchange)
+   
+    function updateDutchExchange(DutchExchangeInterface _dutchExchange)
         public
-        isOwner(msg.sender)
+        onlyOwner()
     {
-        dutchExchange = DutchExchange(_dutchExchange);
+        dutchExchange = _dutchExchange;
     }
 
     /// @dev returns the USDETH price in Cents, ie current value would be 45034 == 450 USD and 34 Cents
@@ -43,24 +53,30 @@ contract OracleContract {
             // lastPricesETHUSD = calculatePricesFromOracles();    
     }
     
-    function getTokensValueInCENTS(address tokenAddress, uint amount) 
-    public 
-    view
-    returns (uint)
+    function getTokensValueInCENTS(
+        address tokenAddress,
+        uint amount
+    ) 
+        public 
+        view
+        returns (uint)
     {
         uint tokenValueInETH=getTokensValueInETH(tokenAddress, amount);
         return tokenValueInETH*lastPriceETHUSD;
     }
 
-    function getTokensValueInETH(address tokenAddress, uint amount) 
-    public 
-    view
-    returns (uint)
+    function getTokensValueInETH(
+        address tokenAddress,
+        uint amount
+    ) 
+        public 
+        view
+        returns (uint)
     {
-        uint startIndex = dutchExchange.latestAuctionIndex[etherToken][tokenAddress];
+        uint startIndex = dutchExchange.getLatestAuctionIndex(etherToken, tokenAddress);
         require(startIndex > 1);
-        if (dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].den == 0) startIndex--;
-        return amount * dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].num / dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].den;
+        if (dutchExchange.getClosingPriceDen(etherToken, tokenAddress, startIndex) == 0) startIndex--;
+        return amount * dutchExchange.getClosingPriceNum(etherToken, tokenAddress, startIndex) / dutchExchange.getClosingPriceDen(etherToken,tokenAddress,startIndex);
         //weighted volume from opposite auction would be better, but more expensive
     }
 
@@ -69,18 +85,18 @@ contract OracleContract {
     view
     returns (uint)
     {
-        uint startIndex = dutchExchange.latestAuctionIndex[etherToken][tokenAddress];
+        uint startIndex = dutchExchange.getLatestAuctionIndex(etherToken, tokenAddress);
         require(startIndex > 1);
-        if (dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].den == 0) startIndex--;
+        if (dutchExchange.getClosingPriceDen(etherToken, tokenAddress, startIndex) == 0) startIndex--;
         uint value=0;
         uint sumOfVolumes=0;
         uint nrOfAuctions=0;
         while (minVolumeInETH > sumOfVolumes && startIndex > 0) {
-            value += amount * dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].num / dutchExchange.closingPrices[etherToken][tokenAddress][startIndex].den;
-            startInde--;
+            value += amount * dutchExchange.getClosingPriceNum(etherToken, tokenAddress, startIndex) / dutchExchange.getClosingPriceDen(etherToken,tokenAddress,startIndex);
+            startIndex--;
             nrOfAuctions++;
         }
-        return value / snrOfAuctions;
+        return value / nrOfAuctions;
         //weighted volume from opposite auction would be better, but more expensive
     }
 
@@ -92,4 +108,7 @@ contract OracleContract {
         return getTokensValueInETH(token1, amount1) / getTokensValueInETH(token2, amount2);
     }
 
+    function getCurrentDutchExchange() public view returns(address){
+        return address(dutchExchange);
+    }
 }
