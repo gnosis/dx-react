@@ -33,12 +33,14 @@ contract DutchExchange {
 
     // We define a "token combination" to be a token tuple where order doesn't matter,
     // And "token pair" to be a tuple where order matters.
-    // The following two mappings are for a token combination
+    // The following three mappings are for a token combination
     // The specific order depends on the order of the arguments passed to addTokenPair() (see below) 
     // Token => Token => index
     mapping (address => mapping (address => uint)) public latestAuctionIndices;
     // Token => Token => time
     mapping (address => mapping (address => uint)) public auctionStarts;
+    // Token => Token => amount
+    mapping (address => mapping (address => uint)) public arbTokensAdded;
 
     // Token => Token => auctionIndex => price
     mapping (address => mapping (address => mapping (uint => fraction))) public closingPrices;
@@ -46,6 +48,7 @@ contract DutchExchange {
     // Token => user => amount
     // balances stores a user's balance in the DutchX
     mapping (address => mapping (address => uint)) public balances;
+
 
     // Token => Token => auctionIndex => amount
     // We store historical values, because they are necessary to calculate extraTokens
@@ -367,20 +370,30 @@ contract DutchExchange {
             NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
         }
 
-        // TODO
-        uint finalBuyVolume = buyVolume + amountAfterFee - uint(overbuy);
-
         if (overbuy >= 0) {
             // Clear auction
-            clearAuction(sellToken, buyToken, auctionIndex, finalBuyVolume, sellVolume);
+            clearAuction(sellToken, buyToken, auctionIndex, buyVolumes[sellToken][buyToken][auctionIndex], sellVolume);
         } else if (now >= auctionStarts[token1][token2] + 6 hours) {
             // Prices have crossed
             // We need to clear current or opposite auction
-            closeCurrentOrOppositeAuction(sellToken, buyToken, auctionIndex, finalBuyVolume, -1 * overbuy, sellVolume, num, den);
+            closeCurrentOrOppositeAuction(
+                token1,
+                token2,
+                sellToken,
+                buyToken,
+                auctionIndex,
+                buyVolumes[sellToken][buyToken][auctionIndex],
+                -1 * overbuy,
+                sellVolume,
+                num,
+                den
+            );
         }
     }
 
     function closeCurrentOrOppositeAuction(
+        address token1,
+        address token2,
         address sellToken,
         address buyToken,
         uint auctionIndex,
@@ -397,22 +410,30 @@ contract DutchExchange {
         uint buyVolumeOpp = buyVolumes[buyToken][sellToken][auctionIndex];
         uint outstandingVolumeOpp = sellVolumeOpp - buyVolumeOpp * currentAuctionNum / currentAuctionDen;
 
-        if (outstandingVolume >= outstandingVolumeOpp) {
-            // TODO
-            // Increment buy volume of opposite auction
-            buyVolumes[buyToken][sellToken][auctionIndex] += outstandingVolume;
+        if (outstandingVolume <= outstandingVolumeOpp) {
+            uint outstandingVolumeInSellTokens = outstandingVolume * currentAuctionDen / currentAuctionNum;
+            
+            // Increment buy volume of current & opposite auctions
+            buyVolumes[sellToken][buyToken]auctionIndex] += outstandingVolume;
+            buyVolumes[buyToken][sellToken][auctionIndex] += outstandingVolumeInSellTokens;
+
+            // Record number of tokens added
+            arbTokensAdded[token1][token2] = outstandingVolumeInSellTokens;
 
             // Close current auction
-            clearAuction(sellToken, buyToken, auctionIndex, finalBuyVolume + outstandingVolume, sellVolume);
+            clearAuction(sellToken, buyToken, auctionIndex, buyVolumes[sellToken][buyToken][auctionIndex], sellVolume);
         } else {
-            // TODO
+            uint outstandingVolumeOppInSellTokens = outstandingVolumeOpp * currentAuctionDen / currentAuctionNum
+
+            // Increment buy volume of current & opposite auctions 
+            buyVolumes[sellToken][buyToken][auctionIndex] += outstandingVolumeOpp;
+            buyVolumes[buyToken][sellToken][auctionIndex] += outstandingVolumeOppInSellTokens;
+
+            // Record number of tokens added
+            arbTokensAdded[token1][token2] = outstandingVolumeOpp;
+
             // Close opposite auction
-
-            // Increment buy volume of current auction 
-            buyVolumes[sellToken][buyToken][auctionIndex] += sellVolumeOppInBuyTokens - outstandingVolumeOpp;
-
-            uint sellVolumeOppInBuyTokens = sellVolumeOpp * currentAuctionDen / currentAuctionNum;
-            clearAuction(buyToken, sellToken, auctionIndex, sellVolumeOppInBuyTokens, sellVolumeOpp);
+            clearAuction(buyToken, sellToken, auctionIndex, buyVolumes[buyToken][sellToken][auctionIndex], sellVolumeOpp);
         }
     }
 
@@ -586,7 +607,7 @@ contract DutchExchange {
     )
         internal
     {
-         // Must be a valid token pair
+         // Get correct token order
         address token1;
         address token2;
         (, token1, token2) = checkTokenPairAndOrder(sellToken, buyToken);
@@ -595,8 +616,27 @@ contract DutchExchange {
         closingPrices[sellToken][buyToken][auctionIndex] = fraction(clearingPriceNum, clearingPriceDen);
 
         uint oppositeClosingPriceDen = closingPrices[buyToken][sellToken].den;
+
+        // Closing price denominator is initialised as 0
         if (oppositeClosingPriceDen > 0) {
-            // Denominator can never be 0, so this means opposite auction has cleared
+            // Denominator cannot be 0 once auction has cleared, so this means opposite auction has cleared
+
+            // Get amount of tokens that were added through arbitration
+            uint arbitrationTokensAdded = arbTokensAdded[token1][token2];
+
+            if (arbitrationTokensAdded > 0) {
+                // Add extra tokens from arbitration to extra tokens
+                fraction memory closingPriceOpp = closingPrices[buyToken][sellToken];
+                uint extraFromArb1 = sellVolumes[sellToken][buyToken] + buyVolumes[buyToken][sellToken];
+                uint extraFromArb2 = sellVolumes[buyToken][sellToken] * closingPriceOpp.num / closingPriceOpp.den;
+
+                // Since this is the larger auction
+                // It contains at least one buy order
+                // Hence clearing price != 0
+                // So dividing by clearingPriceNum doesn't break
+                uint extraFromArb3 = (buyVolumes[sellToken][buyToken] - arbitrationTokensAdded) * clearingPriceDen / clearingPriceNum;
+                extraSellTokens[sellToken][buyToken] += extraFromArb1 - extraFromArb2 - extraFromArb3;
+            }
 
             // Check if either auction received sell orders
             uint sellVolumeNext = sellVolumes[sellToken][buyToken][auctionIndex + 1];
