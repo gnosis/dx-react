@@ -1,5 +1,5 @@
-const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
-const TokenETH = artifacts.require('./TokenETH.sol')
+const DutchExchange = artifacts.require('./DutchExchange.sol')
+const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
 const { getTime } = require('./utils')(web3)
@@ -8,7 +8,7 @@ const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' 
 
 /**
  * truffle exec trufflescripts/watch_events.js
- * subscribe and log events for TokenETH, TokenGNO and DutchExchangeETHGNO contracts
+ * subscribe and log events for TokenETH, TokenGNO and DutchExchange contracts
  * @flags:
  * --eth                                  watch all events for TokenETH contract
  * --eth Transfer,Approval                watch Transfer and Approval events for TokenETH contract
@@ -26,13 +26,13 @@ module.exports = async () => {
 
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
-  const dx = await DutchExchangeETHGNO.deployed()
+  const dx = await DutchExchange.deployed()
 
   const addr2acc = {
     [master]: 'Master',
     [seller]: 'Seller',
     [buyer]: 'Buyer',
-    [dx.address]: 'DutchExchangeETHGNO',
+    [dx.address]: 'DutchExchange',
     [eth.address]: 'ETH',
     [gno.address]: 'GNO',
   }
@@ -136,7 +136,7 @@ module.exports = async () => {
   if (!argv.eth && !argv.gno && !argv.dx) {
     watch('ETH', eth)
     watch('GNO', gno)
-    watch('DutchExchangeETHGNO', dx)
+    watch('DutchExchange', dx)
   } else {
     if (argv.eth) {
       watch('ETH', eth, argv.eth)
@@ -147,7 +147,7 @@ module.exports = async () => {
     }
 
     if (argv.dx) {
-      watch('DutchExchangeETHGNO', dx, argv.dx)
+      watch('DutchExchange', dx, argv.dx)
     }
   }
 
