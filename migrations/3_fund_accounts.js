@@ -1,4 +1,5 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
+const EtherToken = artifacts.require('./Tokens/EtherToken.sol')
+// use old TokenGNO contract for testing
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
 module.exports = (deployer, network, accounts) => {
@@ -7,7 +8,7 @@ module.exports = (deployer, network, accounts) => {
 
   const [master, seller] = accounts
   deployer.then(() => {
-    TokenETH.deployed().then((inst) => {
+    EtherToken.deployed().then((inst) => {
       ETH = inst
       ETH.approve(seller, 1000, { from: master })
     })
@@ -19,7 +20,7 @@ module.exports = (deployer, network, accounts) => {
     })
   })
 
-  deployer.then(() => ETH.transferFrom(master, seller, 1000, { from: seller }))
+  deployer.then(() => ETH.deposit({ value: 1000, from: seller }))
   deployer.then(() => GNO.transferFrom(master, seller, 1000, { from: seller }))
 
   deployer.then(() => ETH.balanceOf(seller))
