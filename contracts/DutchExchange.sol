@@ -17,8 +17,8 @@ contract DutchExchange {
     }
 
     struct unlockedTUL {
-        uint amout,
-        uint withdrawalTime
+        uint amout;
+        uint withdrawalTime;
     }
 
     address public owner;
@@ -132,7 +132,7 @@ contract DutchExchange {
     /// @param Minimum required sell funding for renewing a token pair, in USD
     function DutchExchange(
         address _TUL,
-        address _OWL
+        address _OWL,
         address _owner, 
         address _ETH,
         address _ETHUSDOracle,
@@ -160,7 +160,7 @@ contract DutchExchange {
         onlyOwner()
     {
         owner = _owner;
-        ETHUSDOracle = _ETHUSDOracle,
+        ETHUSDOracle = _ETHUSDOracle;
         sellFundingNewTokenPair = _sellFundingNewTokenPair;
         sellFundingRenewTokenPair = _sellFundingRenewTokenPair;
     }
@@ -462,7 +462,7 @@ contract DutchExchange {
             uint outstandingVolumeInSellTokens = outstandingVolume * currentAuctionDen / currentAuctionNum;
             
             // Increment buy volume of current & opposite auctions
-            buyVolumes[sellToken][buyToken]auctionIndex] += outstandingVolume;
+            buyVolumes[sellToken][buyToken][auctionIndex] += outstandingVolume;
             buyVolumes[buyToken][sellToken][auctionIndex] += outstandingVolumeInSellTokens;
 
             // Record number of tokens added
@@ -471,7 +471,7 @@ contract DutchExchange {
             // Close current auction
             clearAuction(sellToken, buyToken, auctionIndex, buyVolumes[sellToken][buyToken][auctionIndex], sellVolume);
         } else {
-            uint outstandingVolumeOppInSellTokens = outstandingVolumeOpp * currentAuctionDen / currentAuctionNum
+            uint outstandingVolumeOppInSellTokens = outstandingVolumeOpp * currentAuctionDen / currentAuctionNum;
 
             // Increment buy volume of current & opposite auctions 
             buyVolumes[sellToken][buyToken][auctionIndex] += outstandingVolumeOpp;
@@ -530,7 +530,7 @@ contract DutchExchange {
         if (sellToken == ETH) {
             tulipsIssued = sellerBalance;
         } else if (buyToken == ETH) {
-            tulipsIssued = returned
+            tulipsIssued = returned;
         } else {
             // Neither token is ETH, so we use priceOracle()
             // priceOracle() depends on latestAuctionIndex
@@ -673,7 +673,7 @@ contract DutchExchange {
 
             // The numbers below are chosen such that
             // P(0 hrs) = 2 * lastClosingPrice, P(6 hrs) = lastClosingPrice, P(>=24 hrs) = 0
-            num = Math.max((0, (86400 - timeElapsed) * sellTokenNum * buyTokenDen);
+            num = Math.max(0, (86400 - timeElapsed) * sellTokenNum * buyTokenDen);
             den = (timeElapsed + 43200) * sellTokenDen * buyTokenNum;
         }
     }
@@ -687,7 +687,7 @@ contract DutchExchange {
         address buyToken,
         uint auctionIndex,
         uint clearingPriceNum,
-        uint clearingPriceDen,
+        uint clearingPriceDen
     )
         internal
     {
@@ -737,7 +737,7 @@ contract DutchExchange {
     }
 
     function settleFee(
-        address token
+        address token,
         address user,
         uint amount,
         uint amountOfWIZBurnedSubmitted
@@ -811,7 +811,7 @@ contract DutchExchange {
     {
         if (latestAuctionIndices[token1][token2] > 0) {
             return (true, token1, token2);
-        } else if (latestAuctionIndices[token2][token1] > 0 {
+        } else if (latestAuctionIndices[token2][token1] > 0) {
             return (true, token2, token1);
         } else {
             return (false, 0x0, 0x0);
