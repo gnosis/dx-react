@@ -1,4 +1,4 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
+const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
