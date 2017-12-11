@@ -1,18 +1,21 @@
+/* eslint no-multi-spaces: 0, no-console: 0 */
+
 const Math = artifacts.require('Math')
 const DutchExchange = artifacts.require('DutchExchange')
 const EtherToken = artifacts.require('EtherToken')
 const PriceOracle = artifacts.require('PriceOracle')
 const StandardToken = artifacts.require('StandardToken')
-const TokenGNO = artifacts.require('TokenGNO')
+const TokenGNO = artifacts.require('../TokenGNO.sol')
 const OWL = artifacts.require('OWL')
 
 module.exports = function deploy(deployer, networks, accounts) {
-  let TokenGNOInstance, PriceOracleInstance
+  let PriceOracleInstance
 
   deployer.deploy(Math)
   deployer.link(Math, [OWL, PriceOracle, DutchExchange, StandardToken, EtherToken, TokenGNO])
 
-  deployer.deploy(EtherToken).then(() => deployer.deploy(TokenGNO))
+  deployer.deploy(EtherToken)
+    .then(() => deployer.deploy(TokenGNO))
     .then(() => deployer.deploy(StandardToken))
     .then(() => deployer.deploy(PriceOracle, accounts[0], EtherToken.address))
     .then(() => PriceOracle.deployed())
@@ -25,13 +28,15 @@ module.exports = function deploy(deployer, networks, accounts) {
       console.log(accounts[0])
       return deployer.deploy(OWL, TokenGNO.address /* ,PriceOracle.adress */)
     })
+
+    // @dev DX Constructor creates exchange
     .then(() => deployer.deploy(
-      DutchExchange,
-      accounts[0],
-      EtherToken.address,
-      PriceOracle.address,
-      StandardToken.address,
-      TokenGNO.address,
+      DutchExchange,              // Contract Name
+      accounts[0],                // @param _owner will be the admin of the contract
+      EtherToken.address,         // @param _ETH                - address of ETH ERC-20 token
+      PriceOracle.address,        // @param _priceOracleAddress - address of priceOracle
+      StandardToken.address,      // @param _TUL                - address of TUL ERC-20 token
+      TokenGNO.address,           // @param _OWL                - address of OWL ERC-20 token
     ))
     .then(() => {
       console.log(DutchExchange.address)
