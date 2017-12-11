@@ -16,6 +16,11 @@ contract DutchExchange {
         uint den;
     }
 
+    struct unlockedTUL {
+        uint amout,
+        uint withdrawalTime
+    }
+
     address public owner;
     // Ether ERC-20 token
     address public ETH;
@@ -49,6 +54,10 @@ contract DutchExchange {
     // balances stores a user's balance in the DutchX
     mapping (address => mapping (address => uint)) public balances;
 
+    // user => unlockedTUL
+    mapping (address => unlockedTUL) public unlockedTULs;
+    // user => amount
+    mapping (address => uint) public lockedTULBalances;
 
     // Token => Token => auctionIndex => amount
     // We store historical values, because they are necessary to calculate extraTokens
@@ -156,6 +165,15 @@ contract DutchExchange {
         sellFundingRenewTokenPair = _sellFundingRenewTokenPair;
     }
 
+    function updateTULOwner(
+        address _owner
+    )
+        public
+        onlyOwner()
+    {
+        TokenTUL(TUL).updateOwner(_owner);
+    }
+
     function updateApprovalOfToken(
         address token,
         bool approved
@@ -225,8 +243,8 @@ contract DutchExchange {
             require(fundedValueUSD >= sellFundingNewTokenPair);
         }
 
-        require(Token(token1).transferFrom(token1Funding));
-        require(Token(token2).transferFrom(token2Funding));
+        require(Token(token1).transferFrom(msg.sender, this, token1Funding));
+        require(Token(token2).transferFrom(msg.sender, this, token2Funding));
 
         // Save prices of opposite auctions
         closingPrices[token1][token2][latestAuctionIndex] = fraction(initialClosingPriceNum, initialClosingPriceDen);
@@ -264,6 +282,36 @@ contract DutchExchange {
         balances[tokenAddress][msg.sender] -= amount;
         require(Token(tokenAddress).transfer(msg.sender, amount));
         NewWithdrawal(tokenAddress, amount);
+    }
+
+    /// @dev Lock TUL
+    function lockTUL()
+        public
+    {
+        // Transfer maximum number
+        uint allowance = Token(TUL).allowance(msg.sender, this);
+        require(Token(TUL).transferFrom(msg.sender, this, allowance));
+
+        lockedTULBalances[msg.sender] += allowance;
+    }
+
+    function unlockTUL(
+        uint amount
+    )
+        public
+    {
+        amount = Math.min(amount, lockedTULBalances[msg.sender]);
+        lockedTULBalances[msg.sender] -= amount;
+        unlockedTULs[msg.sender].amount =+ amount;
+        unlockedTULs[msg.sender].withdrawalTime = now + 24 hours;
+    }
+
+    function withdrawTUL()
+        public
+    {
+        unlockedTUL memory unlocked = unlockedTULs[msg.sender];
+        require(unlocked.withdrawalTime >= now);
+        Token(TUL).transfer(msg.sender, unlocked.amount);
     }
 
     function postSellOrder(
@@ -437,6 +485,23 @@ contract DutchExchange {
         }
     }
 
+    function buy(
+        address buyToken,
+        address sellToken,
+        uint amount,
+        address from,
+        address to,
+        uint value,
+        bytes data
+    )
+        public
+    {
+        Token(buyToken).transfer(msg.sender, amount);
+        require(to.call.value(value)(data));
+        uint maxAmount = Token(sellToken).allowance(msg.sender, this);
+        require(Token(sellToken).transferFrom(msg.sender, this, maxAmount));
+    }
+
     function claimSellerFunds(
         address sellToken,
         address buyToken,
@@ -444,7 +509,7 @@ contract DutchExchange {
         uint auctionIndex
     )
         public
-        returns (uint returned)
+        returns (uint returned, uint tulipsIssued)
     {
         // Requirements
         uint sellerBalance = sellerBalances[sellToken][buyToken][auctionIndex][user];
@@ -460,6 +525,25 @@ contract DutchExchange {
 
         // Calculate return
         returned = sellerBalance * num / den;
+
+        // Get tulips issued based on ETH price of returned tokens
+        if (sellToken == ETH) {
+            tulipsIssued = sellerBalance;
+        } else if (buyToken == ETH) {
+            tulipsIssued = returned
+        } else {
+            // Neither token is ETH, so we use priceOracle()
+            // priceOracle() depends on latestAuctionIndex
+            // i.e. if a user claims tokens later in the future,
+            // he/she is likely to get slightly different number
+            tulipsIssued = returned * priceOracle(buyToken);
+        }
+
+        // Issue TUL
+        TokenTUL(TUL).mintTokens(tulipsIssued);
+        lockedTULBalances += tulipsIssued;
+
+        // Add extra buy tokens
         uint extraTokensTotal = extraBuyTokens[sellToken][buyToken][auctionIndex];
         uint extraTokens = sellerBalance * extraTokensTotal / sellVolumes[sellToken][buyToken][auctionIndex];
         returned += extraTokens;
@@ -499,7 +583,7 @@ contract DutchExchange {
             buyerBalances[sellToken][buyToken][auctionIndex][user] = 0;
             claimedAmounts[sellToken][buyToken][auctionIndex][user] = 0;
 
-            // Assign extra tokens (this is possible only after auction has cleared,
+            // Assign extra sell tokens (this is possible only after auction has cleared,
             // because buyVolume could still increase before that)
             uint buyerBalance = buyerBalances[sellToken][buyToken][auctionIndex][user];
             uint extraTokensTotal = extraSellTokens[sellToken][buyToken][auctionIndex];
@@ -662,14 +746,13 @@ contract DutchExchange {
         returns (uint fee)
     {
         // Calculate fee based on proportion of all TUL tokens owned
-        uint supplyOfTUL = Token(TUL).totalSupply();
-        uint balanceOfTUL = Token(TUL).balanceOf(user);
+        uint balanceOfTUL = TULBalances[user];
 
         // The fee function is chosen such that
         // F(0) = 0.5%, F(1%) = 0.25%, F(>=10%) = 0
-        // (Takes in my ratio of all TUL tokens, outputs fee ratio)
+        // (Takes in a amount of user's TUL tokens as ration of all TUL tokens, outputs fee ratio)
         // We premultiply by amount to get fee:
-        fee = Math.max(0, amount * (supplyOfTUL - 10 * balanceOfTUL) / (16000 * balanceOfTUL + 200 * supplyOfTUL));
+        fee = Math.max(0, amount * (totalSupplyOfTUL - 10 * balanceOfTUL) / (16000 * balanceOfTUL + 200 * totalSupplyOfTUL));
 
         if (fee > 0) {
             // Allow user to reduce up to half of the fee with WIZ
