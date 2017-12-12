@@ -5,7 +5,7 @@ const DutchExchange = artifacts.require('DutchExchange')
 const EtherToken = artifacts.require('EtherToken')
 const PriceOracle = artifacts.require('PriceOracle')
 const StandardToken = artifacts.require('StandardToken')
-const TokenGNO = artifacts.require('../TokenGNO.sol')
+const TokenGNO = artifacts.require('TokenGNO')
 const OWL = artifacts.require('OWL')
 
 module.exports = function deploy(deployer, networks, accounts) {
@@ -15,7 +15,7 @@ module.exports = function deploy(deployer, networks, accounts) {
   deployer.link(Math, [OWL, PriceOracle, DutchExchange, StandardToken, EtherToken, TokenGNO])
 
   deployer.deploy(EtherToken)
-    .then(() => deployer.deploy(TokenGNO))
+    .then(() => deployer.deploy(TokenGNO, 50000))
     .then(() => deployer.deploy(StandardToken))
     .then(() => deployer.deploy(PriceOracle, accounts[0], EtherToken.address))
     .then(() => PriceOracle.deployed())

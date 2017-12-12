@@ -10,22 +10,20 @@ module.exports = (deployer, network, accounts) => {
 
   const [master, seller] = accounts
 
-  deployer.then(() => {
+  deployer.then(() =>
     EtherToken.deployed().then((inst) => {
       ETH = inst
-      ETH.approve(seller, 1000, { from: master })
-    })
-  })
-  deployer.then(() => {
+      return ETH.approve(seller, 1000, { from: master })
+    }))
+
+  deployer.then(() =>
     TokenGNO.deployed().then((inst) => {
       GNO = inst
-      GNO.approve(seller, 10000, { from: master })
-    })
-  })
+      return GNO.transfer(seller, 1000, { from: master })
+    }))
 
   deployer.then(() => ETH.deposit({ value: 50000, from: master }))
   deployer.then(() => ETH.deposit({ value: 1000, from: seller }))
-  deployer.then(() => GNO.transferFrom(master, seller, 1000, { from: seller }))
 
   deployer.then(() => ETH.balanceOf(master))
     .then(bal => console.log('Master ETH balance', bal.toNumber()))
