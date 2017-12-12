@@ -1,4 +1,4 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
+const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
 
 const sellerETH = 100
