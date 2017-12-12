@@ -10,8 +10,18 @@ contract TokenTUL is StandardToken {
     /*
      *  Storage
      */
+
+
+    struct unlockedTUL {
+        uint amout;
+        uint withdrawalTime;
+    }
     address owner;
 
+    // user => unlockedTUL
+    mapping (address => unlockedTUL) public unlockedTULs;
+    // user => amount
+    mapping (address => uint) public lockedTULBalances;
     /*
      * Modifiers
      */
@@ -32,7 +42,7 @@ contract TokenTUL is StandardToken {
  		owner = _owner;
  	}
 
- 	updateOwner(
+ 	function updateOwner(
  		address _owner
 	)
 		public
@@ -41,7 +51,7 @@ contract TokenTUL is StandardToken {
 		owner = _owner;
 	}
 
-     mintTokens(
+    function mintTokens(
      	uint amount
  	)
     	public
@@ -51,5 +61,34 @@ contract TokenTUL is StandardToken {
     	totalTokens += amount;
     }
 
+    /// @dev Lock TUL
+    function lockTUL()
+        public
+    {
+        //TObe goded
+        // Transfer maximum number
+        //allowances(msg.sender, this);
+        //balances[msg.sender]-=;
+
+        //lockedTULBalances[msg.sender] += allowance;
+    }
+
+    function unlockTUL(
+        uint amount
+    )
+        public
+    {
+        //Tobecoded
+        //amount = Math.min(amount, lockedTULBalances[msg.sender]);
+        //lockedTULBalances[msg.sender] -= amount;
+        //unlockedTULs[msg.sender].amount += amount;
+        //unlockedTULs[msg.sender].withdrawalTime = now + 24 hours;
+    }
+    function getLockedAmount(address Owner
+    ) 
+        returns (uint){
+            //Tobecoded
+        return balances[Owner];
+    }
 
 }
