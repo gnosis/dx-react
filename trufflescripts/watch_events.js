@@ -1,6 +1,8 @@
 const DutchExchange = artifacts.require('./DutchExchange.sol')
 const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
+const TokenTUL = artifacts.require('./StandardToken.sol')
+const TokenOWL = artifacts.require('./OWL.sol')
 
 const { getTime } = require('./utils')(web3)
 
@@ -26,6 +28,8 @@ module.exports = async () => {
 
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
+  const tul = await TokenTUL.deployed()
+  const owl = await TokenOWL.deployed()
   const dx = await DutchExchange.deployed()
 
   const addr2acc = {
@@ -35,6 +39,8 @@ module.exports = async () => {
     [dx.address]: 'DutchExchange',
     [eth.address]: 'ETH',
     [gno.address]: 'GNO',
+    [tul.address]: 'TUL',
+    [owl.address]: 'OWL',
   }
 
   const printTime = (blockNumber) => {
@@ -133,9 +139,11 @@ module.exports = async () => {
     }
   }
 
-  if (!argv.eth && !argv.gno && !argv.dx) {
+  if (!argv.eth && !argv.gno && !argv.dx && !argv.tul && !argv.wiz) {
     watch('ETH', eth)
     watch('GNO', gno)
+    watch('TUL', tul)
+    watch('OWL', owl)
     watch('DutchExchange', dx)
   } else {
     if (argv.eth) {
@@ -144,6 +152,14 @@ module.exports = async () => {
 
     if (argv.gno) {
       watch('GNO', gno, argv.gno)
+    }
+
+    if (argv.tul) {
+      watch('TUL', tul, argv.tul)
+    }
+
+    if (argv.owl) {
+      watch('OWL', owl, argv.owl)
     }
 
     if (argv.dx) {
