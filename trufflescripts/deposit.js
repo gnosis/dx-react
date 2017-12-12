@@ -43,7 +43,7 @@ module.exports = async () => {
   console.log(`${accountName}`)
 
   let [accountETH, accountGNO] = await getBalances(account)
-  console.log(`Was deposited:\t${accountETH}\tETH,\t${accountGNO}\tGNO`)
+  console.log(`Deposit was:\t${accountETH}\tETH,\t${accountGNO}\tGNO`)
 
 
   if (argv.eth) {
@@ -65,5 +65,5 @@ module.exports = async () => {
   }
 
   [accountETH, accountGNO] = await getBalances(account)
-  console.log(`Is deposited:\t${accountETH}\tETH,\t${accountGNO}\tGNO`)
+  console.log(`Deposit is:\t${accountETH}\tETH,\t${accountGNO}\tGNO`)
 }
