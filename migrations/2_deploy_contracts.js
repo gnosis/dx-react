@@ -1,39 +1,50 @@
-const DutchExchange = artifacts.require('./DutchExchange.sol')
-const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
-const DutchExchangeGNOETH = artifacts.require('./DutchExchangeGNOETH.sol')
+/* eslint no-multi-spaces: 0, no-console: 0 */
 
-const Token = artifacts.require('./Token.sol')
-const TokenETH = artifacts.require('./TokenETH.sol')
-const TokenGNO = artifacts.require('./TokenGNO.sol')
+const Math = artifacts.require('Math')
+const DutchExchange = artifacts.require('DutchExchange')
+const EtherToken = artifacts.require('EtherToken')
+const PriceOracle = artifacts.require('PriceOracle')
+const StandardToken = artifacts.require('StandardToken')
+const TokenGNO = artifacts.require('TokenGNO')
+const OWL = artifacts.require('OWL')
 
-// ATTENTION!!!
-// deployer.deploy() isn't a real Promise
-// it only schedules contract deployment
-// Promise.all, async...await won't work
+module.exports = function deploy(deployer, networks, accounts) {
+  let PriceOracleInstance
 
-module.exports = (deployer) => {
-  // deploying 3 token contract to the network
-  // for ETH, GNO and TUL (utility) tokens
-  // all contracts are initialized with transactions {from: accounts[0]}
-  // making accounts[0] the intial sender and for Tokens the owner
-  deployer.deploy(TokenETH)
-  deployer.deploy(TokenGNO)
-  deployer.deploy(Token)
-  deployer.then(() => {
-    // deploying 2 DutchExhcange contracts that will run ETH -> GNO and GNO -> ETH auctions
-    /**
-     * initialClosingPriceNum = 2
-     * initialClosingPriceDen = 1
-     * _sellToken = ETH | GNO
-     * _buyToken = GNO | ETH
-     * _TUL = Token
-     */
-    deployer.deploy(DutchExchangeETHGNO, 2, 1, TokenETH.address, TokenGNO.address, Token.address)
-    deployer.deploy(DutchExchangeGNOETH, 2, 1, TokenGNO.address, TokenETH.address, Token.address)
+  deployer.deploy(Math)
+  deployer.link(Math, [OWL, PriceOracle, DutchExchange, StandardToken, EtherToken, TokenGNO])
 
-    // it is necessary to return here
-    // otherwise deployement will be scheduled after Saving successful migration to network
-    // and any contract inside .then(() => {}) will reject Contract.deployed() promise
-    return deployer.deploy(DutchExchange)
-  })
+  deployer.deploy(EtherToken)
+    .then(() => deployer.deploy(TokenGNO, 50000))
+    .then(() => deployer.deploy(StandardToken))
+    .then(() => deployer.deploy(PriceOracle, accounts[0], EtherToken.address))
+    .then(() => PriceOracle.deployed())
+    .then((p) => {
+      PriceOracleInstance = p
+      return PriceOracleInstance.owner.call()
+    })
+    .then((oI) => {
+      console.log(oI)
+      console.log(accounts[0])
+      return deployer.deploy(OWL, TokenGNO.address /* ,PriceOracle.adress */)
+    })
+
+    // @dev DX Constructor creates exchange
+    .then(() => deployer.deploy(
+      DutchExchange,              // Contract Name
+      accounts[0],                // @param _owner will be the admin of the contract
+      EtherToken.address,         // @param _ETH                - address of ETH ERC-20 token
+      PriceOracle.address,        // @param _priceOracleAddress - address of priceOracle
+      StandardToken.address,      // @param _TUL                - address of TUL ERC-20 token
+      TokenGNO.address,           // @param _OWL                - address of OWL ERC-20 token
+    ))
+    .then(() => {
+      console.log(DutchExchange.address)
+      console.log(PriceOracleInstance.address)
+      return PriceOracleInstance.updateDutchExchange(DutchExchange.address, { from: accounts[0] })
+    })
+    .then(() => PriceOracleInstance.getCurrentDutchExchange.call())
+    .then((DutchExchangeAddress) => {
+      console.log(DutchExchangeAddress)
+    })
 }
