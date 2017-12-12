@@ -30,7 +30,12 @@ const argv = require('minimist')(process.argv.slice(4), { string: 'a' })
 const hour = 3600
 
 module.exports = async () => {
-  console.log(argv._)
+  console.warn(`
+    WARNING:
+    --------------------------------------------------------------------------
+    TESTS WILL NOT WORK IF PRICE_ORACLE DOES NOT YET SET A USD VALUE FOR ETHER!
+    --------------------------------------------------------------------------
+  `)
 
   const dx = await DutchExchange.deployed()
   const eth = await TokenETH.deployed()
@@ -51,7 +56,11 @@ module.exports = async () => {
   const sellToken = argv._[0] === 'eth' ? eth : argv._[0] === 'gno' ? gno : eth
   const buyToken = argv._[1] === 'gno' ? gno : argv._[1] === 'eth' ? eth : gno
 
-  console.log(`sellToken = ${await sellToken.symbol.call()} // buyToken = ${await buyToken.symbol.call()}`)
+  console.log(`
+    ------------------------------------
+    REQUESTED AUCTION START: ${await sellToken.symbol.call()} // ${await buyToken.symbol.call()}
+    ------------------------------------
+  `)
 
   // Grab Deposited Token Balances in Auction (if any)
   const balances = acct => Promise.all([
@@ -60,12 +69,20 @@ module.exports = async () => {
   ]).then(res => res.map(bal => bal.toNumber()))
 
   const [ethBalance, gnoBalance] = await balances(account)
-  console.log(`DX Ether Balance = ${ethBalance} && GNO Balance = ${gnoBalance}`)
+  console.log(`
+    --> DX Ether Balance = ${ethBalance}
+    --> DX GNO Balance   = ${gnoBalance}
+  `)
 
   try {
-    await sellToken.approve(dx.address, 10000, { from: account })
-    await buyToken.approve(dx.address, 10000, { from: account })
-    await dx.addTokenPair(
+    await sellToken.approve.call(dx.address, 10000, { from: account })
+    await buyToken.approve.call(dx.address, 10000, { from: account })
+    
+    console.log(`
+    --> Approved sellToken + buyToken movement by DX
+    `)
+    
+    await dx.addTokenPair.call(
       sellToken.address,
       buyToken.address,
       (argv._[2] || 500),
@@ -75,7 +92,12 @@ module.exports = async () => {
       { from: account },
     )
   } catch (e) {
-    console.log(e)
+    console.log(`
+    ERROR
+    ---------------------------  
+    ${e}
+    ---------------------------
+    `)
   }
 
   const auctionStart = (await dx.auctionStarts.call(sellToken.address, buyToken.address)).toNumber()
