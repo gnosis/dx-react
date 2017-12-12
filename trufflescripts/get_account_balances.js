@@ -1,5 +1,7 @@
 const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
+const TokenTUL = artifacts.require('./StandardToken.sol')
+const TokenOWL = artifacts.require('./OWL.sol')
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
@@ -16,25 +18,39 @@ module.exports = async () => {
 
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
+  const tul = await TokenTUL.deployed()
+  const owl = await TokenOWL.deployed()
 
-  const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
-  const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
-  const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
-  const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
-  const masterETHBalance = (await eth.balanceOf(master)).toNumber()
-  const masterGNOBalance = (await gno.balanceOf(master)).toNumber()
+  const getBalancesForAccounts = async (...accounts) => {
+    const promisedBalances = [eth, gno, tul, owl].reduce((accum, token) => {
+      accum.push(...(accounts.map(account => token.balanceOf(account))))
+      return accum
+    }, [])
+
+    const balances = await Promise.all(promisedBalances)
+
+    return balances.map(bal => bal.toNumber())
+  }
 
 
-  console.log(`Seller:\t${sellerETHBalance}\tETH,\t${sellerGNOBalance}\tGNO`)
-  console.log(`Buyer:\t${buyerETHBalance}\tETH,\t${buyerGNOBalance}\tGNO`)
+  const [
+    masterETH, sellerETH, buyerETH,
+    masterGNO, sellerGNO, buyerGNO,
+    masterTUL, sellerTUL, buyerTUL,
+    masterOWL, sellerOWL, buyerOWL,
+
+  ] = await getBalancesForAccounts(master, seller, buyer)
+
+
+  console.log(`Seller:\t${sellerETH}\tETH,\t${sellerGNO}\tGNO,\t${sellerTUL}\tTUL,\t${sellerOWL}\tOWL`)
+  console.log(`Buyer:\t${buyerETH}\tETH,\t${buyerGNO}\tGNO,\t${buyerTUL}\tTUL,\t${buyerOWL}\tOWL`)
   console.log('________________________________________')
-  console.log(`Master:\t${masterETHBalance}\tETH,\t${masterGNOBalance}\tGNO`)
+  console.log(`Master:\t${masterETH}\tETH,\t${masterGNO}\tGNO,\t${masterTUL}\tTUL,\t${masterOWL}\tOWL`)
 
   if (argv.a) {
-    const accountETHBalance = (await eth.balanceOf(argv.a)).toNumber()
-    const accountGNOBalance = (await gno.balanceOf(argv.a)).toNumber()
+    const [accountETH, accountGNO, accountTUL, accountOWL] = await getBalancesForAccounts(argv.a)
 
     console.log(`\nAccount at ${argv.a} address`)
-    console.log(`Balance:\t${accountETHBalance}\tETH,\t${accountGNOBalance}\tGNO`)
+    console.log(`Balance:\t${accountETH}\tETH,\t${accountGNO}\tGNO,\t${accountTUL}\tTUL,\t${accountOWL}\tOWL`)
   }
 }
