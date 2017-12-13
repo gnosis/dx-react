@@ -13,6 +13,8 @@
         //check that selling is still possible 
         require(...whatever....)
 
+        // check previous 
+
         //calculate amount;
         uint amount = Math.min(amountSubmitted, balances[sellToken][msg.sender]);
         require(amount > 0);
@@ -29,7 +31,7 @@
     function postBuyOrder(
         address sellToken,
         address buyToken,
-        uint amount
+        uint amount,
     )
         public
         existingTokenPair(sellToken, buyToken)
@@ -37,6 +39,7 @@
         
         //check that buyOrders are allowed to submit 
         require(...whatever....)
+
 
         //calculate amount;
         uint amount = Math.min(amountSubmitted, balances[buyToken][msg.sender]);
@@ -51,6 +54,72 @@
         NewSellOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
     
     }
+
+    //Token => Token  => user => Proof
+    mapping (address => mapping (address => mapping (address => Proof) ) ) submittedProof
+
+    struct Proof{
+        bytes32 proofStructure [];
+        uint amountSellVolumes[];
+        uint amountBuyVolumes[]; 
+        bool provenLink[];
+    }
+    function submitProve(bytes32 _proofStrucutre []){
+
+        submittedProof.add(Proof({
+                _proofStrucutre;
+                _amountSellVolumes;
+                _amountBuyVolumes;
+                ;
+            })
+        );
+
+    }
+
+    //proofStructure =>   bytes32 for many encrypted Transactions  - >   bytes32 for many encrypted Transactions  -> bytes32 for many encrypted Transactions
+    //amountSellVolume=>          culm volume of all prev Sells    - >     culm volume of all prev Sells          -> culm volume of all prev Sells
+    //amountBuyVolume =>          culm volume of all prev Buys     - >     culm volume of all prev buys            -> culm volume of all prev buys
+    // provenLink     =>            true                           - >           is Link Proven?                   -> is Link Proven
+
+    function verifiySellAndBuyOrders(
+        address sellToken;
+        address buyToken;
+        uint step i,
+        uint startInHashHistory,
+        bytes32 lastHashes[],
+        address senders[],
+        uint amount[],
+        bool areSellOrders[],
+        uint timings[])
+    {
+
+        uint buyVolume = amountSellVolumes[i-1]
+        uint sellVolume = amountSellVolumes[i-1];
+        for(uint i=lastHashes.length();lastHashes[i-startInHashHistory] == proofStructure[sellToken][buyToken][];i--){
+            break;
+            require(lastHashes[i-startInHashHistory]==keccak256(lastHashes[i-1], senders[i], amount[i], areSellOrders[i], timings[i]));
+            if(areSellOrders[i]) sellVolume+=amount[i];
+            else {
+             
+                overbuy=int(buyVolumes + amount[i] - sellVolumes * getCurrentPrice(timings[i]));
+                
+                if(overbuy<0){
+                    buyVolume += amount[i]+overbuy;
+                    break;
+                }
+                else{
+                    buyVolume += amount[i];
+                }
+           }
+
+           amountSellVolumes[i] = buyVolume;
+           amountSellVolumes[i] = sellVolume; 
+
+           submittedProof[sellToken][buyToken][msg.sender].provenLink[i]=true;
+
+    }
+
+
     //@dev processes all claims of an dutch auction
     //@param lastHashes  hands in all the last parameters(hashes, amounts, senders) logged during an auction.
     function processAllClaims(
