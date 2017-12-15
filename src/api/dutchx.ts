@@ -110,10 +110,10 @@ export const approveToken = async (account: Account, amount: Balance, sell: Toke
 }
 
 export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
-    const dx = getDutchXConnection()
+  const dx = getDutchXConnection()
 
-    const exchange = dx[`DutchExchange${sell}${buy}`]
-    if (!exchange) return Promise.reject(`No DutchExchange contract available for ${sell} -> ${buy} pair`)
+  const exchange = dx[`DutchExchange${sell}${buy}`]
+  if (!exchange) return Promise.reject(`No DutchExchange contract available for ${sell} -> ${buy} pair`)
 
     // const token = dx[`Token${sell}`]
     // if (!token) return Promise.reject(`No contract available for ${sell} token`)
@@ -122,5 +122,5 @@ export const postSellOrder = async (account: Account, amount: Balance, sell: Tok
     // const tokenApprovalReceipt = await token.approve(exchange.address, amount, { from: account })
     // console.log('approved tx', tokenApprovalReceipt)
 
-    return exchange.postSellOrder(amount, { from: account })
-  }
+  return exchange.postSellOrder(amount, { from: account })
+}
