@@ -7,6 +7,7 @@ import {
   // tokenPairSelect,
   postSellOrder,
   closingPrice,
+  approveToken,
 } from 'api/dutchx'
 
 import { setClosingPrice } from 'actions/ratioPairs'
@@ -123,7 +124,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 }
 
 export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount } } = getState()
+  const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount, activeProvider: provider } } = getState()
 
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
@@ -133,15 +134,28 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
     // open modal
     dispatch(openModal({
       modalName,
-      modalProps: {},
+      modalProps: {
+        header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
+        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${provider}`
+      },
+    }))
+    
+    const tokenApprovalReceipt = await approveToken(currentAccount, sellAmount, sell, buy)
+    console.log('Approved token', tokenApprovalReceipt)
+
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
+        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${provider}`
+      },
     }))
 
-    const receipt = await postSellOrder(currentAccount, sellAmount, sell, buy)
-
-    console.log('Submit order receipt', receipt)
+    const sellReceipt = await postSellOrder(currentAccount, sellAmount, sell, buy)
+    console.log('Submit order receipt', sellReceipt)
 
     // close modal
-    dispatch(closeModal())
+    dispatch(closeModal()) 
 
     // TODO: function to get specific Token's balance, also actions for such functions
     const tokenBalances = await getTokenBalances(currentAccount)
@@ -160,6 +174,21 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
     return true
   } catch (error) {
     console.error('Error submitting a sell order', error.message || error)
+    //close to unmount
+    dispatch(closeModal())
+
+    // go home stacy
+    dispatch(push('/'))
+
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `TRANSACTION FAILED/CANCELLED`,
+        body: `${provider} has stopped your Sell Order. Please check your browser console for the error reason`,
+        button: true,
+      },
+    }))
+    
     return error
   }
 }
@@ -170,45 +199,46 @@ export const getTokenPairs = async () => {
   // const token = await getTokenPairs( 1, 2, token1, token2 ))
 }
 
-// export const requestGasPrice = () => async (dispatch: Function) => {
-//   const gasPrice = await getGasPrice()
-//   dispatch(setGasPrice({ entityType: 'gasPrice', gasPrice }))
-// }
+/*
+export const requestGasPrice = () => async (dispatch: Function) => {
+  const gasPrice = await getGasPrice()
+  dispatch(setGasPrice({ entityType: 'gasPrice', gasPrice }))
+}
 
-// export const requestGasCost = contractType => async (dispatch) => {
-//   if (contractType === GAS_COST.MARKET_CREATION) {
-//     calcMarketGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.BUY_SHARES) {
-//     calcBuySharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SELL_SHARES) {
-//     calcSellSharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CATEGORICAL_EVENT) {
-//     calcCategoricalEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SCALAR_EVENT) {
-//     calcScalarEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CENTRALIZED_ORACLE) {
-//     calcCentralizedOracleGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.FUNDING) {
-//     calcFundingGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   }
-// }
+export const requestGasCost = contractType => async (dispatch) => {
+  if (contractType === GAS_COST.MARKET_CREATION) {
+    calcMarketGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.BUY_SHARES) {
+    calcBuySharesGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.SELL_SHARES) {
+    calcSellSharesGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.CATEGORICAL_EVENT) {
+    calcCategoricalEventGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.SCALAR_EVENT) {
+    calcScalarEventGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.CENTRALIZED_ORACLE) {
+    calcCentralizedOracleGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  } else if (contractType === GAS_COST.FUNDING) {
+    calcFundingGasCost().then((gasCost) => {
+      dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
+    })
+  }
+}
 
-// export const requestEtherTokens = account => async (dispatch) => {
-//   const etherTokens = await getEtherTokens(account)
-//   dispatch(setEtherTokens({ entityType: 'etherTokens', account, etherTokens }))
-// }
-
+export const requestEtherTokens = account => async (dispatch) => {
+  const etherTokens = await getEtherTokens(account)
+  dispatch(setEtherTokens({ entityType: 'etherTokens', account, etherTokens }))
+}
+*/
