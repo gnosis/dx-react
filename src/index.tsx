@@ -16,7 +16,7 @@ import createStoreWithHistory from 'store'
 
 import ModalContainer from 'containers/Modals'
 
-const history = createHistory()
+export const history = createHistory()
 const store = createStoreWithHistory(history)
 
 // load data from localstorage
