@@ -114,7 +114,7 @@
     "@types/prop-types": "^15.5.2",
     "@types/radium": "^0.18.23",
     "@types/ramda": "^0.24.17",
-    "@types/react": "^16.0.10",
+    "@types/react": "^16.0.30",
     "@types/react-dom": "^16.0.1",
     "@types/react-hot-loader": "^3.0.4",
     "@types/react-redux": "^5.0.10",
