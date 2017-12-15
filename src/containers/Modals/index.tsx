@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { openModal, closeModal } from 'actions/modal'
 
+import { history } from 'index'
+
 import { State } from 'types'  
 
 import * as Modals from 'components/Modals'
@@ -34,6 +36,24 @@ const blurred: any = {
 const Aux = (props: any) => props.children
 
 class ModalContainer extends Component<ModalContainerProps> {
+
+  componentWillReceiveProps(nextProps: any) {
+    const { isOpen } = this.props
+    const unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
+
+    // If MODAL is OPEN block movement
+    if (nextProps.isOpen !== isOpen) {
+      unblock
+    }
+
+    // Unblock Movement
+    if (!nextProps.isOpen) {
+      // calls return fn from unblock
+      unblock()
+    }
+
+    return false
+  }
 
   renderSpecificModal = (): null | Error | JSX.Element => {
     const { modalName, isOpen, ...rest } = this.props
