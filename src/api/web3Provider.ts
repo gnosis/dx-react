@@ -30,9 +30,9 @@ async function init(): Promise<ProviderInterface> {
     return account
   }
 
-  const getETHBalance = async () => {
+  const getETHBalance = async (account?: Account) => {
 
-    const account = await getCurrentAccount()
+    if (!account) account = await getCurrentAccount()
 
     const wei = await getBalance(account)
 
