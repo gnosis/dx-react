@@ -136,7 +136,7 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
       modalName,
       modalProps: {
         header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
-        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${provider}`
+        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${provider}`,
       },
     }))
     
@@ -147,7 +147,7 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
       modalName,
       modalProps: {
         header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
-        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${provider}`
+        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${provider}`,
       },
     }))
 
@@ -174,7 +174,7 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
     return true
   } catch (error) {
     console.error('Error submitting a sell order', error.message || error)
-    //close to unmount
+    // close to unmount
     dispatch(closeModal())
 
     // go home stacy

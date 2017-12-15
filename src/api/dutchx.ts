@@ -1,4 +1,5 @@
 import dutchX from './initialization'
+
 // import { weiToEth } from 'utils/helpers'
 import { Account, Balance, TokenCode } from 'types'
 
@@ -96,22 +97,30 @@ export const closingPrice = async (sellToken: TokenCode, buyToken: TokenCode, aD
   return (num / den)
 }
 
-export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
+export const approveToken = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
   const dx = getDutchXConnection()
 
   const exchange = dx[`DutchExchange${sell}${buy}`]
-  console.log(Object.keys(dx))
-
   if (!exchange) return Promise.reject(`No DutchExchange contract available for ${sell} -> ${buy} pair`)
 
   const token = dx[`Token${sell}`]
-
   if (!token) return Promise.reject(`No contract available for ${sell} token`)
 
-  // TODO: in future ask for a larger allowance
-  const receipt = await token.approve(exchange.address, amount, { from: account })
-  console.log('approved tx', receipt)
-
-  // returns Promise<transaction receipt>
-  return exchange.postSellOrder(amount, { from: account })
+  return token.approve(exchange.address, amount, { from: account })
 }
+
+export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
+    const dx = getDutchXConnection()
+
+    const exchange = dx[`DutchExchange${sell}${buy}`]
+    if (!exchange) return Promise.reject(`No DutchExchange contract available for ${sell} -> ${buy} pair`)
+
+    // const token = dx[`Token${sell}`]
+    // if (!token) return Promise.reject(`No contract available for ${sell} token`)
+    
+    // TODO: in future ask for a larger allowance
+    // const tokenApprovalReceipt = await token.approve(exchange.address, amount, { from: account })
+    // console.log('approved tx', tokenApprovalReceipt)
+
+    return exchange.postSellOrder(amount, { from: account })
+  }
