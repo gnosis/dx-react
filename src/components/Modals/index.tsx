@@ -1,9 +1,9 @@
 import React from 'react'
 
 export interface TransactionModalProps {
-  header?: string,
-  body?: string,
+  modalProps: any,
   activeProvider?: string,
+  closeModal?: any,
 }
 
 const tempDivStyle = {
@@ -23,18 +23,33 @@ const tempH1Style = {
 }
 
 const tempPStyle = {
-  fontSize: '2.2vw', 
+  fontSize: '2.2vw', lineHeight: 1.3,
   margin: '20px',
 }
 
 export const TransactionModal: React.SFC<TransactionModalProps> = ({ 
-  header, 
-  body, 
-  activeProvider, 
-}) =>
+  modalProps: {
+    header, 
+    body,
+    button,
+  }, 
+  activeProvider,
+  closeModal,
+}) => {
+  console.log(closeModal)
+  return ( 
   <div style={tempDivStyle as any}>
-    <h1 style={tempH1Style as any}>{header || 'Approving Tokens && Transferring'}</h1>
+    <h1 style={tempH1Style as any}>{header || 'Approving Tokens and Transferring'}</h1>
     <p style={tempPStyle}>
-      { body || `Please check your ${activeProvider || 'Provider'} notifications in the upper bar of your browser.` }
+      { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
     </p>
+    {button && 
+      <button
+        onClick={() => closeModal()}
+      >
+        CLOSE
+      </button>
+    }
   </div>
+  )
+}
