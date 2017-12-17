@@ -16,5 +16,5 @@ export const windowLoaded = new Promise((accept, reject) => {
 
 export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
   (...args: any[]): Promise<any> => new Promise((res, rej) => {
-    func.call(context, ...defArgs, ...args, (err: Error, result: any) => err ? rej(err) : res(result))
+    func.apply(context, [...defArgs, ...args, (err: Error, result: any) => err ? rej(err) : res(result)])
   })
