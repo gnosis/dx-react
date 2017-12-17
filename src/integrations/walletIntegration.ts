@@ -1,6 +1,3 @@
-/** Wallet Integration - Replaces WalletIntegrationComponent
- * Called in ReactDOM.render(<comp>, <html>, CB?)
- */
 import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
 import initialize from './initialize'
 
