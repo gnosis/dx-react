@@ -60,7 +60,7 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
     if (!provider.checkAvailability()) return
 
     try {
-      const [account, network] = await Promise.all([
+      const [account, network] = await Promise.all<Account, ETHEREUM_NETWORKS>([
         getAccount(provider),
         getNetwork(provider),
       ])
