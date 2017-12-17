@@ -23,7 +23,7 @@ const providers: WalletProvider[] = [
   RemoteProvider,
 ]
 
-
+// compare object properties
 const shallowDifferent = (obj1: object, obj2: object) => {
   if (!obj1 || !obj2) return true
 
@@ -65,6 +65,7 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
         getNetwork(provider),
       ])
 
+      // only get balance if accaount is not undefined
       const balance = account && await getBalance(provider, account)
 
       const available = !!(provider.walletAvailable && account)
@@ -74,21 +75,29 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
 
       // if data changed
       if (shallowDifferent(provider.state, newState)) {
+        // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
       }
     } catch (err) {
       console.warn(err)
+      // if error
       if (provider.walletAvailable) {
+        // disable internal provider
         provider.state.available = false
+        // and dispatch action with { available: false }
         updateProvider(provider.providerName, provider.state)
       }
     }
   }
 
   providers.forEach((provider) => {
+    // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
+    // dispatch action to save provider name and proirity
     registerProvider(provider.providerName, { priority: provider.priority })
+    // get account, balance, etc. state
     watcher(provider)
+    // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
   })
 }

@@ -10,9 +10,13 @@ export interface ProviderState {
 
 export interface WalletProvider {
   providerName: WALLET_PROVIDER,
+  // controls which provider is considered default
   priority: number,
+  // internal flag determining if rovider was even injected
   walletAvailable?: boolean,
+  // called first in initialization
   checkAvailability(): boolean,
+  // creates ocal web3 instance
   initialize(): void,
   state?: ProviderState,
   web3?: any,
