@@ -2,7 +2,7 @@
  * Called in ReactDOM.render(<comp>, <html>, CB?)
  */
 import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
-import { initialize } from './service'
+import initialize from './initialize'
 
 import { Store } from 'redux'
 
