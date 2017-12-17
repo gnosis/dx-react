@@ -65,7 +65,7 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
         getNetwork(provider),
       ])
 
-      const balance = await getBalance(provider, account)
+      const balance = account && await getBalance(provider, account)
 
       const available = !!(provider.walletAvailable && account)
 
