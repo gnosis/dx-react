@@ -14,6 +14,8 @@ export const selector = (state: State) => state.blockchain
  * Finds a default provider from all currently available providers. Determined by provider integrations `priority`
  * @param {*} state - redux state
  */
+// TODO: consider changing activeProvider dynamically in store on UPDATE_PROVIDER action
+// that way we won't even need find/setActiveProvider in actions/blockchain
 export const findDefaultProvider = (state: State) => {
   const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
 

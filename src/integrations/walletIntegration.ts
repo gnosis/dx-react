@@ -1,10 +1,7 @@
-/** Wallet Integration - Replaces WalletIntegrationComponent
- * Called in ReactDOM.render(<comp>, <html>, CB?)
- */
 import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
+import initialize from './initialize'
 
 import { Store } from 'redux'
-import * as walletIntegrations from 'integrations/'
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState } = store
@@ -21,13 +18,10 @@ export default async function walletIntegration(store: Store<any>) {
     registerProvider: dispatchProviderAction(registerProvider),
   }
 
-  const promisedInits = Object.keys(walletIntegrations)
-    .map(intgr => walletIntegrations[intgr].initialize(providerOptions))
-
   try {
-    await Promise.all(promisedInits)
-  } catch (e) {
-
+    await initialize(providerOptions)
+  } catch (error) {
+    console.warn('Error initializing wallet providers:', error.message || error)
   } finally {
     dispatch(initDutchX())
   }

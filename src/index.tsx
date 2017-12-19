@@ -11,7 +11,7 @@ import 'styles/global.scss'
 
 import AppRouter from 'router'
 
-import walletIntegrationCallback from 'integrations/WalletIntegration'
+import walletIntegrationCallback from 'integrations/'
 import createStoreWithHistory from 'store'
 
 const history = createHistory()

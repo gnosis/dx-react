@@ -1,5 +1,6 @@
 import { ProviderInterface } from './types'
 import { windowLoaded, promisify } from './utils'
+import { Account } from 'types'
 import Web3 from 'web3'
 
 const getProvider = () => {
@@ -30,16 +31,16 @@ async function init(): Promise<ProviderInterface> {
     return account
   }
 
-  const getETHBalance = async () => {
+  const getETHBalance = async (account?: Account) => {
 
-    const account = await getCurrentAccount()
+    if (!account) account = await getCurrentAccount()
 
     const wei = await getBalance(account)
 
     return web3.fromWei(wei, 'ether')
   }
 
-  const getNetwork = promisify(web3.eth.getNetwork, web3.eth)
+  const getNetwork = promisify(web3.version.getNetwork, web3.version)
 
   const isConnected = web3.isConnected.bind(web3)
 
