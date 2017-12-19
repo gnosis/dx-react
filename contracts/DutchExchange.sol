@@ -413,10 +413,15 @@ contract DutchExchange {
             if (overbuy > 0) {
                 // We have to adjust the amountAfterFee
                 amountAfterFee -= uint(overbuy);
+
+                // Update variables
+                balances[buyToken][msg.sender] -= amount-uint(overbuy);
+            }else{
+
+                // Update variables
+                balances[buyToken][msg.sender] -= amount;
             }
 
-            // Update variables
-            balances[buyToken][msg.sender] -= amount;
             buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
             buyVolumes[sellToken][buyToken][auctionIndex] += amountAfterFee;
             NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
