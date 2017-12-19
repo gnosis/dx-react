@@ -29,6 +29,6 @@ storiesOf(`MenuWallet`, module)
   .addDecorator(CenterDecor)
   .addWithJSX('MenuWallet Component', () =>
     <MenuWallet
-      {...constructKnobs('0x123jhbdsz7u2qwjhvda871273doaidsf', 22, walletObjectFactory(getRandomInt(5, 20), tokenArr)) }
+      {...constructKnobs('0x123jhbdsz7u2qwjhvda871273doaidsf', 22, walletObjectFactory(getRandomInt(5, 20), tokenArr)) as any }
     />,
 )

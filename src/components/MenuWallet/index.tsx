@@ -1,20 +1,18 @@
-import * as React from 'react'
+import React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
 import { Account, Balance, TokenBalances } from 'types'
 
 export interface WalletProps {
   account: Account,
-  balance: Balance | any,
+  balance: Balance,
   tokens: TokenBalances,
 }
 
 export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
   <div className="menuWallet">
-    {/* Wallet Info - Address && Balance */}
     <span>
       <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
-      {/* TODO: Consider creating helper function to shorten long 'string' numbers */}
       <small>{balance != null ? balance : 'loading...'} ETH</small>
     </span>
 
