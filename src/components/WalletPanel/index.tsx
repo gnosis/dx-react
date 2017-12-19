@@ -26,7 +26,7 @@ const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress, submitOrder 
         your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
       </p>
     <ButtonCTA onClick={submitOrder} to={`/auction/${auctionAddress}`}>
-      Submit Order <i className="icon icon-walletOK"></i>
+      Submit Sell Order <i className="icon icon-walletOK"></i>
     </ButtonCTA>
   </AuctionContainer>
 )
