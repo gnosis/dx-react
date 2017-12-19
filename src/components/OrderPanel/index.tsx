@@ -8,14 +8,15 @@ import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 import TokenOverlay from 'containers/TokenOverlay'
 
-import { TokenCode } from 'types'
+import { TokenCode, Balance } from 'types'
 
 interface OrderPanelProps {
   sellToken: TokenCode,
   buyToken: TokenCode,
+  sellAmount: Balance
 }
 
-const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken }) => (
+const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken, sellAmount }) => (
   <AuctionContainer auctionDataScreen="amount">
     <TokenOverlay />
     <AuctionHeader backTo="/">
@@ -25,7 +26,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken }) => (
     <AuctionPriceBar header="Closing Price" />
     <AuctionSellingGetting />
     {/* TODO: replace onclick with some logic (maybe: "to" prop) */}
-    <ButtonCTA onClick={() => console.log('Continuing to wallet')} to="/wallet">
+    <ButtonCTA onClick={() => console.log('Continuing to wallet')} to={+sellAmount > 0 && '/wallet'}>
       Continue to wallet details
       </ButtonCTA>
   </AuctionContainer>
