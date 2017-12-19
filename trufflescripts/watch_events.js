@@ -1,6 +1,8 @@
-const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
-const TokenETH = artifacts.require('./TokenETH.sol')
+const DutchExchange = artifacts.require('./DutchExchange.sol')
+const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
+const TokenTUL = artifacts.require('./StandardToken.sol')
+const TokenOWL = artifacts.require('./OWL.sol')
 
 const { getTime } = require('./utils')(web3)
 
@@ -8,7 +10,7 @@ const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' 
 
 /**
  * truffle exec trufflescripts/watch_events.js
- * subscribe and log events for TokenETH, TokenGNO and DutchExchangeETHGNO contracts
+ * subscribe and log events for TokenETH, TokenGNO and DutchExchange contracts
  * @flags:
  * --eth                                  watch all events for TokenETH contract
  * --eth Transfer,Approval                watch Transfer and Approval events for TokenETH contract
@@ -26,15 +28,19 @@ module.exports = async () => {
 
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
-  const dx = await DutchExchangeETHGNO.deployed()
+  const tul = await TokenTUL.deployed()
+  const owl = await TokenOWL.deployed()
+  const dx = await DutchExchange.deployed()
 
   const addr2acc = {
     [master]: 'Master',
     [seller]: 'Seller',
     [buyer]: 'Buyer',
-    [dx.address]: 'DutchExchangeETHGNO',
+    [dx.address]: 'DutchExchange',
     [eth.address]: 'ETH',
     [gno.address]: 'GNO',
+    [tul.address]: 'TUL',
+    [owl.address]: 'OWL',
   }
 
   const printTime = (blockNumber) => {
@@ -133,10 +139,12 @@ module.exports = async () => {
     }
   }
 
-  if (!argv.eth && !argv.gno && !argv.dx) {
+  if (!argv.eth && !argv.gno && !argv.dx && !argv.tul && !argv.wiz) {
     watch('ETH', eth)
     watch('GNO', gno)
-    watch('DutchExchangeETHGNO', dx)
+    watch('TUL', tul)
+    watch('OWL', owl)
+    watch('DutchExchange', dx)
   } else {
     if (argv.eth) {
       watch('ETH', eth, argv.eth)
@@ -146,8 +154,16 @@ module.exports = async () => {
       watch('GNO', gno, argv.gno)
     }
 
+    if (argv.tul) {
+      watch('TUL', tul, argv.tul)
+    }
+
+    if (argv.owl) {
+      watch('OWL', owl, argv.owl)
+    }
+
     if (argv.dx) {
-      watch('DutchExchangeETHGNO', dx, argv.dx)
+      watch('DutchExchange', dx, argv.dx)
     }
   }
 

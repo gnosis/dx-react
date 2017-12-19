@@ -1,27 +1,35 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
-const TokenGNO = artifacts.require('./TokenGNO.sol')
+/* eslint no-console:0 */
+const EtherToken = artifacts.require('EtherToken')
+// use old TokenGNO contract for testing
+const TokenGNO = artifacts.require('TokenGNO')
 
 module.exports = (deployer, network, accounts) => {
+  // let DX
   let ETH
   let GNO
 
-  const [master, seller] = accounts
-  deployer.then(() => {
-    TokenETH.deployed().then((inst) => {
+  const [master, seller, buyer] = accounts
+
+  deployer.then(() =>
+    EtherToken.deployed().then((inst) => {
       ETH = inst
-      ETH.approve(seller, 1000, { from: master })
-    })
-  })
-  deployer.then(() => {
+      return ETH.approve(seller, 1000, { from: master })
+    }))
+
+  deployer.then(() =>
     TokenGNO.deployed().then((inst) => {
       GNO = inst
-      GNO.approve(seller, 10000, { from: master })
-    })
-  })
+      // transfer GNO to buyer and seller accounts
+      GNO.transfer(buyer, 1000, { from: master })
+      return GNO.transfer(seller, 1000, { from: master })
+    }))
 
-  deployer.then(() => ETH.transferFrom(master, seller, 1000, { from: seller }))
-  deployer.then(() => GNO.transferFrom(master, seller, 1000, { from: seller }))
+  deployer.then(() => ETH.deposit({ value: 50000, from: master }))
+  deployer.then(() => ETH.deposit({ value: 1000, from: seller }))
+  deployer.then(() => ETH.deposit({ value: 1000, from: buyer }))
 
+  deployer.then(() => ETH.balanceOf(master))
+    .then(bal => console.log('Master ETH balance', bal.toNumber()))
   deployer.then(() => ETH.balanceOf(seller))
     .then(bal => console.log('Seller ETH balance', bal.toNumber()))
   deployer.then(() => GNO.balanceOf(seller))
