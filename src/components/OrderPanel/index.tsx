@@ -28,8 +28,8 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken, sellAmoun
     {/* TODO: replace onclick with some logic (maybe: "to" prop) */}
     <ButtonCTA
       className={+sellAmount > 0 ? 'blue' : 'buttonCTA-disabled'}
-      onClick={() => console.log('Continuing to wallet')}
-      to={'/wallet'}>
+      onClick={e => +sellAmount > 0 ? console.log('Continuing to wallet') : e.preventDefault()}
+      to={'./wallet'}>
       {+sellAmount > 0 ? 'Continue to wallet details' : 'Please select a sell amount'}
     </ButtonCTA>
   </AuctionContainer>
