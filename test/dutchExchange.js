@@ -410,6 +410,122 @@ contract('DutchExchange', (accounts) => {
     assert.equal((await dx.sellerBalances(eth.address, gno.address, auctionIndex, seller1)).toNumber() - 10 ** 9, 10 ** 9 - calculatedFee)
   })
 })
+
+contract('DutchExchange', (accounts) => {
+  const [, seller1, seller2, buyer1, buyer2] = accounts
+
+  beforeEach(async () => {
+    // set up accounts and tokens
+    await setupTest(accounts)
+
+    // add tokenPair ETH GNO
+    await dx.addTokenPair(
+      eth.address,
+      gno.address,
+      10 ** 9,
+      10 ** 8,
+      2,
+      1,
+      { from: seller1 },
+    )
+  })
+
+  it('check the automated abitrage', async () => {
+    let auctionIndex
+
+    // ASSERT Auction has started
+    await setAndCheckAuctionStarted(eth, gno)
+    auctionIndex = await getAuctionIndex()
+    console.log("done")
+    // first buy
+    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.9)
+
+    // console.log("Current Price"+(await dx.getPrice(eth.address,gno.address,auctionIn))
+    await dx.postBuyOrder(eth.address, gno.address, auctionIndex, 10 ** 9, { from: buyer1 })
+    // console.log(balanceBeforeBuy+"=>"+balanceAfterBuy)
+    // console.log(MaxRoundingError)
+    const closingPriceOpp = (await dx.closingPrices(gno.address, eth.address, auctionIndex))
+    console.log(closingPriceOpp[0].toNumber())
+    console.log(closingPriceOpp[1].toNumber())
+    
+    //opposite price should be 0.5
+    assert.equal(closingPriceOpp[0].toNumber() / closingPriceOpp[0].toNumber(), 0.5)
+    const arbTokens = (await dx.arbTokensAdded(eth.address, gno.address)).toNumber()
+    console.log( "abitrageVolume" + arbTokens)
+
+    var closingPrice = (await dx.closingPrices(eth.address, gno.address, auctionIndex))
+    assert.equal(closingPrice[0].toNumber(), 0)
+    assert.equal(closingPrice[1].toNumber(), 0)
+
+    await dx.postBuyOrder(eth.address, gno.address, auctionIndex, 10 ** 9, { from: buyer1 })
+
+    const currentPrice = (await dx.currentPrice(eth.address, gno.address, auctionIndex)).toNumber
+    closingPrice = (await dx.closingPrices(eth.address, gno.address, auctionIndex))
+    console.log(closingPrice[0].toNumber())
+    console.log(closingPrice[1].toNumber())
+    assert.equal(10 ** 9 * 2 * currentPrice[0] / currentPrice[1], closingPrice[0].toNumber())
+    assert.equal(10 ** 9, closingPrice[1].toNumber())
+  })
+})
+
+
+contract('DutchExchange', (accounts) => {
+  const [, seller1, seller2, buyer1, buyer2] = accounts
+
+  beforeEach(async () => {
+    // set up accounts and tokens
+    await setupTest(accounts)
+
+    // add tokenPair ETH GNO
+    await dx.addTokenPair(
+      eth.address,
+      gno.address,
+      10 ** 9,
+      10 ** 8,
+      2,
+      1,
+      { from: seller1 },
+    )
+  })
+
+  it('check claimings after automated abitrage', async () => {
+    let auctionIndex
+
+    // ASSERT Auction has started
+    await setAndCheckAuctionStarted(eth, gno)
+    auctionIndex = await getAuctionIndex()
+    console.log("done")
+    // first buy
+    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.9)
+
+    // console.log("Current Price"+(await dx.getPrice(eth.address,gno.address,auctionIn))
+    await dx.postBuyOrder(eth.address, gno.address, auctionIndex, 10 ** 9, { from: buyer1 })
+    // console.log(balanceBeforeBuy+"=>"+balanceAfterBuy)
+    // console.log(MaxRoundingError)
+    const closingPriceOpp = (await dx.closingPrices(gno.address, eth.address, auctionIndex))
+    console.log(closingPriceOpp[0].toNumber())
+    console.log(closingPriceOpp[1].toNumber())
+    
+    //opposite price should be 0.5
+    assert.equal(closingPriceOpp[0].toNumber() / closingPriceOpp[0].toNumber(), 0.5)
+    const arbTokens = (await dx.arbTokensAdded(eth.address, gno.address)).toNumber()
+    console.log( "abitrageVolume" + arbTokens)
+
+    var closingPrice = (await dx.closingPrices(eth.address, gno.address, auctionIndex))
+    assert.equal(closingPrice[0].toNumber(), 0)
+    assert.equal(closingPrice[1].toNumber(), 0)
+
+    await dx.postBuyOrder(eth.address, gno.address, auctionIndex, 10 ** 9, { from: buyer1 })
+
+    const currentPrice = (await dx.currentPrice(eth.address, gno.address, auctionIndex)).toNumber
+    closingPrice = (await dx.closingPrices(eth.address, gno.address, auctionIndex))
+    console.log(closingPrice[0].toNumber())
+    console.log(closingPrice[1].toNumber())
+    assert.equal(10 ** 9 * 2 * currentPrice[0] / currentPrice[1], closingPrice[0].toNumber())
+    assert.equal(10 ** 9, closingPrice[1].toNumber())
+  })
+})
+
 // contract('DutchExchange', (accounts) => {
 
 //   const [, seller1, seller2, buyer1, buyer2] = accounts
