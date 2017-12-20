@@ -16,7 +16,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({ continueToOrder, to }) => (
     <div className="tokenIntro">
       <h2>Pick Token Pair Auction</h2>
       <TokenPair />
-      <ButtonCTA onClick={continueToOrder} to={to}>Continue to order details</ButtonCTA>
+      <ButtonCTA onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
     </div>
     <TopAuctions />
   </div>

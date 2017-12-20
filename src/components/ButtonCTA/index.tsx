@@ -14,9 +14,8 @@ class ButtonCTA extends PureComponent<ButtonCTAProps> {
   }
 
   onClick: ButtonCTAProps['onClick'] = (e) => {
-    // e.preventDefault()
-
     const { onClick } = this.props
+
     onClick && onClick(e)
   }
 

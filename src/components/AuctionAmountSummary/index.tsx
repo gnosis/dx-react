@@ -20,7 +20,7 @@ const AuctionAmountSummary: React.SFC<AuctionAmountSummaryProps> = ({
 
       <span className="tokenItemSummary">
         <i data-coin={buyToken}></i>
-        <big>BUYING</big>
+        <big>RECEIVING</big>
         <p>{buyTokenAmount} {buyToken}</p>
       </span>
     </div>
