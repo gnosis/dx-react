@@ -21,7 +21,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
       <i data-coin={code}></i>
       <big>{name}</big><code>{code}</code>
-      <small>{mod && (mod === 'sell' && 'AVAILABLE' || 'CURRENT')} BALANCE:</small>
+      <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{balance} {code}</p>
     </div>
   )
