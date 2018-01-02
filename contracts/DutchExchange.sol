@@ -319,9 +319,15 @@ contract DutchExchange {
             // R1.1: sell order must use that auction index
             require(auctionIndex == latestAuctionIndex);
         } else {
-            // C2
-            // R2.1: sell orders must go to next auction
-            require(auctionIndex == latestAuctionIndex + 1);
+            if (closingPrices[sellToken][buyToken][auctionIndex].den > 0 && closingPrices[sellToken][buyToken][auctionIndex].den > 0) {
+                // C2: We are waiting for sufficient sell volume
+                // R2.1
+                require(auctionIndex == latestAuctionIndex)
+            } else {
+                // C3: 99% of the time
+                // R3.1: sell orders must go to next auction
+                require(auctionIndex == latestAuctionIndex + 1);
+            }
         }
 
         // Fee mechanism, fees are added to extraTokens
@@ -370,53 +376,51 @@ contract DutchExchange {
         // R4: auction must not have cleared
         require(closingPrices[sellToken][buyToken][auctionIndex].den == 0);
 
-        // amount = Math.min(amount, balances[buyToken][msg.sender]);
+        amount = Math.min(amount, balances[buyToken][msg.sender]);
         
         // Overbuy is when a part of a buy order clears an auction
         // In that case we only process the part before the overbuy
         // To calculate overbuy, we first get current price
-        // fraction memory price = getPrice(sellToken, buyToken, auctionIndex);
+        fraction memory price = getPrice(sellToken, buyToken, auctionIndex);
 
-        // uint sellVolume = sellVolumesCurrent[sellToken][buyToken];
-        // uint buyVolume = buyVolumes[sellToken][buyToken];
-        // int overbuy = int(buyVolume + amount - sellVolume * price.num / price.den);
+        uint sellVolume = sellVolumesCurrent[sellToken][buyToken];
+        uint buyVolume = buyVolumes[sellToken][buyToken];
+        int overbuy = int(buyVolume + amount - sellVolume * price.num / price.den);
 
-        // if (int(amount) > overbuy) {
-        //     // We must process the buy order
-        //     if (overbuy > 0) {
-        //         // We have to adjust the amount
-        //         amount -= uint(overbuy);
-        //     }
+        if (int(amount) > overbuy) {
+            // We must process the buy order
+            if (overbuy > 0) {
+                // We have to adjust the amount
+                amount -= uint(overbuy);
+            }
 
-        //     // Fee mechanism
-        //     uint fee = settleFee(buyToken, msg.sender, amount);
-        //     // Fees are always added to next auction
-        //     extraTokens[buyToken][sellToken][auctionIndex + 1] += fee;
-        //     uint amountAfterFee = amount - fee;
+            // Fee mechanism
+            uint fee = settleFee(buyToken, msg.sender, amount);
+            // Fees are always added to next auction
+            extraTokens[buyToken][sellToken][auctionIndex + 1] += fee;
+            uint amountAfterFee = amount - fee;
 
-        //     // Update variables
-        //     balances[buyToken][msg.sender] -= amount;
-        //     buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
-        //     buyVolumes[sellToken][buyToken] += amountAfterFee;
-        //     NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
-        // }
+            // Update variables
+            balances[buyToken][msg.sender] -= amount;
+            buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
+            buyVolumes[sellToken][buyToken] += amountAfterFee;
+            NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
+        }
 
-        // if (overbuy >= 0) {
-        //     // Clear auction
-        //     clearAuction(sellToken, buyToken, auctionIndex, sellVolume);
-        // }
-
-        // if (now >= getAuctionStart(sellToken, buyToken) + 6 hours) {
-        //     // Prices have crossed
-        //     // We need to clear current or opposite auction
-        //     closeCurrentOrOppositeAuction(
-        //         sellToken,
-        //         buyToken,
-        //         auctionIndex,
-        //         uint(-1 * overbuy),
-        //         sellVolume
-        //     );
-        // }
+        if (overbuy >= 0) {
+            // Clear auction
+            clearAuction(sellToken, buyToken, auctionIndex, sellVolume);
+        } else if (now >= getAuctionStart(sellToken, buyToken) + 6 hours) {
+            // Prices have crossed
+            // We need to clear current or opposite auction
+            closeCurrentOrOppositeAuction(
+                sellToken,
+                buyToken,
+                auctionIndex,
+                uint(-1 * overbuy),
+                sellVolume
+            );
+        }
     }
 
     function closeCurrentOrOppositeAuction(
@@ -551,16 +555,17 @@ contract DutchExchange {
             claimedAmounts[sellToken][buyToken][auctionIndex][user] += returned;
         } else {
             // Auction has closed
-            // Reset buyerBalances and claimedAmounts
-            buyerBalances[sellToken][buyToken][auctionIndex][user] = 0;
-            claimedAmounts[sellToken][buyToken][auctionIndex][user] = 0;
-
             // Assign extra sell tokens (this is possible only after auction has cleared,
             // because buyVolume could still increase before that)
             uint extraTokensTotal = extraTokens[sellToken][buyToken][auctionIndex];
             uint buyerBalance = buyerBalances[sellToken][buyToken][auctionIndex][user];
-            uint tokensExtra = buyerBalance * extraTokensTotal / buyVolumes[sellToken][buyToken];
+            fraction memory closingPrice = closingPrices[sellToken][buyToken][auctionIndex]
+            uint tokensExtra = buyerBalance * extraTokensTotal / closingPrice.num;
             returned += tokensExtra;
+
+            // Reset buyerBalances and claimedAmounts
+            buyerBalances[sellToken][buyToken][auctionIndex][user] = 0;
+            claimedAmounts[sellToken][buyToken][auctionIndex][user] = 0;
         }
 
         if (tulipsToIssue > 0) {
@@ -757,8 +762,9 @@ contract DutchExchange {
     {
         // Check if auctions received enough sell orders
         uint ETHUSDPrice = PriceOracle(ETHUSDOracle).getUSDETHPrice();
-        uint sellVolumeNext = sellVolumesNext[sellToken][buyToken] * ETHUSDPrice;
-        uint sellVolumeNextOpp = sellVolumesNext[buyToken][sellToken] * ETHUSDPrice;
+        // TODO
+        uint sellVolumeNext = sellVolumesNext[sellToken][buyToken] * priceOracle(sellToken) * ETHUSDPrice;
+        uint sellVolumeNextOpp = sellVolumesNext[buyToken][sellToken] * priceOracle(buyToken) * ETHUSDPrice;
         if (sellVolumeNext >= thresholdNewAuction || sellVolumeNextOpp >= thresholdNewAuction) {
             // Schedule next auction
             setAuctionStart(sellToken, buyToken, 10 minutes);
