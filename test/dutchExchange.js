@@ -1,6 +1,10 @@
 /* eslint no-console:0, max-len:0, no-plusplus:0, no-mixed-operators:0 */
-const { timestamp, blockNumber, assertRejects } = require('./utils')
-const { wait } = require('@digix/tempo')(web3)
+const {
+  // timestamp,
+  // blockNumber,
+  assertRejects,
+  wait,
+} = require('./utils')
 
 // > Import files
 const [
@@ -25,19 +29,19 @@ const tokenPairs = []
 
 const approvedTokens = []
 
-contract('DutchExchange', async function (accounts) {
+contract('DutchExchange', async (accounts) => {
   it('sets up tests', async () => {
     await setupTest(accounts)
   })
 
   for (let j = 0; j < 50; j++) {
-    it('transaction details: ' + j.toString(), async function() {
+    it(`transaction details: ${j.toString()}`, async () => {
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
       console.log('another transaction', j)
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
       const t = await selectTransaction()
       console.log(t[0])
-      // wait(0, 0)
+      wait(1800)
       await anotherTransaction(accounts, t, j)
     })
   }
@@ -174,7 +178,7 @@ async function postSellOrderConditions(i, Ts, Tb, u, aI, am) {
 async function postBuyOrderConditions(i, Ts, Tb, u, aI, am) {
   // await doesn't work with switch()...
   if (i == 0) {
-    const aS = (await dx.getAuctionStart(Ts, Tb))
+    const aS = (await dx.getAuctionStart(Ts, Tb)).toNumber()
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log('aS', aS)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
