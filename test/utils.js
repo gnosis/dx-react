@@ -11,8 +11,20 @@ async function assertRejects(q, msg) {
   }
 }
 
+const wait = seconds => web3.currentProvider.send({
+  jsonrpc: '2.0',
+  method: 'evm_increaseTime',
+  params: [seconds] || [],
+  id: new Date().getTime(),
+})
+
 const blockNumber = () => web3.eth.blockNumber
 
 const timestamp = (block = 'latest') => web3.eth.getBlock(block).timestamp
 
-module.exports = { assertRejects, timestamp, blockNumber }
+module.exports = {
+  assertRejects,
+  timestamp,
+  blockNumber,
+  wait,
+}
