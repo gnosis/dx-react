@@ -25,20 +25,20 @@ const tokenPairs = []
 
 const approvedTokens = []
 
-contract('DutchExchange', async (accounts) => {
+contract('DutchExchange', async function (accounts) {
   it('sets up tests', async () => {
     await setupTest(accounts)
   })
 
   for (let j = 0; j < 50; j++) {
-    it('transaction details:', async () => {
+    it('transaction details: ' + j.toString(), async function() {
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-      console.log('another transaction')
+      console.log('another transaction', j)
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
       const t = await selectTransaction()
       console.log(t[0])
-      await wait(1800)
-      await anotherTransaction(accounts, t)
+      // wait(0, 0)
+      await anotherTransaction(accounts, t, j)
     })
   }
 })
@@ -46,7 +46,8 @@ contract('DutchExchange', async (accounts) => {
 // > selectTransaction()
 async function selectTransaction() {
   // const r = Math.floor(Math.random() * 6)
-  const r = Math.floor(Math.random() * 2) + 2
+  // const r = Math.floor(Math.random() * 2) + 2
+  const r = 2
   let fn
   switch (r) {
     case 0:
@@ -77,11 +78,10 @@ async function selectTransaction() {
     if (Math.floor(Math.random() * 2) == 1) [Ts, Tb] = [Tb, Ts]
 
     const lAI = (await dx.getAuctionIndex(tokenPair[0], tokenPair[1])).toNumber()
-
     const aI = Math.floor(Math.random() * 3) - 1 + lAI
 
     const t = [
-      `executing ${fn.name}(${Ts}, ${Tb}, ${aI})`,
+      `executing ${fn.name}(${Ts}, ${Tb}, ${aI}, ...)`,
       fn,
       Ts,
       Tb,
@@ -105,9 +105,11 @@ async function selectTransaction() {
 async function addTokenPair() {
 
 }
+
 async function updateApprovalOfToken() {
 
 }
+
 async function postSellOrder(Ts, Tb, u, aI, am) {
   let expectToPass = true
   let i = 0
@@ -115,7 +117,12 @@ async function postSellOrder(Ts, Tb, u, aI, am) {
     expectToPass = await postSellOrderConditions(i, Ts, Tb, u, aI, am)
     i++
   }
-  if (expectToPass) { console.log('successful'); await dx.postSellOrder(Ts, Tb, aI, am, { from: u }) } else { console.log('rejected'); assertRejects(dx.postSellOrder(Ts, Tb, aI, am, { from: u })) }
+  log(expectToPass)
+  if (expectToPass) {
+    await dx.postSellOrder(Ts, Tb, aI, am, { from: u })
+  } else {
+    await assertRejects(dx.postSellOrder(Ts, Tb, aI, am, { from: u }))
+  }
 }
 async function postBuyOrder(Ts, Tb, u, aI, am) {
   let expectToPass = true
@@ -124,7 +131,11 @@ async function postBuyOrder(Ts, Tb, u, aI, am) {
     expectToPass = await postBuyOrderConditions(i, Ts, Tb, u, aI, am)
     i++
   }
-  if (expectToPass) { console.log('successful'); await dx.postBuyOrder(Ts, Tb, aI, am, { from: u }) } else { console.log('rejected'); assertRejects(dx.postBuyOrder(Ts, Tb, aI, am, { from: u })) }
+  if (expectToPass) {
+    await dx.postBuyOrder(Ts, Tb, aI, am, { from: u })
+  } else {
+    assertRejects(dx.postBuyOrder(Ts, Tb, aI, am, { from: u }))
+  }
 }
 async function claimSellerFunds(Ts, Tb, u, aI) {
   await dx.claimSellerFunds(Ts, Tb, u, aI, { from: u })
@@ -139,12 +150,12 @@ async function anotherTransaction(accounts, t) {
     // pSO & pBO are handled differently
     if (t[1] == postSellOrder || t[1] == postBuyOrder) {
       // find out if should be accepted or rejected
-      t[1](t[2], t[3], accounts[t[4]], t[5], t[6])
+      await t[1](t[2], t[3], accounts[t[4]], t[5], t[6])
     }
     // so are cSF & cBF
     else {
       // find out if should be accepted or rejected
-      t[1](t[2], t[3], accounts[t[4]], t[5])
+      await t[1](t[2], t[3], accounts[t[4]], t[5])
     }
   }
 }
@@ -171,21 +182,21 @@ async function postBuyOrderConditions(i, Ts, Tb, u, aI, am) {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log('new Date', (new Date()).getTime() / 1000)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    if (aS > (new Date()).getTime() / 1000) { console.log('failed at 1st case'); return false }
+    if (aS > (new Date()).getTime() / 1000) { log(i); return false }
   } else if (i == 1) {
-    if (aI <= 0) { console.log('failed at 2nd case'); return false }
+    if (aI <= 0) { log(i); return false }
   } else if (i == 2) {
     const lAI = (await dx.getAuctionIndex(Ts, Tb)).toNumber()
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log('lAI', lAI)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    if (aI !== lAI) { console.log('failed at 3rd case'); return false }
+    if (aI !== lAI) { log(i); return false }
   } else if (i == 3) {
     const cP = (await dx.closingPrices(Ts, Tb, aI)).map(x => x.toNumber())
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log('cP', cP)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    if (cP[0] !== 0) { console.log('failed at 4th case'); return false }
+    if (cP[0] !== 0) { log(i); return false }
   }
 
   return true
@@ -233,4 +244,13 @@ async function setupTest(accounts) {
   )
 
   tokenPairs.push([eth.address, gno.address])
+}
+
+function log(arg) {
+  if (typeof arg == 'number') {
+    console.log('failed at', arg)
+  } else if (typeof arg == 'boolean') {
+    if (arg) console.log('successful')
+      else console.log('rejected')
+  }
 }
