@@ -49,27 +49,16 @@ async function selectTransaction() {
   // const r = Math.floor(Math.random() * 2) + 2
   const r = 2
   let fn
-  switch (r) {
-    case 0:
-      fn = addTokenPair
-      break
-    case 1:
-      fn = updateApprovalOfToken
-      break
-    case 2:
-      fn = postSellOrder
-      break
-    case 3:
-      fn = postBuyOrder
-      break
-    case 4:
-      fn = claimSellerFunds
-      break
-    case 5:
-      fn = claimBuyerFunds
-      break
-    default:
-  }
+  const auctionAction = [
+    addTokenPair,
+    updateApprovalOfToken,
+    postSellOrder,
+    postBuyOrder,
+    claimSellerFunds,
+    claimBuyerFunds,
+  ]
+  fn = auctionAction[r]
+
   if (r > 1) {
     const u = Math.floor(Math.random() * 5)
 
@@ -132,8 +121,10 @@ async function postBuyOrder(Ts, Tb, u, aI, am) {
     i++
   }
   if (expectToPass) {
+    console.log('successful')
     await dx.postBuyOrder(Ts, Tb, aI, am, { from: u })
   } else {
+    console.log('rejected')
     assertRejects(dx.postBuyOrder(Ts, Tb, aI, am, { from: u }))
   }
 }
@@ -148,7 +139,7 @@ async function claimBuyerFunds(Ts, Tb, u, aI) {
 async function anotherTransaction(accounts, t) {
   if (t.length > 2) {
     // pSO & pBO are handled differently
-    if (t[1] == postSellOrder || t[1] == postBuyOrder) {
+    if (t[1] === postSellOrder || t[1] === postBuyOrder) {
       // find out if should be accepted or rejected
       await t[1](t[2], t[3], accounts[t[4]], t[5], t[6])
     }
@@ -171,7 +162,15 @@ async function postSellOrderConditions(i, Ts, Tb, u, aI, am) {
 
   return true
 }
-
+/**
+ * async postBuyOrderConditions
+ * @param {*} i   = index
+ * @param {*} Ts  = Token to Sell
+ * @param {*} Tb  = Token to Buy
+ * @param {*} u   = ???
+ * @param {*} aI  = Auction index
+ * @param {*} am  = ???
+ */
 async function postBuyOrderConditions(i, Ts, Tb, u, aI, am) {
   // await doesn't work with switch()...
   if (i == 0) {
@@ -251,6 +250,6 @@ function log(arg) {
     console.log('failed at', arg)
   } else if (typeof arg == 'boolean') {
     if (arg) console.log('successful')
-      else console.log('rejected')
+    else console.log('rejected')
   }
 }
