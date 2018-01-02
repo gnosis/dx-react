@@ -38,14 +38,18 @@ module.exports = function deploy(deployer, networks, accounts) {
       1000
     ))
     .then(() => {
-      return PriceOracleInstance.updateDutchExchange(DutchExchange.address, { from: accounts[0] })
+      PriceOracleInstance.updateDutchExchange(DutchExchange.address, { from: accounts[0] })
+      console.log('1')
     })
-
-    .then(() => PriceOracleInstance.getCurrentDutchExchange.call())
-    .then((DutchExchangeAddress) => {
-      console.log(DutchExchangeAddress)
-      return TokenTUL.deployed()
+    .then(() => {
+      console.log('2')
+      // PriceOracleInstance.getCurrentDutchExchange()
+      console.log('3')
     })
-    .then((T)=> {console.log("hereitis")
-    	return T.updateMinter(DutchExchange.address)})
+    // .then(() => {
+    //   return TokenTUL.deployed()
+    // })
+    // .then((T) => {
+    //   console.log('5', DutchExchange.address)
+    // 	T.updateMinter(DutchExchange.address)})
 }

@@ -4,7 +4,7 @@ import "./../DutchExchange/DutchExchangeInterface.sol";
 import "./../Utils/Math.sol";
 
 contract PriceOracle {
-    //using Math for *;
+    // using Math for *;
 
     mapping (address => uint)lastPrices;
     uint public lastPriceETHUSD = 0;
@@ -47,10 +47,12 @@ contract PriceOracle {
     /// @dev anyone can trigger the Update process for the USD ETH feed. 
     ///  possible solutions could be realityCheck with a big 
     ///  set of arbitrators: realityKey, Gnosis, Consensus, oralize or chainlink request
-    function updateETHUSDPrice() 
+    function updateETHUSDPrice(
+        uint value
+    ) 
         public
     {
-            // lastPricesETHUSD = calculatePricesFromOracles();    
+        lastPriceETHUSD = value;
     }
     
     function getTokensValueInCENTS(
