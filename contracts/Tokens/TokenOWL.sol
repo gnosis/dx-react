@@ -37,8 +37,8 @@ contract OWL is StandardToken {
     //@param: _GNOTokenAddress address of the GNO ERC20 tokens
     //@param: _oracleContract contract where all oracle feeds can be read out
     function OWL(
-        address _GNOTokenAddress
-        ,address _oracle
+        address _GNOTokenAddress,
+        address _oracle
     )
         public
     {
@@ -145,7 +145,7 @@ contract OWL is StandardToken {
         uint timeOfLastWithdraw) public
     {
         bytes32 GNOLockHash = keccak256(sender, nonce, GNOLocked, timeOfLocking, lockingPeriod, GNOIssueRate, timeOfLastWithdraw);
-         require(lockedGNO[GNOLockHash]);
+        require(lockedGNO[GNOLockHash]);
         require(sender == msg.sender);
         require(timeOfLocking + lockingPeriod < now);
         
@@ -159,7 +159,7 @@ contract OWL is StandardToken {
         timeOfLastWithdraw);
         lockedGNO[GNOLockHash] = false;
         uint GNOIssueRate2 = calcIssueRate(GNOLocked);
-        GNOLockHash = keccak256(sender, nonce, GNOLocked, timeOfLocking, lockingPeriod, GNOIssueRate2*2/3, now-(now%(1 days)));
+        GNOLockHash = keccak256(sender, nonce, GNOLocked, timeOfLocking, lockingPeriod, GNOIssueRate2*2/3, now - (now%(1 days)));
         balances[msg.sender] += GNOIssueRate2*lockingPeriod/3;
         totalTokens += GNOIssueRate2*lockingPeriod/3;
         lockedGNO[GNOLockHash] = true;
@@ -178,7 +178,9 @@ contract OWL is StandardToken {
     /// Depending on the allowance, different amounts will acutally be burned
     /// @param amount of OWL to be burned
     /// @return acutal amount of burned OWL
-    function burnOWL(uint amount) public returns (uint) {
+    function burnOWL(uint amount)
+    public
+    {
         //uint amount=Math.min(allowances[msg.sender][this], maxAmount); // Here delegate calls need to be used
         require(balances[msg.sender] >= amount);
         balances[msg.sender] -= amount;
@@ -193,7 +195,6 @@ contract OWL is StandardToken {
             burnedOWL[(now/(1 days))%30] = amount;
             lastdayOfBurningDocumentation = (now/(1 days))%30;
         }
-        return amount;
     }
 
     //@dev: To be called from the FeeDutchAuction to document the fees collected
