@@ -237,14 +237,14 @@ contract DutchExchange {
         balances[token2][msg.sender] -= token2Funding;
 
         //Fee mechanism, fees are added to extraTokens
-        uint token1FundingAfterFee = settleFee(token1, token2, 1, msg.sender, token1Funding);
-        uint token2FundingAfterFee = settleFee(token2, token1, 1, msg.sender, token2Funding);
+        //uint token1FundingAfterFee = settleFee(token1, token2, 1, msg.sender, token1Funding);
+        //uint token2FundingAfterFee = settleFee(token2, token1, 1, msg.sender, token2Funding);
 
         // // Update other variables
-        sellVolumesCurrent[token1][token2] = token1FundingAfterFee;
-        sellVolumesCurrent[token2][token1] = token2FundingAfterFee;
-        sellerBalances[token1][token2][1][msg.sender] = token1FundingAfterFee;
-        sellerBalances[token2][token1][1][msg.sender] = token2FundingAfterFee;
+        sellVolumesCurrent[token1][token2] = token1Funding;
+        sellVolumesCurrent[token2][token1] = token2Funding;
+        sellerBalances[token1][token2][1][msg.sender] = token1Funding;
+        sellerBalances[token2][token1][1][msg.sender] = token2Funding;
         
         setAuctionStart(token1, token2, 6 hours);
         NewTokenPair(token1, token2);
@@ -340,17 +340,17 @@ contract DutchExchange {
         }
 
         // Fee mechanism, fees are added to extraTokens
-        uint amountAfterFee = settleFee(sellToken, buyToken, auctionIndex, msg.sender, amount);
+        //uint amountAfterFee = settleFee(sellToken, buyToken, auctionIndex, msg.sender, amount);
 
         // Update variables
         balances[sellToken][msg.sender] -= amount;
-        sellerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
+        sellerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amount;
         if (now < auctionStart || auctionStart == 1) {
             // C1
-            sellVolumesCurrent[sellToken][buyToken] += amountAfterFee;
+            sellVolumesCurrent[sellToken][buyToken] += amount;
         } else {
             // C2
-            sellVolumesNext[sellToken][buyToken] += amountAfterFee;
+            sellVolumesNext[sellToken][buyToken] += amount;
         }
 
         if (auctionStart == 1) {
@@ -413,21 +413,21 @@ contract DutchExchange {
         uint buyVolume = buyVolumes[sellToken][buyToken];
         uint outstandingVolume = Math.atleastZero(int(sellVolume * price.num / price.den - buyVolume));
 
-        fraction memory feeRatio = calculateFeeRatio(msg.sender);
+        //fraction memory feeRatio = calculateFeeRatio(msg.sender);
 
-        // if (amount * fee > outstandingVolume) {
-        if (amount * feeRatio.num / feeRatio.den > outstandingVolume) {
-            // amount * fee = outstandingVolume
-            amount = outstandingVolume * feeRatio.den / feeRatio.num;
-        }
+        // // if (amount * fee > outstandingVolume) {
+        // if (amount * feeRatio.num / feeRatio.den > outstandingVolume) {
+        //     // amount * fee = outstandingVolume
+        //     amount = outstandingVolume * feeRatio.den / feeRatio.num;
+        // }
 
         if (amount > 0) {
-            uint amountAfterFee = settleFee(buyToken, sellToken, auctionIndex, msg.sender, amount);
+            //uint amountAfterFee = settleFee(buyToken, sellToken, auctionIndex, msg.sender, amount);
             // Update variables
             balances[buyToken][msg.sender] -= amount;
-            buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amountAfterFee;
-            buyVolumes[sellToken][buyToken] += amountAfterFee;
-            outstandingVolume = Math.atleastZero(int(outstandingVolume - amountAfterFee));
+            buyerBalances[sellToken][buyToken][auctionIndex][msg.sender] += amount;
+            buyVolumes[sellToken][buyToken] += amount;
+            outstandingVolume = Math.atleastZero(int(outstandingVolume - amount));
             NewBuyOrder(sellToken, buyToken, msg.sender, auctionIndex, amount);
         }
 
@@ -518,10 +518,10 @@ contract DutchExchange {
         returns (uint returned, uint tulipsIssued)
     {
         uint sellerBalance = sellerBalances[sellToken][buyToken][auctionIndex][user];
-
+        uint sellerBalanceAfterFee = settleFee(sellToken, buyToken, auctionIndex, msg.sender, sellerBalance);
         // R1
-        // require(sellerBalance > 0);
-        if (sellerBalance == 0) {
+        // require(sellerBalanceAfterFee > 0);
+        if (sellerBalanceAfterFee == 0) {
             Log('claimSellerFunds R1');
             return;
         }
@@ -539,7 +539,7 @@ contract DutchExchange {
         }
 
         // Calculate return
-        returned = sellerBalance * num / den;
+        returned = sellerBalanceAfterFee * num / den;
 
         // Get tulips issued based on ETH price of returned tokens
         if (approvedTokens[sellToken] == true && approvedTokens[buyToken] == true) {
@@ -629,7 +629,7 @@ contract DutchExchange {
         }
 
         uint buyerBalance = buyerBalances[sellToken][buyToken][auctionIndex][user];
-
+        uint buyerBalanceAfterFee = settleFee(buyToken, sellToken, auctionIndex, msg.sender, buyerBalance);
         fraction memory price = getPrice(sellToken, buyToken, auctionIndex);
 
         if (price.num == 0) {
@@ -637,7 +637,7 @@ contract DutchExchange {
             // auction will clear before price = 0. So this is just fail-safe
             unclaimedBuyerFunds = 0;
         } else {
-            unclaimedBuyerFunds = buyerBalance * price.den / price.num - claimedAmounts[sellToken][buyToken][auctionIndex][user];
+            unclaimedBuyerFunds = buyerBalanceAfterFee * price.den / price.num - claimedAmounts[sellToken][buyToken][auctionIndex][user];
         }
 
         if (approvedTokens[buyToken] == true && approvedTokens[sellToken] == true) {
