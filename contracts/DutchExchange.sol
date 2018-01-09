@@ -408,7 +408,7 @@ contract DutchExchange {
         if (outstandingVolume <= 0) {
             // Clear auction
             clearAuction(sellToken, buyToken, auctionIndex, sellVolume);
-        } else if (now >= getAuctionStart(sellToken, buyToken) + 6 hours) {
+        } else if (now >= getAuctionStart(sellToken, buyToken) + 6 hours && getAuctionStart(sellToken, buyToken) != 1) {
             // Prices have crossed
             // We need to clear current or opposite auction
             closeCurrentOrOppositeAuction(
