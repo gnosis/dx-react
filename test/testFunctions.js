@@ -29,7 +29,9 @@ const contractNames = [
   'EtherToken',
   'TokenGNO',
   'TokenTUL',
-  'PriceOracle',
+  'PriceOracleInterface',
+  'PriceFeed',
+  'Medianizer',
 ]
 
 /**
@@ -71,12 +73,13 @@ const setupTest = async (
     DutchExchange: dx,
     EtherToken: eth,
     TokenGNO: gno,
-    PriceOracle: oracle,
+    PriceFeed: oracle,
+    Medianizer: medianizer,
   },
   {
     startingETH = 50..toWei(),
     startingGNO = 50..toWei(),
-    ethUSDPrice = 60000,
+    ethUSDPrice = (1008..toWei()),
   }) => {
   // Await ALL Promises for each account setup
   await Promise.all(accounts.map((acct) => {
@@ -97,7 +100,7 @@ const setupTest = async (
   }))
   // add token Pair
   // updating the oracle Price. Needs to be changed later to another mechanism
-  await oracle.updateETHUSDPrice(ethUSDPrice, { from: accounts[0] })
+  await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: accounts[0] })
 
   const gnoAcctBalances = await Promise.all(accounts.map(accts => getBalance(accts, gno)))
   const ethAcctBalances = await Promise.all(accounts.map(accts => getBalance(accts, eth)))
@@ -144,10 +147,10 @@ const setAndCheckAuctionStarted = async (ST, BT) => {
  * @param {unit}    p   => percentage of the previous price
  */
 const waitUntilPriceIsXPercentOfPreviousPrice = async (ST, BT, p) => {
-  const { DutchExchange: dx, EtherToken: eth, TokenGNO: gno } = await getContracts()
+  const { DutchExchange: dx } = await getContracts()
   const startingTimeOfAuction = (await dx.getAuctionStart.call(ST.address, BT.address)).toNumber()
   const timeToWaitFor = Math.ceil((86400 - p * 43200) / (1 + p)) + startingTimeOfAuction
-  let [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1))// .map(n => n.toNumber())
+  let [num, den] = (await dx.getPriceForJS(ST.address, BT.address, 1))// .map(n => n.toNumber())
   const priceBefore = (num.div(den))// .toFixed(18)
   console.log(`
   Price BEFORE waiting until Price = initial Closing Price (2) * 2
@@ -159,7 +162,7 @@ const waitUntilPriceIsXPercentOfPreviousPrice = async (ST, BT, p) => {
   `)
   // wait until the price is good
   await wait(timeToWaitFor - timestamp());
-  [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1))// .map(n => n.toNumber()))
+  [num, den] = (await dx.getPriceForJS(ST.address, BT.address, 1))// .map(n => n.toNumber()))
   const priceAfter = (num.div(den))// .toFixed(18)
   console.log(`
   Price AFTER waiting until Price = ${p * 100}% of ${priceBefore / 2} (initial Closing Price)
@@ -200,7 +203,7 @@ const checkBalanceBeforeClaim = async (
     token = BT
   }
 
-  const balanceBeforeClaim = (await dx.balances.call(token.address, acct)).toNumber()
+  const balanceBeforeClaim = (await dx.balances.call(token.address, acct))
 
   if (claiming === 'buyer') {
     await dx.claimBuyerFunds(ST.address, BT.address, acct, idx)
@@ -208,14 +211,14 @@ const checkBalanceBeforeClaim = async (
     await dx.claimSellerFunds(ST.address, BT.address, acct, idx)
   }
 
-  const balanceAfterClaim = (await dx.balances.call(token.address, acct)).toNumber()
-  const difference = Math.abs(balanceBeforeClaim + amt - balanceAfterClaim)
+  const balanceAfterClaim = (await dx.balances.call(token.address, acct))
+  const difference = balanceBeforeClaim.add(amt).minus(balanceAfterClaim).abs()
   varLogger('claiming for', claiming)
-  varLogger('balanceBeforeClaim', balanceBeforeClaim)
+  varLogger('balanceBeforeClaim', balanceBeforeClaim.toNumber())
   varLogger('amount', amt)
-  varLogger('balanceAfterClaim', balanceAfterClaim)
-  varLogger('difference', difference)
-  assert.equal(difference < round, true)
+  varLogger('balanceAfterClaim', balanceAfterClaim.toNumber())
+  varLogger('difference', difference.toNumber())
+  assert.equal(difference.toNumber() < round, true)
 }
 
 const getAuctionIndex = async (sell, buy) => {
