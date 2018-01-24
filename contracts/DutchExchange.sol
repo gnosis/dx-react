@@ -925,7 +925,19 @@ contract DutchExchange {
         withdraw(buyToken, amount);
     }
 
-    // > testing fns
+    
+    // > historicalPriceOracleForJs()
+    function historicalPriceOracleForJS(
+        address token,
+        uint auctionIndex
+    )
+    public
+    constant
+    returns (uint, uint) 
+    {
+        fraction memory price = historicalPriceOracle(token, auctionIndex);
+        return (price.num, price.den);
+    }
 
     // > getPriceOracleForJs()
     function getPriceOracleForJS(
@@ -952,6 +964,7 @@ contract DutchExchange {
         fraction memory price = computeRatioOfHistoricalPriceOracles(tokenA, tokenB, auctionIndex);
         return (price.num, price.den);
     }
+
 
     // > helper fns
     function getTokenOrder(
