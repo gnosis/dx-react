@@ -21,6 +21,7 @@ const varLogger = (varName, varValue) => log(varName, '--->', varValue)
  * @param {*} obj
  */
 const gasLogWrapper = (contracts) => {
+  console.info(' =====> Calling gasLogWrapper!!')
   let totalGas = 0
   const getGas = (gas = totalGas) => {
     totalGas = gas
@@ -31,37 +32,29 @@ const gasLogWrapper = (contracts) => {
     get(target, propKey) {
       const origMethod = target[propKey]
       // if prompted prop !== a FUNCTION return prop
-      if (typeof origMethod !== 'function') {
+      if (typeof origMethod !== 'function' || !origMethod.sendTransaction) {
         return origMethod
       }
       // go one level deeper into actual METHOD - here access to (.call, .apply etc)
       return new Proxy(origMethod, {
-        get(target, propKey) {
-          const defaultFunctionMethod = target[propKey]
-          // called if NON-tx function aka .call thing
-          if (propKey === 'call') {
-            return async function asyncReturn(...args) {
-              // console.info('Method detected, calling...')
-              const result = await Reflect.apply(defaultFunctionMethod, target, args)
-
-              return result
-            }
-          }
-          // returns estimateGas etc type Functions
-          return defaultFunctionMethod
-        },
         // called if @transaction function
         async apply(target, thisArg, argumentsList) {
           const result = await Reflect.apply(target, thisArg, argumentsList)
-          const { receipt } = result
+          // safeguards against constant functions
+          if (typeof result !== 'object') return result
+          const { receipt: { gasUsed } } = result
           // check that BOTH gas flags are used
           gasLog && gasTx && console.info(`
           ==============================
-          TX name     ==> ${propKey}
-          TX gasCost  ==> ${receipt && receipt.gasUsed ? receipt.gasUsed : 'No gasUsed found'}
+          Total Gas BEFORE  ==> ${totalGas}
+          TX name           ==> ${propKey}
+          TX gasCost        ==> ${gasUsed}
+          Total Gas AFTER   ==> ${totalGas += gasUsed}
           ==============================
           `)
-          totalGas += receipt && receipt.gasUsed ? receipt.gasUsed : 0
+          // console.info(totalGas, 'TOTAL GAS BEFORE')
+          // totalGas += gasUsed
+          // console.info(totalGas, 'TOTAL GAS AFTER')
           return result
         },
       })

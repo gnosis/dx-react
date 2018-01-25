@@ -164,7 +164,7 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -220,7 +220,7 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -334,6 +334,11 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // ethUSDPrice,
   } = startBal
   
+  afterEach(() => { 
+    gasLogger(contracts) 
+    eventWatcher.stopWatching()
+  })
+
   before(async () => {
     // get contracts
     await setupContracts()
@@ -426,7 +431,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -468,7 +473,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -505,7 +510,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -555,7 +560,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -671,8 +676,6 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     // await checkUserReceivesTulipTokens(eth, gno, buyer1)
     await unlockTulipTokens(seller1)
   })
-
-  afterEach(eventWatcher.stopWatching)
 })
 
 const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts) => {
@@ -693,6 +696,11 @@ const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts)
     // startingGNO,
     // ethUSDPrice,
   } = startBal
+
+  afterEach(() => { 
+    gasLogger(contracts) 
+    eventWatcher.stopWatching()
+  })
 
   before(async () => {
     // get contracts
@@ -742,8 +750,6 @@ const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts)
     log(`\nSeller Balance ====> ${seller1Balance.toEth()}\n`)
     assert.equal(seller1Balance, startingETH - sellingAmount, `Seller1 should have ${startingETH.toEth()} balance after new Token Pair add`)
   })
-
-  afterEach(eventWatcher.stopWatching)
   
   it('Check sellVolume', async () => {
     log(`
@@ -781,7 +787,7 @@ const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts)
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -837,7 +843,7 @@ const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts)
     // Should be 0 here as aucIdx = 1 ==> we set aucIdx in this case
     const [closingNum, closingDen] = (await dx.closingPrices.call(eth.address, gno.address, 1))
     // Should be 4 here as closing price starts @ 2 and we times by 2
-    const [num, den] = (await dx.getPriceForJS(eth.address, gno.address, 1)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, 1)).map(i => i.toNumber())
     log(`
     Last Closing Prices:
     closeN        = ${closingNum}
@@ -1015,6 +1021,11 @@ const c4 = () => contract('DX Tulip Flow --> change Owner', (accounts) => {
     // ethUSDPrice,
   } = startBal
 
+  afterEach(() => { 
+    gasLogger(contracts) 
+    eventWatcher.stopWatching()
+  })
+
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1079,8 +1090,6 @@ const c4 = () => contract('DX Tulip Flow --> change Owner', (accounts) => {
     // assert.equal(originalTULMinter, master, 'Original owner should be accounts[0] aka master aka migrations deployed acct for tokenTUL')
     assert.equal(newTULMInter, seller1, 'New owner should be accounts[1] aka seller1')
   })
-
-  afterEach(eventWatcher.stopWatching)
 })
 
 const c5 = () => contract('DX Tulip Flow --> 2 Sellers || Tulip issuance', (accounts) => {
@@ -1155,7 +1164,11 @@ const c5 = () => contract('DX Tulip Flow --> 2 Sellers || Tulip issuance', (acco
     assert.equal(seller1Balance, startingETH - sellingAmount, `Seller1 should have ${startingETH.toEth()} balance after new Token Pair add`)
     assert.equal(seller2Balance, startingETH, `Seller2 should still have balance of ${startingETH.toEth()}`)
   })
-  afterEach(eventWatcher.stopWatching)
+  
+  afterEach(() => { 
+    // gasLogger(contracts) 
+    eventWatcher.stopWatching()
+  })
 
   it('Seller2 posts sell order in same auction ... ', async () => {
     let aucIdx = await getAuctionIndex()
