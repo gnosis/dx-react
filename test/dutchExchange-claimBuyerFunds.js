@@ -242,3 +242,56 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
     assert.equal((bn(valMinusFee(10e18)).sub(bn(valMinusFee(10e18)).div(num).mul(den))).toNumber(), claimedAmount2)
   })
 })
+contract('DutchExchange - claimBuyerFunds', (accounts) => {
+  const [, seller1, , buyer1, buyer2] = accounts
+
+  before(async () => {
+    // get contracts
+    await setupContracts()
+
+    // set up accounts and tokens[contracts]
+    await setupTest(accounts, contracts, startBal)
+
+    // add tokenPair ETH GNO
+    await dx.addTokenPair(
+      eth.address,
+      gno.address,
+      10e18,
+      0,
+      2,
+      1,
+      { from: seller1 },
+    )
+
+    eventWatcher(dx, 'Log', {})
+  })
+
+  after(eventWatcher.stopWatching)
+
+  it('6. check that extraTokens are distributed correctly', async () => {
+    // prepare test by starting and clearning new auction
+    let auctionIndex = await getAuctionIndex()
+    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
+    await postBuyOrder(eth, gno, auctionIndex, 2 * 10e18, buyer1)
+    await postSellOrder(eth, gno, 0, seller1)
+
+    auctionIndex = await getAuctionIndex()
+    assert.equal(auctionIndex, 2)
+    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.6)
+    const extraTokensAvailable = await dx.extraTokens(eth, gno, 2)
+    await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer1)
+    await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer2)
+    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.6)
+    await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer2)
+    const balanceOfBuyer1 = await dx.balances.call(eth.address)
+
+
+    // Check extra Token balance 
+    const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
+    const [num, den] = (await dx.closingPrices.call(eth.address, gno.address, auctionIndex))
+    await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
+    assert.equal((bn(valMinusFee(10e18)).div(num).mul(den)).add(extraTokensAvailable.div(bn(2))).toNumber, claimedAmount)
+    await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)
+    assert.equal(balanceOfBuyer1.add(claimedAmount), await dx.balances.call(eth.address))
+  })
+})
