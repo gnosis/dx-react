@@ -125,19 +125,19 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
     const [claimedAmount] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
     const [num, den] = (await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)).map(i => i.toNumber())
     let sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
-    let buyVolume = (await dx.buyVolumes.call(gno.address, eth.address))
-    let oustandingVolume = (sellVolume.mul(bn(num)).toNumber() / den) - (buyVolume).toNumber()
-    logger('oustandingVolume', oustandingVolume)
+    let buyVolume = await dx.buyVolumes.call(gno.address, eth.address)
+    let oustandingVolume = (sellVolume.mul(bn(num)).div(den)).sub(buyVolume)
+    logger('oustandingVolume', oustandingVolume.toNumber())
     logger('buyVolume', buyVolume)
     assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount)
 
     // actual testing at time with previous 2/3price
     await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 2 / 3)
     const [claimedAmount2] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
-    const [num2, den2] = (await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)).map(i => i.toNumber())
+    const [num2, den2] = await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)
     sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
     buyVolume = (await dx.buyVolumes.call(gno.address, eth.address))
-    oustandingVolume = (sellVolume.mul(bn(num2)).div(bn(den2))).sub(buyVolume)
+    oustandingVolume = (sellVolume.mul(num2).div(den2)).sub(buyVolume)
     logger('oustandingVolume', oustandingVolume)
     logger('buyVolume', buyVolume)
     assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount2)
@@ -228,9 +228,10 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
 
     // first withdraw  
     const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
+    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
+
     await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
     
-    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
     logger('num', num)
     logger('den', den)
     assert.equal((bn(valMinusFee(10e18)).div(num).mul(den)).toNumber(), claimedAmount)
