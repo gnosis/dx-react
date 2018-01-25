@@ -75,7 +75,7 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
   } = startBal
   
   afterEach(() => { 
-    gasLogger(contracts) 
+    gasLogger() 
     eventWatcher.stopWatching()
   })
   
@@ -335,7 +335,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
   } = startBal
   
   afterEach(() => { 
-    gasLogger(contracts) 
+    gasLogger() 
     eventWatcher.stopWatching()
   })
 
@@ -698,7 +698,7 @@ const c3 = () => contract('DX Tulip Flow --> withdrawUnlockedTokens', (accounts)
   } = startBal
 
   afterEach(() => { 
-    gasLogger(contracts) 
+    gasLogger() 
     eventWatcher.stopWatching()
   })
 
@@ -1022,7 +1022,7 @@ const c4 = () => contract('DX Tulip Flow --> change Owner', (accounts) => {
   } = startBal
 
   afterEach(() => { 
-    gasLogger(contracts) 
+    gasLogger() 
     eventWatcher.stopWatching()
   })
 
@@ -1166,7 +1166,7 @@ const c5 = () => contract('DX Tulip Flow --> 2 Sellers || Tulip issuance', (acco
   })
   
   afterEach(() => { 
-    // gasLogger(contracts) 
+    gasLogger() 
     eventWatcher.stopWatching()
   })
 

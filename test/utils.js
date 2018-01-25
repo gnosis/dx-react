@@ -16,17 +16,13 @@ const logger = (desc, fn) => log(`---- \n => ${desc} ${fn ? `|| - - - - - - - - 
 
 const varLogger = (varName, varValue) => log(varName, '--->', varValue)
 
+
 /**
  * gasLogWrapper
  * @param {*} obj
  */
+let totalGas = 0
 const gasLogWrapper = (contracts) => {
-  console.info(' =====> Calling gasLogWrapper!!')
-  let totalGas = 0
-  const getGas = (gas = totalGas) => {
-    totalGas = gas
-    return totalGas
-  }
   const handler = {
     // intercept all GETS to contracts
     get(target, propKey) {
@@ -46,40 +42,33 @@ const gasLogWrapper = (contracts) => {
           // check that BOTH gas flags are used
           gasLog && gasTx && console.info(`
           ==============================
-          Total Gas BEFORE  ==> ${totalGas}
           TX name           ==> ${propKey}
           TX gasCost        ==> ${gasUsed}
-          Total Gas AFTER   ==> ${totalGas += gasUsed}
           ==============================
           `)
-          // console.info(totalGas, 'TOTAL GAS BEFORE')
-          // totalGas += gasUsed
-          // console.info(totalGas, 'TOTAL GAS AFTER')
+          totalGas += gasUsed
           return result
         },
       })
     },
   }
 
-  return {
-    gasLoggedContracts: contracts.map(c => new Proxy(c, handler)),
-    getGas,
-  }
+  return contracts.map(c => new Proxy(c, handler))
 }
 
 /**
  * gasLogger
  * @param {contracts from testFunctions} contracts
  */
-const gasLogger = (contracts) => {
-  const { __totalGasUsed: getGasUse } = contracts
+const gasLogger = () => {
   gasLog && console.info(`
     *******************************
     TOTAL GAS 
-    Gas ==> ${getGasUse()}
+    Gas ==> ${totalGas}
     *******************************
-    `)
-  getGasUse(0)
+  `)
+  // reset totalGas state
+  totalGas = 0
 }
 
 const assertRejects = async (q, msg) => {

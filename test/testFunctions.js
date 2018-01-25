@@ -53,14 +53,12 @@ const getContracts = async () => {
   const depContracts = contractNames.map(c => artifacts.require(c)).map(cc => cc.deployed())
   const contractInstances = await Promise.all(depContracts)
 
-  const { gasLoggedContracts, getGas } = gasLogWrapper(contractInstances)
+  const gasLoggedContracts = gasLogWrapper(contractInstances)
 
   const deployedContracts = contractNames.reduce((acc, name, i) => {
     acc[name] = gasLoggedContracts[i]
     return acc
   }, {})
-
-  deployedContracts.__totalGasUsed = getGas
 
   return deployedContracts
 }
