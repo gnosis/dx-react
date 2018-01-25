@@ -44,7 +44,7 @@ contract('DutchExchange deposit/withdraw tests', (accounts) => {
     // eventWatcher(dx, 'NewWithdrawal')
   })
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   const getAccDeposits = async (acc) => {

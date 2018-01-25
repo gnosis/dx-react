@@ -482,11 +482,11 @@ const calculateTokensInExchange = async (Accounts, Tokens) => {
         // check old auctions balances
         for (let auctionIndex = 1; auctionIndex < lastAuctionIndex; auctionIndex += 1) {
           for (let acct of Accounts) {
-            if ((await dx.buyerBalances(token.address, tokenPartner.address, auctionIndex, acct)).toNumber() > 0) {
+            if ((await dx.buyerBalances.call(token.address, tokenPartner.address, auctionIndex, acct)).toNumber() > 0) {
               const [w] = (await dx.claimBuyerFunds.call(token.address, tokenPartner.address, acct, auctionIndex))
               balance = balance.add(w)
             }
-            if ((await dx.sellerBalances(tokenPartner.address, token.address, auctionIndex, acct)).toNumber() > 0) {
+            if ((await dx.sellerBalances.call(tokenPartner.address, token.address, auctionIndex, acct)).toNumber() > 0) {
               const [w] = await dx.claimSellerFunds.call(tokenPartner.address, token.address, acct, auctionIndex)
               balance = balance.add(w)
             }

@@ -23,7 +23,7 @@ contract('DutchExchange deposit/withdraw tests', (accounts) => {
 
   const ETHBalance = 10..toWei()
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
 
   before(async () => {
     // get contracts

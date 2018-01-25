@@ -10,6 +10,7 @@ const {
   timestamp,
   assertRejects,
   gasLogger,
+  enableContractFlag,
 } = require('./utils')
 
 const {
@@ -45,7 +46,7 @@ const checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVo
   logger('buyVolumes', buyVolumes)
   logger((await dx.buyVolumes.call(ST.address, BT.address)).toNumber())
   assert.isAtMost(difference, MaxRoundingError, 'buyVolumes incorrect') 
-  const [closingPriceNumReal, closingPriceDenReal] = await dx.closingPrices(ST.address, BT.address, auctionIndex)
+  const [closingPriceNumReal, closingPriceDenReal] = await dx.closingPrices.call(ST.address, BT.address, auctionIndex)
   logger('ClosingPriceNumReal', closingPriceNumReal)
   difference = Math.abs(closingPriceNumReal - closingPriceNum)
   assert.isAtMost(difference, MaxRoundingError, 'ClosingPriceNum not okay') 
@@ -65,7 +66,7 @@ const getState = async (ST, BT) => { // eslint-disable-line
   // calculate state of Auction
   [numP, denP] = (await dx.getPriceForJS.call(ST.address, BT.address, auctionIndex)) // eslint-disable-line
   numBasedOnVolume = await dx.buyVolumes.call(ST.address, BT.address)
-  denBasedOnVolume = await dx.sellVolumesCurrent(ST.address, BT.address)
+  denBasedOnVolume = await dx.sellVolumesCurrent.call(ST.address, BT.address)
   const isAuctionTheoreticalClosed = (numP.mul(denBasedOnVolume).sub(numBasedOnVolume.mul(denP)).toNumber() === 0);
   [numPP, denPP] = (await dx.closingPrices.call(ST.address, BT.address, auctionIndex))
   const isAuctionClosed = (numPP.toNumber() > 0)
@@ -75,7 +76,7 @@ const getState = async (ST, BT) => { // eslint-disable-line
   let denP2
   [numP2, denP2] = (await dx.getPriceForJS.call(BT.address, ST.address, auctionIndex)) // eslint-disable-line
   numBasedOnVolume = await dx.buyVolumes.call(BT.address, ST.address) 
-  denBasedOnVolume = await dx.sellVolumesCurrent(BT.address, ST.address)
+  denBasedOnVolume = await dx.sellVolumesCurrent.call(BT.address, ST.address)
   const isOppAuctionTheoreticalClosed = (numP2.mul(denBasedOnVolume).minus(numBasedOnVolume.mul(denP2)).toNumber() === 0);
   [numPP, denPP] = (await dx.closingPrices.call(BT.address, ST.address, auctionIndex))
   const isOppAuctionClosed = (numPP.toNumber() > 0)
@@ -298,10 +299,11 @@ const startBal = {
 //
 //
 
-contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
+const c1 = () => contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
+  after(eventWatcher.stopWatching)
 
   before(async () => {
     // get contracts
@@ -319,8 +321,6 @@ contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auction
     eventWatcher(dx, 'Log', {})
   })
 
-  after(eventWatcher.stopWatching)
-
   it('postBuyOrder - posting a buyOrdr to get into S2', async () => {
     const auctionIndex = await getAuctionIndex()
     const auctionStart = (await dx.getAuctionStart.call(eth.address, gno.address)).toNumber()
@@ -336,9 +336,11 @@ contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auction
   })
 })
 
-contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
+const c2 = () => contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
   const [, , , buyer1] = accounts
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
+  after(eventWatcher.stopWatching)
+
   before(async () => {
     // get contracts
     await setupContracts()
@@ -354,8 +356,6 @@ contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auction
 
     eventWatcher(dx, 'Log', {})
   })
-
-  after(eventWatcher.stopWatching)
 
   it('postBuyOrder - posting a buyOrdr to and stay in S0', async () => {
     const auctionIndex = await getAuctionIndex()
@@ -388,9 +388,9 @@ contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auction
   })
 })
 
-contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
+const c3 = () => contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auctions', (accounts) => {
   const [, seller1, , , seller2] = accounts
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -437,10 +437,10 @@ contract('DutchExchange - Stage S0 - Auction is running with v>0 in both auction
 //
 
 
-contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
+const c4 = () => contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -486,9 +486,9 @@ contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one aucti
   })
 })
 
-contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
+const c5 = () => contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
   const [, , , buyer1] = accounts
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -538,9 +538,9 @@ contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one aucti
   })
 })
 
-contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
+const c6 = () => contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one auctions', (accounts) => {
   const [, seller1, , , seller2] = accounts
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -587,10 +587,10 @@ contract('DutchExchange - Stage S1 - Auction is running with v == 0 in one aucti
 //
 
 
-contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
+const c7 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -636,10 +636,10 @@ contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auc
   })
 })
 
-contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
+const c8 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
   const [, , , buyer1, buyer2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -688,10 +688,10 @@ contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auc
   })
 })
 
-contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
+const c9 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -728,10 +728,10 @@ contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auc
 })
 
 
-contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
+const c10 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
   const [, seller1, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -767,10 +767,10 @@ contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auc
 })
 
 
-contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
+const c11 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auctions is closed', (accounts) => {
   const [, seller1, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -815,10 +815,10 @@ contract('DutchExchange - Stage S2 -  1 Auction is running with v > 0, other auc
 //
 
 
-contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
+const c12 = () => contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -865,10 +865,10 @@ contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (account
   })
 })
 
-contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
+const c13 = () => contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
   const [, , , , buyer2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -900,10 +900,10 @@ contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (account
   })
 })
 
-contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
+const c14 = () => contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -940,10 +940,10 @@ contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (account
 })
 
 
-contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
+const c15 = () => contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -987,10 +987,10 @@ contract('DutchExchange - Stage S3 -  1 Auction is closed theoretical', (account
 //
 
 
-contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (accounts) => {
+const c16 = () => contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1024,10 +1024,10 @@ contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (acc
   })
 })
 
-contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (accounts) => {
+const c17 = () => contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1074,10 +1074,10 @@ contract('DutchExchange - Stage S4 -  both Auction are closed theoretical', (acc
 //
 
 
-contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
+const c18 = () => contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1110,10 +1110,10 @@ contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with v
   })
 })
 
-contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
+const c19 = () => contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1149,10 +1149,10 @@ contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with v
   })
 })
 
-contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
+const c20 = () => contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
   const [, seller2, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1188,10 +1188,10 @@ contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with v
 })
 
 
-contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
+const c21 = () => contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with vol=0 in one auction', (accounts) => {
   const [, seller2, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1240,10 +1240,10 @@ contract('DutchExchange - Stage S7 -  both Auction are closed theoretical with v
 //
 
 
-contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
+const c22 = () => contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
   const [, , , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1290,10 +1290,10 @@ contract('DutchExchange - Stage S6 -  one auction closed, other one just closed 
   })
 })
 
-contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
+const c23 = () => contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1330,10 +1330,10 @@ contract('DutchExchange - Stage S6 -  one auction closed, other one just closed 
 })
 
 
-contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
+const c24 = () => contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
   const [, seller1, seller2, buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1369,10 +1369,10 @@ contract('DutchExchange - Stage S6 -  one auction closed, other one just closed 
 })
 
 
-contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
+const c25 = () => contract('DutchExchange - Stage S6 -  one auction closed, other one just closed theoretical', (accounts) => {
   const [, seller1, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1415,10 +1415,10 @@ contract('DutchExchange - Stage S6 -  one auction closed, other one just closed 
 //
 
 
-contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
+const c26 = () => contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
   const [, seller1, , buyer1] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1458,10 +1458,10 @@ contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts
   })
 })
 
-contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
+const c27 = () => contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
   const [, seller1, , , seller2] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1496,10 +1496,10 @@ contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts
 })
 
 
-contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
+const c28 = () => contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts) => {
   const [, , , , seller3] = accounts
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   before(async () => {
     // get contracts
     await setupContracts()
@@ -1530,3 +1530,5 @@ contract('DutchExchange - Stage S5 -  waiting to reach the threshold', (accounts
     await checkInvariants(balanceInvariant, accounts, [eth, gno])
   })
 })
+
+enableContractFlag(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28)

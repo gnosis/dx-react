@@ -7,6 +7,7 @@ const {
   logger,
   timestamp,
   gasLogger,
+  enableContractFlag,
 } = require('./utils')
 
 const {
@@ -44,7 +45,7 @@ const checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVo
   logger('buyVolumes', buyVolumes)
   logger((await dx.buyVolumes.call(ST.address, BT.address)).toNumber())
   assert.isAtMost(difference, MaxRoundingError, 'buyVolumes incorrect') 
-  const [closingPriceNumReal, closingPriceDenReal] = await dx.closingPrices(ST.address, BT.address, auctionIndex)
+  const [closingPriceNumReal, closingPriceDenReal] = await dx.closingPrices.call(ST.address, BT.address, auctionIndex)
   logger('ClosingPriceNumReal', closingPriceNumReal)
   difference = Math.abs(closingPriceNumReal - closingPriceNum)
   assert.isAtMost(difference, MaxRoundingError, 'ClosingPriceNum not okay') 
@@ -79,9 +80,8 @@ const startBal = {
 }
 
 
-contract('DutchExchange - Flow 3', (accounts) => {
+const c1 = () => contract('DutchExchange - Flow 3', (accounts) => {
   const [, seller1, , buyer1] = accounts
-
 
   before(async () => {
     // get contracts
@@ -107,7 +107,7 @@ contract('DutchExchange - Flow 3', (accounts) => {
     eventWatcher(dx, 'Log', {})
   })
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 1 - Buys tokens at the 3:1 price and clears both auctions', async () => {
@@ -115,7 +115,7 @@ contract('DutchExchange - Flow 3', (accounts) => {
     
     // general setup information
     logger('PRICE ORACLE', await oracle.getUSDETHPrice.call()) 
-    logger('tuliptoken', await tokenTUL.totalTokens())
+    logger('tuliptoken', await tokenTUL.totalTokens.call())
 
     // ASSERT Auction has started
     await setAndCheckAuctionStarted(eth, gno)
@@ -149,8 +149,7 @@ contract('DutchExchange - Flow 3', (accounts) => {
   })
 })
 
-
-contract('DutchExchange - Flow 6', (accounts) => {
+const c2 = () => contract('DutchExchange - Flow 6', (accounts) => {
   const [, seller1, seller2, buyer1, buyer2] = accounts
 
   before(async () => {
@@ -182,7 +181,7 @@ contract('DutchExchange - Flow 6', (accounts) => {
       { from: seller1 },
     )
   })
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 1 - Buys tokens at the 3:1 price and clears both auctions', async () => {
@@ -193,7 +192,7 @@ contract('DutchExchange - Flow 6', (accounts) => {
 
     // general setup information
     logger('PRICE ORACLE', await oracle.getUSDETHPrice.call()) 
-    logger('tuliptoken', await tokenTUL.totalTokens())
+    logger('tuliptoken', await tokenTUL.totalTokens.call())
 
     // ASSERT Auction has started
     await setAndCheckAuctionStarted(eth, gno)
@@ -245,7 +244,7 @@ contract('DutchExchange - Flow 6', (accounts) => {
   })
 })
 
-contract('DutchExchange - Flow 4', (accounts) => {
+const c3 = () => contract('DutchExchange - Flow 4', (accounts) => {
   const [, seller1, seller2, buyer1, buyer2, seller3] = accounts
 
   before(async () => {
@@ -278,7 +277,7 @@ contract('DutchExchange - Flow 4', (accounts) => {
     )
   })
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 1 - clearing one auction', async () => {
@@ -333,7 +332,7 @@ contract('DutchExchange - Flow 4', (accounts) => {
     let auctionIndex = await getAuctionIndex()  
 
     logger('new auction index:', auctionIndex)
-    logger('auctionStartDate', (await dx.getAuctionStart(eth.address, gno.address)).toNumber())
+    logger('auctionStartDate', (await dx.getAuctionStart.call(eth.address, gno.address)).toNumber())
     // post new sell order to start next auction
     // startingTimeOfAuction = await getStartingTimeOfAuction(eth, gno)
     const timeOfNextAuctionStart = timestamp() + 10 * 60
@@ -350,7 +349,7 @@ contract('DutchExchange - Flow 4', (accounts) => {
   })
 })
 
-contract('DutchExchange - Flow 1', (accounts) => {
+const c4 = () => contract('DutchExchange - Flow 1', (accounts) => {
   const [, seller1, seller2, buyer1, buyer2] = accounts
 
   before(async () => {
@@ -383,7 +382,7 @@ contract('DutchExchange - Flow 1', (accounts) => {
     )
   })
 
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 1 - clearing one auction', async () => {
@@ -427,7 +426,7 @@ contract('DutchExchange - Flow 1', (accounts) => {
     let auctionIndex = await getAuctionIndex()  
 
     logger('new auction index:', auctionIndex)
-    logger('auctionStartDate', (await dx.getAuctionStart(eth.address, gno.address)).toNumber())
+    logger('auctionStartDate', (await dx.getAuctionStart.call(eth.address, gno.address)).toNumber())
     // post new sell order to start next auction
     // startingTimeOfAuction = await getStartingTimeOfAuction(eth, gno)
     const timeOfNextAuctionStart = timestamp() + 10 * 60
@@ -444,7 +443,7 @@ contract('DutchExchange - Flow 1', (accounts) => {
   })
 })
 
-contract('DutchExchange - Flow 9', (accounts) => {
+const c5 = () => contract('DutchExchange - Flow 9', (accounts) => {
   const [, seller1, , buyer1, buyer2] = accounts
 
   before(async () => {
@@ -476,7 +475,7 @@ contract('DutchExchange - Flow 9', (accounts) => {
       { from: seller1 },
     )
   })
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 2 - closing theoretical', async () => {
@@ -503,7 +502,7 @@ contract('DutchExchange - Flow 9', (accounts) => {
   it('step 3 - both auctions get cleared', async () => {
     let auctionIndex = await getAuctionIndex()
     // clearing buyOrder
-    const previousBuyVolume = (await dx.buyVolumes(eth.address, gno.address)).toNumber()
+    const previousBuyVolume = (await dx.buyVolumes.call(eth.address, gno.address)).toNumber()
     await postBuyOrder(eth, gno, auctionIndex, 10 * ether, buyer2)
 
     // check correct closing prices
@@ -526,7 +525,7 @@ contract('DutchExchange - Flow 9', (accounts) => {
   })
 })
 
-contract('DutchExchange - Flow 10', (accounts) => {
+const c6 = () => contract('DutchExchange - Flow 10', (accounts) => {
   const [, seller1, seller2, buyer1, buyer2] = accounts
 
   before(async () => {
@@ -558,7 +557,7 @@ contract('DutchExchange - Flow 10', (accounts) => {
       { from: seller1 },
     )
   })
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 2 - clearing one auction theoretical', async () => {
@@ -619,7 +618,7 @@ contract('DutchExchange - Flow 10', (accounts) => {
     let auctionIndex = await getAuctionIndex()  
 
     logger('new auction index:', auctionIndex)
-    logger('auctionStartDate', (await dx.getAuctionStart(eth.address, gno.address)).toNumber())
+    logger('auctionStartDate', (await dx.getAuctionStart.call(eth.address, gno.address)).toNumber())
     // post new sell order to start next auction
     // startingTimeOfAuction = await getStartingTimeOfAuction(eth, gno)
     const timeOfNextAuctionStart = timestamp() + 10 * 60
@@ -636,8 +635,7 @@ contract('DutchExchange - Flow 10', (accounts) => {
   })
 })
 
-
-contract('DutchExchange - Flow 7', (accounts) => {
+const c7 = () => contract('DutchExchange - Flow 7', (accounts) => {
   const [, seller1, seller2, buyer1, buyer2, seller3] = accounts
 
   before(async () => {
@@ -669,7 +667,7 @@ contract('DutchExchange - Flow 7', (accounts) => {
       { from: seller1 },
     )
   })
-  afterEach(() => gasLogger(contracts))
+  afterEach(() => gasLogger())
   after(eventWatcher.stopWatching)
 
   it('step 1 - clearing one auction theoretical', async () => {
@@ -738,3 +736,5 @@ contract('DutchExchange - Flow 7', (accounts) => {
     await checkBalanceBeforeClaim(seller1, auctionIndex, 'seller', gno, eth, valMinusFee(ether * 5 / 2), 10 ** 16)
   })
 })
+
+enableContractFlag(c1, c2, c3, c4, c5, c6, c7)

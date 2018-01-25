@@ -27,6 +27,7 @@ const {
   getBalance,
   getContracts,
   postBuyOrder,
+  postSellOrder,
   setupTest,
   setAndCheckAuctionStarted,
   unlockTulipTokens,
@@ -55,6 +56,143 @@ const setupContracts = async () => {
   } = contracts)
 }
 
+const c6 = () => contract('DX Tulip Flow --> 1 SellOrder && 1 BuyOrder', (accounts) => {
+  const [master, seller1, , buyer1] = accounts
+  // const user = seller1
+  // let userTulips
+  let seller1Balance, sellVolumes
+  
+  const startBal = {
+    startingETH: 1000..toWei(),
+    startingGNO: 1000..toWei(),
+    ethUSDPrice: 6000..toWei(),   // 400 ETH @ $6000/ETH = $2,400,000 USD
+    sellingAmount: 100..toWei(), // Same as web3.toWei(50, 'ether')
+  }
+  const { 
+    startingETH,
+    sellingAmount,
+    // startingGNO,
+    // ethUSDPrice,
+  } = startBal
+  
+  afterEach(() => { 
+    gasLogger() 
+    eventWatcher.stopWatching()
+  })
+  
+  // before('BEFORE Hook', async () => {
+  //   // get contracts
+  //   await setupContracts()
+  //   eventWatcher(dx, 'LogNumber', {})
+  //   /*
+  //    * SUB TEST 1: Check passed in ACCT has NO balances in DX for token passed in
+  //    */
+  //   seller1Balance = await getBalance(seller1, eth)
+  //   assert.equal(seller1Balance, 0, 'Seller1 should have 0 balance')
+
+  //   // set up accounts and tokens[contracts]
+  //   await setupTest(accounts, contracts, startBal)
+
+  //   /*
+  //    * SUB TEST 2: Check passed in ACCT has NO balances in DX for token passed in
+  //    */
+  //   seller1Balance = await getBalance(seller1, eth)
+  //   assert.equal(seller1Balance, startingETH, `Seller1 should have balance of ${startingETH.toEth()}`)
+
+  //   /*
+  //    * SUB TEST 3: assert both eth and gno get approved by DX
+  //    */
+  //   // approve ETH
+  //   await dx.updateApprovalOfToken(eth.address, true, { from: master })
+  //   // approve GNO
+  //   await dx.updateApprovalOfToken(gno.address, true, { from: master })
+
+  //   assert.equal(await dx.approvedTokens.call(eth.address), true, 'ETH is approved by DX')
+  //   assert.equal(await dx.approvedTokens.call(gno.address), true, 'GNO is approved by DX')
+
+  //   /*
+  //    * SUB TEST 4: create new token pair and assert Seller1Balance = 0 after depositing more than Balance
+  //    */
+  //   // add tokenPair ETH GNO
+  //   log('Selling amt ', sellingAmount.toEth())
+  //   await dx.addTokenPair(
+  //     eth.address,
+  //     gno.address,
+  //     0,                 // 100 ether - sellVolume for ETH - takes Math.min of amt passed in OR seller balance
+  //     0,                // buyVolume for GNO
+  //     2,               // lastClosingPrice NUM
+  //     1,              // lastClosingPrice DEN
+  //     { from: seller1 },
+  //   )
+  //   seller1Balance = await getBalance(seller1, eth) // dx.balances(token) - sellingAmt
+  //   log(`\nSeller Balance ====> ${seller1Balance.toEth()}\n`)
+  //   assert.equal(seller1Balance.toEth(), seller1Balance.toEth(), `Seller1 should have ${seller1Balance} balance after new Token Pair add`)
+  // })
+
+  it('SET UP STATE --> addTokenPair', async () => {
+    // get contracts
+    await setupContracts()
+    /*
+     * SUB TEST 1: Check passed in ACCT has NO balances in DX for token passed in
+     */
+    seller1Balance = await getBalance(seller1, eth)
+    assert.equal(seller1Balance, 0, 'Seller1 should have 0 balance')
+
+    // set up accounts and tokens[contracts]
+    await setupTest(accounts, contracts, startBal)
+
+    /*
+     * SUB TEST 2: Check passed in ACCT has NO balances in DX for token passed in
+     */
+    seller1Balance = await getBalance(seller1, eth)
+    assert.equal(seller1Balance, startingETH, `Seller1 should have balance of ${startingETH.toEth()}`)
+
+    /*
+     * SUB TEST 3: assert both eth and gno get approved by DX
+     */
+    // approve ETH
+    await dx.updateApprovalOfToken(eth.address, true, { from: master })
+    // approve GNO
+    await dx.updateApprovalOfToken(gno.address, true, { from: master })
+
+    assert.equal(await dx.approvedTokens.call(eth.address), true, 'ETH is approved by DX')
+    assert.equal(await dx.approvedTokens.call(gno.address), true, 'GNO is approved by DX')
+
+    /*
+     * SUB TEST 4: create new token pair and assert Seller1Balance = 0 after depositing more than Balance
+     */
+    // add tokenPair ETH GNO
+    log('Selling amt ', sellingAmount.toEth())
+    await dx.addTokenPair(
+      eth.address,
+      gno.address,
+      0,                 // 100 ether - sellVolume for ETH - takes Math.min of amt passed in OR seller balance
+      0,                // buyVolume for GNO
+      2,               // lastClosingPrice NUM
+      1,              // lastClosingPrice DEN
+      { from: seller1 },
+    )
+    seller1Balance = await getBalance(seller1, eth) // dx.balances(token) - sellingAmt
+    log(`\nSeller Balance ====> ${seller1Balance.toEth()}\n`)
+    assert.equal(seller1Balance.toEth(), seller1Balance.toEth(), `Seller1 should have ${seller1Balance} balance after new Token Pair add`)
+  })
+
+  it('1st --> POST SELL ORDER', async () => postSellOrder(eth, gno, 0, 5..toWei(), seller1))
+
+  it('2nd --> POST SELL ORDER', async () => postSellOrder(eth, gno, 0, 5..toWei(), seller1))
+
+  it('START AUCTION', async () => setAndCheckAuctionStarted(eth, gno))
+
+  it('1st --> POST BUY ORDER', async () => postBuyOrder(eth, gno, 1, 1..toWei(), buyer1))
+
+  it('2nd --> POST BUY ORDER', async () => postBuyOrder(eth, gno, 1, 1..toWei(), buyer1))
+
+  it('WAIT UNTIL PRICE IS 2:1 <was 4:1>', async () => waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1))
+
+  it('CLEAR AUCTION W/BUY ORDER', async () => postBuyOrder(eth, gno, 1, 400..toWei(), buyer1))
+
+  it('ASSERTS AUCTION IDX === 2', async () => assert.equal(await getAuctionIndex(), 2, 'AucIdx should = 2'))
+})
 const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => {
   const [master, seller1, , buyer1] = accounts
   // const user = seller1
@@ -79,7 +217,8 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     eventWatcher.stopWatching()
   })
   
-  before(async () => {
+  before('BEFORE Hook', async () => {
+    console.log(this)
     // get contracts
     await setupContracts()
     eventWatcher(dx, 'LogNumber', {})
@@ -312,7 +451,6 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     // await checkUserReceivesTulipTokens(eth, gno, buyer1)
     await unlockTulipTokens(seller1)
   })
-
 })
 
 const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) => {
@@ -1217,4 +1355,4 @@ const c5 = () => contract('DX Tulip Flow --> 2 Sellers || Tulip issuance', (acco
 })  
 
 // conditionally start contracts
-enableContractFlag(c1, c2, c3, c4, c5)
+enableContractFlag(c1, c2, c3, c4, c5, c6)
