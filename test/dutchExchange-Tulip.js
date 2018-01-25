@@ -14,6 +14,7 @@
 const { 
   eventWatcher,
   log,
+  gasLogger,
   timestamp,
   enableContractFlag,
 } = require('./utils')
@@ -72,7 +73,12 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     // startingGNO,
     // ethUSDPrice,
   } = startBal
-
+  
+  afterEach(() => { 
+    gasLogger(contracts) 
+    eventWatcher.stopWatching()
+  })
+  
   before(async () => {
     // get contracts
     await setupContracts()
@@ -307,7 +313,6 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     await unlockTulipTokens(seller1)
   })
 
-  afterEach(eventWatcher.stopWatching)
 })
 
 const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) => {

@@ -6,10 +6,17 @@
   no-console: 0,
   no-mixed-operators: 0,
   no-floating-decimal: 0,
+  no-underscore-dangle:0,
+  no-return-assign:0,
 */
 const bn = require('bignumber.js')
 const { wait } = require('@digix/tempo')(web3)
-const { timestamp, varLogger, log } = require('./utils')
+const {
+  gasLogWrapper,
+  log,
+  timestamp,
+  varLogger,
+} = require('./utils')
 
 // I know, it's gross
 // add wei converter
@@ -46,10 +53,14 @@ const getContracts = async () => {
   const depContracts = contractNames.map(c => artifacts.require(c)).map(cc => cc.deployed())
   const contractInstances = await Promise.all(depContracts)
 
+  const { gasLoggedContracts, getGas } = gasLogWrapper(contractInstances)
+
   const deployedContracts = contractNames.reduce((acc, name, i) => {
-    acc[name] = contractInstances[i]
+    acc[name] = gasLoggedContracts[i]
     return acc
   }, {})
+
+  deployedContracts.__totalGasUsed = getGas
 
   return deployedContracts
 }
