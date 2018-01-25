@@ -217,8 +217,7 @@ const c1 = () => contract('DX Tulip Flow --> 1 Seller + 1 Buyer', (accounts) => 
     eventWatcher.stopWatching()
   })
   
-  before('BEFORE Hook', async () => {
-    console.log(this)
+  before(async () => {
     // get contracts
     await setupContracts()
     eventWatcher(dx, 'LogNumber', {})
@@ -759,7 +758,7 @@ const c2 = () => contract('DX Tulip Flow --> 1 Seller + 2 Buyers', (accounts) =>
     log(`
     New Auction Index -> ${await getAuctionIndex()}
     `)
-    // meh dont like this
+
     assert.equal(((await getBalance(buyer1, eth)).toEth()).toFixed(2), ((startBal.startingETH + buyer1Returns).toEth()).toFixed(2), 'Buyer 1 has the returned value into ETHER + original balance')
     assert.equal(((await getBalance(buyer2, eth)).toEth()).toFixed(2), ((startBal.startingETH + buyer2Returns).toEth()).toFixed(2), 'Buyer 2 has the returned value into ETHER + original balance')
     assert.equal(await getAuctionIndex(), 2)
