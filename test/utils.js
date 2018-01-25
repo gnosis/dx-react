@@ -1,6 +1,93 @@
-/* eslint no-console:0, no-confusing-arrow:0 */
+/*
+eslint no-console:0,
+no-confusing-arrow:0,
+no-unused-expressions:0,
+*/
 // `truffle test --silent` or `truffle test -s` to suppress logs
-const { silent, contract: contractFlag } = require('minimist')(process.argv.slice(2), { alias: { silent: 's', contract: 'c' } })
+const {
+  silent,
+  contract: contractFlag,
+  gas: gasLog,
+  gasTx,
+} = require('minimist')(process.argv.slice(2), { alias: { silent: 's', contract: 'c', gas: 'g', gasTx: 'gtx' } })
+
+const log = silent ? () => {} : console.log.bind(console)
+const logger = (desc, fn) => log(`---- \n => ${desc} ${fn ? `|| - - - - - - - - - -  - > ${fn}` : ''}`)
+
+const varLogger = (varName, varValue) => log(varName, '--->', varValue)
+
+/**
+ * gasLogWrapper
+ * @param {*} obj
+ */
+const gasLogWrapper = (contracts) => {
+  let totalGas = 0
+  const getGas = (gas = totalGas) => {
+    totalGas = gas
+    return totalGas
+  }
+  const handler = {
+    // intercept all GETS to contracts
+    get(target, propKey) {
+      const origMethod = target[propKey]
+      // if prompted prop !== a FUNCTION return prop
+      if (typeof origMethod !== 'function') {
+        return origMethod
+      }
+      // go one level deeper into actual METHOD - here access to (.call, .apply etc)
+      return new Proxy(origMethod, {
+        get(target, propKey) {
+          const defaultFunctionMethod = target[propKey]
+          // called if NON-tx function aka .call thing
+          if (propKey === 'call') {
+            return async function asyncReturn(...args) {
+              // console.info('Method detected, calling...')
+              const result = await Reflect.apply(defaultFunctionMethod, target, args)
+
+              return result
+            }
+          }
+          // returns estimateGas etc type Functions
+          return defaultFunctionMethod
+        },
+        // called if @transaction function
+        async apply(target, thisArg, argumentsList) {
+          const result = await Reflect.apply(target, thisArg, argumentsList)
+          const { receipt } = result
+          // check that BOTH gas flags are used
+          gasLog && gasTx && console.info(`
+          ==============================
+          TX name     ==> ${propKey}
+          TX gasCost  ==> ${receipt && receipt.gasUsed ? receipt.gasUsed : 'No gasUsed found'}
+          ==============================
+          `)
+          totalGas += receipt && receipt.gasUsed ? receipt.gasUsed : 0
+          return result
+        },
+      })
+    },
+  }
+
+  return {
+    gasLoggedContracts: contracts.map(c => new Proxy(c, handler)),
+    getGas,
+  }
+}
+
+/**
+ * gasLogger
+ * @param {contracts from testFunctions} contracts
+ */
+const gasLogger = (contracts) => {
+  const { __totalGasUsed: getGasUse } = contracts
+  gasLog && console.info(`
+    *******************************
+    TOTAL GAS 
+    Gas ==> ${getGasUse()}
+    *******************************
+    `)
+  getGasUse(0)
+}
 
 const assertRejects = async (q, msg) => {
   let res, catchFlag = false
@@ -20,11 +107,6 @@ const assertRejects = async (q, msg) => {
 const blockNumber = () => web3.eth.blockNumber
 
 const timestamp = (block = 'latest') => web3.eth.getBlock(block).timestamp
-
-const log = silent ? () => {} : console.log.bind(console)
-const logger = (desc, fn) => log(`---- \n => ${desc} ${fn ? `|| - - - - - - - - - -  - > ${fn}` : ''}`)
-
-const varLogger = (varName, varValue) => log(varName, '--->', varValue)
 
 // keeps track of watched events
 let stopWatching = {}
@@ -156,10 +238,12 @@ const enableContractFlag = (...contractTests) => {
 module.exports = {
   assertRejects,
   blockNumber,
-  eventWatcher,
-  logger,
-  log,
-  varLogger,
-  timestamp,
   enableContractFlag,
+  eventWatcher,
+  gasLogger,
+  gasLogWrapper,
+  log,
+  logger,
+  timestamp,
+  varLogger,
 }
