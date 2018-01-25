@@ -6,7 +6,6 @@ TUL token issuing will not be covered in these tests, as they are covered in the
 */
 
 const bn = require('bignumber.js')
-
 const { 
   eventWatcher,
   assertRejects,
