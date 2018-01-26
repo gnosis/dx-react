@@ -49,99 +49,104 @@ const startBal = {
   sellingAmount: 50.0.toWei(), // Same as web3.toWei(50, 'ether')
 }
 
+for (let k = 1; k < 5; k++) { // eslint-disable-line no-use-before-define
+  contract('DutchExchange - claimBuyerFunds', (accounts) => { // eslint-disable-line no-use-before-define
+    const [, seller1, seller2, buyer1, buyer2] = accounts
+    const totalSellAmount2ndAuction = 10e18
 
-contract('DutchExchange - claimBuyerFunds', (accounts) => {
-  const [, seller1, seller2, buyer1, buyer2] = accounts
-  const totalSellAmount2ndAuction = 10e18
+    before(async () => {
+      // get contracts
+      await setupContracts()
 
-  before(async () => {
-    // get contracts
-    await setupContracts()
+      // set up accounts and tokens[contracts]
+      await setupTest(accounts, contracts, startBal)
 
-    // set up accounts and tokens[contracts]
-    await setupTest(accounts, contracts, startBal)
+      // add tokenPair ETH GNO
+      await dx.addTokenPair(
+        eth.address,
+        gno.address,
+        10e18,
+        0,
+        2,
+        1,
+        { from: seller1 },
+      )
 
-    // add tokenPair ETH GNO
-    await dx.addTokenPair(
-      eth.address,
-      gno.address,
-      10e18,
-      0,
-      2,
-      1,
-      { from: seller1 },
-    )
+      eventWatcher(dx, 'Log', {})
+    })
 
-    eventWatcher(dx, 'Log', {})
+    after(eventWatcher.stopWatching)
+
+    it('1. check for a throw, if auctionIndex is bigger than the latest auctionIndex', async () => {
+      const auctionIndex = await getAuctionIndex()
+      await setAndCheckAuctionStarted(eth, gno)
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
+      await assertRejects(dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex + 1))
+    })
+
+    it(' 2. checks that the return value == 0, if price.num ==0 ', async () => {
+      // prepare test by starting and clearning new auction
+      let auctionIndex = await getAuctionIndex()
+      await postSellOrder(gno, eth, 0, totalSellAmount2ndAuction, seller2)
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
+      await postBuyOrder(eth, gno, auctionIndex, 2 * 10e18, buyer1)
+      auctionIndex = await getAuctionIndex()
+      await setAndCheckAuctionStarted(eth, gno)
+      assert.equal(2, auctionIndex)
+
+      // now claiming should not be possible and return == 0
+      await setAndCheckAuctionStarted(eth, gno)
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
+      const [closingPriceNum] = (await dx.closingPrices.call(gno.address, eth.address, auctionIndex - 1)).map(i => i.toNumber())
+      assert.equal(closingPriceNum, 0)
+      const [claimedAmount] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer1, auctionIndex)).map(i => i.toNumber())
+      assert.equal(claimedAmount, 0) 
+    })
+    it(' 3. checks that a non-buyer can not claim any returns', async () => {
+      const auctionIndex = await getAuctionIndex()
+      const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
+      assert.equal(claimedAmount, 0) 
+    })
+
+    it('4. check right amount of coins is returned by claimBuyerFunds if auction is not closed', async () => {
+      const auctionIndex = await getAuctionIndex()
+
+      // prepare test by starting and closing theoretical auction
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
+
+      await postBuyOrder(gno, eth, auctionIndex, totalSellAmount2ndAuction / 4, buyer2)
+
+      // checking that closingPriceToken.num == 0
+      const [closingPriceNumToken] = (await dx.closingPrices.call(eth.address, gno.address, auctionIndex)).map(i => i.toNumber())
+      assert.equal(closingPriceNumToken, 0)
+      
+      // actual testing at time with previous price
+      const [claimedAmount] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
+      const [num, den] = await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)
+      let sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
+      let buyVolume = await dx.buyVolumes.call(gno.address, eth.address)
+      logger('buyVolume', buyVolume)
+      logger('num', num)
+      logger('den', den)
+      
+      let oustandingVolume = (sellVolume.mul(num).div(den)).sub(buyVolume)
+      logger('oustandingVolume', oustandingVolume.toNumber())
+      
+      assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount)
+
+      // actual testing at time with previous 2/3price
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 2 / 3)
+      const [claimedAmount2] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
+      const [num2, den2] = await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)
+      sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
+      buyVolume = (await dx.buyVolumes.call(gno.address, eth.address))
+      oustandingVolume = (sellVolume.mul(num2).div(den2)).sub(buyVolume)
+      logger('oustandingVolume', oustandingVolume)
+      logger('buyVolume', buyVolume)
+      assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount2)
+    })
   })
-
-  after(eventWatcher.stopWatching)
-
-  it('1. check for a throw, if auctionIndex is bigger than the latest auctionIndex', async () => {
-    const auctionIndex = await getAuctionIndex()
-    await setAndCheckAuctionStarted(eth, gno)
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
-    await assertRejects(dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex + 1))
-  })
-
-  it(' 2. checks that the return value == 0, if price.num ==0 ', async () => {
-    // prepare test by starting and clearning new auction
-    let auctionIndex = await getAuctionIndex()
-    await postSellOrder(gno, eth, 0, totalSellAmount2ndAuction, seller2)
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
-    await postBuyOrder(eth, gno, auctionIndex, 2 * 10e18, buyer1)
-    auctionIndex = await getAuctionIndex()
-    await setAndCheckAuctionStarted(eth, gno)
-    assert.equal(2, auctionIndex)
-
-    // now claiming should not be possible and return == 0
-    await setAndCheckAuctionStarted(eth, gno)
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
-    const [closingPriceNum] = (await dx.closingPrices.call(gno.address, eth.address, auctionIndex - 1)).map(i => i.toNumber())
-    assert.equal(closingPriceNum, 0)
-    const [claimedAmount] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer1, auctionIndex)).map(i => i.toNumber())
-    assert.equal(claimedAmount, 0) 
-  })
-  it(' 3. checks that a non-buyer can not claim any returns', async () => {
-    const auctionIndex = await getAuctionIndex()
-    const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
-    assert.equal(claimedAmount, 0) 
-  })
-
-  it('4. check right amount of coins is returned by claimBuyerFunds if auction is not closed', async () => {
-    const auctionIndex = await getAuctionIndex()
-
-    // prepare test by starting and closing theoretical auction
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
-
-    await postBuyOrder(gno, eth, auctionIndex, totalSellAmount2ndAuction / 4, buyer2)
-
-    // checking that closingPriceToken.num == 0
-    const [closingPriceNumToken] = (await dx.closingPrices.call(eth.address, gno.address, auctionIndex)).map(i => i.toNumber())
-    assert.equal(closingPriceNumToken, 0)
-    
-    // actual testing at time with previous price
-    const [claimedAmount] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
-    const [num, den] = (await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)).map(i => i.toNumber())
-    let sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
-    let buyVolume = await dx.buyVolumes.call(gno.address, eth.address)
-    let oustandingVolume = (sellVolume.mul(bn(num)).div(den)).sub(buyVolume)
-    logger('oustandingVolume', oustandingVolume.toNumber())
-    logger('buyVolume', buyVolume)
-    assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount)
-
-    // actual testing at time with previous 2/3price
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 2 / 3)
-    const [claimedAmount2] = (await dx.claimBuyerFunds.call(gno.address, eth.address, buyer2, auctionIndex)).map(i => i.toNumber())
-    const [num2, den2] = await dx.getPriceForJS.call(gno.address, eth.address, auctionIndex)
-    sellVolume = (await dx.sellVolumesCurrent.call(gno.address, eth.address))
-    buyVolume = (await dx.buyVolumes.call(gno.address, eth.address))
-    oustandingVolume = (sellVolume.mul(num2).div(den2)).sub(buyVolume)
-    logger('oustandingVolume', oustandingVolume)
-    logger('buyVolume', buyVolume)
-    assert.equal((bn(valMinusFee(totalSellAmount2ndAuction)).mul(buyVolume).div(buyVolume.add(oustandingVolume))).toNumber(), claimedAmount2)
-  })
-})
+}
 
 contract('DutchExchange - claimBuyerFunds', (accounts) => {
   const [, seller1, buyer1] = accounts
@@ -186,61 +191,64 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
     
     // actual testing
     const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
-    assert.equal(bn(valMinusFee(totalSellAmount2ndAuction)), claimedAmount)
+    assert.equal(valMinusFee(totalSellAmount2ndAuction), claimedAmount)
   })
 })
 
 
-contract('DutchExchange - claimBuyerFunds', (accounts) => {
-  const [, seller1, , buyer1] = accounts
+for (let k = 1; k < 5; k++) { // eslint-disable-line no-use-before-define
+  contract('DutchExchange - claimBuyerFunds', (accounts) => { // eslint-disable-line no-use-before-define
+    const [, seller1, , buyer1] = accounts
 
-  before(async () => {
-    // get contracts
-    await setupContracts()
+    before(async () => {
+      // get contracts
+      await setupContracts()
 
-    // set up accounts and tokens[contracts]
-    await setupTest(accounts, contracts, startBal)
+      // set up accounts and tokens[contracts]
+      await setupTest(accounts, contracts, startBal)
 
-    // add tokenPair ETH GNO
-    await dx.addTokenPair(
-      eth.address,
-      gno.address,
-      10e18,
-      0,
-      2,
-      1,
-      { from: seller1 },
-    )
+      // add tokenPair ETH GNO
+      await dx.addTokenPair(
+        eth.address,
+        gno.address,
+        10e18,
+        0,
+        2,
+        1,
+        { from: seller1 },
+      )
 
-    eventWatcher(dx, 'Log', {})
-  })
+      eventWatcher(dx, 'Log', {})
+    })
 
-  after(eventWatcher.stopWatching)
+    after(eventWatcher.stopWatching)
 
-  it('6. check that already claimedBuyerfunds are substracted properly', async () => {
-    // prepare test by starting and clearning new auction
-  
-    const auctionIndex = await getAuctionIndex()
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
-    await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer1)
-
-    // first withdraw  
-    const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
-    const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
-    await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
-    logger('num', num)
-    logger('den', den)
-    assert.equal((bn(valMinusFee(10e18)).div(num).mul(den)).toNumber(), claimedAmount)
+    it('6. check that already claimedBuyerfunds are substracted properly', async () => {
+      // prepare test by starting and clearning new auction
     
-    // second withdraw
-    await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.4)
-    await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer1)
+      const auctionIndex = await getAuctionIndex()
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1)
+      await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer1)
 
-    const [claimedAmount2] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
-    await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
-    assert.equal((bn(valMinusFee(10e18)).sub(bn(valMinusFee(10e18)).div(num).mul(den))).toNumber(), claimedAmount2)
+      // first withdraw  
+      const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
+      const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
+      assert.equal((bn(valMinusFee(10e18)).div(num).mul(den)).toNumber(), claimedAmount)
+      await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
+      const [num2, den2] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
+      logger('num', num2)
+      logger('den', den2)
+      
+      // second withdraw
+      await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.4)
+      await postBuyOrder(eth, gno, auctionIndex, 10e18, buyer1)
+
+      const [claimedAmount2] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
+      await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
+      assert.equal((bn(valMinusFee(10e18)).sub(bn(valMinusFee(10e18)).div(num2).mul(den2))).toNumber(), claimedAmount2)
+    })
   })
-})
+}
 contract('DutchExchange - claimBuyerFunds', (accounts) => {
   const [, seller1, , buyer1, buyer2] = accounts
 
@@ -288,7 +296,7 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
     const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
     const [num, den] = (await dx.closingPrices.call(eth.address, gno.address, auctionIndex))
     await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
-    assert.equal(((bn(valMinusFee(10e18)).div(num).mul(den)).add(extraTokensAvailable.div(bn(2))))
+    assert.equal(((bn(valMinusFee(10e18)).div(num).mul(den)).add(extraTokensAvailable.div(2)))
       .toNumber(), claimedAmount)
   })
 })
@@ -337,7 +345,7 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
     const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
     const [num, den] = (await dx.closingPrices.call(eth.address, gno.address, auctionIndex))
     await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
-    assert.equal(((bn(valMinusFee(10e18)).div(num).mul(den)).add(extraTokensAvailable.div(bn(2))))
+    assert.equal(((bn(valMinusFee(10e18)).div(num).mul(den)).add(extraTokensAvailable.div(2)))
       .toNumber(), claimedAmount)
 
     // check that the token balances have been manipulated correctly
