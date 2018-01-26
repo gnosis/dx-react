@@ -939,6 +939,20 @@ contract DutchExchange {
         return (price.num, price.den);
     }
 
+     // > getPriceOracleForJs()
+    function computeRatioOfHistoricalPriceOraclesForJS(
+        address tokenA,
+        address tokenB,
+        uint auctionIndex
+    )
+    public
+    constant
+    returns (uint, uint) 
+    {
+        fraction memory price = computeRatioOfHistoricalPriceOracles(tokenA, tokenB, auctionIndex);
+        return (price.num, price.den);
+    }
+
     // > helper fns
     function getTokenOrder(
         address token1,
