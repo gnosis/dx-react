@@ -49,8 +49,9 @@ const startBal = {
   sellingAmount: 50.0.toWei(), // Same as web3.toWei(50, 'ether')
 }
 
-for (let k = 1; k < 5; k++) { // eslint-disable-line no-use-before-define
-  contract('DutchExchange - claimBuyerFunds', (accounts) => { // eslint-disable-line no-use-before-define
+/* eslint no-loop-func:0 */
+for (let k = 1; k < 5; k++) { 
+  contract('DutchExchange - claimBuyerFunds', (accounts) => { 
     const [, seller1, seller2, buyer1, buyer2] = accounts
     const totalSellAmount2ndAuction = 10e18
 
@@ -196,8 +197,8 @@ contract('DutchExchange - claimBuyerFunds', (accounts) => {
 })
 
 
-for (let k = 1; k < 5; k++) { // eslint-disable-line no-use-before-define
-  contract('DutchExchange - claimBuyerFunds', (accounts) => { // eslint-disable-line no-use-before-define
+for (let k = 1; k < 5; k++) { 
+  contract('DutchExchange - claimBuyerFunds', (accounts) => { 
     const [, seller1, , buyer1] = accounts
 
     before(async () => {
