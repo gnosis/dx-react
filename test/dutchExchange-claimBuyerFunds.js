@@ -232,8 +232,8 @@ for (let k = 1; k < 5; k++) {
 
       // first withdraw  
       const [claimedAmount] = (await dx.claimBuyerFunds.call(eth.address, gno.address, buyer1, auctionIndex)).map(i => i.toNumber())
-      await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
       const [num, den] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
+      await dx.claimBuyerFunds(eth.address, gno.address, buyer1, auctionIndex)
       assert.equal((bn(valMinusFee(10e18)).div(num).mul(den)).toNumber(), claimedAmount)
       
       const [num2, den2] = (await dx.getPriceForJS.call(eth.address, gno.address, auctionIndex))
