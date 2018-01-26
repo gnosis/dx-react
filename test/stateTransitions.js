@@ -118,10 +118,11 @@ const getState = async (ST, BT) => { // eslint-disable-line
 }
 
 const getIntoState = async (state, accounts, ST, BT) => {
-  const [, seller1, buyer1] = accounts
+  const [seller1, buyer1] = accounts
   switch (state) {
     case 0:
     {
+      // allow the start of an auction w/no threshold
       await dx.addTokenPair(
         ST.address,
         BT.address,
@@ -137,6 +138,7 @@ const getIntoState = async (state, accounts, ST, BT) => {
     }
     case 1:
     {
+      // allow the start of an auction w/no threshold
       await dx.addTokenPair(
         ST.address,
         BT.address,
@@ -465,7 +467,7 @@ const c4 = () => contract('DutchExchange - Stage S1 - Auction is running with v 
       
     await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
     // clearing first auction
-    await assertRejects(await postBuyOrder(gno, eth, auctionIndex, 10 * ether * 3, buyer1))
+    await assertRejects(postBuyOrder(gno, eth, auctionIndex, 10 * ether * 3, buyer1))
     // checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVolumesNext, buyVolumes, closingPriceNum, closingPriceDen, ST, BT, MaxRoundingError) => {
     await checkState(1, auctionStart, 0, 0, 0, 0, 0, gno, eth, 10 ** 16)
     assert.equal(1, await getState(eth, gno))
@@ -615,7 +617,7 @@ const c7 = () => contract('DutchExchange - Stage S2 -  1 Auction is running with
       
     await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 1.5)
     // clearing first auction
-    await assertRejects(await postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
+    await assertRejects(postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
     // checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVolumesNext, buyVolumes, closingPriceNum, closingPriceDen, ST, BT, MaxRoundingError) => {
     await checkState(1, auctionStart, valMinusFee(5 * ether), 0, 0, 0, 0, gno, eth, 1)
     assert.equal(2, await getState(eth, gno))
@@ -1269,7 +1271,7 @@ const c22 = () => contract('DutchExchange - Stage S6 -  one auction closed, othe
       
     await waitUntilPriceIsXPercentOfPreviousPrice(eth, gno, 0.5)
     // clearing first auction
-    await assertRejects(await postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
+    await assertRejects(postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
     // checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVolumesNext, buyVolumes, closingPriceNum, closingPriceDen, ST, BT, MaxRoundingError) => {
     await checkState(1, auctionStart, valMinusFee(5 * ether), 0, valMinusFee(2 * ether), 0, 0, gno, eth, 10 ** 18)
     assert.equal(6, await getState(eth, gno))
@@ -1440,7 +1442,7 @@ const c26 = () => contract('DutchExchange - Stage S5 -  waiting to reach the thr
   it('postBuyOrder - posting a buyOrder should fail', async () => {
     const auctionIndex = await getAuctionIndex()      
     // clearing first auction
-    await assertRejects(await postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
+    await assertRejects(postBuyOrder(eth, gno, auctionIndex, 10 * ether * 3, buyer1))
     // checkState = async (auctionIndex, auctionStart, sellVolumesCurrent, sellVolumesNext, buyVolumes, closingPriceNum, closingPriceDen, ST, BT, MaxRoundingError) => {
     assert.equal(5, await getState(eth, gno))
     await checkInvariants(balanceInvariant, accounts, [eth, gno])
