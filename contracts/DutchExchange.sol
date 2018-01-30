@@ -112,14 +112,19 @@ contract DutchExchange {
     }
 
     function updateExchangeParams(
+        address _TUL,
+        address _OWL,
         address _auctioneer,
         address _ETHUSDOracle,
         uint _thresholdNewTokenPair,
-        uint _thresholdNewAuction
+        uint _thresholdNewAuction,
+
     )
         public
         onlyAuctioneer()
     {
+        TUL = _TUL;
+        OWL = _OWL;
         auctioneer = _auctioneer;
         ETHUSDOracle = _ETHUSDOracle;
         thresholdNewTokenPair = _thresholdNewTokenPair;
