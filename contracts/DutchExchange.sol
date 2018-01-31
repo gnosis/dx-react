@@ -102,6 +102,22 @@ contract DutchExchange {
     )
         public
     {
+        setup(_TUL, _OWL, _auctioneer, _ETH, _ETHUSDOracle, _thresholdNewTokenPair, _thresholdNewAuction);
+    }
+
+    function setup(
+        address _TUL,
+        address _OWL,
+        address _auctioneer, 
+        address _ETH,
+        address _ETHUSDOracle,
+        uint _thresholdNewTokenPair,
+        uint _thresholdNewAuction
+    )
+        public
+    {
+        require(ETH == 0);
+
         TUL = _TUL;
         OWL = _OWL;
         auctioneer = _auctioneer;
@@ -117,8 +133,7 @@ contract DutchExchange {
         address _auctioneer,
         address _ETHUSDOracle,
         uint _thresholdNewTokenPair,
-        uint _thresholdNewAuction,
-
+        uint _thresholdNewAuction
     )
         public
         onlyAuctioneer()
