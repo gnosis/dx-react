@@ -22,7 +22,7 @@ const {
 
 const {
   assertClaimingFundsCreatesTulips,
-  checkUserReceivesTulipTokens,
+  assertReturnedPlusTulips,
   claimBuyerFunds,
   claimSellerFunds,
   getAuctionIndex,
@@ -1451,6 +1451,40 @@ const c7 = () => contract('DX Tulip Flow --> ERC20:ERC20 --> 1 S + 1B', (account
     await postBuyOrder(gno2, gno, 1, 25.0.toWei(), buyer1)
     const assertingAI = await getAuctionIndex(gno, gno2)
     assert.equal(assertingAI, startingAI + 1, `Current Auction Index should == ${startingAI} + 1`)
+  })
+
+  it('Calculate that PROPER Tulip amt is minted', async () => {
+    // assuming all auctions: E/G, E/G2, G/G2 are CLOSED
+    /** Tulip minting guide
+     * ETH/ERC20 
+     * --> Buyer (ERC20)
+     * ------> Tulip = buyerBalance * (price.den / price.num) <== closingPrice
+     * --> Seller (ETH)
+     * ------> Tulip = sellerBalance (1:1 conversion)
+     * 
+     * ERC20/ETH
+     * --> Buyer (ETH)
+     * ------> Tulip = buyerBalance (1:1 conversion)
+     * --> Seller (ERC20)
+     * ------> Tulip = returned AKA sellerBalance * (price.num / price.den)
+     * 
+     * ERC20/ERC20
+     * --> Buyer (ERC20)
+     * ------> Tulip = buyerBalance * (priceETHden / priceETHnum)
+     * --> Seller (ERC20)
+     * ------> Tulip = returned AKA sellerBalance * (price.num / price.den)
+     * 
+     */
+    
+    // seller
+    await assertReturnedPlusTulips(eth, gno, seller1, 'seller')
+    await assertReturnedPlusTulips(eth, gno2, seller1, 'seller')
+    await assertReturnedPlusTulips(gno, gno2, seller1, 'seller')
+
+    // buyer
+    await assertReturnedPlusTulips(eth, gno, buyer1, 'buyer')
+    await assertReturnedPlusTulips(eth, gno2, buyer1, 'buyer')
+    await assertReturnedPlusTulips(gno, gno2, buyer1, 'buyer')
   })
 
   it('Buyer1 => can claim all TULIPS from all auctions', async () => {

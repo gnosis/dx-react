@@ -226,6 +226,11 @@ const checkBalanceBeforeClaim = async (
   assert.equal(difference.toNumber() < round, true)
 }
 
+/**
+ * getAuctionIndex
+ * @param {addr} Sell Token
+ * @param {addr} Buy Token
+ */
 const getAuctionIndex = async (sell, buy) => {
   const { DutchExchange: dx, EtherToken: eth, TokenGNO: gno } = await getContracts()
   sell = sell || eth; buy = buy || gno
@@ -289,7 +294,6 @@ const postSellOrder = async (ST, BT, aucIdx, amt, acct) => {
   // log('POSTBUYORDER TX RECEIPT ==', await dx.postBuyOrder(ST.address, BT.address, auctionIdx, amt, { from: acct }))
   return dx.postSellOrder(ST.address, BT.address, auctionIdx, amt, { from: acct })
 }
-
 
 /**
  * claimBuyerFunds
@@ -373,7 +377,7 @@ const assertClaimingFundsCreatesTulips = async (ST, BT, acc, type) => {
 }
 
 /**
-   * checkUserReceivesTulipTokens
+   * checkUserReceivesTulipTokens (deprec)
    * @param {address} ST                => Sell Token: token using to buy buyToken (normally ETH)
    * @param {address} BT                => Buy Token: token to buy
    * @param {address} user              => address of current user buying and owning tulips
@@ -448,6 +452,75 @@ const checkUserReceivesTulipTokens = async (ST, BT, user, idx, lastClosingPrice)
   Locked TUL AFTER CLAIM == ${lastestLockedTulFunds.toEth()}
   `)
   assert.equal((tulips + lockedTulFunds).toEth(), (lastestLockedTulFunds).toEth(), 'for any Token pair, auction has cleared so returned tokens should equal tulips minted')
+}
+
+/**
+ * assertReturnedPlusTulips
+ * @param {addr} Sell Token
+ * @param {addr} Buy Token
+ * @param {addr} Account
+ * @param {strg} Type of user >--> seller || buyer
+ * @param {numb} Auction Index
+ */
+const assertReturnedPlusTulips = async (ST, BT, acc, type, idx = 1) => {
+  const { DutchExchange: dx } = await getContracts()
+  let returned, tulipsIssued, userBalances
+  const STName = await ST.name.call()
+  const BTName = await BT.name.call()
+
+  // check if current trade is an ETH:ERC20 trade or not
+  const nonETH = STName !== 'Ether Token' && BTName !== 'Ether Token' 
+
+  // calc closingPrices for both ETH/ERC20 and nonETH trades
+  const [num, den] = (await dx.closingPrices.call(ST.address, BT.address, idx)).map(s => s.toNumber())
+  const [hNum, hDen] = (await dx.historicalPriceOracleForJS.call(type === 'seller' ? ST.address : BT.address, idx)).map(s => s.toNumber())
+
+  // conditionally check sellerBalances and returned/tulipIssued
+  if (type === 'seller') {
+    userBalances = (await dx.sellerBalances.call(ST.address, BT.address, idx, acc)).toNumber();
+    ([returned, tulipsIssued] = (await dx.claimSellerFunds.call(ST.address, BT.address, acc, idx)).map(s => s.toNumber()))
+  } else {
+    userBalances = (await dx.buyerBalances.call(ST.address, BT.address, idx, acc)).toNumber();
+    ([returned, tulipsIssued] = (await dx.claimBuyerFunds.call(ST.address, BT.address, acc, idx)).map(s => s.toNumber()))
+  }
+
+  log(`
+  ${type === 'seller' ? '==SELLER==' : '==BUYER== '}
+  [${STName}]//[${BTName}]
+  ${type === 'seller' ? 'sellerBalance' : 'buyerBalance '}      == ${userBalances.toEth()}
+  lastClosingPrice    == ${type === 'seller' ? (num / den) : (den / num)}
+  lastHistoricalPrice == ${hNum / hDen}
+  PriceToUse          == ${type === 'seller' && !nonETH ? (num / den) : type === 'seller' && nonETH ? (hNum / hDen) : type === 'buyer' && !nonETH ? (den / num) : (hNum / hDen)}
+  RETURNED tokens     == ${returned.toEth()}
+  TULIP tokens        == ${tulipsIssued.toEth()}
+  `)
+
+  // ASSERTIONS
+  // Seller
+  if (type === 'seller') {
+    if (!nonETH) {
+      if (STName === 'Ether Token') {
+        assert.equal(tulipsIssued, userBalances)
+      } else {
+        assert.equal(tulipsIssued, returned)
+      }
+    // else this is a ERC20:ERC20 trade
+    } else {
+      assert.equal(tulipsIssued, userBalances * hNum / hDen)
+    }
+    // all claimSellFunds calc returned the same
+    assert.equal(returned, userBalances * (num / den))
+  // Buyer
+  } else if (!nonETH) {
+    if (BTName === 'Ether Token') {
+      assert.equal(tulipsIssued, userBalances, 'claimBuyerFunds: BT = ETH >--> tulips = buyerBalances')
+    } else {
+      assert.isAtLeast(userBalances * (den / num), tulipsIssued, 'claimBuyerFunds: ST = ETH >--> tulips = buyerBalances * (den/num)')
+    }
+  // Trade involves ERC20:ERC20 pair
+  } else {
+    assert.equal(tulipsIssued, userBalances * (hNum / hDen), 'claimBuyerFunds: ERC20:ERC20 tulips = buyerBalances * (hNum/hDen)')
+  }
 }
 
 /**
@@ -571,6 +644,7 @@ const calculateTokensInExchange = async (Accounts, Tokens) => {
 
 module.exports = {
   assertClaimingFundsCreatesTulips,
+  assertReturnedPlusTulips,
   checkBalanceBeforeClaim,
   checkUserReceivesTulipTokens,
   claimBuyerFunds,
