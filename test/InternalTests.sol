@@ -1,6 +1,6 @@
 pragma solidity ^0.4.19;
 
-import "../DutchExchange.sol";
+import "../contracts/DutchExchange.sol";
 
 contract InternalTests is DutchExchange {
   function settleFeePub(

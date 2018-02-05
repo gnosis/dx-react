@@ -733,6 +733,9 @@ contract DutchExchange {
     }
 
     // > scheduleNextAuction()
+    /// @dev schedules next auction
+    /// @param sellToken sellToken of the auction
+    /// @param buyToken  buyToken of the auction
     function scheduleNextAuction(
         address sellToken,
         address buyToken

@@ -40,9 +40,29 @@ const contractNames = [
   'PriceOracleInterface',
   'PriceFeed',
   'Medianizer',
-  'InternalTests',
 ]
 // DutchExchange and TokenOWL are added after their respective Proxy contracts are deployed
+
+
+const deployInternalTests = async () => {
+  const DutchExchange = artifacts.require('DutchExchange')
+  const InternalTests = artifacts.require('InternalTests')
+  const Proxy = artifacts.require('Proxy')
+  const p = await Proxy.deployed()
+  const dxp = DutchExchange.at(p.address)
+
+  const initParams = await Promise.all([
+    dxp.TUL.call(),
+    dxp.OWL.call(),
+    dxp.auctioneer.call(),
+    dxp.ETH.call(),
+    dxp.ETHUSDOracle.call(),
+    dxp.thresholdNewTokenPair.call(),
+    dxp.thresholdNewAuction.call(),
+  ])
+  return InternalTests.new(...initParams)
+}
+
 
 /**
  * getContracts - async loads contracts and instances
@@ -58,11 +78,14 @@ const getContracts = async () => {
   const deployedContracts = contractNames.reduce((acc, name, i) => {
     acc[name] = gasLoggedContracts[i]
     return acc
-  }, {});
+  }, {})
 
-  [deployedContracts.DutchExchange, deployedContracts.TokenOWL] = gasLogWrapper([
+  const InternalTestsContract = await deployInternalTests();
+
+  [deployedContracts.DutchExchange, deployedContracts.TokenOWL, deployedContracts.InternalTests] = gasLogWrapper([
     artifacts.require('DutchExchange').at(deployedContracts.Proxy.address),
     artifacts.require('TokenOWL').at(deployedContracts.TokenOWLProxy.address),
+    InternalTestsContract,
   ])
   return deployedContracts
 }
