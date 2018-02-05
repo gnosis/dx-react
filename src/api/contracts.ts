@@ -1,5 +1,6 @@
 import TruffleContract from 'truffle-contract'
 import { promisedWeb3 } from './web3Provider'
+import { DXAuction, ERC20Interface } from './types'
 
 const contractNames = [
   'DutchExchange',
@@ -10,14 +11,13 @@ const contractNames = [
   'TokenGNO',
 ]
 
-type ContractName = 'DutchExchange' |
-  'DutchExchangeETHGNO' |
-  'DutchExchangeGNOETH' |
-  'Token' |
-  'TokenETH' |
-  'TokenGNO'
 
-type ContractsMap = {[P in ContractName]: any}
+interface ContractsMap {
+  DutchExchange: DXAuction
+  Token: ERC20Interface,
+  TokenETH: ERC20Interface,
+  TokenGNO: ERC20Interface,
+}
 
 const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
 
