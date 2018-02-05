@@ -1,5 +1,5 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
-const TokenGNO = artifacts.require('./TokenGNO.sol')
+/* eslint no-console:0 */
+const { getTokenBalances, giveTokens } = require('./utils/contracts')(artifacts)
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
@@ -12,10 +12,12 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
  * -a <address>       to the given address
  * --eth <number>     ETH tokens
  * --gno <number>     GNO tokens
+ * --tul <number>     TUL tokens
+ * --owl <number>     OWL tokens
  */
 
 module.exports = async () => {
-  if (!(argv.eth || argv.gno) || !(argv.seller || argv.buyer || argv.a)) {
+  if (!(argv.eth > 0 || argv.gno > 0 || argv.tul > 0 || argv.owl > 0) || !(argv.seller || argv.buyer || argv.a)) {
     console.warn('No tokens or accounts specified')
     return
   }
@@ -25,35 +27,15 @@ module.exports = async () => {
   const account = argv.seller ? seller : argv.buyer ? buyer : argv.a
   const accountName = argv.seller ? 'Seller' : argv.buyer ? 'Buyer' : `Acc ${argv.a}`
 
-  const eth = await TokenETH.deployed()
-  const gno = await TokenGNO.deployed()
+  console.log(`${accountName}`)
 
-  const getBalances = acc => Promise.all([
-    eth.balanceOf(acc),
-    gno.balanceOf(acc),
-  ]).then(res => res.map(n => n.toNumber()))
+  let { ETH, GNO, TUL, OWL } = await getTokenBalances(account)
+  console.log(`Balance was:\t${ETH}\tETH,\t${GNO}\tGNO,\t${TUL}\tTUL,\t${OWL}\tOWL`)
 
-  console.log(`${accountName}\t\tETH\tGNO`)
+  const tokensToGive = { ETH: argv.eth, GNO: argv.gno, TUL: argv.tul, OWL: argv.owl }
 
-  let [accountETH, accountGNO] = await getBalances(account)
-  console.log(`Balance was:\t${accountETH}\t${accountGNO}`)
+  giveTokens(account, tokensToGive, master);
 
-  if (argv.eth) {
-    try {
-      await eth.transfer(account, argv.eth, { from: master })
-    } catch (error) {
-      console.error(error.message || error)
-    }
-  }
-
-  if (argv.gno) {
-    try {
-      await gno.transfer(account, argv.gno, { from: master })
-    } catch (error) {
-      console.error(error.message || error)
-    }
-  }
-
-  [accountETH, accountGNO] = await getBalances(account)
-  console.log(`Balance is:\t${accountETH}\t${accountGNO}`)
+  ({ ETH, GNO, TUL, OWL } = await getTokenBalances(account))
+  console.log(`Balance is:\t${ETH}\tETH,\t${GNO}\tGNO,\t${TUL}\tTUL,\t${OWL}\tOWL`)
 }

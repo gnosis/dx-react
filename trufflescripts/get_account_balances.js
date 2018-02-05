@@ -1,5 +1,5 @@
-const TokenETH = artifacts.require('./TokenETH.sol')
-const TokenGNO = artifacts.require('./TokenGNO.sol')
+/* eslint no-console:0 */
+const { getTokenBalances } = require('./utils/contracts')(artifacts)
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
@@ -12,25 +12,23 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 module.exports = async () => {
   // web3 is available in the global context
-  const [, seller, buyer] = web3.eth.accounts
+  const [master, seller, buyer] = web3.eth.accounts
 
-  const eth = await TokenETH.deployed()
-  const gno = await TokenGNO.deployed()
-
-  const sellerETHBalance = (await eth.balanceOf(seller)).toNumber()
-  const sellerGNOBalance = (await gno.balanceOf(seller)).toNumber()
-  const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()
-  const buyerGNOBalance = (await gno.balanceOf(buyer)).toNumber()
+  const getBalancesForAccounts = (...accounts) => Promise.all(accounts.map(acc => getTokenBalances(acc)))
 
 
-  console.log(`Seller:\t${sellerETHBalance}\tETH,\t${sellerGNOBalance}\tGNO`)
-  console.log(`Buyer:\t${buyerETHBalance}\tETH,\t${buyerGNOBalance}\tGNO`)
+  const [masterBal, sellerBal, buyerBal] = await getBalancesForAccounts(master, seller, buyer)
+
+
+  console.log(`Seller:\t${sellerBal.ETH}\tETH,\t${sellerBal.GNO}\tGNO,\t${sellerBal.TUL}\tTUL,\t${sellerBal.OWL}\tOWL`)
+  console.log(`Buyer:\t${buyerBal.ETH}\tETH,\t${buyerBal.GNO}\tGNO,\t${buyerBal.TUL}\tTUL,\t${buyerBal.OWL}\tOWL`)
+  console.log('________________________________________')
+  console.log(`Master:\t${masterBal.ETH}\tETH,\t${masterBal.GNO}\tGNO,\t${masterBal.TUL}\tTUL,\t${masterBal.OWL}\tOWL`)
 
   if (argv.a) {
-    const accountETHBalance = (await eth.balanceOf(argv.a)).toNumber()
-    const accountGNOBalance = (await gno.balanceOf(argv.a)).toNumber()
+    const [{ ETH, GNO, TUL, OWL }] = await getBalancesForAccounts(argv.a)
 
     console.log(`\nAccount at ${argv.a} address`)
-    console.log(`Balance:\t${accountETHBalance}\tETH,\t${accountGNOBalance}\tGNO`)
+    console.log(`Balance:\t${ETH}\tETH,\t${GNO}\tGNO,\t${TUL}\tTUL,\t${OWL}\tOWL`)
   }
 }

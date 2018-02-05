@@ -1,86 +1,101 @@
-/* eslint-disable no-mixed-operators */
-
-const DutchExchangeETHGNO = artifacts.require('./DutchExchangeETHGNO.sol')
-const TokenGNO = artifacts.require('./TokenGNO.sol')
-
+/* eslint no-console:0 */
+const {
+  deployed,
+  getTokenDeposits,
+  getAccountsStatsForTokenPairAuction,
+  getExchangeStatsForTokenPair,
+  postBuyOrder,
+} = require('./utils/contracts')(artifacts)
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**
- * truffle exec trufflescripts/buy_order.js
- * to post a buy order to the current auction as the buyer
+ * truffle exec trufflescripts/sell_order.js
+ * to post a buy order to token pair auction as the seller
  * @flags:
- * --seller      as the seller
- * -a <address>  as the given account
- * --clear       enough to clear an auction
- * -n <number>   for a specific amount
+ * -n <number>                    for a specific amount of sellToken
+ * --pair <sellToken,buyToken>    token pair auction, eth,gno by default
+ * --seller                       as the seller
+ * -a <address>                   as the given account
+ * --next                         to the next auction (lastAuctionIndex + 1)
  */
 
 
 module.exports = async () => {
-  const dx = await DutchExchangeETHGNO.deployed()
-  const gno = await TokenGNO.deployed()
+  const { eth, gno } = await deployed
+  const availableTokens = { eth, gno }
 
-  const auctionIndex = (await dx.auctionIndex()).toNumber()
+  const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
+  let sellToken = availableTokens[sell.toLowerCase()] || eth
+  let buyToken = availableTokens[buy.toLowerCase()] || gno
 
-  let buyer
-  if (argv.a) buyer = argv.a
-  else if (argv.seller)[, buyer] = web3.eth.accounts
-  else {
-    [, , buyer] = web3.eth.accounts
+  if (!sellToken || !buyToken) {
+    console.warn(`Token ${!sellToken || !buyToken} is not available`)
+    return
   }
 
-  const buyerStats = () => Promise.all([
-    dx.buyVolumes(auctionIndex),
-    dx.buyerBalances(auctionIndex, buyer),
-    gno.balanceOf(buyer),
-  ]).then(res => res.map(n => n.toNumber()))
+  if (argv.n === undefined) {
+    console.warn('No amount provided')
+    return
+  }
 
-  let [buyVolume, buyerBalance, buyerGNOBalance] = await buyerStats()
+  sellToken = sellToken.address
+  buyToken = buyToken.address
 
-  console.log(`Auction index ${auctionIndex}
+  const sellTokenName = sell ? sell.toUpperCase() : 'ETH'
+  const buyTokenName = buy ? buy.toUpperCase() : 'GNO'
+
+  let account
+  if (argv.a) account = argv.a
+  else if (argv.seller)[, account] = web3.eth.accounts
+  else {
+    [, , account] = web3.eth.accounts
+  }
+
+  let { [buyTokenName]: buyTokenDeposit = 0 } = await getTokenDeposits(account)
+
+  if (buyTokenDeposit < argv.n) {
+    console.log(`Account's deposit is ${argv.n - buyTokenDeposit} tokens short to submit this order`)
+    return
+  }
+
+  const { latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken })
+
+  const index = argv.next ? latestAuctionIndex + 1 : latestAuctionIndex
+
+  let [{ buyVolume }, { [account]: { buyerBalance } }] = await Promise.all([
+    getExchangeStatsForTokenPair({ sellToken, buyToken }),
+    getAccountsStatsForTokenPairAuction({ sellToken, buyToken, index, accounts: [account] }),
+  ])
+
+  console.log(`Auction ${sellTokenName} -> ${buyTokenName} index ${index} (${argv.next ? 'next' : 'current'})
   was:
     buyVolume:\t${buyVolume}
     buyerBalance:\t${buyerBalance} in auction
-    \t\t\t${buyerGNOBalance} GNO in account
+    buyerDeposit:\t${buyTokenDeposit} ${buyTokenName}
   `)
 
-  try {
-    let amount
 
-    const [num, den] = (await dx.getPrice(auctionIndex)).map(n => n.toNumber())
-    const sellVolumeCurrent = (await dx.sellVolumeCurrent()).toNumber()
+  console.log(`
+  Posting order for ${argv.n} ${buyTokenName}
+  `)
 
-    const amountToClearAuction = Math.floor(sellVolumeCurrent * num / den) - buyVolume
+  const tx = await postBuyOrder(account, { sellToken, buyToken, index, amount: argv.n })
+  if (!tx) return
 
-    if (argv.clear) {
-      console.log(`
-        Posting order for ${amountToClearAuction},
-        enough to clear the auction
-      `)
-      amount = amountToClearAuction
-    } else if (argv.n !== undefined) {
-      amount = argv.n
-      const diff = argv.n - amountToClearAuction
-      console.log(`
-      Posting order for ${argv.n},
-      ${diff >= 0 ? `which is ${diff} more than needed to clear the auction` : ''}
-    `)
-    } else {
-      console.warn('No amount provided')
-      return
-    }
+  [
+    { [buyTokenName]: buyTokenDeposit = 0 },
+    { buyVolume },
+    { [account]: { buyerBalance } },
+  ] = await Promise.all([
+    getTokenDeposits(account),
+    getExchangeStatsForTokenPair({ sellToken, buyToken }),
+    getAccountsStatsForTokenPairAuction({ sellToken, buyToken, index, accounts: [account] }),
+  ])
 
-    await gno.approve(dx.address, amount, { from: buyer })
-    await dx.postBuyOrder(amount, auctionIndex, { from: buyer })
-  } catch (error) {
-    console.error(error.message || error)
-  }
-
-  [buyVolume, buyerBalance, buyerGNOBalance] = await buyerStats()
 
   console.log(`  now:
     buyVolume:\t${buyVolume}
     buyerBalance:\t${buyerBalance} in auction
-    \t\t\t${buyerGNOBalance} GNO in account
+    buyerDeposit:\t${buyTokenDeposit} ${buyTokenName}
 `)
 }

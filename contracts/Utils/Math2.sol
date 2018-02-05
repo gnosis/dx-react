@@ -1,10 +1,10 @@
-pragma solidity 0.4.18;
+pragma solidity ^0.4.19;
 
 
 /// @title Math library - Allows calculation of logarithmic and exponential functions
 /// @author Alan Lu - <alan.lu@gnosis.pm>
 /// @author Stefan George - <stefan@gnosis.pm>
-library Math {
+library Math2 {
 
     /*
      *  Constants
@@ -293,7 +293,7 @@ library Math {
     /// @return Did no overflow occur?
     function safeToMul(int a, int b)
         public
-        constant
+        pure
         returns (bool)
     {
         return (b == 0) || (a * b / b == a);
@@ -331,10 +331,34 @@ library Math {
     /// @return Product
     function mul(int a, int b)
         public
-        constant
+        pure
         returns (int)
     {
         require(safeToMul(a, b));
         return a * b;
+    }
+
+    function min(uint a, uint b) 
+        public
+        pure
+        returns (uint)
+    {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    function atleastZero(int a)
+        public
+        pure
+        returns (uint)
+    {
+        if (a < 0) {
+            return 0;
+        } else {
+            return uint(a);
+        }
     }
 }
