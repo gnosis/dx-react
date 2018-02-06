@@ -34,6 +34,9 @@ export interface TokensInterface {
   transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
+
+  depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
+  withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
 }
 
 export interface ErrorFirstCallback {
