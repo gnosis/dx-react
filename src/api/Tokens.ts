@@ -32,6 +32,12 @@ async function init(): Promise<TokensInterface> {
   const allowance = (code: TokenCode, owner: Account, spender: Account) =>
     getToken(code).allowance(owner, spender)
 
+  const eth = contractsMap['TokenETH']
+  
+  const depositETH = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
+
+  const withdrawETH = (value: Balance, tx: TransactionObject) => eth.withdraw(value, tx)
+
   return {
     getTokenBalance,
     getTotalSupply,
@@ -39,5 +45,8 @@ async function init(): Promise<TokensInterface> {
     transferFrom,
     approve,
     allowance,
+
+    depositETH,
+    withdrawETH,
   }
 }
