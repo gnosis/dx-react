@@ -149,6 +149,13 @@ export interface DXAuction {
     initialClosingPriceDen: Balance,
     tx?: TransactionObject,
   ): Promise<Receipt>,
+  addTokenPair2(
+    token1: Account,
+    token2: Account,
+    token1Funding: Balance,
+    token2Funding: Balance,
+    tx?: TransactionObject,
+  ): Promise<Receipt>,
   deposit(tokenAddress: Account, amount: Balance, tx?: TransactionObject): Promise<Receipt>,
   withdraw(tokenAddress: Account, amount: Balance, tx?: TransactionObject): Promise<Receipt>,
   postSellOrder(
@@ -156,7 +163,6 @@ export interface DXAuction {
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
-    amountOfWIZToBurn: Balance,
     tx?: TransactionObject,
   ): Promise<Receipt>,
   postBuyOrder(
@@ -164,10 +170,9 @@ export interface DXAuction {
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
-    amountOfWIZToBurn: Balance,
     tx?: TransactionObject,
   ): Promise<Receipt>,
-  claimSellerFuncds(
+  claimSellerFunds(
     sellToken: Account,
     buyToken: Account,
     user: Account,
@@ -181,22 +186,64 @@ export interface DXAuction {
     auctionIndex: Index,
     tx?: TransactionObject,
   ): Promise<Receipt>,
-  getUnclaimedBuyerFunds(sellToken: Account, buyToken: Account, user: Account, auctionIndex: Index): Promise<BigNumber>,
-  // getUnclaimedSellerFunds(sellToken: Account, buyToken: Account, user: Account, auctionIndex: Index): Promise<Receipt>,
-  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-  priceOracle(token: Account): Promise<[BigNumber, BigNumber]>,
+  getUnclaimedBuyerFunds(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    auctionIndex: Index,
+  ): never,
+  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
+  getPriceForJS(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
 
-  // claimSellerFundsOfAuctions(indices: number[], account?: Account): Receipt,
-  // claimBuyerFundsOfAuctions(indices: number[], account?: Account): Receipt,
-  // claimAllSellerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // claimAllBuyerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedSellerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedBuyerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getAllUnclaimedFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getIndicesOfAuctionsContainingUnclaimedBuyerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // getIndicesOfAuctionsContainingUnclaimedSellerFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
-  // claimAllFunds(indexStart: number, indexEnd: number, account?: Account): Receipt,
+  // internal
+  clearAuction(sellToken: Account, buyToken: Account, auctionIndex: Index, sellVolume: Balance): never,
+  settleFee(
+    primaryToken: Account,
+    secondaryToken: Account,
+    auctionIndex: Index,
+    user: Account,
+    amount: Balance,
+  ): never,
+  // returns fraction mem feeRatio
+  calculateFeeRatio(user: Account): never,
+  scheduleNextAuction(sellToken: Account, buyToken: Account): never,
+  // bottom 3 return fraction mem price
+  computeRatioOfHistoricalPriceOracles(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
+  historicalPriceOracle(token: Account, auctionIndex: Index): never,
+  priceOracle(token: Account): never,
+  
+  // public - state changing
+  depositAndSell(sellToken: Account, buyToken: Account, amount: Balance): Promise<Receipt>,
+  claimAndWithdraw(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    auctionIndex: Index,
+    amount: Balance,
+  ): Promise<Receipt>,
 
+  // public
+  getPriceOracleForJS(token: Account): Promise<[BigNumber, BigNumber]>,
+  historicalPriceOracleForJS(token: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
+  computeRatioOfHistoricalPriceOraclesForJS(
+    tokenA: Account,
+    tokenB: Account,
+    auctionIndex: Index,
+  ): Promise<[BigNumber, BigNumber]>,
+
+  // internal
+  getTokenOrder(tokenA: Account, tokenB: Account): never,
+  setAuctionStart(tokenA: Account, tokenB: Account, value: number): never,
+  resetAuctionStart(tokenA: Account, tokenB: Account): never,
+
+  // public
+  getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
+
+  // internal
+  setAuctionIndex(tokenA: Account, tokenB: Account): never,
+
+  // public
+  getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
 }
 
 export interface DutchExchange {
