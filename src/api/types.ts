@@ -75,6 +75,12 @@ export interface ERC20Interface {
   allEvents(filter?: Filter): EventInstance,
 }
 
+export interface GNOInterface extends ERC20Interface {
+  symbol(): Promise<'GNO'>,
+  name(): Promise<'Gnosis'>,
+  decimals(): Promise<BigNumber>,
+}
+
 export interface Receipt {
   [key: string]: any,
 }
