@@ -46,7 +46,7 @@ export interface ContractEvent {
 }
 
 export interface EventInstance {
-  watch(cb: ErrorFirstCallback): void,
+  watch(cb: ErrorFirstCallback): EventInstance,
   stopWatching(): void,
   get(cb: ErrorFirstCallback): void,
 }
