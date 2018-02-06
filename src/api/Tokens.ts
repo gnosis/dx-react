@@ -1,4 +1,4 @@
-import { TokensInterface, TransactionObject } from './types'
+import { TokensInterface, TransactionObject, ERC20Interface } from './types'
 import { Account, Balance, TokenCode } from 'types'
 import { promisedContractsMap } from './contracts'
 
@@ -9,7 +9,7 @@ async function init(): Promise<TokensInterface> {
   const contractsMap = await promisedContractsMap
 
   const getToken = (code: TokenCode) => {
-    const token = contractsMap[`Token${code}`]
+    const token: ERC20Interface = contractsMap[`Token${code}`]
 
     if (!token) throw new Error(`No Token contract for ${code} token`)
 
