@@ -68,8 +68,7 @@ export interface ERC20Interface {
   transferFrom(from: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
   approve(spender: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
   allowance(owner: Account, spender: Account): Promise<BigNumber>,
-  Transfer(valueFilter: object | void, filter: Filter, cb?: ErrorFirstCallback): void,
-  Transfer(valueFilter: object | void, filter: Filter): EventInstance,
+  Transfer: ContractEvent
   Approval: ContractEvent,
   allEvents(filter?: Filter, cb?: ErrorFirstCallback): void,
   allEvents(filter?: Filter): EventInstance,
