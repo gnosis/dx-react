@@ -72,9 +72,17 @@ async function init(): Promise<DutchExchange> {
     return Dx.getPrice(t1, t2, index)
   }
 
-  // const getSellVolumeCurrent = async (pair: TokenPair) => getExchange(pair).sellVolumeCurrent()
+  const getSellVolumeCurrent = async (pair: TokenPair) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
 
-  // const getSellVolumeNext = (pair: TokenPair) => getExchange(pair).sellVolumeNext()
+    return Dx.sellVolumesCurrent(t1, t2)
+  }
+
+  const getSellVolumeNext = (pair: TokenPair) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return Dx.sellVolumesNext(t1, t2)
+  }
 
   const getBuyVolume = async (pair: TokenPair, index?: Index) => {
     if (index === undefined) index = await getLatestAuctionIndex(pair)
@@ -246,8 +254,8 @@ async function init(): Promise<DutchExchange> {
     getAuctionStart,
     getClosingPrice,
     getPrice,
-    // getSellVolumeCurrent,
-    // getSellVolumeNext,
+    getSellVolumeCurrent,
+    getSellVolumeNext,
     getBuyVolume,
     getSellVolume,
     getExtraSellTokens,

@@ -1,5 +1,5 @@
 import expect from 'expect'
-import { delay, metamaskWarning } from '../utils'
+// import { delay, metamaskWarning } from '../utils'
 import web3Utils from '../../../trufflescripts/utils'
 
 import {
@@ -47,7 +47,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let transfer: TokensInterface['transfer']
   let transferFrom: TokensInterface['transferFrom']
 
-  let getAuctionIndex: DutchExchange['getAuctionIndex']
+  let getLatestAuctionIndex: DutchExchange['getLatestAuctionIndex']
   let getSellVolumeCurrent: DutchExchange['getSellVolumeCurrent']
   let getSellVolumeNext: DutchExchange['getSellVolumeNext']
   let getAuctionStart: DutchExchange['getAuctionStart']
@@ -65,21 +65,21 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let accounts: any; let accs: any
 
   let master: any; let seller: any; let buyer: any
-  let delayFor: any
+  // let delayFor: any
 
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
 
   before(async () => {
-    ({ DutchExchangeETHGNO: DX, Token: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
-    ({ DutchExchangeETHGNO: dx, Token: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
+    ({ DutchExchange: DX, Token: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
+    ({ DutchExchange: dx, Token: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
 
     dxa = DX.address;
 
     ({ getTotalSupply, approve, transfer, transferFrom } = await promisedTokens);
     ({
-      getAuctionIndex,
+      getLatestAuctionIndex,
       getAuctionStart,
       getSellVolumeCurrent,
       getSellVolumeNext,
@@ -115,7 +115,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
     // delays interaction so that we can switch accounts in Metamask
     // if running without metamask -- no delay
-    delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay(15000))
+    // delayFor = (name: string) => currentProvider && (metamaskWarning(name, accs[name]), delay(15000))
 
     Object.assign(accs, { dx: DX.address, eth: ETH.address, gno: GNO.address, tul: TUL.addresss })
 
@@ -234,7 +234,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('auction is started', async () => {
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
 
     // still on the first auction
     expect(auctionIndex).toBe(1)
@@ -266,7 +266,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   it('buyer can submit a buy order', async () => {
     const amount = 10
 
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
     const claimed = (await getClaimedAmount(pair, auctionIndex, buyer)).toNumber()
     const buyerBalance = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, auctionIndex)).toNumber()
@@ -295,7 +295,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   it('buyer can claim the amount bought', async () => {
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
     const claimed = (await getClaimedAmount(pair, auctionIndex, buyer)).toNumber()
     const buyerBalance = (await getBuyerBalance(pair, auctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, auctionIndex)).toNumber()
@@ -327,7 +327,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   it('buyer can\'t claim more at this time', async () => {
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
     try {
 
       await claimBuyerFunds(pair, auctionIndex, buyer)
@@ -341,7 +341,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('seller can\'t claim before auction ended', async () => {
 
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
     try {
       // trying to claim from the ongoing auction
       await claimSellerFunds(pair, auctionIndex, seller)
@@ -354,7 +354,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   it('auction ends with time', async () => {
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
 
     const buyVolume = (await getBuyVolume(pair, auctionIndex)).toNumber()
     const sellVolume = (await getSellVolumeCurrent(pair)).toNumber()
@@ -377,13 +377,13 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     expect(buyVolume).toBe(buyVolumeAfter)
     expect(buyerBalance).toBe(buyerBalanceAfter)
 
-    const newAuctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const newAuctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
 
     expect(newAuctionIndex).toBe(auctionIndex + 1)
   })
 
   it('next auction is scheduled', async () => {
-    const auctionIndex = (await getAuctionIndex(pair)).toNumber()
+    const auctionIndex = (await getLatestAuctionIndex(pair)).toNumber()
 
     // still on the first auction
     expect(auctionIndex).toBe(2)
@@ -397,7 +397,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('buyer can claim the remainder of the funds', async () => {
-    const lastAuctionIndex = (await getAuctionIndex(pair)).toNumber() - 1
+    const lastAuctionIndex = (await getLatestAuctionIndex(pair)).toNumber() - 1
     let claimed = (await getClaimedAmount(pair, lastAuctionIndex, buyer)).toNumber()
     const buyerBalance = (await getBuyerBalance(pair, lastAuctionIndex, buyer)).toNumber()
     const buyVolume = (await getBuyVolume(pair, lastAuctionIndex)).toNumber()
@@ -428,7 +428,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('seller can claim funds', async () => {
 
-    const lastAuctionIndex = (await getAuctionIndex(pair)).toNumber() - 1
+    const lastAuctionIndex = (await getLatestAuctionIndex(pair)).toNumber() - 1
     let sellerBalance = (await getSellerBalance(pair, lastAuctionIndex, seller)).toNumber()
     const [num, den] = (await getPrice(pair, lastAuctionIndex)).map((n: any) => n.toNumber())
 

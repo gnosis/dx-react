@@ -46,9 +46,9 @@ class BuyButton extends Component<BuyButtonProps, BuyButtonState> {
 
       try {
         const seller = await getCurrentAccount()
-        await Tokens.approve(pair.buy, dxEG.getAddress(pair), amount, { from: seller })
+        await Tokens.approve(pair.buy, dxEG.address, amount, { from: seller })
         // Post the Buy Order and return a receipt
-        const postBuyReceipt = await dxEG.postBuyOrder(pair, amount, 1, seller)
+        const postBuyReceipt = await dxEG.postBuyOrder(pair, amount, 0, 1, seller)
         console.log(`postBuyOrder of AMOUNT: ${amount}`, postBuyReceipt)
 
         // TODO: function to get specific Token's balance, also actions for such functions
