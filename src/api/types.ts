@@ -110,6 +110,20 @@ export interface OWLInterface extends ERC20Interface {
   Burnt: ContractEvent,
 }
 
+export interface TULInterface extends ERC20Interface {
+  owner(): Promise<Account>,
+  minter(): Promise<Account>,
+  unlockedTULs(account: Account): never,
+  lockedTULBalances(account: Account): Promise<BigNumber>,
+
+  updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
+  updateMinter(_minter: Account, tx: TransactionObject): Promise<Receipt>,
+  mintTokens(user: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  lockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  unlockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  withdrawUnlockedTokens(tx: TransactionObject): Promise<Receipt>,
+}
+
 export interface Receipt {
   [key: string]: any,
 }
