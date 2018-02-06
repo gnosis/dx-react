@@ -92,6 +92,24 @@ export interface ETHInterface extends ERC20Interface {
   Withdrawal: ContractEvent,
 }
 
+export interface OWLInterface extends ERC20Interface {
+  symbol(): Promise<'OWL'>,
+  name(): Promise<'OWL Token'>,
+  decimals(): Promise<BigNumber>,
+  creator(): Promise<Account>,
+  minter(): Promise<Account>,
+  masterCopyCountdownType(): never,
+
+  startMasterCopyCountdown(_masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
+  updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
+  setMinter(newMinter: Account, tx: TransactionObject): Promise<Receipt>,
+  mintOWL(to: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  burnOWL(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  getMasterCopy(): Promise<Account>
+  Minted: ContractEvent,
+  Burnt: ContractEvent,
+}
+
 export interface Receipt {
   [key: string]: any,
 }
