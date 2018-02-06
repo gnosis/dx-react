@@ -86,7 +86,7 @@ export interface ETHInterface extends ERC20Interface {
   name(): Promise<'Ether Token'>,
   decimals(): Promise<BigNumber>,
 
-  deposit(tx: TransactionObject & {value: TransactionObject["value"]}): Promise<Receipt>,
+  deposit(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
   withdraw(value: Balance, tx: TransactionObject): Promise<Receipt>,
   Deposit: ContractEvent,
   Withdrawal: ContractEvent,
@@ -272,7 +272,7 @@ export interface DutchExchange {
   // postBuyOrderAndClaim(pair: TokenPair, amount: Balance, index?: Index, account?: Account): Promise<Receipt>,
   claimSellerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
   claimBuyerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
-  getUnclaimedBuyerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
+  getUnclaimedBuyerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<BigNumber>,
   // getUnclaimedSellerFunds(pair: TokenPair, index?: Index, account?: Account): Promise<Receipt>,
   // claimSellerFundsOfAuctions(pair: TokenPair, indices: Index[], account?: Account): Promise<Receipt>,
   // claimBuyerFundsOfAuctions(pair: TokenPair, indices: Index[], account?: Account): Promise<Receipt>,
