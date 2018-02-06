@@ -16,9 +16,9 @@ async function init(): Promise<TokensInterface> {
     return token
   }
 
-  const getTokenBalance = async (code: TokenCode, account: Account) => getToken(code).balanceOf(account)
+  const getTokenBalance = (code: TokenCode, account: Account) => getToken(code).balanceOf(account)
 
-  const getTotalSupply = async (code: TokenCode) => getToken(code).getTotalSupply()
+  const getTotalSupply = (code: TokenCode) => getToken(code).getTotalSupply()
 
   const transfer = (code: TokenCode, to: Account, value: Balance, tx: TransactionObject) =>
     getToken(code).transfer(to, value, tx)
@@ -29,7 +29,7 @@ async function init(): Promise<TokensInterface> {
   const approve = (code: TokenCode, spender: Account, value: Balance, tx: TransactionObject) =>
     getToken(code).approve(spender, value, tx)
 
-  const allowance = async (code: TokenCode, owner: Account, spender: Account) =>
+  const allowance = (code: TokenCode, owner: Account, spender: Account) =>
     getToken(code).allowance(owner, spender)
 
   return {
