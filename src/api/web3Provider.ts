@@ -6,9 +6,9 @@ import Web3 from 'web3'
 const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
     return window.web3.currentProvider
-  } else {
-    return new Web3.providers.HttpProvider('http://localhost:8545')
   }
+  
+  return new Web3.providers.HttpProvider('http://localhost:8545')
 }
 
 const setupWeb3 = async () => {
