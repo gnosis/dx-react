@@ -126,6 +126,19 @@ export interface TULInterface extends ERC20Interface {
 
 export interface Receipt {
   [key: string]: any,
+  tx: string,
+  receipt: {
+    transactionHash: string,
+    transactionIndex: number,
+    blockHash: string,
+    blockNumber: number,
+    gassed: number,
+    cumulativeGasUsed: number,
+    contractAddress: null | Account,
+    logs: {[key: string]: any}[]
+    status: number,
+  }
+  logs: {[key: string]: any}[],
 }
 
 export interface DXAuction {
