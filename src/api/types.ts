@@ -62,11 +62,11 @@ export type Filter = 'latest' | 'pending' | FilterObject | void
 
 export interface ERC20Interface {
   address: Account,
-  getTotalSupply(): Promise<BigNumber>,
-  balanceOf(account?: Account): Promise<BigNumber>,
-  transfer(to: Account, value: Balance, sender: Account, tx?: TransactionObject): Promise<Receipt>,
-  transferFrom(sender: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  approve(spender: Account, value: Balance, sender: Account, tx?: TransactionObject): Promise<Receipt>,
+  totalSupply(): Promise<BigNumber>,
+  balanceOf(account: Account): Promise<BigNumber>,
+  transfer(to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
+  transferFrom(from: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
+  approve(spender: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
   allowance(owner: Account, spender: Account): Promise<BigNumber>,
   Transfer(valueFilter: object | void, filter: Filter, cb?: ErrorFirstCallback): void,
   Transfer(valueFilter: object | void, filter: Filter): EventInstance,
