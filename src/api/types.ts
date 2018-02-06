@@ -81,6 +81,17 @@ export interface GNOInterface extends ERC20Interface {
   decimals(): Promise<BigNumber>,
 }
 
+export interface ETHInterface extends ERC20Interface {
+  symbol(): Promise<'ETH'>,
+  name(): Promise<'Ether Token'>,
+  decimals(): Promise<BigNumber>,
+
+  deposit(tx: TransactionObject & {value: TransactionObject["value"]}): Promise<Receipt>,
+  withdraw(value: Balance, tx: TransactionObject): Promise<Receipt>,
+  Deposit: ContractEvent,
+  Withdrawal: ContractEvent,
+}
+
 export interface Receipt {
   [key: string]: any,
 }
