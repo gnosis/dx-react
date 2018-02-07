@@ -128,18 +128,18 @@ export interface DXAuction {
     ethUSDOracle: Account,
     thresholdNewTokenPair: Balance,
     thresholdNewAuction: Balance,
-    tx?: TransactionObject,
+    tx: TransactionObject,
   ): Promise<Receipt>,
   updateExchangeParams(
     auctioneer: Account,
     ethUSDOracle: Account,
     thresholdNewTokenPair: Balance,
     thresholdNewAuction: Balance,
-    tx?: TransactionObject,
+    tx: TransactionObject,
   ): Promise<Receipt>,
-  updateApprovalOfToken(token: Account, approved: boolean, tx?: TransactionObject): Promise<Receipt>,
-  startMasterCopyCountdown(masterCopy: Account, tx?: TransactionObject): Promise<Receipt>,
-  updateMasterCopy(tx?: TransactionObject): Promise<Receipt>,
+  updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<Receipt>,
+  startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
+  updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
   addTokenPair(
     token1: Account,
     token2: Account,
@@ -147,30 +147,23 @@ export interface DXAuction {
     token2Funding: Balance,
     initialClosingPriceNum: Balance,
     initialClosingPriceDen: Balance,
-    tx?: TransactionObject,
+    tx: TransactionObject,
   ): Promise<Receipt>,
-  addTokenPair2(
-    token1: Account,
-    token2: Account,
-    token1Funding: Balance,
-    token2Funding: Balance,
-    tx?: TransactionObject,
-  ): Promise<Receipt>,
-  deposit(tokenAddress: Account, amount: Balance, tx?: TransactionObject): Promise<Receipt>,
-  withdraw(tokenAddress: Account, amount: Balance, tx?: TransactionObject): Promise<Receipt>,
+  deposit(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  withdraw(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
   postSellOrder(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
-    tx?: TransactionObject,
+    tx: TransactionObject,
   ): Promise<Receipt>,
   postBuyOrder(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
-    tx?: TransactionObject,
+    tx: TransactionObject,
   ): Promise<Receipt>,
   claimSellerFunds(
     sellToken: Account,
@@ -186,43 +179,21 @@ export interface DXAuction {
     auctionIndex: Index,
     tx?: TransactionObject,
   ): Promise<Receipt>,
-  getUnclaimedBuyerFunds(
+  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
+  getPriceForJS(
     sellToken: Account,
     buyToken: Account,
-    user: Account,
     auctionIndex: Index,
-  ): never,
-  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  getPriceForJS(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-
-  // internal
-  clearAuction(sellToken: Account, buyToken: Account, auctionIndex: Index, sellVolume: Balance): never,
-  settleFee(
-    primaryToken: Account,
-    secondaryToken: Account,
-    auctionIndex: Index,
-    user: Account,
-    amount: Balance,
-  ): never,
-  // returns fraction mem feeRatio
-  calculateFeeRatio(user: Account): never,
-  scheduleNextAuction(sellToken: Account, buyToken: Account): never,
-  // bottom 3 return fraction mem price
-  computeRatioOfHistoricalPriceOracles(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  historicalPriceOracle(token: Account, auctionIndex: Index): never,
-  priceOracle(token: Account): never,
-  
-  // public - state changing
-  depositAndSell(sellToken: Account, buyToken: Account, amount: Balance): Promise<Receipt>,
+  ): Promise<[BigNumber, BigNumber]>,
+  depositAndSell(sellToken: Account, buyToken: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
   claimAndWithdraw(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     auctionIndex: Index,
     amount: Balance,
+    tx: TransactionObject,
   ): Promise<Receipt>,
-
-  // public
   getPriceOracleForJS(token: Account): Promise<[BigNumber, BigNumber]>,
   historicalPriceOracleForJS(token: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
   computeRatioOfHistoricalPriceOraclesForJS(
@@ -230,19 +201,7 @@ export interface DXAuction {
     tokenB: Account,
     auctionIndex: Index,
   ): Promise<[BigNumber, BigNumber]>,
-
-  // internal
-  getTokenOrder(tokenA: Account, tokenB: Account): never,
-  setAuctionStart(tokenA: Account, tokenB: Account, value: number): never,
-  resetAuctionStart(tokenA: Account, tokenB: Account): never,
-
-  // public
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
-
-  // internal
-  setAuctionIndex(tokenA: Account, tokenB: Account): never,
-
-  // public
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
 }
 
