@@ -21,10 +21,11 @@ export const getAllAccounts = async () => {
 }
 
 // ether balance, not ETH tokens
-export const getETHBalance = async () => {
+export const getETHBalance = async (account?: Account) => {
   const { web3 } = await promisedAPI
+  if (!account) account = await web3.getCurrentAccount()
 
-  return web3.getETHBalance()
+  return web3.getETHBalance(account)
 }
 
 // ETH token balance
@@ -153,12 +154,86 @@ export const getClaimedAmount = async (pair: TokenPair, index?: Index, account?:
  * deposit amount of a tokens for the DutchExchange auction to hold in the account's name
  * @param pair TokenPair
  * @param index auctionIndex, current auction by default
- * @param account userccount, current web3 account by default
+ * @param account user account, current web3 account by default
  */
 export const deposit = async (code: TokenCode, amount: Balance, account?: Account) => {
   const { DutchX } = await promisedAPI
 
   return DutchX.deposit(code, amount, account)
+}
+
+/*
+ * approves for depositing and deposits an amount of the token
+ * @param code TokenCode - token to approve and deposit
+ * @param amount - to approve and immediately deposit in the DX
+ * @param account - user account, current web3 account by default
+ */
+export const approveAndDeposit = async (code: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX, web3, Tokens } = await promisedAPI
+
+  if (!account) account = await web3.getCurrentAccount()
+
+  const receipt = await Tokens.approve(code, DutchX.address, amount, { from: account })
+  console.log('approved tx', receipt)
+
+  return deposit(code, amount, account)
+}
+
+/*
+ * deposits and sells in one go
+ * @param amount amount to deposit and immediately sell
+ * @param sell TokenCode
+ * @param buy TokenCode
+ * @param account Account
+ */
+export const depositAndSell = async (sell: TokenCode, buy: TokenCode, amount: Balance, account?: Account) => {
+  const { web3, DutchX } = await promisedAPI
+
+  if (!account) account = await web3.getCurrentAccount()
+
+  return DutchX.depositAndSell({ sell, buy }, amount, account)
+}
+
+/*
+ * approves, deposits and sells in one go
+ * @param amount amount to approve, deposit and immediately sell
+ * @param sell TokenCode
+ * @param buy TokenCode
+ * @param account Account
+ */
+export const approveDepositAndSell = async (sell: TokenCode, buy: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX, web3, Tokens } = await promisedAPI
+
+  if (!account) account = await web3.getCurrentAccount()
+
+  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
+  console.log('approved tx', receipt)
+
+  return depositAndSell(sell, buy, amount, account)
+}
+
+/*
+ * manually checks if enough funds are allowed for depositing to DX,
+ * if not enough then sets allowance to amount required
+ * @param code TokenCode
+ * @param amount amount to have in allowance
+ * @param account 
+ */
+export const approveIfNotEnoughAllowance = async (code: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX, web3, Tokens } = await promisedAPI
+
+  if (!account) account = await web3.getCurrentAccount()
+
+  const allowance = await Tokens.allowance(code, account, DutchX.address)
+  if (allowance.greaterThan(amount)) {
+    console.log('enough allowance')
+    return
+  }
+
+  const receipt = await Tokens.approve(code, DutchX.address, amount, { from: account })
+  console.log('approved tx', receipt)
+
+  return receipt
 }
 
 /*
