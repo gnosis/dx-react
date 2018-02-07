@@ -194,25 +194,6 @@ export interface DXAuction {
   ): never,
   getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
   getPriceForJS(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-
-  // internal
-  clearAuction(sellToken: Account, buyToken: Account, auctionIndex: Index, sellVolume: Balance): never,
-  settleFee(
-    primaryToken: Account,
-    secondaryToken: Account,
-    auctionIndex: Index,
-    user: Account,
-    amount: Balance,
-  ): never,
-  // returns fraction mem feeRatio
-  calculateFeeRatio(user: Account): never,
-  scheduleNextAuction(sellToken: Account, buyToken: Account): never,
-  // bottom 3 return fraction mem price
-  computeRatioOfHistoricalPriceOracles(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  historicalPriceOracle(token: Account, auctionIndex: Index): never,
-  priceOracle(token: Account): never,
-  
-  // public - state changing
   depositAndSell(sellToken: Account, buyToken: Account, amount: Balance): Promise<Receipt>,
   claimAndWithdraw(
     sellToken: Account,
@@ -221,8 +202,6 @@ export interface DXAuction {
     auctionIndex: Index,
     amount: Balance,
   ): Promise<Receipt>,
-
-  // public
   getPriceOracleForJS(token: Account): Promise<[BigNumber, BigNumber]>,
   historicalPriceOracleForJS(token: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
   computeRatioOfHistoricalPriceOraclesForJS(
@@ -230,19 +209,7 @@ export interface DXAuction {
     tokenB: Account,
     auctionIndex: Index,
   ): Promise<[BigNumber, BigNumber]>,
-
-  // internal
-  getTokenOrder(tokenA: Account, tokenB: Account): never,
-  setAuctionStart(tokenA: Account, tokenB: Account, value: number): never,
-  resetAuctionStart(tokenA: Account, tokenB: Account): never,
-
-  // public
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
-
-  // internal
-  setAuctionIndex(tokenA: Account, tokenB: Account): never,
-
-  // public
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
 }
 
