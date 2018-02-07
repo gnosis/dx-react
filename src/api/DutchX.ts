@@ -1,15 +1,8 @@
 import { promisedContractsMap } from './contracts'
-import { promisedWeb3 } from './web3Provider'
 import { DutchExchange, Index, Filter, ErrorFirstCallback, DutchExchangeEvents } from './types'
 import { TokenPair, Account, Balance, TokenCode } from 'types'
 
 export const promisedDutchX = init()
-
-const getCurrentAccount = async () => {
-  const web3 = await promisedWeb3
-
-  return web3.getCurrentAccount()
-}
 
 // TODO: get correct global addresses
 // or create a json during migration
@@ -37,14 +30,6 @@ const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => 
 
 async function init(): Promise<DutchExchange> {
   const { DutchExchange: dx } = await promisedContractsMap
-
-  // const fillDefaultIndexAndAccount = (pair: TokenPair, index?: Index, account?: Account) =>
-  //   Promise.all<Index, Account>([
-  //     index === undefined ? getLatestAuctionIndex(pair) : index,
-  //     account === undefined ? getCurrentAccount() : account,
-  //   ])
-
-  const fillDefaultAccount = async (account?: Account) => account === undefined ? getCurrentAccount() : account
 
   const getLatestAuctionIndex = (pair: TokenPair) => {
     const [t1, t2] = getTokenPairAddresses(pair)
@@ -92,25 +77,19 @@ async function init(): Promise<DutchExchange> {
     return dx.extraTokens.call(t1, t2)
   }
 
-  const getSellerBalances = async (pair: TokenPair, index: Index, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const getSellerBalances = async (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.sellerBalances.call(t1, t2, index, account)
   }
 
-  const getBuyerBalances = async (pair: TokenPair, index: Index, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const getBuyerBalances = async (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.buyerBalances.call(t1, t2, index, account)
   }
 
-  const getClaimedAmounts = async (pair: TokenPair, index: Index, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const getClaimedAmounts = async (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.claimedAmounts.call(t1, t2, index, account)
@@ -120,10 +99,8 @@ async function init(): Promise<DutchExchange> {
     pair: TokenPair,
     amount: Balance,
     index: Index,
-    account?: Account,
+    account: Account,
   ) => {
-    account = await fillDefaultAccount(account)
-
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
@@ -133,60 +110,44 @@ async function init(): Promise<DutchExchange> {
     pair: TokenPair,
     amount: Balance,
     index: Index,
-    account?: Account,
+    account: Account,
   ) => {
-    account = await fillDefaultAccount(account)
-
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.postBuyOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 
-  // const postBuyOrderAndClaim = async (pair: TokenPair, amount: Balance, index: Index, account?: Account) => {
-  //   account = await fillDefaultAccount(account)
-
-  //   return dx.postBuyorderAndClaim(amount, index, { from: account, gas: 4712388 })
-  // }
-
-  const claimSellerFunds = async (pair: TokenPair, index: Index, account?: Account) => {
-    account = await fillDefaultAccount(account)
+  const claimSellerFunds = async (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.claimSellerFunds(t1, t2, account, index)
   }
 
-  const claimBuyerFunds = async (pair: TokenPair, index: Index, account?: Account) => {
-    account = await fillDefaultAccount(account)
+  const claimBuyerFunds = async (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.claimBuyerFunds(t1, t2, account, index)
   }
 
-  const deposit = async (code: TokenCode, amount: Balance, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const deposit = async (code: TokenCode, amount: Balance, account: Account) => {
     const token = getTokenAddress(code)
 
     return dx.deposit(token, amount, { from: account })
   }
 
-  const withdraw = async (code: TokenCode, amount: Balance, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const withdraw = async (code: TokenCode, amount: Balance, account: Account) => {
     const token = getTokenAddress(code)
 
     return dx.withdraw(token, amount, { from: account })
   }
 
-  const depositAndSell = async (pair: TokenPair, amount: Balance, account?: Account) => {
-    account = await fillDefaultAccount(account)
+  const depositAndSell = async (pair: TokenPair, amount: Balance, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.depositAndSell(t1, t2, amount, { from: account })
   }
 
-  const claimAndWithdraw = async (pair: TokenPair, index: Index, amount: Balance, account?: Account) => {
-    account = await fillDefaultAccount(account)
+  const claimAndWithdraw = async (pair: TokenPair, index: Index, amount: Balance, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.claimAndWithdraw(t1, t2, account, index, amount, { from: account })
@@ -194,9 +155,7 @@ async function init(): Promise<DutchExchange> {
 
   const isTokenApproved = (code: TokenCode) => dx.approvedTokens(getTokenAddress(code))
 
-  const getBalance = async (code: TokenCode, account?: Account) => {
-    account = await fillDefaultAccount(account)
-
+  const getBalance = async (code: TokenCode, account: Account) => {
     const token = getTokenAddress(code)
 
     return dx.balances.call(token, account)
