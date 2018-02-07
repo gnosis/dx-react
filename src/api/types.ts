@@ -209,7 +209,7 @@ export interface DutchExchange {
   address: Account,
 
   isTokenApproved(code: TokenCode): Promise<boolean>,
-  getBalance(code: TokenCode, account?: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
+  getBalance(code: TokenCode, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
@@ -218,28 +218,28 @@ export interface DutchExchange {
   getSellVolumesNext(pair: TokenPair): Promise<BigNumber>,
   getBuyVolumes(pair: TokenPair): Promise<BigNumber>,
   getExtraTokens(pair: TokenPair, index: Index): Promise<BigNumber>,
-  getSellerBalances(pair: TokenPair, index: Index, account?: Account): Promise<BigNumber>,
-  getBuyerBalances(pair: TokenPair, index: Index, account?: Account): Promise<BigNumber>,
-  getClaimedAmounts(pair: TokenPair, index: Index, account?: Account): Promise<BigNumber>,
+  getSellerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
+  getBuyerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
+  getClaimedAmounts(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
 
   postSellOrder(
     pair: TokenPair,
     amount: Balance,
     index: Index,
-    account?: Account,
+    account: Account,
   ): Promise<Receipt>,
   postBuyOrder(
     pair: TokenPair,
     amount: Balance,
     index: Index,
-    account?: Account,
+    account: Account,
   ): Promise<Receipt>,
-  claimSellerFunds(pair: TokenPair, index: Index, account?: Account): Promise<Receipt>,
-  claimBuyerFunds(pair: TokenPair, index: Index, account?: Account): Promise<Receipt>,
-  deposit(code: TokenCode, amount: Balance, account?: Account): Promise<Receipt>,
-  withdraw(code: TokenCode, amount: Balance, account?: Account): Promise<Receipt>,
-  depositAndSell(pair: TokenPair, amount: Balance, account?: Account): Promise<Receipt>,
-  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account?: Account): Promise<Receipt>,
+  claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
+  claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
+  deposit(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
+  withdraw(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
+  depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<Receipt>,
+  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,
