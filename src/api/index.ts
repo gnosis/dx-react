@@ -21,10 +21,11 @@ export const getAllAccounts = async () => {
 }
 
 // ether balance, not ETH tokens
-export const getETHBalance = async () => {
+export const getETHBalance = async (account?: Account) => {
   const { web3 } = await promisedAPI
+  if (!account) account = await web3.getCurrentAccount()
 
-  return web3.getETHBalance()
+  return web3.getETHBalance(account)
 }
 
 // ETH token balance

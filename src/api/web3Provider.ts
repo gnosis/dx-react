@@ -31,10 +31,7 @@ async function init(): Promise<ProviderInterface> {
     return account
   }
 
-  const getETHBalance = async (account?: Account) => {
-
-    if (!account) account = await getCurrentAccount()
-
+  const getETHBalance = async (account: Account) => {
     const wei = await getBalance(account)
 
     return web3.fromWei(wei, 'ether')

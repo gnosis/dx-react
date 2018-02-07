@@ -8,7 +8,7 @@ export type Index = number | BigNumber
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
-  getETHBalance(account?: Account): Promise<BigNumber>,
+  getETHBalance(account: Account): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
   currentProvider: Function,
