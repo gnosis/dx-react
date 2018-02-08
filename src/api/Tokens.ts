@@ -7,6 +7,7 @@ export const promisedTokens = init()
 async function init(): Promise<TokensInterface> {
 
   const contractsMap = await promisedContractsMap
+  console.log(contractsMap)
 
   const getToken = (code: TokenCode) => {
     const token: ERC20Interface = contractsMap[`Token${code}`]

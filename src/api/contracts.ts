@@ -2,7 +2,6 @@ import TruffleContract from 'truffle-contract'
 import { promisedWeb3 } from './web3Provider'
 import {
   DXAuction,
-  ERC20Interface,
   ETHInterface,
   GNOInterface,
   OWLInterface,
@@ -11,9 +10,6 @@ import {
 
 const contractNames = [
   'DutchExchange',
-  'DutchExchangeETHGNO',
-  'DutchExchangeGNOETH',
-  'Token',
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
@@ -28,7 +24,6 @@ const filename2ContractNameMap = {
 
 interface ContractsMap {
   DutchExchange: DXAuction
-  Token: ERC20Interface,
   TokenETH: ETHInterface,
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
@@ -60,7 +55,7 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   return contractNames.reduce((acc, name, i) => {
-    acc[name] = instances[i]
+    acc[filename2ContractNameMap[name] || name] = instances[i]    
     return acc
   }, {}) as ContractsMap
 }
