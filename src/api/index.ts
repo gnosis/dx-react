@@ -14,6 +14,8 @@ export const getCurrentAccount = async () => {
   return web3.getCurrentAccount()
 }
 
+const fillDefaultAccount = (account?: Account) => !account ? getCurrentAccount() : account
+
 export const getAllAccounts = async () => {
   const { web3 } = await promisedAPI
 
@@ -30,30 +32,30 @@ export const getETHBalance = async (account?: Account) => {
 
 // ETH token balance
 export const getCurrentBalance = async (account?: Account) => {
-  const { Tokens, web3 } = await promisedAPI
+  const { Tokens } = await promisedAPI
 
   // account would normally be taken from redux state and passed inside an action
   // but just in case
-  if (!account) account = await web3.getCurrentAccount()
+  account = await fillDefaultAccount(account)
 
   return Tokens.getTokenBalance('ETH', account)
 }
 
 export const getTokenBalance = async (code: TokenCode, account?: Account) => {
-  const { Tokens, web3 } = await promisedAPI
+  const { Tokens } = await promisedAPI
 
   // account would normally be taken from redux state and passed inside an action
   // but just in case
-  if (!account) account = await web3.getCurrentAccount()
+  account = await fillDefaultAccount(account)
 
   return Tokens.getTokenBalance(code, account)
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
 export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
-  const { Tokens, web3 } = await promisedAPI
+  const { Tokens } = await promisedAPI
 
-  if (!account) account = await web3.getCurrentAccount()
+  account = await fillDefaultAccount(account)
 
   const balances = await Promise.all(tokenList.map(code => Tokens.getTokenBalance(code, account)))
 
@@ -64,6 +66,11 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
   }))
 }
 
+export const getLatestAuctionIndex = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getLatestAuctionIndex(pair)
+}
 
 /*
  * closingPrice - get's closingPrice of Auction
@@ -89,16 +96,23 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
 }
 
 // TODO: pass in the whole TokenPair from the action
-export const postSellOrder = async (account: Account, amount: Balance, sell: TokenCode, buy: TokenCode) => {
+export const postSellOrder = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
   const { Tokens, DutchX } = await promisedAPI
-
   const pair = { sell, buy }
+
+  account = await fillDefaultAccount(account)
 
   // TODO: in future ask for a larger allowance
   const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
   console.log('approved tx', receipt)
 
-  return DutchX.postSellOrder(pair, amount, account)
+  return DutchX.postSellOrder(pair, amount, index, account)
 }
 
 /*
@@ -109,8 +123,9 @@ export const postSellOrder = async (account: Account, amount: Balance, sell: Tok
  */
 export const getSellerBalance = async (pair: TokenPair, index?: Index, account?: Account) => {
   const { DutchX } = await promisedAPI
+  account = await fillDefaultAccount(account)
 
-  return DutchX.getSellerBalance(pair, index, account)
+  return DutchX.getSellerBalances(pair, index, account)
 }
 
 /*
@@ -131,24 +146,11 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
  * @param index auctionIndex, current auction by default
  * @param account userccount, current web3 account by default
  */
-export const getClaimedAmount = async (pair: TokenPair, index?: Index, account?: Account) => {
+export const getClaimedAmounts = async (pair: TokenPair, index?: Index, account?: Account) => {
   const { DutchX } = await promisedAPI
 
-  return DutchX.getClaimedAmount(pair, index, account)
+  return DutchX.getClaimedAmounts(pair, index, account)
 }
-
-// TODO: implement when available on contract
-/*
- * get amount of funds available for claiming for auction corresponding to a pair of tokens at an index
- * @param pair TokenPair
- * @param index auctionIndex, current auction by default
- * @param account userccount, current web3 account by default
- */
-// export const getUnclaimedSellerFunds = async (pair: TokenPair, index ?: Index, account ?: Account) => {
-//   const { DutchX } = await promisedAPI
-
-//   return DutchX.getUnclaimedSellerFunds(pair, index, account)
-// }
 
 /*
  * deposit amount of a tokens for the DutchExchange auction to hold in the account's name

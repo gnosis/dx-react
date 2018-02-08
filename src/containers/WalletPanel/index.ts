@@ -11,7 +11,6 @@ const mapStateToProps = () => ({
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   submitOrder(proceedTo: string) {
     console.log('Submitting order')
-
     dispatch(submitSellOrder(proceedTo))
   },
 })

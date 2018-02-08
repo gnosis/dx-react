@@ -4,7 +4,7 @@ import {
   getCurrentAccount,
   // initDutchXConnection,
   getTokenBalances,
-  // tokenPairSelect,
+  getLatestAuctionIndex,
   postSellOrder,
   closingPrice,
 } from 'api'
@@ -126,15 +126,17 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
   }
 }
 
+// TODO: if add index of current tokenPair to state
 export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount }, blockchain: { currentAccount } } = getState()
+  const { tokenPair: { sell, buy, sellAmount, index }, blockchain: { currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
 
   try {
-    const receipt = await postSellOrder(currentAccount, sellAmount, sell, buy)
+    !index ? await getLatestAuctionIndex({ sell, buy }) : index
+    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
 
     console.log('Submit order receipt', receipt)
 
