@@ -8,7 +8,7 @@ export type Index = number | BigNumber
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
-  getETHBalance(account?: Account): Promise<BigNumber>,
+  getETHBalance(account: Account): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
   currentProvider: Function,
@@ -34,6 +34,9 @@ export interface TokensInterface {
   transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
+
+  depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
+  withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
 }
 
 export interface ErrorFirstCallback {
@@ -46,7 +49,7 @@ export interface ContractEvent {
 }
 
 export interface EventInstance {
-  watch(cb: ErrorFirstCallback): void,
+  watch(cb: ErrorFirstCallback): EventInstance,
   stopWatching(): void,
   get(cb: ErrorFirstCallback): void,
 }
@@ -62,21 +65,82 @@ export type Filter = 'latest' | 'pending' | FilterObject | void
 
 export interface ERC20Interface {
   address: Account,
-  getTotalSupply(): Promise<BigNumber>,
-  balanceOf(account?: Account): Promise<BigNumber>,
-  transfer(to: Account, value: Balance, sender: Account, tx?: TransactionObject): Promise<Receipt>,
-  transferFrom(sender: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  approve(spender: Account, value: Balance, sender: Account, tx?: TransactionObject): Promise<Receipt>,
+  totalSupply(): Promise<BigNumber>,
+  balanceOf(account: Account): Promise<BigNumber>,
+  transfer(to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  approve(spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(owner: Account, spender: Account): Promise<BigNumber>,
-  Transfer(valueFilter: object | void, filter: Filter, cb?: ErrorFirstCallback): void,
-  Transfer(valueFilter: object | void, filter: Filter): EventInstance,
+  Transfer: ContractEvent
   Approval: ContractEvent,
   allEvents(filter?: Filter, cb?: ErrorFirstCallback): void,
   allEvents(filter?: Filter): EventInstance,
 }
 
+export interface GNOInterface extends ERC20Interface {
+  symbol(): Promise<'GNO'>,
+  name(): Promise<'Gnosis'>,
+  decimals(): Promise<BigNumber>,
+}
+
+export interface ETHInterface extends ERC20Interface {
+  symbol(): Promise<'ETH'>,
+  name(): Promise<'Ether Token'>,
+  decimals(): Promise<BigNumber>,
+
+  deposit(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
+  withdraw(value: Balance, tx: TransactionObject): Promise<Receipt>,
+  Deposit: ContractEvent,
+  Withdrawal: ContractEvent,
+}
+
+export interface OWLInterface extends ERC20Interface {
+  symbol(): Promise<'OWL'>,
+  name(): Promise<'OWL Token'>,
+  decimals(): Promise<BigNumber>,
+  creator(): Promise<Account>,
+  minter(): Promise<Account>,
+  masterCopyCountdownType(): never,
+
+  startMasterCopyCountdown(_masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
+  updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
+  setMinter(newMinter: Account, tx: TransactionObject): Promise<Receipt>,
+  mintOWL(to: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  burnOWL(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  getMasterCopy(): Promise<Account>
+  Minted: ContractEvent,
+  Burnt: ContractEvent,
+}
+
+export interface TULInterface extends ERC20Interface {
+  owner(): Promise<Account>,
+  minter(): Promise<Account>,
+  unlockedTULs(account: Account): never,
+  lockedTULBalances(account: Account): Promise<BigNumber>,
+
+  updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
+  updateMinter(_minter: Account, tx: TransactionObject): Promise<Receipt>,
+  mintTokens(user: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  lockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  unlockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  withdrawUnlockedTokens(tx: TransactionObject): Promise<Receipt>,
+}
+
 export interface Receipt {
   [key: string]: any,
+  tx: string,
+  receipt: {
+    transactionHash: string,
+    transactionIndex: number,
+    blockHash: string,
+    blockNumber: number,
+    gassed: number,
+    cumulativeGasUsed: number,
+    contractAddress: null | Account,
+    logs: {[key: string]: any}[]
+    status: number,
+  }
+  logs: {[key: string]: any}[],
 }
 
 export interface DXAuction {

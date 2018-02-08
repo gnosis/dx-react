@@ -1,29 +1,45 @@
 import TruffleContract from 'truffle-contract'
 import { promisedWeb3 } from './web3Provider'
-import { DXAuction, ERC20Interface } from './types'
+import {
+  DXAuction,
+  ERC20Interface,
+  ETHInterface,
+  GNOInterface,
+  OWLInterface,
+  TULInterface,
+} from './types'
 
 const contractNames = [
   'DutchExchange',
   'DutchExchangeETHGNO',
   'DutchExchangeGNOETH',
   'Token',
-  'TokenETH',
+  'EtherToken',
   'TokenGNO',
+  'TokenOWL',
+  'TokenTUL',
 ]
+
+// fill contractsMap from here if available
+const filename2ContractNameMap = {
+  EtherToken: 'TokenETH',
+}
 
 
 interface ContractsMap {
   DutchExchange: DXAuction
   Token: ERC20Interface,
-  TokenETH: ERC20Interface,
-  TokenGNO: ERC20Interface,
+  TokenETH: ETHInterface,
+  TokenGNO: GNOInterface,
+  TokenOWL: OWLInterface,
+  TokenTUL: TULInterface,
 }
 
 const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
-  acc[name] = Contracts[i]
+  acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
 }, {}) as ContractsMap
 

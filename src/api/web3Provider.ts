@@ -6,9 +6,9 @@ import Web3 from 'web3'
 const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
     return window.web3.currentProvider
-  } else {
-    return new Web3.providers.HttpProvider('http://localhost:8545')
   }
+  
+  return new Web3.providers.HttpProvider('http://localhost:8545')
 }
 
 const setupWeb3 = async () => {
@@ -31,10 +31,7 @@ async function init(): Promise<ProviderInterface> {
     return account
   }
 
-  const getETHBalance = async (account?: Account) => {
-
-    if (!account) account = await getCurrentAccount()
-
+  const getETHBalance = async (account: Account) => {
     const wei = await getBalance(account)
 
     return web3.fromWei(wei, 'ether')

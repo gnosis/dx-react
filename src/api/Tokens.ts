@@ -1,4 +1,4 @@
-import { TokensInterface, TransactionObject } from './types'
+import { TokensInterface, TransactionObject, ERC20Interface } from './types'
 import { Account, Balance, TokenCode } from 'types'
 import { promisedContractsMap } from './contracts'
 
@@ -9,16 +9,16 @@ async function init(): Promise<TokensInterface> {
   const contractsMap = await promisedContractsMap
 
   const getToken = (code: TokenCode) => {
-    const token = contractsMap[`Token${code}`]
+    const token: ERC20Interface = contractsMap[`Token${code}`]
 
     if (!token) throw new Error(`No Token contract for ${code} token`)
 
     return token
   }
 
-  const getTokenBalance = async (code: TokenCode, account: Account) => getToken(code).balanceOf(account)
+  const getTokenBalance = (code: TokenCode, account: Account) => getToken(code).balanceOf(account)
 
-  const getTotalSupply = async (code: TokenCode) => getToken(code).getTotalSupply()
+  const getTotalSupply = (code: TokenCode) => getToken(code).totalSupply()
 
   const transfer = (code: TokenCode, to: Account, value: Balance, tx: TransactionObject) =>
     getToken(code).transfer(to, value, tx)
@@ -29,8 +29,14 @@ async function init(): Promise<TokensInterface> {
   const approve = (code: TokenCode, spender: Account, value: Balance, tx: TransactionObject) =>
     getToken(code).approve(spender, value, tx)
 
-  const allowance = async (code: TokenCode, owner: Account, spender: Account) =>
+  const allowance = (code: TokenCode, owner: Account, spender: Account) =>
     getToken(code).allowance(owner, spender)
+
+  const eth = contractsMap['TokenETH']
+  
+  const depositETH = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
+
+  const withdrawETH = (value: Balance, tx: TransactionObject) => eth.withdraw(value, tx)
 
   return {
     getTokenBalance,
@@ -39,5 +45,8 @@ async function init(): Promise<TokensInterface> {
     transferFrom,
     approve,
     allowance,
+
+    depositETH,
+    withdrawETH,
   }
 }
