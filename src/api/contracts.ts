@@ -14,11 +14,16 @@ const contractNames = [
   'DutchExchangeETHGNO',
   'DutchExchangeGNOETH',
   'Token',
-  'TokenETH',
+  'EtherToken',
   'TokenGNO',
   'TokenOWL',
   'TokenTUL',
 ]
+
+// fill contractsMap from here if available
+const filename2ContractNameMap = {
+  EtherToken: 'TokenETH',
+}
 
 
 interface ContractsMap {
@@ -34,7 +39,7 @@ const Contracts = contractNames.map(name => TruffleContract(require(`../../build
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
-  acc[name] = Contracts[i]
+  acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
 }, {}) as ContractsMap
 
