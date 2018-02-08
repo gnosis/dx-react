@@ -38,7 +38,7 @@ class BuyButton extends Component<BuyButtonProps, BuyButtonState> {
 
     const setUpPostBuyOrder = async () => {
       const amount = Number(toBuy)
-      const dxEG = await promisedDutchX
+      const dx = await promisedDutchX
       const Tokens = await promisedTokens
 
       // Abort if no amount selected
@@ -46,9 +46,10 @@ class BuyButton extends Component<BuyButtonProps, BuyButtonState> {
 
       try {
         const seller = await getCurrentAccount()
-        await Tokens.approve(pair.buy, dxEG.address, amount, { from: seller })
+        const aucIdx = await dx.getLatestAuctionIndex(pair)
+        await Tokens.approve(pair.buy, dx.address, amount, { from: seller })
         // Post the Buy Order and return a receipt
-        const postBuyReceipt = await dxEG.postBuyOrder(pair, amount, 0, 1, seller)
+        const postBuyReceipt = await dx.postBuyOrder(pair, amount, aucIdx, seller)
         console.log(`postBuyOrder of AMOUNT: ${amount}`, postBuyReceipt)
 
         // TODO: function to get specific Token's balance, also actions for such functions
