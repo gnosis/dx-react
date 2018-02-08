@@ -67,9 +67,9 @@ export interface ERC20Interface {
   address: Account,
   totalSupply(): Promise<BigNumber>,
   balanceOf(account: Account): Promise<BigNumber>,
-  transfer(to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  transferFrom(from: Account, to: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
-  approve(spender: Account, value: Balance, tx?: TransactionObject): Promise<Receipt>,
+  transfer(to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  approve(spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(owner: Account, spender: Account): Promise<BigNumber>,
   Transfer: ContractEvent
   Approval: ContractEvent,
