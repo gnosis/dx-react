@@ -45,7 +45,7 @@ export const getCurrentBalance = async (tokenName?: TokenCode | 'ETH', account?:
   // but just in case
 
   // should probably change name here to WETH
-  return Tokens.getTokenBalance('WETH', account)
+  return Tokens.getTokenBalance('W-ETH', account)
 }
 
 export const getTokenBalance = async (code: TokenCode, account?: Account) => {
@@ -59,7 +59,7 @@ export const getTokenBalance = async (code: TokenCode, account?: Account) => {
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
-export const getTokenBalances = async (tokenList: TokenCode[] = ['WETH', 'GNO'], account?: Account) => {
+export const getTokenBalances = async (tokenList: TokenCode[] = ['W-ETH', 'GNO'], account?: Account) => {
   const { Tokens } = await promisedAPI
 
   account = await fillDefaultAccount(account)
