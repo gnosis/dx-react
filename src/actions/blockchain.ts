@@ -87,7 +87,7 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     const getConnection = async () => {
       try {
         account = await getCurrentAccount()
-        currentBalance = (await getCurrentBalance(account)).toString()
+        currentBalance = (await getCurrentBalance('ETH', account)).toString()
         // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
         tokenBalances = (await getTokenBalances(undefined, account))
           .map(({ name, balance }) => ({ name, balance: balance.toString() }))
