@@ -9,7 +9,7 @@ export const getBalance = (address: string) => async (dispatch: Function) => {
   // console.log(contract)
 
   try {
-    const reqBalance = (await getCurrentBalance(address)).toString()
+    const reqBalance = (await getCurrentBalance('ETH', address)).toString()
     console.log(`Success! Balance for ${address} = `, reqBalance)
     dispatch(getBalanceBase({ success: true, reqBalance }))
   } catch (err) {
