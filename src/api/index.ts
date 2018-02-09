@@ -31,14 +31,21 @@ export const getETHBalance = async (account?: Account) => {
 }
 
 // ETH token balance
-export const getCurrentBalance = async (account?: Account) => {
-  const { Tokens } = await promisedAPI
+export const getCurrentBalance = async (tokenName?: TokenCode | 'ETH', account?: Account) => {
+  account = await fillDefaultAccount(account)
+  
+  if (tokenName && tokenName === 'ETH') {
+    const { getETHBalance } = await promisedWeb3
 
+    return getETHBalance(account)
+  }
+
+  const { Tokens } = await promisedAPI
   // account would normally be taken from redux state and passed inside an action
   // but just in case
-  account = await fillDefaultAccount(account)
 
-  return Tokens.getTokenBalance('ETH', account)
+  // should probably change name here to WETH
+  return Tokens.getTokenBalance('WETH', account)
 }
 
 export const getTokenBalance = async (code: TokenCode, account?: Account) => {
@@ -52,7 +59,7 @@ export const getTokenBalance = async (code: TokenCode, account?: Account) => {
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
-export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
+export const getTokenBalances = async (tokenList: TokenCode[] = ['WETH', 'GNO'], account?: Account) => {
   const { Tokens } = await promisedAPI
 
   account = await fillDefaultAccount(account)
