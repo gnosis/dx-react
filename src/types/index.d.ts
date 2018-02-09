@@ -1,5 +1,5 @@
 interface Code2Name {
-  'W-ETH': 'WETHER',
+  'W-ETH': 'W-ETHER',
   GNO: 'GNOSIS',
   REP: 'AUGUR',
   '1ST': 'FIRST BLOOD',

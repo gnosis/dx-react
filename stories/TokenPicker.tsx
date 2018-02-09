@@ -21,7 +21,7 @@ const ratioPairs = generateRatioPairs()
 const store = storeInit({
   tokenBalances,
   tokenPair: {
-    sell: 'ETH',
+    sell: 'W-ETH',
     buy: 'GNO',
     sellAmount: '0',
   },

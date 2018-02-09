@@ -30,7 +30,7 @@ export const bcMetamask: Partial<State> = {
   },
   tokenBalances: {
     GNO: '0.12364',
-    ETH: '0.46783',
+    'W-ETH': '0.46783',
   },
 }
 
@@ -53,7 +53,7 @@ export const bcLocalHost: Partial<State> = {
 
 export const tokenPairState: Partial<State> = {
   tokenPair: {
-    sell: 'ETH',
+    sell: 'W-ETH',
     buy: '1ST',
     sellAmount: '0',
   },

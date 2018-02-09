@@ -1,7 +1,7 @@
 import { Code2Name, TokenCode } from 'types'
 
 export const code2tokenMap: Code2Name = {
-  ETH: 'ETHER',
+  'W-ETH': 'W-ETHER',
   GNO: 'GNOSIS',
   REP: 'AUGUR',
   '1ST': 'FIRST BLOOD',

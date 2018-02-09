@@ -25,7 +25,7 @@ export default handleActions<TokenPair & { sellAmount: Balance }, TokenItemProps
     }),
   },
   {
-    sell: 'ETH',
+    sell: 'W-ETH',
     buy: 'GNO',
     sellAmount: '0',
   },

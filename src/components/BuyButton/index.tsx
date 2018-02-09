@@ -53,7 +53,7 @@ class BuyButton extends Component<BuyButtonProps, BuyButtonState> {
         console.log(`postBuyOrder of AMOUNT: ${amount}`, postBuyReceipt)
 
         // TODO: function to get specific Token's balance, also actions for such functions
-        const tokenBalance = await getTokenBalances(['ETH', 'GNO'])
+        const tokenBalance = await getTokenBalances(['W-ETH', 'GNO'])
 
         // Grab each TokenBalance and dispatch
         tokenBalance.forEach(async (token: any) =>

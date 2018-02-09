@@ -9,7 +9,7 @@ export const promisedDutchX = init()
 type T2A = Partial<{[P in TokenCode]: string}>
 
 const token2Address: T2A = {
-  ETH: '0x283hduie',
+  'W-ETH': '0x283hduie',
   GNO: '0x3u4376',
 }
 

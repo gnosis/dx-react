@@ -60,7 +60,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let claimBuyerFunds: DutchExchange['claimBuyerFunds']
   let postBuyOrder: DutchExchange['postBuyOrder']
 
-  const pair: TokenPair = { sell: 'ETH', buy: 'GNO' }
+  const pair: TokenPair = { sell: 'W-ETH', buy: 'GNO' }
 
   let accounts: any; let accs: any
 
@@ -120,16 +120,16 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     Object.assign(accs, { dx: DX.address, eth: ETH.address, gno: GNO.address, tul: TUL.addresss })
 
     watchAllEventsFor(dx, 'DutchExchange')
-    watchAllEventsFor(eth, 'ETH')
+    watchAllEventsFor(eth, 'W-ETH')
     watchAllEventsFor(gno, 'GNO')
 
     // seller must have initial balance of ETH
     // allow a transfer
-    await approve('ETH', seller, 100, { from: master })
+    await approve('W-ETH', seller, 100, { from: master })
     console.log('master approved seller to withdraw 100 ETH')
 
     // transfer initial balance of 100 ETH
-    await transferFrom('ETH', master, seller, 100, { from: seller })
+    await transferFrom('W-ETH', master, seller, 100, { from: seller })
     console.log('seller', seller, 'received 100 ETH')
 
 
@@ -165,7 +165,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
-    const initialClosingPrice = (await closingPrice('ETH', 'GNO', -1)).map(n => n.toNumber())
+    const initialClosingPrice = (await closingPrice('W-ETH', 'GNO', -1)).map(n => n.toNumber())
 
     expect(initialClosingPrice).toEqual([2, 1])
 
@@ -191,10 +191,10 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   })
 
   it('all accounts have the right balance', async () => {
-    const ETHtotal = await getTotalSupply('ETH')
-    const masterETHBalance = await getTokenBalance('ETH', master)
-    const sellerETHBalance = await getTokenBalance('ETH', seller)
-    const buyerETHBalance = await getTokenBalance('ETH', buyer)
+    const ETHtotal = await getTotalSupply('W-ETH')
+    const masterETHBalance = await getTokenBalance('W-ETH', master)
+    const sellerETHBalance = await getTokenBalance('W-ETH', seller)
+    const buyerETHBalance = await getTokenBalance('W-ETH', buyer)
 
     const GNOtotal = await getTotalSupply('GNO')
     const masterGNOBalance = await getTokenBalance('GNO', master)
@@ -214,7 +214,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const aucIdx = (await getLatestAuctionIndex(pair)).toNumber()
     // seller submits order and returns transaction object
     // that includes logs of events that fired during function execution
-    const { logs: [log] } = await postSellOrder('ETH', 'GNO', amount, aucIdx, seller)
+    const { logs: [log] } = await postSellOrder('W-ETH', 'GNO', amount, aucIdx, seller)
     const { _auctionIndex, _from, amount: submittedAmount } = log.args
 
     // submitter is indeed the seller
@@ -449,15 +449,15 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   it('seller has some GNO tokens, buyer has some ETH', async () => {
-    const buyerETHBalance = (await getTokenBalance('ETH', buyer)).toNumber()
+    const buyerETHBalance = (await getTokenBalance('W-ETH', buyer)).toNumber()
     const sellerGNOBalance = (await getTokenBalance('GNO', seller)).toNumber()
     const buyerGNOBalance = (await getTokenBalance('GNO', buyer)).toNumber()
-    const sellerETHBalance = (await getTokenBalance('ETH', seller)).toNumber()
+    const sellerETHBalance = (await getTokenBalance('W-ETH', seller)).toNumber()
 
     const masterGNOBalance = (await getTokenBalance('GNO', master)).toNumber()
-    const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
+    const masterETHBalance = (await getTokenBalance('W-ETH', master)).toNumber()
 
-    const totalETH = (await getTotalSupply('ETH')).toNumber()
+    const totalETH = (await getTotalSupply('W-ETH')).toNumber()
     const totalGNO = (await getTotalSupply('GNO')).toNumber()
 
     const sellerStartETH = totalETH - masterETHBalance
@@ -480,13 +480,13 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     // don't spam browser console
     if (currentProvider) return
 
-    const buyerETHBalance = (await getTokenBalance('ETH', buyer)).toNumber()
+    const buyerETHBalance = (await getTokenBalance('W-ETH', buyer)).toNumber()
     const sellerGNOBalance = (await getTokenBalance('GNO', seller)).toNumber()
     const masterGNOBalance = (await getTokenBalance('GNO', master)).toNumber()
-    const masterETHBalance = (await getTokenBalance('ETH', master)).toNumber()
+    const masterETHBalance = (await getTokenBalance('W-ETH', master)).toNumber()
     const buyerGNOBalance = (await getTokenBalance('GNO', buyer)).toNumber()
-    const sellerETHBalance = (await getTokenBalance('ETH', seller)).toNumber()
-    const totalETH = (await getTotalSupply('ETH')).toNumber()
+    const sellerETHBalance = (await getTokenBalance('W-ETH', seller)).toNumber()
+    const totalETH = (await getTotalSupply('W-ETH')).toNumber()
     const totalGNO = (await getTotalSupply('GNO')).toNumber()
 
     console.log()
