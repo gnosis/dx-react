@@ -133,7 +133,7 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
-
+  
   try {
     !index ? await getLatestAuctionIndex({ sell, buy }) : index
     const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)

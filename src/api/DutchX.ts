@@ -102,8 +102,20 @@ async function init(): Promise<DutchExchange> {
     account: Account,
   ) => {
     const [t1, t2] = getTokenPairAddresses(pair)
-
+    const resp = await dx.postSellOrder.call(t1, t2, index, amount, { from: account, gas: 4712388 })
+    console.log('CALL PSO == ', resp)
     return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
+  }
+
+  postSellOrder.call = async (
+    pair: TokenPair,
+    amount: Balance,
+    index: Index,
+    account: Account,
+  ) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.postSellOrder.call(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 
   const postBuyOrder = async (
@@ -115,6 +127,17 @@ async function init(): Promise<DutchExchange> {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.postBuyOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
+  }
+
+  postBuyOrder.call = async (
+    pair: TokenPair,
+    amount: Balance,
+    index: Index,
+    account: Account,
+  ) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.postBuyOrder.call(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 
   const claimSellerFunds = async (pair: TokenPair, index: Index, account: Account) => {
