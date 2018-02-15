@@ -137,7 +137,6 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
   console.log('simResp == ', simResp)
 
   try {
-    !index ? await getLatestAuctionIndex({ sell, buy }) : index
     const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
 
     console.log('Submit order receipt', receipt)
