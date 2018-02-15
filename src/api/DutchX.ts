@@ -20,8 +20,9 @@ async function init(): Promise<DutchExchange> {
   const token2Address = Object.keys(tokens).reduce((acc, key) => {
     const contr = tokens[key]
     acc[key.replace('Token', '')] = contr.address
+    console.log(acc)
     return acc
-  }) as T2A
+  }, {}) as T2A
   
   const getTokenAddress = (code: TokenCode) => {
     const address = token2Address[code]
