@@ -110,8 +110,7 @@ async function init(): Promise<DutchExchange> {
     account: Account,
   ) => {
     const [t1, t2] = getTokenPairAddresses(pair)
-    const resp = await dx.postSellOrder.call(t1, t2, index, amount, { from: account, gas: 4712388 })
-    console.log('CALL PSO == ', resp)
+    
     return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 

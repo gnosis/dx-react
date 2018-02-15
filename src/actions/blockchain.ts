@@ -128,12 +128,14 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 
 // TODO: if add index of current tokenPair to state
 export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount, index }, blockchain: { currentAccount } } = getState()
+  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
-  
+  const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
+  console.log('simResp == ', simResp)
+
   try {
     !index ? await getLatestAuctionIndex({ sell, buy }) : index
     const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
@@ -166,46 +168,3 @@ export const getTokenPairs = async () => {
   // const token2 = await grabTokenAddress2
   // const token = await getTokenPairs( 1, 2, token1, token2 ))
 }
-
-// export const requestGasPrice = () => async (dispatch: Function) => {
-//   const gasPrice = await getGasPrice()
-//   dispatch(setGasPrice({ entityType: 'gasPrice', gasPrice }))
-// }
-
-// export const requestGasCost = contractType => async (dispatch) => {
-//   if (contractType === GAS_COST.MARKET_CREATION) {
-//     calcMarketGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.BUY_SHARES) {
-//     calcBuySharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SELL_SHARES) {
-//     calcSellSharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CATEGORICAL_EVENT) {
-//     calcCategoricalEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SCALAR_EVENT) {
-//     calcScalarEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CENTRALIZED_ORACLE) {
-//     calcCentralizedOracleGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.FUNDING) {
-//     calcFundingGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   }
-// }
-
-// export const requestEtherTokens = account => async (dispatch) => {
-//   const etherTokens = await getEtherTokens(account)
-//   dispatch(setEtherTokens({ entityType: 'etherTokens', account, etherTokens }))
-// }
-

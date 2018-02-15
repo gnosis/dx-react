@@ -125,7 +125,7 @@ export const postSellOrder = async (
   return DutchX.postSellOrder(pair, amount, index, account)
 }
 
-export const postSellOrder.call = async (
+postSellOrder.call = async (
   sell: TokenCode,
   buy: TokenCode,
   amount: Balance,
