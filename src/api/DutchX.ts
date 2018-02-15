@@ -8,28 +8,35 @@ export const promisedDutchX = init()
 // or create a json during migration
 type T2A = Partial<{[P in TokenCode]: string}>
 
-const token2Address: T2A = {
-  ETH: '0x283hduie',
-  GNO: '0x3u4376',
-}
-
-const getTokenAddress = (code: TokenCode) => {
-  const address = token2Address[code]
-
-  if (!address) throw new Error(`No known address for ${code} token`)
-
-  return address
-}
-
-const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => {
-  const sellAddress = getTokenAddress(sell)
-  const buyAddress = getTokenAddress(buy)
-
-  return [sellAddress, buyAddress]
-}
 
 async function init(): Promise<DutchExchange> {
-  const { DutchExchange: dx } = await promisedContractsMap
+  const { DutchExchange: dx, ...tokens } = await promisedContractsMap
+  
+  // const token2Address: T2A = {
+  //   ETH: '0x283hduie',
+  //   GNO: '0x3u4376',
+  // }
+
+  const token2Address = Object.keys(tokens).reduce((acc, key) => {
+    const contr = tokens[key]
+    acc[key.replace('Token', '')] = contr.address
+    return acc
+  }) as T2A
+  
+  const getTokenAddress = (code: TokenCode) => {
+    const address = token2Address[code]
+  
+    if (!address) throw new Error(`No known address for ${code} token`)
+  
+    return address
+  }
+  
+  const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => {
+    const sellAddress = getTokenAddress(sell)
+    const buyAddress = getTokenAddress(buy)
+  
+    return [sellAddress, buyAddress]
+  }
 
   const getLatestAuctionIndex = (pair: TokenPair) => {
     const [t1, t2] = getTokenPairAddresses(pair)
