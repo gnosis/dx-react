@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+/* eslint no-console:0, no-multi-spaces:0, prefer-destructuring:1 */
 
 const TokenETH = artifacts.require('./EtherToken.sol')
 const TokenGNO = artifacts.require('./TokenGNO.sol')
@@ -29,9 +29,9 @@ module.exports = async () => {
   const oracle = await PriceOracle.deployed()
   const medianizer = await Medianizer.deployed()
 
-  const startingETH = 50
-  const startingGNO = 50
-  const ethUSDPrice = 10000
+  const startingETH = web3.toWei(50, 'ether')
+  const startingGNO = web3.toWei(50, 'ether')
+  const ethUSDPrice = web3.toWei(5000, 'ether')
 
   await Promise.all(accounts.map((acct) => {
     /* eslint array-callback-return:0 */
@@ -48,20 +48,22 @@ module.exports = async () => {
     dx.deposit(gno.address, startingGNO, { from: acct })
   }))
 
-  console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber())
-  console.log('ETHER = ', (await dx.balances.call(eth.address, accounts[1])).toNumber())
-  console.log('GNO = ', (await dx.balances.call(gno.address, accounts[1])).toNumber())
-  console.log((await dx.getAuctionIndex.call(eth.address, gno.address)).toNumber())
-
   await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: accounts[0] })
 
+  console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber() / (10 ** 18))
+  console.log('ETHER = ', (await dx.balances.call(eth.address, accounts[1])).toNumber() / (10 ** 18))
+  console.log('GNO = ', (await dx.balances.call(gno.address, accounts[1])).toNumber() / (10 ** 18))
+  console.log('FundingUSD == ', startingETH * ethUSDPrice)
+  console.log('Auction Index == ', (await dx.getAuctionIndex.call(eth.address, gno.address)).toNumber())
+
+
   await dx.addTokenPair(
-    TokenETH.address,     // -----> SellToken Address
-    TokenGNO.address,     // -----> BuyToken Address
-    10,                   // -----> token1Funding
-    0,                    // -----> token2Funding
-    2,                    // -----> closingPriceNum
-    1,                    // -----> closingPriceDen
+    TokenETH.address,                            // -----> SellToken Address
+    TokenGNO.address,                           // -----> BuyToken Address
+    web3.toWei(10, 'ether'),                   // -----> token1Funding
+    0,                                        // -----> token2Funding
+    2,                                       // -----> closingPriceNum
+    1,                                      // -----> closingPriceDen
     { from: accounts[1] },
   )
 }
