@@ -28,8 +28,8 @@ module.exports = async () => {
   const dx = await DutchExchange.at(Proxy.address)
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
-  const rdn = await TokenGNO.new(10000 * (10 ** 18))
-  const omg = await TokenGNO.new(10000 * (10 ** 18))
+  const rdn = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: accounts[0] })
+  const omg = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: accounts[0] })
   const oracle = await PriceOracle.deployed()
   const medianizer = await Medianizer.deployed()
 
@@ -77,14 +77,14 @@ module.exports = async () => {
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
+  const funds = sell === 'eth' ?
+    [web3.toWei(10, 'ether'), 0, 2, 1] :
+    [0, web3.toWei(10, 'ether'), 1, 2]
 
-  await dx.addTokenPair(
+  dx.addTokenPair(
     sellToken.address,                            // -----> SellToken Address
     buyToken.address,                           // -----> BuyToken Address
-    web3.toWei(10, 'ether'),                   // -----> token1Funding
-    0,                                        // -----> token2Funding
-    2,                                       // -----> closingPriceNum
-    1,                                      // -----> closingPriceDen
+    ...funds,                                    // -----> closingPriceDen
     { from: accounts[1] },
   )
 }
