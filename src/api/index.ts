@@ -125,7 +125,7 @@ export const postSellOrder = async (
   return DutchX.postSellOrder(pair, amount, index, account)
 }
 
-postSellOrder.call = async (
+export const postSellOrderCall = async (
   sell: TokenCode,
   buy: TokenCode,
   amount: Balance,
@@ -141,7 +141,7 @@ postSellOrder.call = async (
   const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
   console.log('approved tx', receipt)
 
-  return DutchX.postSellOrder.call(pair, amount, index, account)
+  return DutchX.postSellOrderCall(pair, amount, index, account)
 }
 
 /*

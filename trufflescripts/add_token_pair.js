@@ -45,13 +45,13 @@ module.exports = async () => {
   const sellToken = availableTokens[sell.toLowerCase()]
   const buyToken = availableTokens[buy.toLowerCase()]
 
-  const startingETH = web3.toWei(50, 'ether')
-  const startingGNO = web3.toWei(50, 'ether')
+  const startingETH = web3.toWei(52, 'ether')
+  const startingGNO = web3.toWei(52, 'ether')
   const ethUSDPrice = web3.toWei(5000, 'ether')
 
   await Promise.all(accounts.map((acct) => {
     /* eslint array-callback-return:0 */
-    if (acct === accounts[0]) return
+    // if (acct === accounts[0]) return
     eth.deposit({ from: acct, value: startingETH })
     eth.approve(dx.address, startingETH, { from: acct })
     if (sell === 'eth') {
@@ -64,7 +64,7 @@ module.exports = async () => {
   }))
   // Deposit depends on ABOVE finishing first... so run here
   await Promise.all(accounts.map((acct) => {
-    if (acct === accounts[0]) return
+    // if (acct === accounts[0]) return
     dx.deposit(sellToken.address, startingETH, { from: acct })
     dx.deposit(buyToken.address, startingGNO, { from: acct })
   }))
@@ -81,7 +81,7 @@ module.exports = async () => {
     [web3.toWei(10, 'ether'), 0, 2, 1] :
     [0, web3.toWei(10, 'ether'), 1, 2]
 
-  dx.addTokenPair(
+  await dx.addTokenPair(
     sellToken.address,                            // -----> SellToken Address
     buyToken.address,                           // -----> BuyToken Address
     ...funds,                                    // -----> closingPriceDen

@@ -113,7 +113,7 @@ async function init(): Promise<DutchExchange> {
     return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 
-  postSellOrder.call = async (
+  const postSellOrderCall = async (
     pair: TokenPair,
     amount: Balance,
     index: Index,
@@ -232,5 +232,6 @@ async function init(): Promise<DutchExchange> {
     claimAndWithdraw,
     event,
     allEvents,
+    postSellOrderCall,
   }
 }
