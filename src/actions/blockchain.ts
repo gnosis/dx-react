@@ -6,11 +6,8 @@ import {
   getTokenBalances,
   // getLatestAuctionIndex,
   postSellOrder,
-  postSellOrderCall,
   closingPrice,
 } from 'api'
-
-import { promisedContractsMap } from 'api/contracts'
 
 import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
@@ -136,11 +133,15 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
-  console.log('simResp with currentAccount =', currentAccount)
-  const { DutchExchange, TokenETH, TokenGNO } = await promisedContractsMap
-  const simResp = await DutchExchange.postSellOrder.call(TokenETH.address, TokenGNO.address, index, sellAmount, { from: currentAccount, gas: 4712388 })
-  // const simResp = await postSellOrderCall(sell, buy, sellAmount, index, currentAccount)
-  console.log('simResp == ', simResp)
+  // Simulate Sell order before real transaction
+  try {
+    const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
+    console.log('simResp == ', simResp)
+  } catch (e) {
+    // TODO: fire action blocking button
+    console.warn('Submit Sell Order Error', e)
+    return
+  }
 
   try {
     const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
