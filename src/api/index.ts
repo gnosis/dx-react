@@ -125,23 +125,19 @@ export const postSellOrder = async (
   return DutchX.postSellOrder(pair, amount, index, account)
 }
 
-export const postSellOrderCall = async (
+postSellOrder.call = async (
   sell: TokenCode,
   buy: TokenCode,
   amount: Balance,
   index: Index,
   account?: Account,
 ) => {
-  const { Tokens, DutchX } = await promisedAPI
+  const { DutchX } = await promisedAPI
   const pair = { sell, buy }
 
   account = await fillDefaultAccount(account)
 
-  // TODO: in future ask for a larger allowance
-  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
-  console.log('approved tx', receipt)
-
-  return DutchX.postSellOrderCall(pair, amount, index, account)
+  return DutchX.postSellOrder.call(pair, amount, index, account)
 }
 
 /*
