@@ -14,7 +14,9 @@ import AppRouter from 'router'
 import walletIntegrationCallback from 'integrations/'
 import createStoreWithHistory from 'store'
 
-const history = createHistory()
+import ModalContainer from 'containers/Modals'
+
+export const history = createHistory()
 const store = createStoreWithHistory(history)
 
 // load data from localstorage
@@ -29,7 +31,9 @@ const render = (App: React.SFC<any> | React.ComponentClass<any>, cb?: () => {}) 
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <App history={history} />
+        <ModalContainer>
+          <App history={history} />
+        </ModalContainer>
       </Provider>
     </AppContainer>,
     rootElement,

@@ -13,10 +13,9 @@ import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
 import { setSellTokenAmount } from 'actions/tokenPair'
 
-import {
-  timeoutCondition,
-  // getDutchXOptions,
-} from '../utils/helpers'
+import { openModal, closeModal } from 'actions/modal'
+
+import { timeoutCondition } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
@@ -127,7 +126,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 }
 
 // TODO: if add index of current tokenPair to state
-export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
+export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
   const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
@@ -144,9 +143,31 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
   }
 
   try {
-    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
+    // open modal
+    // dispatch(openModal({
+    //   modalName,
+    //   modalProps: {
+    //     header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
+    //     body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${provider}`,
+    //   },
+    // }))
+    
+    // const tokenApprovalReceipt = await approveToken(currentAccount, sellAmount, sell, buy)
+    // console.log('Approved token', tokenApprovalReceipt)
 
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
+        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${provider || 'your provider'}`,
+      },
+    }))
+
+    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
     console.log('Submit order receipt', receipt)
+
+    // close modal
+    dispatch(closeModal()) 
 
     // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
     const tokenBalances = await getTokenBalances(undefined, currentAccount)
@@ -165,6 +186,21 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
     return true
   } catch (error) {
     console.error('Error submitting a sell order', error.message || error)
+    // close to unmount
+    dispatch(closeModal())
+
+    // go home stacy
+    dispatch(push('/'))
+
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `TRANSACTION FAILED/CANCELLED`,
+        body: `${provider || 'Your provider'} has stopped your Sell Order. Please check your browser console for the error reason`,
+        button: true,
+      },
+    }))
+    
     return error
   }
 }
