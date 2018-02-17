@@ -7,6 +7,7 @@ import {
   // getLatestAuctionIndex,
   postSellOrder,
   closingPrice,
+  tokenApproval,
 } from 'api'
 
 import { setClosingPrice } from 'actions/ratioPairs'
@@ -127,7 +128,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 
 // TODO: if add index of current tokenPair to state
 export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { currentAccount } } = getState()
+  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { activeProvider, currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
@@ -144,22 +145,22 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
 
   try {
     // open modal
-    // dispatch(openModal({
-    //   modalName,
-    //   modalProps: {
-    //     header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
-    //     body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${provider}`,
-    //   },
-    // }))
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
+        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
+      },
+    }))
     
-    // const tokenApprovalReceipt = await approveToken(currentAccount, sellAmount, sell, buy)
-    // console.log('Approved token', tokenApprovalReceipt)
+    const tokenApprovalReceipt = await tokenApproval(sell, sellAmount)
+    console.log('Approved token', tokenApprovalReceipt)
 
     dispatch(openModal({
       modalName,
       modalProps: {
         header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
-        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${provider || 'your provider'}`,
+        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${activeProvider}`,
       },
     }))
 
@@ -196,7 +197,7 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
       modalName,
       modalProps: {
         header: `TRANSACTION FAILED/CANCELLED`,
-        body: `${provider || 'Your provider'} has stopped your Sell Order. Please check your browser console for the error reason`,
+        body: `${activeProvider || 'Your provider'} has stopped your Sell Order. Please check your browser console for the error reason`,
         button: true,
       },
     }))
