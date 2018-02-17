@@ -76,6 +76,13 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
   }))
 }
 
+export const tokenApproval = async (token: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX, Tokens } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return Tokens.approve(token, DutchX.address, amount, { from: account })
+}
+
 export const getLatestAuctionIndex = async (pair: TokenPair) => {
   const { DutchX } = await promisedAPI
 
@@ -119,8 +126,8 @@ export const postSellOrder = async (
   account = await fillDefaultAccount(account)
 
   // TODO: in future ask for a larger allowance
-  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
-  console.log('approved tx', receipt)
+  // const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
+  // console.log('approved tx', receipt)
 
   return DutchX.postSellOrder(pair, amount, index, account)
 }
