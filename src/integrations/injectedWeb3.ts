@@ -12,7 +12,7 @@ const networkById = {
 }
 
 export default class InjectedParent {
-  private watcherInterval: number
+  public watcherInterval: number
   protected account: any
   protected network: any
   protected balance: any
