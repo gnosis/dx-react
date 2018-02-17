@@ -35,19 +35,22 @@ const blurred: any = {
 
 const Aux = (props: any) => props.children
 
+let unblock : Function
+
 class ModalContainer extends Component<ModalContainerProps> {
 
   componentWillReceiveProps(nextProps: any) {
     const { isOpen } = this.props
-    const unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
-
+    console.log(nextProps)
+    
     // If MODAL is OPEN block movement
-    if (nextProps.isOpen !== isOpen) {
-      unblock
+    if (nextProps.isOpen !== isOpen && nextProps.isOpen) {
+      unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
+      // unblock
     }
 
     // Unblock Movement
-    if (!nextProps.isOpen) {
+    if (nextProps.isOpen !== isOpen && !nextProps.isOpen) {
       // calls return fn from unblock
       unblock()
     }
