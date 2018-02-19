@@ -112,8 +112,7 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
   return DutchX.getClosingPrice(pair, auctionIdx)
 }
 
-// TODO: pass in the whole TokenPair from the action
-export const postSellOrder = async (
+export const approveAndPostSellOrder = async (
   sell: TokenCode,
   buy: TokenCode,
   amount: Balance,
@@ -126,8 +125,24 @@ export const postSellOrder = async (
   account = await fillDefaultAccount(account)
 
   // TODO: in future ask for a larger allowance
-  // const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
-  // console.log('approved tx', receipt)
+  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
+  console.log('approved tx', receipt)
+
+  return DutchX.postSellOrder(pair, amount, index, account)
+}
+
+// TODO: pass in the whole TokenPair from the action
+export const postSellOrder = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+
+  account = await fillDefaultAccount(account)
 
   return DutchX.postSellOrder(pair, amount, index, account)
 }
