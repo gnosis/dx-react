@@ -1,6 +1,6 @@
 import { connect, Dispatch } from 'react-redux'
 import WalletPanel, { WalletPanelProps } from 'components/WalletPanel'
-import RedirectHomeHOC from 'components/RedirectHomeHOC'
+import { RedirectHomeHOC } from 'components/RedirectIf'
 import { State } from 'types'
 import { submitSellOrder } from 'actions'
 
