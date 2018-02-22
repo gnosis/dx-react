@@ -14,6 +14,7 @@ const contractNames = [
   'TokenGNO',
   'TokenOWL',
   'TokenTUL',
+  'Proxy',
 ]
 
 // fill contractsMap from here if available
@@ -28,6 +29,7 @@ interface ContractsMap {
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
   TokenTUL: TULInterface,
+  Proxy: { address: string },
 }
 
 const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
@@ -36,7 +38,9 @@ const Contracts = contractNames.map(name => TruffleContract(require(`../../build
 export const contractsMap = contractNames.reduce((acc, name, i) => {
   acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
-}, {}) as ContractsMap
+}, {}) as ContractsMap & {DutchExchange: {at: Function}}
+
+(window as any).m = contractsMap
 
 export const setProvider = (provider: any) => Contracts.forEach((contract) => {
   contract.setProvider(provider)
@@ -54,8 +58,15 @@ async function init() {
 
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
-  return contractNames.reduce((acc, name, i) => {
+  const deployedContracts = contractNames.reduce((acc, name, i) => {
     acc[filename2ContractNameMap[name] || name] = instances[i]    
     return acc
   }, {}) as ContractsMap
+
+  const { address: proxyAddress } = deployedContracts.Proxy
+
+  deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
+  console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
+
+  return (window as any).Dd = deployedContracts
 }

@@ -76,6 +76,13 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
   }))
 }
 
+export const tokenApproval = async (token: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX, Tokens } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return Tokens.approve(token, DutchX.address, amount, { from: account })
+}
+
 export const getLatestAuctionIndex = async (pair: TokenPair) => {
   const { DutchX } = await promisedAPI
 
@@ -105,8 +112,7 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
   return DutchX.getClosingPrice(pair, auctionIdx)
 }
 
-// TODO: pass in the whole TokenPair from the action
-export const postSellOrder = async (
+export const approveAndPostSellOrder = async (
   sell: TokenCode,
   buy: TokenCode,
   amount: Balance,
@@ -123,6 +129,37 @@ export const postSellOrder = async (
   console.log('approved tx', receipt)
 
   return DutchX.postSellOrder(pair, amount, index, account)
+}
+
+// TODO: pass in the whole TokenPair from the action
+export const postSellOrder = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+
+  account = await fillDefaultAccount(account)
+
+  return DutchX.postSellOrder(pair, amount, index, account)
+}
+
+postSellOrder.call = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+
+  account = await fillDefaultAccount(account)
+
+  return DutchX.postSellOrder.call(pair, amount, index, account)
 }
 
 /*

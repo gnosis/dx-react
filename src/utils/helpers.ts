@@ -26,4 +26,3 @@ export const timeoutCondition = (timeout: any, rejectReason: any) => new Promise
     reject(rejectReason)
   }, timeout)
 })
-

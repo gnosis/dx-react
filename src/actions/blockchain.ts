@@ -4,19 +4,19 @@ import {
   getCurrentAccount,
   // initDutchXConnection,
   getTokenBalances,
-  getLatestAuctionIndex,
+  // getLatestAuctionIndex,
   postSellOrder,
   closingPrice,
+  tokenApproval,
 } from 'api'
 
 import { setClosingPrice } from 'actions/ratioPairs'
 import { setTokenBalance } from 'actions/tokenBalances'
 import { setSellTokenAmount } from 'actions/tokenPair'
 
-import {
-  timeoutCondition,
-  // getDutchXOptions,
-} from '../utils/helpers'
+import { openModal, closeModal } from 'actions/modal'
+
+import { timeoutCondition } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
@@ -90,7 +90,18 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
         currentBalance = (await getCurrentBalance('ETH', account)).toString()
         // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
         tokenBalances = (await getTokenBalances())
-          .map(({ name, balance }) => ({ name, balance: balance.toString() }))
+          .map(({ name, balance }) => {
+            if (name === 'ETH') {
+              return { 
+                name,
+                balance: balance.toString(),
+              }  
+            } 
+            return { 
+              name,
+              balance: (balance.toNumber() / 10 ** 18).toString(),
+            }
+          })  
         console.log(tokenBalances)
         await dispatch(getClosingPrice())
       } catch (e) {
@@ -127,18 +138,48 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 }
 
 // TODO: if add index of current tokenPair to state
-export const submitSellOrder = (proceedTo: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount, index }, blockchain: { currentAccount } } = getState()
+export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
+  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { activeProvider, currentAccount } } = getState()
 
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
+  // Simulate Sell order before real transaction
+  try {
+    const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
+    console.log('simResp == ', simResp)
+  } catch (e) {
+    // TODO: fire action blocking button
+    console.warn('Submit Sell Order Error', e)
+    return
+  }
 
   try {
-    !index ? await getLatestAuctionIndex({ sell, buy }) : index
-    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
+    // open modal
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
+        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
+      },
+    }))
+    
+    const tokenApprovalReceipt = await tokenApproval(sell, sellAmount)
+    console.log('Approved token', tokenApprovalReceipt)
 
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
+        body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${activeProvider}`,
+      },
+    }))
+
+    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
     console.log('Submit order receipt', receipt)
+
+    // close modal
+    dispatch(closeModal()) 
 
     // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
     const tokenBalances = await getTokenBalances(undefined, currentAccount)
@@ -157,6 +198,21 @@ export const submitSellOrder = (proceedTo: string) => async (dispatch: Function,
     return true
   } catch (error) {
     console.error('Error submitting a sell order', error.message || error)
+    // close to unmount
+    dispatch(closeModal())
+
+    // go home stacy
+    dispatch(push('/'))
+
+    dispatch(openModal({
+      modalName,
+      modalProps: {
+        header: `TRANSACTION FAILED/CANCELLED`,
+        body: `${activeProvider || 'Your provider'} has stopped your Sell Order. Please check your browser console for the error reason`,
+        button: true,
+      },
+    }))
+    
     return error
   }
 }
@@ -166,46 +222,3 @@ export const getTokenPairs = async () => {
   // const token2 = await grabTokenAddress2
   // const token = await getTokenPairs( 1, 2, token1, token2 ))
 }
-
-// export const requestGasPrice = () => async (dispatch: Function) => {
-//   const gasPrice = await getGasPrice()
-//   dispatch(setGasPrice({ entityType: 'gasPrice', gasPrice }))
-// }
-
-// export const requestGasCost = contractType => async (dispatch) => {
-//   if (contractType === GAS_COST.MARKET_CREATION) {
-//     calcMarketGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.BUY_SHARES) {
-//     calcBuySharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SELL_SHARES) {
-//     calcSellSharesGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CATEGORICAL_EVENT) {
-//     calcCategoricalEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.SCALAR_EVENT) {
-//     calcScalarEventGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.CENTRALIZED_ORACLE) {
-//     calcCentralizedOracleGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   } else if (contractType === GAS_COST.FUNDING) {
-//     calcFundingGasCost().then((gasCost) => {
-//       dispatch(setGasCost({ entityType: 'gasCosts', contractType, gasCost }))
-//     })
-//   }
-// }
-
-// export const requestEtherTokens = account => async (dispatch) => {
-//   const etherTokens = await getEtherTokens(account)
-//   dispatch(setEtherTokens({ entityType: 'etherTokens', account, etherTokens }))
-// }
-
