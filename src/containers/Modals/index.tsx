@@ -5,7 +5,7 @@ import { closeModal, approveAndPostSellOrder } from 'actions'
 
 import { history } from 'index'
 
-import { Balance, State } from 'types'  
+import { State } from 'types'  
 
 import * as Modals from 'components/Modals'
 
