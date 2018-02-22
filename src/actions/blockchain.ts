@@ -11,11 +11,13 @@ import {
   checkTokenAllowance,
 } from 'api'
 
-import { setClosingPrice } from 'actions/ratioPairs'
-import { setTokenBalance } from 'actions/tokenBalances'
-import { setSellTokenAmount } from 'actions/tokenPair'
-
-import { openModal, closeModal } from 'actions/modal'
+import {
+  openModal,
+  closeModal,
+  setTokenBalance,
+  setSellTokenAmount,
+  setClosingPrice
+} from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
