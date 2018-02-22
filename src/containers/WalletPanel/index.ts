@@ -1,11 +1,13 @@
 import { connect, Dispatch } from 'react-redux'
 import WalletPanel, { WalletPanelProps } from 'components/WalletPanel'
-// import { State } from 'types'
+import { RedirectHomeHOC } from 'components/RedirectIf'
+import { State } from 'types'
 import { submitSellOrder } from 'actions'
 
-const mapStateToProps = () => ({
+const mapStateToProps = ({ tokenPair }: State) => ({
   // TODO: get address from store, populated by contract addresses
   auctionAddress: '0x03494929349594',
+  sellAmount: tokenPair.sellAmount,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
@@ -33,4 +35,4 @@ const mergeProps = (
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(WalletPanel)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(RedirectHomeHOC(WalletPanel))
