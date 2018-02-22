@@ -76,6 +76,13 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
   }))
 }
 
+export const checkTokenAllowance = async (token: TokenCode, account?: Account) => {
+  const { DutchX, Tokens } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return Tokens.allowance(token, account, DutchX.address)
+}
+
 export const tokenApproval = async (token: TokenCode, amount: Balance, account?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
   account = await fillDefaultAccount(account)
