@@ -37,6 +37,8 @@ export interface Modal {
   modalProps: {
     header: string,
     body: string,
+    button?: boolean,
+    error?: string,
   }
   isOpen: boolean
 }

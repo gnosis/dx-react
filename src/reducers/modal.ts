@@ -1,10 +1,11 @@
 import { openModal, closeModal } from 'actions/modal'
 import { handleActions } from 'redux-actions'
+import { Modal } from 'types'
 
-const initialState = { 
+const initialState: Modal = { 
   isOpen: false,
-  modalName: undefined as string,
-  modalProps: undefined as any,
+  modalName: undefined,
+  modalProps: undefined,
 }
 
 const reducer = handleActions(

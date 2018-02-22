@@ -16,7 +16,7 @@ import {
   closeModal,
   setTokenBalance,
   setSellTokenAmount,
-  setClosingPrice
+  setClosingPrice,
 } from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
@@ -39,10 +39,6 @@ export enum TypeKeys {
   OTHER_ACTIONS = 'OTHER_ACTIONS',
 }
 
-interface Error {
-  error?: string,
-  message?: string,
-}
 
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
@@ -146,7 +142,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 
 const errorHandling = (error: Error) => async (dispatch: Function, getState: Function) => {
   const { blockchain: { activeProvider } } = getState()
-  const normError = error.message || error
+  const normError = error.message
   console.error('Error submitting a sell order', normError)
   // close to unmount
   dispatch(closeModal())
@@ -217,18 +213,19 @@ export const getTokenAllowance = () => async (dispatch: Function, getState: Func
     }))
     const allowanceLeft = (await checkTokenAllowance(sell, currentAccount)).toNumber()
     console.log(allowanceLeft)
-    if(sellAmount > allowanceLeft) {
+    if (sellAmount > allowanceLeft) {
       dispatch(openModal({
         modalName: 'ApprovalModal', 
         modalProps: {
           header: `Confirm ${sell.toUpperCase()} Token movement`,
+          // tslint:disable-next-line
           body: `Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
-        }
+        },
       }))
     } else {
       dispatch(submitSellOrder())
     }
-  } catch(e) {
+  } catch (e) {
     dispatch(errorHandling(e))
   }
 }
@@ -251,7 +248,7 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
 
   try {
     // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
-    if(choice === 'MIN') {
+    if (choice === 'MIN') {
       // open modal
       dispatch(openModal({
         modalName: 'TransactionModal',
