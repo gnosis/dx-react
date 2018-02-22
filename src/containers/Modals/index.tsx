@@ -1,22 +1,24 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import { openModal, closeModal } from 'actions/modal'
+import { closeModal, approveAndPostSellOrder } from 'actions'
 
 import { history } from 'index'
 
-import { State } from 'types'  
+import { Balance, State } from 'types'  
 
 import * as Modals from 'components/Modals'
 
 export interface ModalContainerProps {
-  children: any;
-  isOpen: boolean;
-  modalName: string;
-  modalProps: any;
-  openModal(props: any): any,
-  closeModal(): any,
-  activeProvider: any
+  activeProvider: any,
+  children?: any,
+
+  isOpen: boolean,
+  modalName: string,
+  modalProps: any,
+
+  closeModal?(): any,
+  submitSellOrder?(): any,
 }
 
 const backdropActive: any = {
@@ -41,8 +43,7 @@ class ModalContainer extends Component<ModalContainerProps> {
 
   componentWillReceiveProps(nextProps: any) {
     const { isOpen } = this.props
-    console.log(nextProps)
-    
+        
     // If MODAL is OPEN block movement
     if (nextProps.isOpen !== isOpen && nextProps.isOpen) {
       unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
@@ -96,12 +97,13 @@ const mapState = ({
     modalName, 
     modalProps, 
     isOpen, 
-  }, 
+  },
 }: State) => ({
+  activeProvider: blockchain.activeProvider,
+  
+  isOpen,
   modalName,
   modalProps,
-  isOpen,
-  activeProvider: blockchain.activeProvider,
 })
 
-export default connect(mapState, { openModal, closeModal })(ModalContainer)
+export default connect<ModalContainerProps>(mapState, { closeModal, approveAndPostSellOrder })(ModalContainer)
