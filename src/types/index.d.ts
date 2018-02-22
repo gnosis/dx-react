@@ -78,6 +78,8 @@ export interface TokenPair {
   sell: TokenCode,
   buy: TokenCode,
   sellAmount?: Balance,
+  index?: string,
+  allowanceLeft?: Balance,
 }
 
 /**
