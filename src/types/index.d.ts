@@ -37,6 +37,8 @@ export interface Modal {
   modalProps: {
     header: string,
     body: string,
+    button?: boolean,
+    error?: string,
   }
   isOpen: boolean
 }
@@ -78,6 +80,8 @@ export interface TokenPair {
   sell: TokenCode,
   buy: TokenCode,
   sellAmount?: Balance,
+  index?: string,
+  allowanceLeft?: Balance,
 }
 
 /**

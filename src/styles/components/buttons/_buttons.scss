@@ -102,3 +102,60 @@ a.buttonCTA {
     transform: translateX(-1px);
   }
 }
+
+// Modal Button stuff
+
+.modalButton {
+  // background-color: rgba(26, 73, 119, 0.9);
+  background-color: $orange;
+  border: 0;
+  border-radius: 20px;
+  color: white;
+  font-size: 1.15vw;
+  min-height: 50px;
+  width: 30vw;
+
+  &:hover {
+    box-shadow: 0 0 14px 0.2px rgba(255, 255, 255, 0.671), 0 0 10px 0.4px rgba(255, 255, 255, 0.863);
+    cursor: pointer;
+  }
+}
+
+.modalH1, .modalButtonDescription {
+  margin: 20px;
+}
+
+.modalH1, .modalButtonDescription, .modalPSmall {
+  color: white;
+  line-height: normal;
+}
+
+.modalH1 {
+  font-size: 3.5vw;
+}
+
+.modalButtonDescription {
+  font-size: 1.2vw;
+  padding: 0 10px;
+  text-align: left;
+  width: 70vw;
+}
+
+.modalP {
+  font-size: 1.7vw;
+  line-height: normal;
+  margin: 0 30px;
+  text-align: left;
+}
+
+.modalError {
+  background-color: #911919;
+  color: white;
+  font-size: 0.9vw;
+  line-height: normal;
+  margin: 30px;
+  padding: 15px;
+  max-width: 60%;
+  text-align: left;
+  word-wrap: break-word;
+}

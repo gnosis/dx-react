@@ -8,12 +8,10 @@ import ButtonCTA from 'components/ButtonCTA'
 import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
 export interface WalletPanelProps {
-  auctionAddress: string,
-  submitOrder(): any,
+  getTokenAllowance(): Function,
 }
 
-
-const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress, submitOrder }) => (
+const WalletPanel: React.SFC<WalletPanelProps> = ({ getTokenAllowance }) => (
   <AuctionContainer auctionDataScreen="details">
     <AuctionHeader backTo="/order">
       Confirm Order Details
@@ -25,7 +23,7 @@ const WalletPanel: React.SFC<WalletPanelProps> = ({ auctionAddress, submitOrder 
       When submitting the order and signing with MetaMask,
         your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
       </p>
-    <ButtonCTA onClick={submitOrder} to={`/auction/${auctionAddress}`}>
+    <ButtonCTA onClick={getTokenAllowance}>
       Submit Sell Order <i className="icon icon-walletOK"></i>
     </ButtonCTA>
   </AuctionContainer>

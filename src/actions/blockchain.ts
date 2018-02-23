@@ -8,13 +8,16 @@ import {
   postSellOrder,
   closingPrice,
   tokenApproval,
+  checkTokenAllowance,
 } from 'api'
 
-import { setClosingPrice } from 'actions/ratioPairs'
-import { setTokenBalance } from 'actions/tokenBalances'
-import { setSellTokenAmount } from 'actions/tokenPair'
-
-import { openModal, closeModal } from 'actions/modal'
+import {
+  openModal,
+  closeModal,
+  setTokenBalance,
+  setSellTokenAmount,
+  setClosingPrice,
+} from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
 // import { GAS_COST } from 'utils/constants'
@@ -35,6 +38,7 @@ export enum TypeKeys {
   SET_ETHER_TOKENS = 'SET_ETHER_TOKENS',
   OTHER_ACTIONS = 'OTHER_ACTIONS',
 }
+
 
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
@@ -102,7 +106,6 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
               balance: (balance.toNumber() / 10 ** 18).toString(),
             }
           })  
-        console.log(tokenBalances)
         await dispatch(getClosingPrice())
       } catch (e) {
         console.log(e)
@@ -130,52 +133,46 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 
   try {
     const lastPrice = (await closingPrice(sell, buy)).toString()
-    console.log('FIRING LASTCLOSINGPRICES')
     return dispatch(setClosingPrice({ sell, buy, price: lastPrice }))
   } catch (e) {
     console.log(e)
   }
 }
 
-// TODO: if add index of current tokenPair to state
-export const submitSellOrder = (proceedTo: string, modalName: string) => async (dispatch: Function, getState: any) => {
+
+const errorHandling = (error: Error) => async (dispatch: Function, getState: Function) => {
+  const { blockchain: { activeProvider } } = getState()
+  const normError = error.message
+  console.error('An error has occurred: ', normError)
+  // close to unmount
+  dispatch(closeModal())
+
+  // go home stacy
+  dispatch(push('/'))
+
+  dispatch(openModal({
+    modalName: 'TransactionModal',
+    modalProps: {
+      header: `TRANSACTION FAILED/CANCELLED`,
+      body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
+      button: true,
+      error: normError,
+    },
+  }))
+}
+
+export const submitSellOrder = () => async (dispatch: any, getState: any) => {
   const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { activeProvider, currentAccount } } = getState()
-
-  // don't do anything when submitting a <= 0 amount
-  // indicate that nothing happened with false return
-  if (sellAmount <= 0) return false
-  // Simulate Sell order before real transaction
   try {
-    const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
-    console.log('simResp == ', simResp)
-  } catch (e) {
-    // TODO: fire action blocking button
-    console.warn('Submit Sell Order Error', e)
-    return
-  }
-
-  try {
-    // open modal
     dispatch(openModal({
-      modalName,
+      modalName: 'TransactionModal',
       modalProps: {
-        header: `[1/2] Confirm ${sell.toUpperCase()} Token movement`,
-        body: `First Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
-      },
-    }))
-    
-    const tokenApprovalReceipt = await tokenApproval(sell, sellAmount)
-    console.log('Approved token', tokenApprovalReceipt)
-
-    dispatch(openModal({
-      modalName,
-      modalProps: {
-        header: `[2/2] Confirm sell of ${sellAmount }${sell.toUpperCase()} tokens`,
+        header: `Confirm sell of ${sellAmount} ${sell.toUpperCase()} tokens`,
         body: `Final confirmation: please accept/reject ${sell.toUpperCase()} sell order via ${activeProvider}`,
       },
     }))
 
-    const receipt = await postSellOrder(sell, buy, sellAmount, index, currentAccount)
+    const receipt = await postSellOrder(sell, buy, (+sellAmount * 10 ** 18).toString(), index, currentAccount)
     console.log('Submit order receipt', receipt)
 
     // close modal
@@ -189,7 +186,7 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
     dispatch(setTokenBalance({ tokenName: name, balance: balance.toString() }))
 
     // proceed to /auction/0x03494929349594
-    dispatch(push(proceedTo))
+    dispatch(push(`auction/${sell}-${buy}-${index}`))
 
     // reset sellAmount
     dispatch(setSellTokenAmount({ sellAmount: 0 }))
@@ -197,23 +194,88 @@ export const submitSellOrder = (proceedTo: string, modalName: string) => async (
     // indicate that submition worked
     return true
   } catch (error) {
-    console.error('Error submitting a sell order', error.message || error)
-    // close to unmount
-    dispatch(closeModal())
+    dispatch(errorHandling(error))
+  } 
+}
 
-    // go home stacy
-    dispatch(push('/'))
+export const getTokenAllowance = () => async (dispatch: Function, getState: Function) => {
+  const { tokenPair: { sell, sellAmount }, blockchain: { activeProvider, currentAccount } } = getState()
 
+  try {
+    // change to modal with button, new modal
     dispatch(openModal({
-      modalName,
+      modalName: 'TransactionModal',   
       modalProps: {
-        header: `TRANSACTION FAILED/CANCELLED`,
-        body: `${activeProvider || 'Your provider'} has stopped your Sell Order. Please check your browser console for the error reason`,
-        button: true,
+        header: `Contacting Ethereum blockchain`,
+        body: `Please wait`,
       },
     }))
-    
-    return error
+    const allowanceLeft = (await checkTokenAllowance(sell, currentAccount)).toNumber()
+    console.log(allowanceLeft)
+    if (sellAmount > allowanceLeft) {
+      dispatch(openModal({
+        modalName: 'ApprovalModal', 
+        modalProps: {
+          header: `Confirm ${sell.toUpperCase()} Token movement`,
+          // tslint:disable-next-line
+          body: `Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
+        },
+      }))
+    } else {
+      dispatch(submitSellOrder())
+    }
+  } catch (e) {
+    dispatch(errorHandling(e))
+  }
+}
+
+// TODO: if add index of current tokenPair to state
+export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: any) => {
+  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { currentAccount } } = getState()
+  // don't do anything when submitting a <= 0 amount
+  // indicate that nothing happened with false return
+  if (sellAmount <= 0) return false
+  // Simulate Sell order before real transaction
+  try {
+    const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
+    console.log('simResp == ', simResp)
+  } catch (e) {
+    // TODO: fire action blocking button
+    console.warn('Submit Sell Order', e)
+    return
+  }
+
+  try {
+    // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
+    if (choice === 'MIN') {
+      // open modal
+      dispatch(openModal({
+        modalName: 'TransactionModal',
+        modalProps: {
+          header: `Approving minimum token movement: ${sellAmount}`,
+          body: `You are approving the minimum amount necessary - DutchX will prompt you again the next time.`,
+        },
+      }))
+      
+      const tokenApprovalReceipt = await tokenApproval(sell, sellAmount)
+      console.log('Approved token', tokenApprovalReceipt)
+    } else {
+      // open modal
+      dispatch(openModal({
+        modalName: 'TransactionModal',
+        modalProps: {
+          header: `Approving maximum token movement`,
+          body: `You are approving the maximum amount - you will no longer need to sign 2 transactions.`,
+        },
+      }))
+      
+      const tokenApprovalReceipt = await tokenApproval(sell, (100000 * 10 ** 18).toString())
+      console.log('Approved token', tokenApprovalReceipt)
+    }
+
+    dispatch(submitSellOrder())
+  } catch (error) {
+    dispatch(errorHandling(error))
   }
 }
 

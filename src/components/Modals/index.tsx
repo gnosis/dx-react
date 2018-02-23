@@ -1,12 +1,35 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
+import { Modal } from 'types'
+import { closeModal, approveAndPostSellOrder } from 'actions'
 
-export interface TransactionModalProps {
-  modalProps: any,
+interface TransactionModalProps {
   activeProvider?: string,
-  closeModal?: any,
+  closeModal?: typeof closeModal,
+  modalProps: Modal['modalProps'],
+  error?: string,
 }
 
-const tempDivStyle = {
+interface ApprovalModalProps extends TransactionModalProps {
+  approvalButton: any,
+  approveAndPostSellOrder: typeof approveAndPostSellOrder,
+}
+
+const tempParentDiv: CSSProperties = {
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  alignItems: 'center', justifyContent: 'center',
+  width: '100%',
+}
+
+const tempButtonDiv: CSSProperties = {
+  display: 'flex',
+  flexFlow: 'row nowrap',
+  justifyContent: 'center', alignItems: 'center',
+  padding: 10,
+  width: '75%',
+}
+
+const tempDivStyle: CSSProperties = {
   position: 'fixed', 
   display: 'flex', flexFlow: 'column', justifyContent: 'center', alignItems: 'center',
 
@@ -16,40 +39,70 @@ const tempDivStyle = {
   textAlign: 'center',
 }
 
-const tempH1Style = {
-  color: 'white',
-  fontSize: '4vw', 
-  margin: '20px',
-}
-
-const tempPStyle = {
-  fontSize: '2.2vw', lineHeight: 1.3,
-  margin: '20px',
-}
-
 export const TransactionModal: React.SFC<TransactionModalProps> = ({ 
   modalProps: {
     header, 
     body,
     button,
+    error,
   }, 
   activeProvider,
   closeModal,
-}) => {
-  console.log(closeModal)
-  return ( 
-  <div style={tempDivStyle as any}>
-    <h1 style={tempH1Style as any}>{header || 'Approving Tokens and Transferring'}</h1>
-    <p style={tempPStyle}>
+}) =>
+  <div style={tempDivStyle}>
+    <h1 className="modalH1">{header || 'Approving Tokens and Transferring'}</h1>
+    <p className="modalP">
       { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
     </p>
+    {error && 
+    <p className="modalError">
+      {`${error.slice(0, 300)}...`}
+    </p>}
     {button && 
       <button
-        onClick={() => closeModal()}
+        className="modalButton"
+        onClick={closeModal}
       >
         CLOSE
       </button>
     }
   </div>
-  )
-}
+
+export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
+  modalProps: {
+    header, 
+    body,
+  }, 
+  activeProvider,
+  approveAndPostSellOrder,
+}) => 
+  <div style={tempDivStyle}>
+    <h1 className="modalH1">{header || 'Please choose Token Approval amount'}</h1>
+    <p className="modalP">
+      { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
+    </p>
+    <div style={tempParentDiv}>
+      <div style={tempButtonDiv}>
+        <button 
+          className="modalButton"
+          onClick={() => approveAndPostSellOrder('MAX')}
+          >
+          Approve Max
+        </button>
+        <p className="modalButtonDescription">
+          Choose this option to stop seeing this prompt and only sign 1 transaction per sell order
+        </p>
+      </div>
+      <div style={tempButtonDiv}>  
+        <button 
+          className="modalButton"
+          onClick={() => approveAndPostSellOrder('MIN')}
+          >
+          Approve Min
+        </button>
+        <p className="modalButtonDescription">
+          Choose this option to require signing 2 transactions for each sell order
+        </p>
+      </div>  
+    </div>
+  </div>

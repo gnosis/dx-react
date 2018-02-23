@@ -499,7 +499,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   }
 
   function watchAllEventsFor(contract: any, name: string) {
-    const addr2acc = Object.entries(accs).reduce((accum, [name, addr]) => (accum[addr] = name, accum), {})
+    const addr2acc = Object.entries(accs).reduce((accum, [name, addr]: [string, string]) => (accum[addr] = name, accum), {})
     contract.allEvents((err: Error, log: any) => {
       if (err) {
         console.error(err, name)
