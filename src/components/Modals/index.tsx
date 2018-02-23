@@ -1,15 +1,17 @@
 import React, { CSSProperties } from 'react'
+import { Modal } from 'types'
+import { closeModal, approveAndPostSellOrder } from 'actions'
 
 interface TransactionModalProps {
   activeProvider?: string,
-  closeModal?: any,
-  modalProps: any,
-  error?: Error,
+  closeModal?: typeof closeModal,
+  modalProps: Modal['modalProps'],
+  error?: string,
 }
 
 interface ApprovalModalProps extends TransactionModalProps {
   approvalButton: any,
-  approveAndPostSellOrder(choice: string): any,
+  approveAndPostSellOrder: typeof approveAndPostSellOrder,
 }
 
 const tempParentDiv: CSSProperties = {
