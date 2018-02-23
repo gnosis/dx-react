@@ -143,7 +143,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
 const errorHandling = (error: Error) => async (dispatch: Function, getState: Function) => {
   const { blockchain: { activeProvider } } = getState()
   const normError = error.message
-  console.error('Error submitting a sell order', normError)
+  console.error('An error has occurred: ', normError)
   // close to unmount
   dispatch(closeModal())
 
@@ -194,7 +194,6 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     // indicate that submition worked
     return true
   } catch (error) {
-    console.error('We are in submitSellOrder just before errorHandling()')
     dispatch(errorHandling(error))
   } 
 }
