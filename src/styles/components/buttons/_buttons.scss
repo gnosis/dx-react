@@ -116,7 +116,7 @@ a.buttonCTA {
   width: 30vw;
 
   &:hover {
-    box-shadow: 0 0 14px 0.2px rgba(255, 255, 255, 0.671), 0 0px 10px 0.4px rgba(255, 255, 255, 0.863);
+    box-shadow: 0 0 14px 0.2px rgba(255, 255, 255, 0.671), 0 0 10px 0.4px rgba(255, 255, 255, 0.863);
     cursor: pointer;
   }
 }
@@ -144,7 +144,7 @@ a.buttonCTA {
 .modalP {
   font-size: 1.7vw;
   line-height: normal;
-  margin: 0, 30px;
+  margin: 0 30px;
   text-align: left;
 }
 
@@ -153,7 +153,8 @@ a.buttonCTA {
   color: white;
   font-size: 0.9vw;
   line-height: normal;
-  margin: 10px; padding: 15px;
+  margin: 30px;
+  padding: 15px;
   max-width: 60%;
   text-align: left;
   word-wrap: break-word;
