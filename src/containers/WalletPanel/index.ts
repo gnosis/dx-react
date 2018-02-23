@@ -1,5 +1,11 @@
 import { connect } from 'react-redux'
-import WalletPanel, { WalletPanelProps } from 'components/WalletPanel'
 import { getTokenAllowance, openModal } from 'actions'
 
-export default connect<WalletPanelProps>(undefined, { getTokenAllowance, openModal })(WalletPanel)
+import WalletPanel from 'components/WalletPanel'
+import { RedirectHomeHOC } from 'components/RedirectIf'
+
+import { State } from 'types'
+
+const mapState = ({ tokenPair: { sellAmount } }: Partial<State>) => ({ sellAmount })
+
+export default connect(mapState, { getTokenAllowance, openModal })(RedirectHomeHOC(WalletPanel))
