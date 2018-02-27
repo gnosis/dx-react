@@ -66,7 +66,7 @@ async function init() {
   const { address: proxyAddress } = deployedContracts.Proxy
 
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
-  console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
+  // console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
 
   return (window as any).Dd = deployedContracts
 }

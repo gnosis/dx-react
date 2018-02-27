@@ -1,14 +1,18 @@
 // import { dispatch } from 'redux';
 import {
-  getCurrentBalance,
-  getCurrentAccount,
-  // initDutchXConnection,
-  getTokenBalances,
-  // getLatestAuctionIndex,
-  postSellOrder,
   closingPrice,
+  deposit,
+  depositAndSell,
+  ethDeposit,
+  getCurrentAccount,
+  getCurrentBalance,
+  getDXTokenBalance,
+  getEtherTokenBalance,
+  getTokenAllowance,
+  getTokenBalances,
+  postSellOrder,
   tokenApproval,
-  checkTokenAllowance,
+  toWei,
 } from 'api'
 
 import {
@@ -20,12 +24,13 @@ import {
 } from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
-// import { GAS_COST } from 'utils/constants'
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
 import { findDefaultProvider } from 'selectors/blockchain'
 
-import { TokenBalances, Account, Balance, TokenCode } from 'types'
+import { TokenBalances, Account, Balance, State, TokenCode } from 'types'
+
+import { BigNumber } from 'bignumber.js'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -139,7 +144,6 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
   }
 }
 
-
 const errorHandling = (error: Error) => async (dispatch: Function, getState: Function) => {
   const { blockchain: { activeProvider } } = getState()
   const normError = error.message
@@ -161,8 +165,110 @@ const errorHandling = (error: Error) => async (dispatch: Function, getState: Fun
   }))
 }
 
+/**
+ * checkEthTokenBalance > returns false or EtherToken Balance
+ * @param token 
+ * @param weiSellAmount 
+ * @param account 
+ * @returns boolean | BigNumber <false, amt>
+ */
+const checkEthTokenBalance = async (token: TokenCode, weiSellAmount: BigNumber, account?: Account): Promise<boolean | BigNumber> => { 
+  // perform checks
+  // return if token is not ETHER
+  if (token !== "ETH") return false
+  const wrappedETH = await getEtherTokenBalance(token, account)
+  // return false if wrapped Eth is enough
+  if (wrappedETH.gte(weiSellAmount)) return false
+
+  return weiSellAmount.minus(wrappedETH)
+}
+
+/**
+ * checkTokenAllowance > returns false or Token[name] Allowance
+ * @param token 
+ * @param weiSellAmount 
+ * @param account 
+ * @returns boolean | BigNumber <false, amt>
+ */
+const checkTokenAllowance = async (token: TokenCode, weiSellAmount: BigNumber, account?: Account): Promise<boolean | BigNumber> => { 
+  // perform checks
+  const tokenAllowance = await getTokenAllowance(token, account)
+  // return false if wrapped Eth is enough
+  if (tokenAllowance.gte(weiSellAmount)) return false
+
+  return tokenAllowance
+}
+
+/** 
+ * checkUserStateAndSell()(dispatch, state) => THUNK Action
+ * 
+*/
+export const checkUserStateAndSell = () => async (dispatch: Function, getState: Function) => {
+  const { tokenPair: { sell, sellAmount }, blockchain: { activeProvider, currentAccount } } = getState()
+  const weiSellAmt = await toWei(sellAmount)
+  
+  try {
+    // change to modal with button, new modal
+    dispatch(openModal({
+      modalName: 'TransactionModal',   
+      modalProps: {
+        header: `Contacting Ethereum blockchain`,
+        body: `Please wait`,
+      },
+    }))
+    // check ETHER deposit && allowance amount
+    const wrappedETH = await checkEthTokenBalance(sell, weiSellAmt, currentAccount)
+    const tokenAllowance = await checkTokenAllowance(sell, weiSellAmt, currentAccount)
+    // if SELLTOKEN !== ETH, returns undefined and skips
+    if (wrappedETH) {
+      dispatch(openModal({
+        modalName: 'TransactionModal', 
+        modalProps: {
+          header: `Wrapping ${sell.toUpperCase()}`,
+          // tslint:disable-next-line
+          body: `Confirmation: ${sell.toUpperCase()} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
+        },
+      }))
+      // TODO only deposit difference
+      await ethDeposit(wrappedETH.toString(), currentAccount)
+    }
+    // Check allowance amount for SELLTOKEN
+    // if allowance is ok, skip
+    if (tokenAllowance) {
+      dispatch(openModal({
+        modalName: 'ApprovalModal',
+        modalProps: {
+          header: `Confirm ${sell.toUpperCase()} Token movement`,
+          // tslint:disable-next-line
+          body: `Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
+        },
+      }))
+    // Go straight to sell order if deposit && allowance both good
+    } else {
+      dispatch(submitSellOrder())
+    }
+  } catch (e) {
+    dispatch(errorHandling(e))
+  }
+}
+
+const simulateTX = async (txFn: Function, txProps: Partial<State>[]) => {
+  // Simulate Sell order before real transaction
+  try {
+    console.log(txFn)
+    const simResp = await txFn(...txProps)
+    console.log('simResp == ', simResp)
+  } catch (e) {
+    // TODO: fire action blocking button
+    console.error('TX Simulation failed => ', e)
+    return
+  }
+}
+
 export const submitSellOrder = () => async (dispatch: any, getState: any) => {
   const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { activeProvider, currentAccount } } = getState()
+  const weiSellAmt = await toWei(sellAmount)
+
   try {
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -172,10 +278,24 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
       },
     }))
 
-    const receipt = await postSellOrder(sell, buy, (+sellAmount * 10 ** 18).toString(), index, currentAccount)
-    console.log('Submit order receipt', receipt)
+    // NOTE: switching to depositAndSell for now, seems more intuitive
+    // check current DX balance && take difference via BigNumber
+    const userDXBalance = await getDXTokenBalance(sell, currentAccount)
+    console.log('userDXBalance = ', userDXBalance)
 
-    // close modal
+    // if user's sellAmt > DX.balance(token)
+    // deposit(sellAmt) && postSellOrder(sellAmt) 
+    if (weiSellAmt.greaterThan(userDXBalance)) {
+      // TODO: discuss this with Dmitry and Alex
+      // const calcedSellAmt = (weiSellAmt.plus(userDXBalance)).toString()
+      const receipt = await depositAndSell(sell, buy, weiSellAmt.toString(), currentAccount)
+      console.log('depositAndSell receipt', receipt)
+
+    // else User has enough balance on DX for Token and can sell w/o deposit
+    } else {
+      const receipt = await postSellOrder(sell, buy, weiSellAmt.toString(), index, currentAccount)
+      console.log('postSellOrder receipt', receipt)
+    }
     dispatch(closeModal()) 
 
     // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
@@ -198,53 +318,15 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
   } 
 }
 
-export const getTokenAllowance = () => async (dispatch: Function, getState: Function) => {
-  const { tokenPair: { sell, sellAmount }, blockchain: { activeProvider, currentAccount } } = getState()
-
-  try {
-    // change to modal with button, new modal
-    dispatch(openModal({
-      modalName: 'TransactionModal',   
-      modalProps: {
-        header: `Contacting Ethereum blockchain`,
-        body: `Please wait`,
-      },
-    }))
-    const allowanceLeft = (await checkTokenAllowance(sell, currentAccount)).toNumber()
-    console.log(allowanceLeft)
-    if (sellAmount > allowanceLeft) {
-      dispatch(openModal({
-        modalName: 'ApprovalModal', 
-        modalProps: {
-          header: `Confirm ${sell.toUpperCase()} Token movement`,
-          // tslint:disable-next-line
-          body: `Confirmation: DutchX needs your permission to move your ${sell.toUpperCase()} Tokens for this Auction - please check ${activeProvider}`,
-        },
-      }))
-    } else {
-      dispatch(submitSellOrder())
-    }
-  } catch (e) {
-    dispatch(errorHandling(e))
-  }
-}
-
 // TODO: if add index of current tokenPair to state
 export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { currentAccount } } = getState()
+  const { tokenPair: { sell, sellAmount }, blockchain: { currentAccount } } = getState()
+  const weiSellAmt = await toWei(sellAmount)
+  
   // don't do anything when submitting a <= 0 amount
   // indicate that nothing happened with false return
   if (sellAmount <= 0) return false
-  // Simulate Sell order before real transaction
-  try {
-    const simResp = await postSellOrder.call(sell, buy, sellAmount, index, currentAccount)
-    console.log('simResp == ', simResp)
-  } catch (e) {
-    // TODO: fire action blocking button
-    console.warn('Submit Sell Order', e)
-    return
-  }
-
+  
   try {
     // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
     if (choice === 'MIN') {
@@ -257,7 +339,7 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
         },
       }))
       
-      const tokenApprovalReceipt = await tokenApproval(sell, sellAmount)
+      const tokenApprovalReceipt = await tokenApproval(sell, weiSellAmt.toString())
       console.log('Approved token', tokenApprovalReceipt)
     } else {
       // open modal
@@ -268,11 +350,11 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
           body: `You are approving the maximum amount - you will no longer need to sign 2 transactions.`,
         },
       }))
-      
-      const tokenApprovalReceipt = await tokenApproval(sell, (100000 * 10 ** 18).toString())
+      const allowanceLeft = (await getTokenAllowance(sell, currentAccount)).toNumber()
+      const tokenApprovalReceipt = await tokenApproval(sell, ((2 ** 255) - allowanceLeft).toString())
       console.log('Approved token', tokenApprovalReceipt)
     }
-
+    
     dispatch(submitSellOrder())
   } catch (error) {
     dispatch(errorHandling(error))
