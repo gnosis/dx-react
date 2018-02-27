@@ -11,7 +11,6 @@ type T2A = Partial<{[P in TokenCode]: string}>
 
 async function init(): Promise<DutchExchange> {
   const { DutchExchange: dx, ...tokens } = await promisedContractsMap
-  
   // const token2Address: T2A = {
   //   ETH: '0x283hduie',
   //   GNO: '0x3u4376',
@@ -174,6 +173,15 @@ async function init(): Promise<DutchExchange> {
     const [t1, t2] = getTokenPairAddresses(pair)
 
     return dx.depositAndSell(t1, t2, amount, { from: account })
+  }
+
+  depositAndSell.call = async (
+    pair: TokenPair,
+    amount: Balance,
+  ) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.depositAndSell.call(t1, t2, amount)
   }
 
   const claimAndWithdraw = async (pair: TokenPair, index: Index, amount: Balance, account: Account) => {
