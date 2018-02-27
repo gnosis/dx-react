@@ -1,7 +1,6 @@
 // import { dispatch } from 'redux';
 import {
   closingPrice,
-  deposit,
   depositAndSell,
   ethDeposit,
   getCurrentAccount,
