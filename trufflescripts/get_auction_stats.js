@@ -52,7 +52,6 @@ module.exports = async () => {
     buyTokenOraclePrice,
     latestAuctionIndex,
     auctionStart,
-    arbTokens,
     sellVolumeCurrent,
     sellVolumeNext,
     buyVolume,
@@ -74,7 +73,6 @@ module.exports = async () => {
     buyVolume:\t${buyVolume}
   `)
 
-  console.log(`Arbitrage tokens:\t${arbTokens}`)
   console.log(`latestAuctionIndex:\t${latestAuctionIndex}`)
 
   console.log(`now:\t\t\t${new Date(now * 1000).toTimeString()}`)

@@ -9,7 +9,7 @@ module.exports = (artifacts) => {
 
   const Proxy = artifacts.require('./Proxy.sol')
   const DutchExchange = artifacts.require('./DutchExchange.sol')
-  // const DutchExchange = artifacts.require('DutchExchange').at(Proxy.address)
+
   const PriceOracleInterface = artifacts.require('./PriceOracleInterface.sol')
   const PriceFeed = artifacts.require('./PriceFeed.sol')
   const Medianizer = artifacts.require('./Medianizer.sol')
