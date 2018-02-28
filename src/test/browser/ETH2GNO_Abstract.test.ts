@@ -13,7 +13,7 @@ import {
   closingPrice,
 } from 'api/'
 import { promisedTokens } from 'api/Tokens'
-import { promisedDutchX } from 'api/DutchX'
+import { promisedDutchX } from 'api/dutchx'
 
 import { contractsMap, promisedContractsMap } from 'api/contracts'
 import { TokensInterface, DutchExchange } from 'api/types'

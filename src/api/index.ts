@@ -1,12 +1,24 @@
 import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
-import { promisedDutchX } from './DutchX'
+import { promisedDutchX } from './dutchx'
 
 import { TokenCode, TokenPair, Account, Balance } from 'types'
 import { dxAPI, Index } from './types'
 import { BigNumber } from 'bignumber.js'
 
 const promisedAPI = initAPI()
+
+export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
+  const { web3: { web3 } } = await promisedAPI
+
+  return web3.toBigNumber(web3.toWei(amt))
+} 
+
+export const toEth = async (amt: number | string | BigNumber): Promise<string> => {
+  const { web3: { web3 } } = await promisedAPI
+
+  return web3.toBigNumber(web3.fromWei(amt))
+} 
 
 export const getCurrentAccount = async () => {
   const { web3 } = await promisedAPI
@@ -25,7 +37,7 @@ export const getAllAccounts = async () => {
 // ether balance, not ETH tokens
 export const getETHBalance = async (account?: Account) => {
   const { web3 } = await promisedAPI
-  if (!account) account = await web3.getCurrentAccount()
+  account = await web3.getCurrentAccount()
 
   return web3.getETHBalance(account)
 }
@@ -76,7 +88,15 @@ export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], 
   }))
 }
 
-export const checkTokenAllowance = async (token: TokenCode, account?: Account) => {
+export const getEtherTokenBalance = async (token: TokenCode, account?: Account) => {
+  if (token !== 'ETH') return
+  const { Tokens } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return Tokens.getTokenBalance('ETH', account)
+}
+
+export const getTokenAllowance = async (token: TokenCode, account?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
   account = await fillDefaultAccount(account)
 
@@ -88,6 +108,13 @@ export const tokenApproval = async (token: TokenCode, amount: Balance, account?:
   account = await fillDefaultAccount(account)
 
   return Tokens.approve(token, DutchX.address, amount, { from: account })
+}
+
+export const depositETH = async (amount: Balance, account?: Account) => {
+  const { Tokens } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return Tokens.depositETH({ from: account, value: amount })
 }
 
 export const getLatestAuctionIndex = async (pair: TokenPair) => {
@@ -128,7 +155,6 @@ export const approveAndPostSellOrder = async (
 ) => {
   const { Tokens, DutchX } = await promisedAPI
   const pair = { sell, buy }
-
   account = await fillDefaultAccount(account)
 
   // TODO: in future ask for a larger allowance
@@ -148,7 +174,6 @@ export const postSellOrder = async (
 ) => {
   const { DutchX } = await promisedAPI
   const pair = { sell, buy }
-
   account = await fillDefaultAccount(account)
 
   return DutchX.postSellOrder(pair, amount, index, account)
@@ -163,10 +188,42 @@ postSellOrder.call = async (
 ) => {
   const { DutchX } = await promisedAPI
   const pair = { sell, buy }
-
   account = await fillDefaultAccount(account)
 
   return DutchX.postSellOrder.call(pair, amount, index, account)
+}
+
+export const depositAndSell = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+
+  return DutchX.depositAndSell(pair, amount, account)
+}
+
+depositAndSell.call = async (
+  sell: TokenCode,
+  buy: TokenCode,
+  amount: Balance,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+  
+  return DutchX.depositAndSell.call(pair, amount, account)
+}
+
+export const getDXTokenBalance = async (token: TokenCode, account: Account) => {
+  const { DutchX } = await promisedAPI
+  account = await fillDefaultAccount(account)
+
+  return DutchX.getBalance(token, account)
 }
 
 /*
@@ -216,6 +273,12 @@ export const deposit = async (code: TokenCode, amount: Balance, account?: Accoun
   const { DutchX } = await promisedAPI
 
   return DutchX.deposit(code, amount, account)
+}
+
+deposit.call = async (code: TokenCode, amount: Balance, account?: Account) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.deposit.call(code, amount, account)
 }
 
 /*

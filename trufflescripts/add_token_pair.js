@@ -1,6 +1,5 @@
 /* eslint no-console:0, no-multi-spaces:0, prefer-destructuring:1 */
 
-const StandardToken = artifacts.require('StandardToken')
 const TokenETH = artifacts.require('EtherToken')
 const TokenGNO = artifacts.require('TokenGNO')
 const PriceOracle = artifacts.require('PriceFeed')
@@ -45,8 +44,8 @@ module.exports = async () => {
   const sellToken = availableTokens[sell.toLowerCase()]
   const buyToken = availableTokens[buy.toLowerCase()]
 
-  const startingETH = web3.toWei(52, 'ether')
-  const startingGNO = web3.toWei(52, 'ether')
+  const startingETH = argv.eth || web3.toWei(10, 'ether')
+  const startingGNO = argv.gno || web3.toWei(10, 'ether')
   const ethUSDPrice = web3.toWei(5000, 'ether')
 
   await Promise.all(accounts.map((acct) => {
@@ -74,6 +73,7 @@ module.exports = async () => {
   console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber() / (10 ** 18))
   console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, accounts[1])).toNumber() / (10 ** 18))
   console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, accounts[1])).toNumber() / (10 ** 18))
+  // console.log('Buy Approved = ', buy, '|| APPRV == ', (await buy.allowance.call(accounts[1], dx.address)).toNumber() / (10 ** 18))
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
@@ -85,6 +85,6 @@ module.exports = async () => {
     sellToken.address,                            // -----> SellToken Address
     buyToken.address,                           // -----> BuyToken Address
     ...funds,                                    // -----> closingPriceDen
-    { from: accounts[1] },
+    { from: accounts[0] },
   )
 }

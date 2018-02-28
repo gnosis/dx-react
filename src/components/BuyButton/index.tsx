@@ -5,7 +5,7 @@ import { connect, Dispatch } from 'react-redux'
 import { State, Account, TokenCode, Balance } from 'types'
 
 import { getTokenBalances, getCurrentAccount } from 'api/'
-import { promisedDutchX } from 'api/DutchX'
+import { promisedDutchX } from 'api/dutchx'
 import { promisedTokens } from 'api/Tokens'
 import { setTokenBalance } from 'actions/tokenBalances'
 
