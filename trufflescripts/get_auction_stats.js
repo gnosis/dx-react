@@ -32,19 +32,21 @@ module.exports = async () => {
 
   console.log(`Exchange holds:\t${dxETH} ETH\t${dxGNO} GNO\t${dxTUL} TUL\t${dxOWL} OWL`)
 
-  const [, seller, buyer] = web3.eth.accounts
+  const [master, seller, buyer] = web3.eth.accounts
 
-  const [sellerDeposits, buyerDeposits] = await Promise.all([
+  const [masterDeposits, sellerDeposits, buyerDeposits] = await Promise.all([
+    getTokenDeposits(master),
     getTokenDeposits(seller),
     getTokenDeposits(buyer),
   ])
 
   console.log('Deposits in the Exchange')
+  console.log(`  Mater:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
   console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO`)
   console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO,`)
 
   const now = getTime()
-  const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [seller, buyer] })
+  const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [master, seller, buyer] })
 
   const {
     // TODO: remove = [1, 1] workaround for ETH token when dx.priceOracle() changes
@@ -150,7 +152,7 @@ module.exports = async () => {
       for (const account of Object.keys(accounts)) {
         const { sellerBalance, buyerBalance, claimedAmount } = accounts[account]
 
-        const accountName = account === seller ? 'Seller' : account === buyer ? 'Buyer' : account
+        const accountName = account === seller ? 'Seller' : account === buyer ? 'Buyer' : account === master ? 'Master' : account
 
         console.log(`  ${accountName}:\t${sellerBalance},\t\t${buyerBalance},\t\t${claimedAmount}`)
       }
