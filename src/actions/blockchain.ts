@@ -215,9 +215,9 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
         body: `Please wait`,
       },
     }))
-    // check ETHER deposit && allowance amount
+    // check ETHER deposit && start fetching allowance amount in ||
+    const promisedTokenAllowance = checkTokenAllowance(sell, weiSellAmt, currentAccount)
     const wrappedETH = await checkEthTokenBalance(sell, weiSellAmt, currentAccount)
-    const tokenAllowance = checkTokenAllowance(sell, weiSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
     if (wrappedETH) {
       dispatch(openModal({
@@ -233,7 +233,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
     }
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
-    await tokenAllowance
+    const tokenAllowance = await promisedTokenAllowance
     if (tokenAllowance) {
       dispatch(openModal({
         modalName: 'ApprovalModal',
