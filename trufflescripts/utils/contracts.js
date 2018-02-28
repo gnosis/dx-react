@@ -74,8 +74,8 @@ module.exports = (artifacts) => {
 
     await Promise.all(promisedDeployed)
 
-    deployedMap[shortMap[TokenOWL]] = TokenOWL.at(deployedMap.owlProxy.address)
-    deployedMap[shortMap[DutchExchange]] = DutchExchange.at(deployedMap.proxy.address)
+    deployedMap[shortMap.TokenOWL] = await TokenOWL.at(TokenOWLProxy.address)
+    deployedMap[shortMap.DutchExchange] = await artifacts.require('DutchExchange').at(Proxy.address)
 
     // remove extra non-tokens
     // delete deployedMap.owlProxy
@@ -111,7 +111,7 @@ module.exports = (artifacts) => {
   const handleTokensMap = async (tokensMap, cb) => {
     const { dx, po, ...tokens } = await deployed
 
-    const promisedDeposits = Object.keys(tokensMap).map(async (key) => {
+    const promisedDeposits = Object.keys(tokensMap).map((key) => {
       const token = tokens[key.toLowerCase()]
       const amount = tokensMap[key]
       // skip for 0 amounts or falsy tokens
