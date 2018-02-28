@@ -1,6 +1,6 @@
 import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
-import { promisedDutchX } from './DutchX'
+import { promisedDutchX } from './dutchx'
 
 import { TokenCode, TokenPair, Account, Balance } from 'types'
 import { dxAPI, Index } from './types'
@@ -17,7 +17,7 @@ export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber
 export const toEth = async (amt: number | string | BigNumber): Promise<string> => {
   const { web3: { web3 } } = await promisedAPI
 
-  return web3.fromWei(amt)
+  return web3.toBigNumber(web3.fromWei(amt))
 } 
 
 export const getCurrentAccount = async () => {
@@ -93,7 +93,7 @@ export const getEtherTokenBalance = async (token: TokenCode, account?: Account) 
   const { Tokens } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return Tokens.getTokenBalance("ETH", account)
+  return Tokens.getTokenBalance('ETH', account)
 }
 
 export const getTokenAllowance = async (token: TokenCode, account?: Account) => {
@@ -110,7 +110,7 @@ export const tokenApproval = async (token: TokenCode, amount: Balance, account?:
   return Tokens.approve(token, DutchX.address, amount, { from: account })
 }
 
-export const ethDeposit = async (amount: Balance, account?: Account) => {
+export const depositETH = async (amount: Balance, account?: Account) => {
   const { Tokens } = await promisedAPI
   account = await fillDefaultAccount(account)
 

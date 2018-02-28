@@ -2,7 +2,7 @@
 import {
   closingPrice,
   depositAndSell,
-  ethDeposit,
+  depositETH,
   getCurrentAccount,
   getCurrentBalance,
   getDXTokenBalance,
@@ -174,7 +174,7 @@ const errorHandling = (error: Error) => async (dispatch: Function, getState: Fun
 const checkEthTokenBalance = async (token: TokenCode, weiSellAmount: BigNumber, account?: Account): Promise<boolean | BigNumber> => { 
   // perform checks
   // return if token is not ETHER
-  if (token !== "ETH") return false
+  if (token !== 'ETH') return false
   const wrappedETH = await getEtherTokenBalance(token, account)
   // return false if wrapped Eth is enough
   if (wrappedETH.gte(weiSellAmount)) return false
@@ -217,7 +217,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
     }))
     // check ETHER deposit && allowance amount
     const wrappedETH = await checkEthTokenBalance(sell, weiSellAmt, currentAccount)
-    const tokenAllowance = await checkTokenAllowance(sell, weiSellAmt, currentAccount)
+    const tokenAllowance = checkTokenAllowance(sell, weiSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
     if (wrappedETH) {
       dispatch(openModal({
@@ -229,10 +229,11 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
         },
       }))
       // TODO only deposit difference
-      await ethDeposit(wrappedETH.toString(), currentAccount)
+      await depositETH(wrappedETH.toString(), currentAccount)
     }
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
+    await tokenAllowance
     if (tokenAllowance) {
       dispatch(openModal({
         modalName: 'ApprovalModal',
@@ -251,6 +252,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
   }
 }
 
+// @ts-ignore
 const simulateTX = async (txFn: Function, txProps: Partial<State>[]) => {
   // Simulate Sell order before real transaction
   try {
