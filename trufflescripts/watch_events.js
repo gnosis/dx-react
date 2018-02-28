@@ -1,9 +1,4 @@
 /* eslint no-console:0 */
-// const DutchExchange = artifacts.require('./DutchExchange.sol')
-// const TokenETH = artifacts.require('./EtherToken.sol')
-// const TokenGNO = artifacts.require('./TokenGNO.sol')
-// const TokenTUL = artifacts.require('./StandardToken.sol')
-// const TokenOWL = artifacts.require('./OWL.sol')
 
 const { getTime } = require('./utils')(web3)
 const { deployed } = require('./utils/contracts')(artifacts)
@@ -27,12 +22,6 @@ const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' 
 module.exports = async () => {
   // web3 is available in the global context
   const [master, seller, buyer] = web3.eth.accounts
-
-  // const eth = await TokenETH.deployed()
-  // const gno = await TokenGNO.deployed()
-  // const tul = await TokenTUL.deployed()
-  // const owl = await TokenOWL.deployed()
-  // const dx = await DutchExchange.deployed()
 
   const { eth, gno, tul, owl, dx } = await deployed
 
