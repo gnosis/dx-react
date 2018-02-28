@@ -1,6 +1,5 @@
 /* eslint no-console:0, no-multi-spaces:0, prefer-destructuring:1 */
 
-const StandardToken = artifacts.require('StandardToken')
 const TokenETH = artifacts.require('EtherToken')
 const TokenGNO = artifacts.require('TokenGNO')
 const PriceOracle = artifacts.require('PriceFeed')
@@ -11,25 +10,39 @@ const Proxy = artifacts.require('Proxy')
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**
- * truffle exec trufflescripts/deposit.js
- * to deposit funds to DutchExchange contracts
+ * truffle exec trufflescripts/add_token_pair.js
+ * adds a new TokenPair as master account by default
  * @flags:
  * --seller                     as the seller
  * --buyer                      as the buyer
  * -a <address>                 as the given address
- * --eth <number>               ETH tokens
- * --gno <number>               GNO tokens
- * --pair <sellToken,buyToken>    token pair auction, eth,gno by default
+ * --t1 <number>               starting T1(ETH) tokens
+ * --t2 <number>               starting T2(GNO) tokens
+ * --pair <sellToken,buyToken>  token pair auction, eth,gno by default
  */
 
 module.exports = async () => {
-  const accounts = web3.eth.accounts
+  const { accounts } = web3.eth
+  const [master, seller, buyer] = accounts
+
+  let account, accountName
+  if (argv.a) account = accountName = argv.a
+  else if (argv.seller) {
+    account = seller
+    accountName = 'Seller'
+  } else if (argv.buyer) {
+    account = buyer
+    accountName = 'Buyer'
+  } else {
+    account = master
+    accountName = 'Master'
+  }
 
   const dx = await DutchExchange.at(Proxy.address)
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
-  const rdn = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: accounts[0] })
-  const omg = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: accounts[0] })
+  const rdn = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
+  const omg = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
   const oracle = await PriceOracle.deployed()
   const medianizer = await Medianizer.deployed()
 
@@ -45,35 +58,31 @@ module.exports = async () => {
   const sellToken = availableTokens[sell.toLowerCase()]
   const buyToken = availableTokens[buy.toLowerCase()]
 
-  const startingETH = web3.toWei(52, 'ether')
-  const startingGNO = web3.toWei(52, 'ether')
+  const startingETH = argv.t1 || web3.toWei(10, 'ether')
+  const startingGNO = argv.t2 || web3.toWei(10, 'ether')
   const ethUSDPrice = web3.toWei(5000, 'ether')
 
   await Promise.all(accounts.map((acct) => {
-    /* eslint array-callback-return:0 */
-    // if (acct === accounts[0]) return
-    eth.deposit({ from: acct, value: startingETH })
-    eth.approve(dx.address, startingETH, { from: acct })
-    if (sell === 'eth') {
-      buyToken.transfer(acct, startingGNO, { from: accounts[0] })
-      buyToken.approve(dx.address, startingGNO, { from: acct })
-    } else {
-      sellToken.transfer(acct, startingGNO, { from: accounts[0] })
-      sellToken.approve(dx.address, startingGNO, { from: acct })
-    }
+    const otherToken = sell === 'eth' ? buyToken : sellToken
+    return Promise.all([
+      eth.deposit({ from: acct, value: startingETH }),
+      eth.approve(dx.address, startingETH, { from: acct }),
+      otherToken.transfer(acct, startingGNO, { from: master }),
+      otherToken.approve(dx.address, startingGNO, { from: acct }),
+    ])
   }))
   // Deposit depends on ABOVE finishing first... so run here
-  await Promise.all(accounts.map((acct) => {
-    // if (acct === accounts[0]) return
-    dx.deposit(sellToken.address, startingETH, { from: acct })
-    dx.deposit(buyToken.address, startingGNO, { from: acct })
-  }))
+  await Promise.all(accounts.map(acct => Promise.all([
+    dx.deposit(sellToken.address, startingETH, { from: acct }),
+    dx.deposit(buyToken.address, startingGNO, { from: acct }),
+  ])))
 
-  await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: accounts[0] })
+  await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: master })
 
   console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber() / (10 ** 18))
-  console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, accounts[1])).toNumber() / (10 ** 18))
-  console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, accounts[1])).toNumber() / (10 ** 18))
+  console.log('Account', accountName)
+  console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toNumber() / (10 ** 18))
+  console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
@@ -84,7 +93,7 @@ module.exports = async () => {
   await dx.addTokenPair(
     sellToken.address,                            // -----> SellToken Address
     buyToken.address,                           // -----> BuyToken Address
-    ...funds,                                    // -----> closingPriceDen
-    { from: accounts[1] },
+    ...funds,                                    // -----> sellFund, buyFund, closingPriceNum, closingPriceDen
+    { from: account },
   )
 }
