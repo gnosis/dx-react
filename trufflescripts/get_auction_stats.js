@@ -41,7 +41,7 @@ module.exports = async () => {
   ])
 
   console.log('Deposits in the Exchange')
-  console.log(`  Mater:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
+  console.log(`  Master:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
   console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO`)
   console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO,`)
 
@@ -49,8 +49,7 @@ module.exports = async () => {
   const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [master, seller, buyer] })
 
   const {
-    // TODO: remove = [1, 1] workaround for ETH token when dx.priceOracle() changes
-    sellTokenOraclePrice = [1, 1],
+    sellTokenOraclePrice,
     buyTokenOraclePrice,
     latestAuctionIndex,
     auctionStart,
@@ -81,6 +80,8 @@ module.exports = async () => {
 
   if (auctionStart === 0) {
     console.log('auction has never run before')
+  } else if (auctionStart === 1) {
+    console.log('auction is in 10 min waiting period')
   } else {
     const timeUntilStart = auctionStart - now
     const timeStr = getTimeStr(timeUntilStart * 1000)
@@ -129,21 +130,18 @@ module.exports = async () => {
 
     if (isLatestAuction && price && sellTokenOraclePrice && buyTokenOraclePrice) {
       const [num, den] = price
-      const [sellTokenNum] = sellTokenOraclePrice
-      const [, buyTokenDen] = buyTokenOraclePrice
 
       const amountToClearAuction = Math.floor((sellVolumeCurrent * num) / den) - buyVolume
 
       if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} GNO`)
 
-      // const timeWhenAuctionClears = Math.ceil(72000 * sellVolumeCurrent / buyVolume - 18000 + auctionStart)
-      const timeWhenAuctionClears = Math.ceil((86400 / sellTokenNum / buyTokenDen) + auctionStart)
-      const timeUntilAuctionClears = getTimeStr((now - timeWhenAuctionClears) * 1000)
+      const timeWhenAuctionClears = 86400 + auctionStart
 
-      if (now - timeWhenAuctionClears >= 0) {
+      if (auctionStart === 1 || auctionStart > now) {
+        console.log('  auction haven\'t started yet')
+      } else if (now < timeWhenAuctionClears) {
+        const timeUntilAuctionClears = getTimeStr((now - timeWhenAuctionClears) * 1000)
         console.log(`  will clear with time in ${timeUntilAuctionClears}`)
-      } else {
-        console.log(`  cleared ${timeWhenAuctionClears} ago`)
       }
     }
 

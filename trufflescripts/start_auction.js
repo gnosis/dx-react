@@ -16,7 +16,7 @@ const argv = require('minimist')(process.argv.slice(4), { string: 'a' })
 
 /**
  * truffle exec trufflescripts/start_auction.js
- * add a token pair and sets time to auction start + 1 hour
+ * add a token pair as master account and sets time to auction start + 1 hour
  * @flags:
  * --pair <sellToken,buyToken>                 add token pair, eth, gno by default
  * --fund <sellTokenFunding,buyTokenFunding>   prefund auction, 500, 500 by default
@@ -29,8 +29,7 @@ const argv = require('minimist')(process.argv.slice(4), { string: 'a' })
 const hour = 3600
 
 module.exports = async () => {
-  if ((!argv.seller && !argv.buyer && !argv.a)
-    || ((argv.pair && argv.pair.length < 2) || (argv.fund && argv.fund < 2) || (argv.price && argv.price < 2))) {
+  if ((argv.pair && argv.pair.length < 2) || (argv.fund && argv.fund < 2) || (argv.price && argv.price < 2)) {
     console.warn('No valid token pair, fund or accounts specified')
     return
   }
@@ -64,9 +63,11 @@ module.exports = async () => {
   if (argv.a) account = argv.a
   else if (argv.buyer) {
     [, account] = accounts
-  } else {
-    // set Seller as default account
+  } else if (argv.seller) {
     [account] = accounts
+  } else {
+    // set Master as default account
+    account = master
   }
 
   const SELL = sell.toUpperCase()
