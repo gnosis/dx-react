@@ -728,7 +728,7 @@ module.exports = (artifacts) => {
     const { dx } = await deployed
 
     try {
-      const unclaimedAndTulips = await dx.claimSellerFunds(t1, t2, user, index)
+      const unclaimedAndTulips = await dx.claimSellerFunds.call(t1, t2, user, index)
       return mapToNumber(unclaimedAndTulips)
     } catch (error) {
       console.warn('Error getting unclaimed seller funds')
