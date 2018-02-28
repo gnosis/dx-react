@@ -80,9 +80,12 @@ module.exports = async () => {
   await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: master })
 
   console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber() / (10 ** 18))
+
   console.log('Account', accountName)
   console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toNumber() / (10 ** 18))
   console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
+  // console.log('Buy Approved = ', buy, '|| APPRV == ', (await buy.allowance.call(accounts[1], dx.address)).toNumber() / (10 ** 18))
+
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
