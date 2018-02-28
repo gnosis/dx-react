@@ -1,4 +1,3 @@
-// import { dispatch } from 'redux';
 import {
   closingPrice,
   depositAndSell,
@@ -54,9 +53,6 @@ export const setCurrentBalance = createAction<{ provider?: string, currentBalanc
 export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
-// export const setGasCost = createAction('SET_GAS_COST')
-// export const setGasPrice = createAction<{entityType: string, gasPrice: any}> ('SET_GAS_PRICE')
-// export const setEtherTokens = createAction('SET_ETHER_TOKENS')
 
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
@@ -171,12 +167,16 @@ const errorHandling = (error: Error) => async (dispatch: Function, getState: Fun
  * @param account 
  * @returns boolean | BigNumber <false, amt>
  */
-const checkEthTokenBalance = async (token: TokenCode, weiSellAmount: BigNumber, account?: Account): Promise<boolean | BigNumber> => { 
-  // perform checks
-  // return if token is not ETHER
+const checkEthTokenBalance = async (
+  token: TokenCode,
+  weiSellAmount: BigNumber,
+  account?: Account,
+): Promise<boolean | BigNumber> => { 
+  // BYPASS[return false] => if token is not ETHER
   if (token !== 'ETH') return false
+  // CONSIDER/TODO: wrappedETH in state or TokenBalance
   const wrappedETH = await getEtherTokenBalance(token, account)
-  // return false if wrapped Eth is enough
+  // BYPASS[return false] => if wrapped Eth is enough
   if (wrappedETH.gte(weiSellAmount)) return false
 
   return weiSellAmount.minus(wrappedETH)
@@ -189,7 +189,11 @@ const checkEthTokenBalance = async (token: TokenCode, weiSellAmount: BigNumber, 
  * @param account 
  * @returns boolean | BigNumber <false, amt>
  */
-const checkTokenAllowance = async (token: TokenCode, weiSellAmount: BigNumber, account?: Account): Promise<boolean | BigNumber> => { 
+const checkTokenAllowance = async (
+  token: TokenCode,
+  weiSellAmount: BigNumber,
+  account?: Account,
+): Promise<boolean | BigNumber> => { 
   // perform checks
   const tokenAllowance = await getTokenAllowance(token, account)
   // return false if wrapped Eth is enough
@@ -203,7 +207,10 @@ const checkTokenAllowance = async (token: TokenCode, weiSellAmount: BigNumber, a
  * 
 */
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: Function) => {
-  const { tokenPair: { sell, sellAmount }, blockchain: { activeProvider, currentAccount } } = getState()
+  const {
+    tokenPair: { sell, sellAmount },
+    blockchain: { activeProvider, currentAccount },
+  } = getState()
   const weiSellAmt = await toWei(sellAmount)
   
   try {
@@ -267,10 +274,17 @@ const simulateTX = async (txFn: Function, txProps: Partial<State>[]) => {
 }
 
 export const submitSellOrder = () => async (dispatch: any, getState: any) => {
-  const { tokenPair: { sell, buy, sellAmount, index = 0 }, blockchain: { activeProvider, currentAccount } } = getState()
+  const {
+    tokenPair: { sell, buy, sellAmount, index = 0 },
+    blockchain: { activeProvider, currentAccount },
+  } = getState()
   const weiSellAmt = await toWei(sellAmount)
 
   try {
+    // don't do anything when submitting a <= 0 amount
+    // indicate that nothing happened with false return
+    if (sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -321,17 +335,18 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
 
 // TODO: if add index of current tokenPair to state
 export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: any) => {
-  const { tokenPair: { sell, sellAmount }, blockchain: { currentAccount } } = getState()
+  const {
+    tokenPair: { sell, sellAmount },
+    blockchain: { currentAccount },
+  } = getState()
   const weiSellAmt = await toWei(sellAmount)
   
-  // don't do anything when submitting a <= 0 amount
-  // indicate that nothing happened with false return
-  if (sellAmount <= 0) return false
-  
   try {
+    // don't do anything when submitting a <= 0 amount
+    // indicate that nothing happened with false return
+    if (sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
     // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
     if (choice === 'MIN') {
-      // open modal
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
@@ -343,7 +358,6 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
       const tokenApprovalReceipt = await tokenApproval(sell, weiSellAmt.toString())
       console.log('Approved token', tokenApprovalReceipt)
     } else {
-      // open modal
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
@@ -351,6 +365,7 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
           body: `You are approving the maximum amount - you will no longer need to sign 2 transactions.`,
         },
       }))
+      // CONSIDER/TODO: move allowanceLeft into state
       const allowanceLeft = (await getTokenAllowance(sell, currentAccount)).toNumber()
       const tokenApprovalReceipt = await tokenApproval(sell, ((2 ** 255) - allowanceLeft).toString())
       console.log('Approved token', tokenApprovalReceipt)
@@ -360,10 +375,4 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
   } catch (error) {
     dispatch(errorHandling(error))
   }
-}
-
-export const getTokenPairs = async () => {
-  // const token1 = await grabTokenAddress1
-  // const token2 = await grabTokenAddress2
-  // const token = await getTokenPairs( 1, 2, token1, token2 ))
 }
