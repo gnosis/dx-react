@@ -44,6 +44,27 @@ module.exports = async () => {
     return
   }
 
+  let { auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken })
+
+  const fastForward = () => {
+    const now = getTime()
+    const timeUntilStart = auctionStart - now
+
+    // auctionStart is in the future
+    if (timeUntilStart > 0) {
+      console.log('auctionStart is set in the future. Skipping to it + 1 hour')
+      increaseTimeBy(timeUntilStart + hour)
+      console.log(`${sell.toUpperCase()} -> ${buy.toUpperCase()} auction ${latestAuctionIndex} started`)
+    }
+  }
+
+  // TokenPair already added
+  if (latestAuctionIndex > 0) {
+    fastForward()
+    return
+  }
+
+
   const [sellTokenFunding, buyTokenFunding] = argv.fund ? argv.fund.split(',') : [500, 500]
 
   if (sellTokenFunding < 0 || buyTokenFunding < 0) {
@@ -148,19 +169,11 @@ module.exports = async () => {
     await updateExchangeParams({ thresholdNewTokenPair })
   }
 
-  const { auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken })
+  ({ auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken }))
 
   if (tx) {
     console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
   } else {
-    const now = getTime()
-    const timeUntilStart = auctionStart - now
-
-    // auctionStart is in the future
-    if (timeUntilStart > 0) {
-      console.log('auctionStart is set in the future. Skipping to it + 1 hour')
-      increaseTimeBy(timeUntilStart + hour)
-      console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
-    }
+    fastForward()
   }
 }
