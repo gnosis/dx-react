@@ -25,17 +25,14 @@ const getAuctionProgress = (status: Status) => status2progress[status] || 0
 
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
-  // @ts-ignore
-  sell, buy, price,
-  // @ts-ignore
+  sell, buy,
   status, completed, timeToCompletion,
-  // @ts-ignore
   userSelling, userGetting, userCanClaim, 
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
       {/* TODO: grab auction address for url */}
-      Auction URL: <a href="#">https://www.dutchx.pm/{url}/</a>
+      Auction URL: <a href="#">https://www.dutchx.pm{url}/</a>
     </AuctionHeader>
     <AuctionStatus
       sellToken={sell}
