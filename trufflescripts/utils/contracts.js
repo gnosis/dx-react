@@ -177,6 +177,25 @@ module.exports = (artifacts) => {
   })
 
   /**
+   * approves (gives allowance) transfers of tokens to DutchExchange
+   * @param {string} acc - account in whose name to deposit tokens to DutchExchnage
+   * @param {{[T in TokenCode]: number}} tokensMap - mapping (token name lowercase => balance), {ETH: balance, ...}
+   * @returns deposit transaction | undefined
+   */
+  const approveForDX = async (acc, tokensMap) => {
+    const { dx } = await deployed
+
+    return handleTokensMap(tokensMap, async ({ key, token, amount }) => {
+      try {
+        return await token.approve(dx.address, amount, { from: acc })
+      } catch (error) {
+        console.warn(`Error approving allowance ${amount} ${key} from ${acc} to DX`)
+        console.warn(error.message || error)
+      }
+      return undefined
+    })
+  }
+  /**
    * approves transfers and subsequently transfers tokens to DutchExchange
    * @param {string} acc - account in whose name to deposit tokens to DutchExchnage
    * @param {{[T in TokenCode]: number}} tokensMap - mapping (token name lowercase => balance), {ETH: balance, ...}
@@ -768,6 +787,7 @@ module.exports = (artifacts) => {
     getTokenBalances,
     getTokenDeposits,
     giveTokens,
+    approveForDX,
     depositToDX,
     withrawFromDX,
     getExchangeStatsForTokenPair,
