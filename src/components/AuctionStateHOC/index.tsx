@@ -22,12 +22,13 @@ export interface AuctionStateProps {
       buy: TokenCode,
       sell: TokenCode,
     },
+    url: string,
   }
 }
 
 export interface AuctionStateState {
   completed: boolean,
-  status: string,
+  status: AuctionStatus,
   sell: TokenCode,
   buy: TokenCode,
   price: number[],
@@ -146,7 +147,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
         (await getUnclaimedSellerFunds(pair, index, account)).toNumber() : 0
       
-      const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86500 - now).toNumber() : 0
+      const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
       
 
       this.setState({
