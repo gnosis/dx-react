@@ -101,8 +101,8 @@ storiesOf('AuctionContainer', module)
       <AuctionFooter
         sellToken={text('sellToken', 'ETH') as TokenCode}
         buyToken={text('buyToken', 'GNO') as TokenCode}
-        sellAmount={text('sellAmt', '100')}
-        buyAmount={text('buyAmt', '100')}
+        sellAmount={number('sellAmt', 100)}
+        buyAmount={number('buyAmt', 100)}
         auctionEnded={boolean('auctionEnded', false)}
       />
     </AuctionContainer>,

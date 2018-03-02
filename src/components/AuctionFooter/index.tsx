@@ -1,11 +1,11 @@
 import React from 'react'
-import { TokenCode, Balance } from 'types'
+import { TokenCode } from 'types'
 
 export interface AuctionFooterProps {
   sellToken: TokenCode,
   buyToken: TokenCode,
-  sellAmount: Balance,
-  buyAmount: Balance,
+  sellAmount: number,
+  buyAmount: number,
   auctionEnded?: boolean
 }
 

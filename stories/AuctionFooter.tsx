@@ -19,7 +19,7 @@ const CenterDecor = makeCenterDecorator({
 })
 
 const constructKnobs = (auctionEnded: boolean) => {
-  const range = (name: string, amount: number) => number(name, amount, {
+  const range = (name: string, amount: number) => +number(name, amount, {
     range: true,
     min: 0.0000001,
     max: 100,
