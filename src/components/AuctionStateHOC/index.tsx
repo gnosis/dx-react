@@ -35,6 +35,7 @@ export interface AuctionStateState {
   userSelling: number,
   userGetting:  number,
   userCanClaim: number,
+  error: string,
 }
 
 interface AuctionStatusArgs {
@@ -62,6 +63,7 @@ const getAuctionStatus = ({
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
   return class extends React.Component<AuctionStateProps, AuctionStateState> {
+    state = {} as AuctionStateState
 
     async componentDidMount() {
       if (await this.updateAuctionState()) {
@@ -77,12 +79,20 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const index = +indexParam
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
-        console.warn(`wrong index format: ${indexParam}`)
+        const error = `wrong index format: ${indexParam}`
+        console.warn(error)
+        this.setState({
+          error,
+        })
         return
       }
 
       if (!code2tokenMap[sell] || !code2tokenMap[buy]) {
-        console.warn(`${sell}->${buy} auction isn't supported in Frontend UI`)
+        const error = `${sell}->${buy} auction isn't supported in Frontend UI`
+        console.warn(error)
+        this.setState({
+          error,
+        })
         return
       }
 
@@ -92,13 +102,22 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
 
       if (currentAuctionIndex.equals(0)) {
-        console.warn(`${sell}->${buy} auction hasn't run once yet`)
+        const error = `${sell}->${buy} auction hasn't run once yet`
         // TODO: display something and redirect to home?
+        console.warn(error)
+        this.setState({
+          error,
+        })
         return
       }
 
-      if (!currentAuctionIndex.lessThanOrEqualTo(index)) {
-        console.warn(`auction index ${index} hasn't run yet,\ncurrent index = ${currentAuctionIndex.toNumber()}`)
+      if (currentAuctionIndex.lessThan(index - 1)) {
+        const error = `auction index ${index} hasn't run yet nor is it scheduled to run next,
+        current index = ${currentAuctionIndex.toNumber()}`
+        console.warn(error)
+        this.setState({
+          error,
+        })
         return
       }
 
@@ -140,6 +159,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         userSelling: sellerBalance.toNumber(),
         userGetting,
         userCanClaim,
+        error: null,
       })
 
       return true
@@ -147,14 +167,16 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
     render() {
       // TODO: redirect home on invalid auction or something
-      return this.state && this.state.status ? 
+      const { error } = this.state
+      return (
         <div>
           <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
           </pre>
           <Component {...this.props} {...this.state}/> :
-        </div> :
-        <h3>Invalid auction</h3>
+          {error && <h3> Invalid auction: {error}</h3>}
+        </div>
+      )
     }
   }
 }
