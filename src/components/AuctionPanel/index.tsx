@@ -1,7 +1,7 @@
 import React from 'react'
 
 import AuctionContainer from 'components/AuctionContainer'
-import AuctionFooter from 'containers/AuctionFooter'
+import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
 import AuctionProgress from 'containers/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
@@ -35,7 +35,13 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
     />
     <BuyButton />
     <AuctionProgress />
-    <AuctionFooter />
+    <AuctionFooter
+      sellToken={sell}
+      buyToken={buy}
+      sellAmount={userSelling}
+      buyAmount={userGetting}
+      auctionEnded={completed}
+    />
   </AuctionContainer>
 )
 
