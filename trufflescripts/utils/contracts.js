@@ -126,7 +126,7 @@ module.exports = (artifacts) => {
   /**
    * returns token balances {ETH: balance, ...}
    * @param {string} acc - account to get balances for
-   * @returns { ETH: number, GNO: number, TUL: number, OWL: number }
+   * @returns {{ ETH: number, GNO: number, TUL: number, OWL: number }}
    */
   const getTokenBalances = async (acc) => {
     const { eth, gno, tul, owl } = await deployed
@@ -145,7 +145,7 @@ module.exports = (artifacts) => {
   /**
    * returns tokens deposited in DutchExchange {ETH: balance, ...}
    * @param {string} acc - account to get token deposits for
-   * @returns { ETH: number, GNO: number}
+   * @returns {{ ETH: number, GNO: number}}
    */
   const getTokenDeposits = async (acc) => {
     const { dx, eth, gno } = await deployed
@@ -163,7 +163,7 @@ module.exports = (artifacts) => {
   /**
    * gives tokens to the account, ETH through direct deposit, others from master's balance
    * @param {string} acc - account to give tokens to
-   * @param {object} tokensMap - mapping (token name lowercase => balance) to deposit, {ETH: balance, ...}
+   * @param {{[T in TokenCode]: number}} tokensMap - mapping (token name lowercase => balance), {ETH: balance, ...}
    * @param {string} masterAcc - master account to transfer tokens (except for ETH) from
    */
   const giveTokens = (acc, tokensMap, masterAcc) => handleTokensMap(tokensMap, ({ key, token, amount }) => {
@@ -179,7 +179,7 @@ module.exports = (artifacts) => {
   /**
    * approves transfers and subsequently transfers tokens to DutchExchange
    * @param {string} acc - account in whose name to deposit tokens to DutchExchnage
-   * @param {object} tokensMap - mapping (token name lowercase => balance) to deposit, {ETH: balance, ...}
+   * @param {{[T in TokenCode]: number}} tokensMap - mapping (token name lowercase => balance), {ETH: balance, ...}
    * @returns deposit transaction | undefined
    */
   const depositToDX = async (acc, tokensMap) => {
@@ -242,7 +242,7 @@ module.exports = (artifacts) => {
    * @param {object} options
    * @options {sellToken: Token | address, buyToken: Token | address}
    * @sellToken, @buyToken - tokens to get stats for
-   * @returns {
+   * @returns {{
       sellTokenApproved: boolean,
       buyTokenApproved: boolean,
       sellTokenOraclePrice?: [num: number, den: number],
@@ -252,7 +252,7 @@ module.exports = (artifacts) => {
       sellVolumeNext: number,
       latestAuctionIndex: number,
       auctionStart: number,
-    }
+    }}
    */
   const getExchangeStatsForTokenPair = async ({ sellToken, buyToken }) => {
     const t1 = sellToken.address || sellToken
