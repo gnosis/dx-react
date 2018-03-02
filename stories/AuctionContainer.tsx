@@ -88,14 +88,14 @@ storiesOf('AuctionContainer', module)
       <AuctionStatus
         sellToken={text('sellToken', 'ETH') as TokenCode}
         buyToken={text('buyToken', 'GNO') as TokenCode}
-        buyAmount={text('buyAmt', '100')}
+        buyAmount={number('buyAmt', 100)}
         status={Status.ENDED}
         timeLeft={number('timeLeft', 5, {
           range: true,
           min: 0,
           max: (3600 * 6),
           step: 5,
-        }).toString()}
+        })}
       />
       <AuctionProgress progress={4} />
       <AuctionFooter

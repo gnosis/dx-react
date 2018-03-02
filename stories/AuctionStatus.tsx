@@ -25,8 +25,8 @@ const constructKnobs = (status: string) => ({
     min: 0,
     max: 100,
     step: 0.00000001,
-  }).toString(),
-  timeLeft: '20h 23m 34s',
+  }),
+  timeLeft: 73414,
   status: text('status', status),
 }) as AuctionStatusProps
 
