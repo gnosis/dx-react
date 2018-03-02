@@ -15,6 +15,7 @@ export interface ProviderInterface {
   web3: any,
   setProvider(provider: any): void,
   resetProvider(): void,
+  getTimestamp(block?: number | string): Promise<number>,
 }
 
 export interface TransactionObject {
