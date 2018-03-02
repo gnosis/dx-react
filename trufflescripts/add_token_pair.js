@@ -16,8 +16,8 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
  * --seller                     as the seller
  * --buyer                      as the buyer
  * -a <address>                 as the given address
- * --t1 <number>               starting T1(ETH) tokens
- * --t2 <number>               starting T2(GNO) tokens
+ * --t1 <number>                starting T1(ETH) tokens
+ * --t2 <number>                starting T2(GNO) tokens
  * --pair <sellToken,buyToken>  token pair auction, eth,gno by default
  */
 
@@ -84,7 +84,6 @@ module.exports = async () => {
   console.log('Account', accountName)
   console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toNumber() / (10 ** 18))
   console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
-  // console.log('Buy Approved = ', buy, '|| APPRV == ', (await buy.allowance.call(accounts[1], dx.address)).toNumber() / (10 ** 18))
 
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
