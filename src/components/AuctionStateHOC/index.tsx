@@ -142,6 +142,9 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const account = await promisedAccount
       const sellerBalance = await getSellerBalance(pair, index, account)
 
+      // TODO: calculate differently for PLANNED auctions (currently is NaN)
+      // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
+      // as price calculation returns a slightly larger figure than buyerVolume even (price is too optimistic)
       const userGetting = sellerBalance.mul(price[0]).div(price[1]).toNumber()
 
       const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
