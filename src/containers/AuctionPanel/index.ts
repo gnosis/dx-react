@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import AuctionPanel from 'components/AuctionPanel'
 // import { State } from 'types'
+import AuctionStateHOC from 'components/AuctionStateHOC'
 
 const mapStateToProps = () => ({
   // TODO: get address from store, populated by contract addresses
@@ -8,4 +9,4 @@ const mapStateToProps = () => ({
 })
 
 
-export default connect(mapStateToProps)(AuctionPanel)
+export default connect(mapStateToProps)(AuctionStateHOC(AuctionPanel))
