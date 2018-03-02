@@ -3,14 +3,25 @@ import React from 'react'
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
-import AuctionProgress from 'containers/AuctionProgress'
+import AuctionProgress from 'components/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
 
 import BuyButton from 'components/BuyButton'
 
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
+import { AuctionStatus as Status } from 'globals'
+
 type AuctionPanelProps = AuctionStateState & AuctionStateProps
+
+const status2progress = {
+  [Status.INIT]: 1,
+  [Status.PLANNED]: 2,
+  [Status.ACTIVE]: 3,
+  [Status.ENDED]: 4,
+}
+
+const getAuctionProgress = (status: Status) => status2progress[status] || 0
 
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
@@ -34,7 +45,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
       status={status}
     />
     <BuyButton />
-    <AuctionProgress />
+    <AuctionProgress progress={getAuctionProgress(status)} />
     <AuctionFooter
       sellToken={sell}
       buyToken={buy}
