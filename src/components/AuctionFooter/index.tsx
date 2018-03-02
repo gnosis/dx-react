@@ -16,7 +16,7 @@ const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellToken,
       <big>{sellAmount} {sellToken}</big>
     </span>
     <span>
-      <small>{auctionEnded && 'ESTIMATED'} GETTING TOTAL</small>
+      <small>{!auctionEnded && 'ESTIMATED'} GETTING TOTAL</small>
       <big>{buyAmount} {buyToken}</big>
     </span>
   </div>
