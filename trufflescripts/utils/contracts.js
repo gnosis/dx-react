@@ -607,6 +607,31 @@ module.exports = (artifacts) => {
   }
 
   /**
+   * deposits an amount and posts a sell order fro that amount to a specific token pair auction
+   * @param {address} account - account to post sell order from
+   * @param {{
+      sellToken: Token | address,
+      buyToken: Token | address,
+      amount: number,
+    }} options
+    @returns postSellOrder transaction | undefined
+   */
+  const depositAndSell = async (account, { sellToken, buyToken, amount }) => {
+    const t1 = sellToken.address || sellToken
+    const t2 = buyToken.address || buyToken
+
+    const { dx } = await deployed
+
+    try {
+      return await dx.depositAndSell(t1, t2, amount, { from: account })
+    } catch (error) {
+      console.warn('Error posting deposit and sell order')
+      console.warn(error.message || error)
+      return undefined
+    }
+  }
+
+  /**
    * posts a buy order to a specific token pair auction
    * @param {address} account - account to post buy order from
    * @param {{
@@ -755,6 +780,7 @@ module.exports = (artifacts) => {
     updateExchangeParams,
     addTokenPair,
     postSellOrder,
+    depositAndSell,
     postBuyOrder,
     claimSellerFunds,
     claimBuyerFunds,
