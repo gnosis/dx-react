@@ -151,6 +151,12 @@ async function init(): Promise<DutchExchange> {
     return dx.claimSellerFunds(t1, t2, account, index)
   }
 
+  claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.claimSellerFunds.call(t1, t2, account, index)
+  }
+
   const claimBuyerFunds = (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
