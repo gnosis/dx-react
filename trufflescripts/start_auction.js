@@ -64,8 +64,9 @@ module.exports = async () => {
     return
   }
 
-
-  const [sellTokenFunding, buyTokenFunding] = argv.fund ? argv.fund.split(',') : [500, 500]
+  // if sellVolume of opposite auction (made up from token2Funding)isn't 0,
+  // auctionIndex isn't automatically increased on ClearAuction
+  const [sellTokenFunding, buyTokenFunding] = argv.fund ? argv.fund.split(',') : [500, 0]
 
   if (sellTokenFunding < 0 || buyTokenFunding < 0) {
     console.warn('Funding must be a positive number or 0')
@@ -173,7 +174,6 @@ module.exports = async () => {
 
   if (tx) {
     console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
-  } else {
     fastForward()
   }
 }
