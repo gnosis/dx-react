@@ -21,8 +21,8 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 
 module.exports = async () => {
-  const { eth, gno } = await deployed
-  const availableTokens = { eth, gno }
+  const { eth, gno, owl } = await deployed
+  const availableTokens = { eth, gno, owl }
 
   const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
   let sellToken = availableTokens[sell.toLowerCase()] || eth

@@ -21,6 +21,7 @@ const argv = require('minimist')(process.argv.slice(4), { string: 'a' })
  * --pair <sellToken,buyToken>                 add token pair, eth, gno by default
  * --fund <sellTokenFunding,buyTokenFunding>   prefund auction, 500, 500 by default
  * --price <num/den>                           initial closing price, 2/1 by default
+ * --master           as the master (seller is same)
  * --seller           as the seller
  * --buyer            as the buyer
  * -a <address>       as the given address
@@ -84,7 +85,7 @@ module.exports = async () => {
   if (argv.a) account = argv.a
   else if (argv.buyer) {
     [, account] = accounts
-  } else if (argv.seller) {
+  } else if (argv.seller || argv.master) {
     [account] = accounts
   } else {
     // set Master as default account
@@ -172,8 +173,7 @@ module.exports = async () => {
   ({ auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken }))
 
   if (tx) {
-    console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
-  } else {
+    console.log(`ETH -> ${BUY} auction ${latestAuctionIndex} started`)
     fastForward()
   }
 }

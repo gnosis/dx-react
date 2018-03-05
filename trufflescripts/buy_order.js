@@ -1,4 +1,7 @@
-/* eslint no-console:0 */
+/* eslint
+  no-console:0,
+  no-multi-spaces:0,
+ */
 const {
   deployed,
   getTokenDeposits,
@@ -14,6 +17,7 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
  * @flags:
  * -n <number>                    for a specific amount of buyToken
  * --pair <sellToken,buyToken>    token pair auction, eth,gno by default
+ * --master                       as the master
  * --seller                       as the seller
  * -a <address>                   as the given account
  * --next                         to the next auction (lastAuctionIndex + 1)
@@ -45,10 +49,11 @@ module.exports = async () => {
   const buyTokenName = buy ? buy.toUpperCase() : 'GNO'
 
   let account
-  if (argv.a) account = argv.a
-  else if (argv.seller)[, account] = web3.eth.accounts
+  if (argv.a) account               = argv.a
+  else if (argv.master)[account]    = web3.eth.accounts
+  else if (argv.seller)[, account]  = web3.eth.accounts
   else {
-    [, , account] = web3.eth.accounts
+    [, , account]                   = web3.eth.accounts
   }
 
   let { [buyTokenName]: buyTokenDeposit = 0 } = await getTokenDeposits(account)
