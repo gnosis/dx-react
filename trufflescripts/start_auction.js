@@ -173,7 +173,7 @@ module.exports = async () => {
   ({ auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken }))
 
   if (tx) {
-    console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
+    console.log(`${SELL} -> ${BUY} auction ${latestAuctionIndex} started`)
     fastForward()
   }
 }

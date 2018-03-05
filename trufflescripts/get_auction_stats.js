@@ -33,8 +33,8 @@ module.exports = async () => {
     return
   }
 
-  const sellTName = sell.toUpperCase()
-  const buyTName = buy.toUpperCase()
+  const SELL = sell.toUpperCase()
+  const BUY = buy.toUpperCase()
 
   const { ETH: dxETH, GNO: dxGNO, TUL: dxTUL, OWL: dxOWL } = await getTokenBalances(dx.address)
 
@@ -49,9 +49,9 @@ module.exports = async () => {
   ])
 
   console.log('Deposits in the Exchange')
-  console.log(`  Master:\t${masterDeposits[sellTName]}\t${sellTName},\t${masterDeposits[buyTName]}\t${buyTName}`)
-  console.log(`  Seller:\t${sellerDeposits[sellTName]}\t${sellTName},\t${sellerDeposits[buyTName]}\t${buyTName}`)
-  console.log(`  Buyer:\t${buyerDeposits[sellTName]}\t${sellTName},\t${buyerDeposits[buyTName]}\t${buyTName},`)
+  console.log(`  Master:\t${masterDeposits[SELL]}\t${SELL},\t${masterDeposits[BUY]}\t${BUY}`)
+  console.log(`  Seller:\t${sellerDeposits[SELL]}\t${SELL},\t${sellerDeposits[BUY]}\t${BUY}`)
+  console.log(`  Buyer:\t${buyerDeposits[SELL]}\t${SELL},\t${buyerDeposits[BUY]}\t${BUY},`)
 
   const now = getTime()
   const stats = await getAllStatsForTokenPair({ sellToken, buyToken, accounts: [master, seller, buyer] })
@@ -67,12 +67,12 @@ module.exports = async () => {
     auctions,
   } = stats
 
-  console.log(`\nAuction pair ${sellTName} -> ${buyTName}`)
+  console.log(`\nAuction pair ${SELL} -> ${BUY}`)
 
   if (sellTokenOraclePrice && buyTokenOraclePrice) {
     console.log(`Oracle prices:
-    1 ${sellTName} = ${getNumDenStr(sellTokenOraclePrice)} ETH
-    1 ${buyTName} = ${getNumDenStr(buyTokenOraclePrice)} ETH
+    1 ${SELL} = ${getNumDenStr(sellTokenOraclePrice)} ETH
+    1 ${BUY} = ${getNumDenStr(buyTokenOraclePrice)} ETH
     `)
   }
 
@@ -125,21 +125,21 @@ module.exports = async () => {
     let closingPriceStr
 
     if (closingPrice.some(n => n > 0)) {
-      closingPriceStr = `1 ETH = ${getNumDenStr(closingPrice)} GNO`
+      closingPriceStr = `1 ${SELL} = ${getNumDenStr(closingPrice)} ${BUY}`
     } else {
       closingPriceStr = 'N/A'
     }
 
     console.log(`    closingPrice: ${closingPriceStr}`)
 
-    if (price) console.log(`\n  currentPrice: 1 ETH = ${getNumDenStr(price)} GNO`)
+    if (price) console.log(`\n  currentPrice: 1 ${SELL} = ${getNumDenStr(price)} ${BUY}`)
 
     if (isLatestAuction && price && sellTokenOraclePrice && buyTokenOraclePrice) {
       const [num, den] = price
 
       const amountToClearAuction = Math.floor((sellVolumeCurrent * num) / den) - buyVolume
 
-      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} GNO`)
+      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} ${BUY}`)
 
       const timeWhenAuctionClears = 86400 + auctionStart
 
