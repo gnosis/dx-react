@@ -145,7 +145,7 @@ module.exports = (artifacts) => {
   /**
    * returns tokens deposited in DutchExchange {ETH: balance, ...}
    * @param {string} acc - account to get token deposits for
-   * @returns {{ ETH: number, GNO: number}}
+   * @returns {{ ETH: number, GNO: number, TUL: number, GNO: number }}
    */
   const getTokenDeposits = async (acc) => {
     const { dx, eth, gno, tul, owl } = await deployed
