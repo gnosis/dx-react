@@ -3,11 +3,12 @@ import React, { Component }  from 'react'
 import { 
     // getLatestAuctionIndex,
     // getClosingPrice,
-    getSellerBalance, getUnclaimedSellerFunds,
+    getSellerBalance, getUnclaimedSellerFunds, getLatestAuctionIndex,
 } from 'api'
 
 import {
     TokenCode,
+    TokenPair,
 } from 'types'
 
 // import BigNumber from 'bignumber.js'
@@ -39,8 +40,12 @@ export default (WrappedComponent: React.ClassType<any, any, any>): React.ClassTy
       }
 
     async componentDidMount() {
-            // TODO: create mounting function to call
         await this.updateState()
+        // TODO: create mounting function to call
+        setInterval(async() => {
+            console.log('refrehing...')
+            await this.updateState()
+        }, 20000)
       }
 
     async updateState() {
@@ -69,27 +74,36 @@ export default (WrappedComponent: React.ClassType<any, any, any>): React.ClassTy
         // TODO: fix Error: No known address for OMG token
         // Move knownPairs out of this into endpoint (using fetcher)
         const knownPairs: any[] = [
-                { sell: 'ETH', buy: 'GNO' },
-            ]
-            // Map through knownPairs [{ tA: string, tB: string }, ... ]
-            // Check what needs to be checked
-        const tokenPairsWithSellerBalances = knownPairs.filter(async (p) => !(await getSellerBalance(p)).equals(0))
-            // tokenPairWithSellBalances = {sell, buy} WITH sellerBalances
-        const latestTokenPairInfo = await Promise.all(tokenPairsWithSellerBalances.map(async (p) => {
+            { sell: 'ETH', buy: 'GNO' },
+            { sell: 'ETH', buy: 'TUL' },
+            { sell: 'ETH', buy: 'OWL' },
+        ]
+        // Map through knownPairs [{ tA: string, tB: string }, ... ]
+        // Check what needs to be checked
+        // grab sellerBalances first
+        const sellerBalance = await Promise.all(knownPairs.map(p => getSellerBalance(p)))
+        // filter sb's for greaterThanZero
+        const tokenPairsWithSellerBalances = knownPairs.filter((_, i) => sellerBalance[i].greaterThan(0))
+
+        // tokenPairWithSellBalances = {sell, buy} WITH sellerBalances
+        const latestTokenPairInfo = await Promise.all(tokenPairsWithSellerBalances.map(async (p: TokenPair) => {
             const sellerBalance = await getSellerBalance(p)
             const claimableAmt = await getUnclaimedSellerFunds(p)
+            const index = await getLatestAuctionIndex(p)
+
             return ({
                 ...p,
-                price: sellerBalance || 0,
-                claim: claimableAmt ? true : false,
-                })
-            }))
-
+                price: sellerBalance,
+                claim: claimableAmt.greaterThan(0) ? true : false,
+                index,
+            })
+        }))
+        
         if (!latestTokenPairInfo) return
             
         this.setState({
-            ongoingAuctions: [...this.state.ongoingAuctions, ...latestTokenPairInfo],
-            })
+            ongoingAuctions: [...latestTokenPairInfo],
+        })
 
         return true
     }
