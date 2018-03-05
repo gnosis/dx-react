@@ -56,7 +56,7 @@ export type OngoingAuctions = AuctionObject[]
  * 
  */
 export type AuctionObject = {
-  id?: number,
+  index?: number,
   sell: TokenCode,
   buy: TokenCode,
   price: number,
