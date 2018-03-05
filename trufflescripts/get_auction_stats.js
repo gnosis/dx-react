@@ -1,6 +1,7 @@
 /* eslint no-console:0 */
 const { getTokenBalances, getTokenDeposits, deployed, getAllStatsForTokenPair } = require('./utils/contracts')(artifacts)
 const { getTime } = require('./utils')(web3)
+const argv = require('minimist')(process.argv.slice(4))
 
 const getTimeStr = (timestamp) => {
   const date = new Date(Math.abs(timestamp))
@@ -16,17 +17,24 @@ const getNumDenStr = ([num, den]) => `${num}/${den} = ${(num / den).toFixed(8)}`
 /**
  * truffle exec trufflescripts/get_auction_stats.js
  * prints stats for the current and past ETH -> GNO auctions
+ *  * @flags:
+ * --pair <sellToken,buyToken>                 add token pair, eth, gno by default
  */
 
 /* eslint no-console: 0 */
 module.exports = async () => {
-  console.warn(`
-    WARNING:
-    --------------------------------------------------------------------------
-    TESTS WILL NOT WORK IF PRICE_ORACLE DOES NOT YET SET A USD VALUE FOR ETHER!
-    --------------------------------------------------------------------------
-  `)
-  const { dx, eth, gno } = await deployed
+  const { dx, po, ...tokens } = await deployed
+
+  const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
+  const { [sell]: sellToken, [buy]: buyToken } = tokens
+
+  if (!sellToken || !buyToken) {
+    console.warn(`Unknown tokens (${sell}, ${buy}) specified. Aborting`)
+    return
+  }
+
+  const sellTName = sell.toUpperCase()
+  const buyTName = buy.toUpperCase()
 
   const { ETH: dxETH, GNO: dxGNO, TUL: dxTUL, OWL: dxOWL } = await getTokenBalances(dx.address)
 
@@ -41,12 +49,12 @@ module.exports = async () => {
   ])
 
   console.log('Deposits in the Exchange')
-  console.log(`  Master:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
-  console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO`)
-  console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO,`)
+  console.log(`  Master:\t${masterDeposits[sellTName]}\t${sellTName},\t${masterDeposits[buyTName]}\t${buyTName}`)
+  console.log(`  Seller:\t${sellerDeposits[sellTName]}\t${sellTName},\t${sellerDeposits[buyTName]}\t${buyTName}`)
+  console.log(`  Buyer:\t${buyerDeposits[sellTName]}\t${sellTName},\t${buyerDeposits[buyTName]}\t${buyTName},`)
 
   const now = getTime()
-  const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [master, seller, buyer] })
+  const stats = await getAllStatsForTokenPair({ sellToken, buyToken, accounts: [master, seller, buyer] })
 
   const {
     sellTokenOraclePrice,
@@ -59,12 +67,12 @@ module.exports = async () => {
     auctions,
   } = stats
 
-  console.log('\nAuction pair ETH -> GNO')
+  console.log(`\nAuction pair ${sellTName} -> ${buyTName}`)
 
   if (sellTokenOraclePrice && buyTokenOraclePrice) {
     console.log(`Oracle prices:
-    1 ETH = ${getNumDenStr(sellTokenOraclePrice)} ETH
-    1 GNO = ${getNumDenStr(buyTokenOraclePrice)} ETH
+    1 ${sellTName} = ${getNumDenStr(sellTokenOraclePrice)} ETH
+    1 ${buyTName} = ${getNumDenStr(buyTokenOraclePrice)} ETH
     `)
   }
 
@@ -101,8 +109,6 @@ module.exports = async () => {
     const {
       auctionIndex,
       closingPrice,
-      // sellVolume,
-      // buyVolume,
       extraTokens,
       isLatestAuction,
       accounts,
