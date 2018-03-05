@@ -145,19 +145,21 @@ module.exports = (artifacts) => {
   /**
    * returns tokens deposited in DutchExchange {ETH: balance, ...}
    * @param {string} acc - account to get token deposits for
-   * @returns {{ ETH: number, GNO: number}}
+   * @returns {{ ETH: number, GNO: number, TUL: number, GNO: number }}
    */
   const getTokenDeposits = async (acc) => {
-    const { dx, eth, gno } = await deployed
+    const { dx, eth, gno, tul, owl } = await deployed
 
     const deposits = await Promise.all([
       dx.balances.call(eth.address, acc),
       dx.balances.call(gno.address, acc),
+      dx.balances.call(tul.address, acc),
+      dx.balances.call(owl.address, acc),
     ])
 
-    const [ETH, GNO] = mapToNumber(deposits)
+    const [ETH, GNO, TUL, OWL] = mapToNumber(deposits)
 
-    return { ETH, GNO }
+    return { ETH, GNO, TUL, OWL }
   }
 
   /**
