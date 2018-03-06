@@ -76,15 +76,15 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       } else {
         console.warn('invalid auction')
       }
-      (window as any).updateAuctionState = this.updateAuctionState
-      this.interval = window.setInterval(this.updateAuctionState, UPDATE_INTERVAL)
+      (window as any).updateAuctionState = this.updateAuctionState.bind(this)
+      this.interval = window.setInterval(this.updateAuctionState.bind(this), UPDATE_INTERVAL)
     }
 
     componentWillUnmount() {
       window.clearInterval(this.interval)
     }
 
-    updateAuctionState = async () => {
+    async updateAuctionState() {
       const { sell, buy, index: indexParam } = this.props.match.params
       const index = +indexParam
 
@@ -188,7 +188,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
           <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
           </pre>
-          <Component {...this.props} {...this.state}/> :
+          <Component {...this.props} {...this.state}/>
           {error && <h3> Invalid auction: {error}</h3>}
         </div>
       )
