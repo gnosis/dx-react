@@ -18,9 +18,13 @@ export interface TokenClaimingState {
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<TokenClaimingProps, any, any> => {
   return class TokenClaiming extends React.Component<TokenClaimingProps, TokenClaimingState> {
+    constructor(props: TokenClaimingProps) {
+      super(props)
+      this.claimTokens = this.claimTokens.bind(this)
+    }
     state = { isClaiming: false }
 
-    claimTokens = async () => {
+    async claimTokens() {
       const { completed, buyAmount, account, sellToken: sell, buyToken: buy, index } = this.props
       // don't claim anything if auction isn't completed or nothing to claim
       if (!completed || buyAmount <= 0) return
@@ -35,6 +39,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
 
       try {
         // start claimFunds request
+        console.log(`claiming tokens for ${account} for ${sell}->${buy}-${index}`)
         await claimSellerFunds({ sell, buy }, index, account)
         // if succeeds change isClaiming state
         this.setState({
