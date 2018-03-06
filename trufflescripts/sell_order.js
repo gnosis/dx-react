@@ -15,14 +15,15 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
  * -n <number>                    for a specific amount of sellToken
  * --pair <sellToken,buyToken>    token pair auction, eth,gno by default
  * --buyer                        as the buyer
+ * --master
  * -a <address>                   as the given account
  * --next                         to the next auction (lastAuctionIndex + 1)
  */
 
 
 module.exports = async () => {
-  const { eth, gno } = await deployed
-  const availableTokens = { eth, gno }
+  const { eth, gno, owl } = await deployed
+  const availableTokens = { eth, gno, owl }
 
   const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
   let sellToken = availableTokens[sell.toLowerCase()] || eth
@@ -46,6 +47,7 @@ module.exports = async () => {
 
   let account
   if (argv.a) account = argv.a
+  else if (argv.master)[account] = web3.eth.accounts
   else if (argv.buyer)[, , account] = web3.eth.accounts
   else {
     [, account] = web3.eth.accounts
