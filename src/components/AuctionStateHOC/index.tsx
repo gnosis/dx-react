@@ -2,7 +2,6 @@ import React from 'react'
 import { TokenCode } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { code2tokenMap, AuctionStatus } from 'globals'
-// import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
   getClosingPrice,
@@ -31,11 +30,13 @@ export interface AuctionStateState {
   status: AuctionStatus,
   sell: TokenCode,
   buy: TokenCode,
+  index: number,
   price: number[],
   timeToCompletion: number,
   userSelling: number,
   userGetting:  number,
   userCanClaim: number,
+  account: string,
   error: string,
 }
 
@@ -62,8 +63,11 @@ const getAuctionStatus = ({
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
 }
 
+const UPDATE_INTERVAL = 3000
+
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
-  return class extends React.Component<AuctionStateProps, AuctionStateState> {
+  return class AuctionStateUpdater extends React.Component<AuctionStateProps, AuctionStateState> {
+    interval: number
     state = {} as AuctionStateState
 
     async componentDidMount() {
@@ -72,10 +76,15 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       } else {
         console.warn('invalid auction')
       }
-      (window as any).updateAuctionState = this.updateAuctionState.bind(this)
+      (window as any).updateAuctionState = this.updateAuctionState
+      this.interval = window.setInterval(this.updateAuctionState, UPDATE_INTERVAL)
     }
 
-    async updateAuctionState() {
+    componentWillUnmount() {
+      window.clearInterval(this.interval)
+    }
+
+    updateAuctionState = async () => {
       const { sell, buy, index: indexParam } = this.props.match.params
       const index = +indexParam
 
@@ -158,11 +167,13 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         status,
         sell,
         buy,
+        index,
         price: price.map(n => n.toNumber()),
         timeToCompletion,
         userSelling: sellerBalance.toNumber(),
         userGetting,
         userCanClaim,
+        account,
         error: null,
       })
 
