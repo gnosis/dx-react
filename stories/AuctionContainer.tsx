@@ -96,6 +96,9 @@ storiesOf('AuctionContainer', module)
           max: (3600 * 6),
           step: 5,
         })}
+        completed={boolean('auctionEnded', false)}
+        index={1}
+        account={'0xad43d...'}
       />
       <AuctionProgress progress={4} />
       <AuctionFooter
