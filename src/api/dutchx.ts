@@ -148,7 +148,7 @@ async function init(): Promise<DutchExchange> {
   const claimSellerFunds = (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.claimSellerFunds(t1, t2, account, index)
+    return dx.claimSellerFunds(t1, t2, account, index, { from: account })
   }
 
   claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
@@ -160,7 +160,7 @@ async function init(): Promise<DutchExchange> {
   const claimBuyerFunds = (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.claimBuyerFunds(t1, t2, account, index)
+    return dx.claimBuyerFunds(t1, t2, account, index, { from: account })
   }
 
   const deposit = (code: TokenCode, amount: Balance, account: Account) => {
