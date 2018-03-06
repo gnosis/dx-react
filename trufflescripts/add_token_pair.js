@@ -1,16 +1,8 @@
 /* eslint no-console:0, no-multi-spaces:0, prefer-destructuring:1 */
-const { updateExchangeParams } = require('./utils/contracts')(artifacts)
+const { deployed, updateExchangeParams } = require('./utils/contracts')(artifacts)
 
-const TokenETH = artifacts.require('EtherToken')
 const TokenGNO = artifacts.require('TokenGNO')
-const TokenOWL = artifacts.require('TokenOWL')
-const PriceOracle = artifacts.require('PriceFeed')
-const Medianizer = artifacts.require('Medianizer')
-const DutchExchange = artifacts.require('DutchExchange')
-const Proxy = artifacts.require('Proxy')
-
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
-
 /**
  * truffle exec trufflescripts/add_token_pair.js
  * adds a new TokenPair as master account by default
@@ -24,6 +16,12 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
  */
 
 module.exports = async () => {
+  const {
+    dx,
+    eth,
+    gno,
+    owl,
+  } = await deployed
   const { accounts } = web3.eth
   const [master, seller, buyer] = accounts
 
@@ -40,14 +38,8 @@ module.exports = async () => {
     accountName = 'Master'
   }
 
-  const dx = await DutchExchange.at(Proxy.address)
-  const eth = await TokenETH.deployed()
-  const gno = await TokenGNO.deployed()
-  const owl = await TokenOWL.deployed()
   const rdn = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
   const omg = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
-  // const oracle = await PriceOracle.deployed()
-  // const medianizer = await Medianizer.deployed()
 
   const availableTokens = {
     eth,
@@ -80,7 +72,7 @@ module.exports = async () => {
     // Deposit depends on ABOVE finishing first... so run here
     await Promise.all(accounts.map(acct => Promise.all([
       dx.deposit(sellToken.address, startingT1, { from: acct }),
-      // dx.deposit(buyToken.address, startingT2, { from: acct }),
+      dx.deposit(buyToken.address, startingT2, { from: acct }),
     ])))
 
     // await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: master })
@@ -100,9 +92,7 @@ module.exports = async () => {
     console.log('Auction Index == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
 
-    const funds = sell === 'eth' ?
-      [10, 0, 2, 1] :
-      [0, 10, 1, 2]
+    const funds = sell === 'eth' ? [10, 0, 2, 1] : [0, 10, 1, 2]
 
     await dx.addTokenPair(
       sellToken.address,      // -----> SellToken Address

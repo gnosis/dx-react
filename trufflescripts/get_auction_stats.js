@@ -1,6 +1,7 @@
 /* eslint no-console:0 */
 const { getTokenBalances, getTokenDeposits, deployed, getAllStatsForTokenPair } = require('./utils/contracts')(artifacts)
 const { getTime } = require('./utils')(web3)
+const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 const getTimeStr = (timestamp) => {
   const date = new Date(Math.abs(timestamp))
@@ -16,6 +17,7 @@ const getNumDenStr = ([num, den]) => `${num}/${den} = ${(num / den).toFixed(8)}`
 /**
  * truffle exec trufflescripts/get_auction_stats.js
  * prints stats for the current and past ETH -> GNO auctions
+ * --pair <sellToken,buyToken> => pair to check
  */
 
 /* eslint no-console: 0 */
@@ -26,9 +28,23 @@ module.exports = async () => {
     TESTS WILL NOT WORK IF PRICE_ORACLE DOES NOT YET SET A USD VALUE FOR ETHER!
     --------------------------------------------------------------------------
   `)
-  const { dx, eth, gno } = await deployed
+  const { dx, eth, gno, owl } = await deployed
+
+  const availableTokens = {
+    eth,
+    gno,
+    owl,
+  }
+  const [sellToken, buyToken] = argv.pair ? argv.pair.split(',').map(p => p.toLowerCase()) : ['eth', 'gno']
+
+  const sell = availableTokens[sellToken]
+  const buy = availableTokens[buyToken]
+
+  sell.name = await sell.name.call()
+  buy.name  = await buy.name.call()
 
   const { ETH: dxETH, GNO: dxGNO, TUL: dxTUL, OWL: dxOWL } = await getTokenBalances(dx.address)
+
 
   console.log(`Exchange holds:\t${dxETH} ETH\t${dxGNO} GNO\t${dxTUL} TUL\t${dxOWL} OWL`)
 
@@ -41,12 +57,12 @@ module.exports = async () => {
   ])
 
   console.log('Deposits in the Exchange')
-  console.log(`  Master:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
-  console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO`)
-  console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO,`)
+  console.log(`  Master:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO, \t${masterDeposits.OWL && masterDeposits.OWL}\tOWL`)
+  console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO, \t${sellerDeposits.OWL && sellerDeposits.OWL}\tOWL`)
+  console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO, \t${buyerDeposits.OWL && buyerDeposits.OWL}\tOWL`)
 
   const now = getTime()
-  const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [master, seller, buyer] })
+  const stats = await getAllStatsForTokenPair({ sellToken: sell, buyToken: buy, accounts: [master, seller, buyer] })
 
   const {
     sellTokenOraclePrice,
@@ -59,12 +75,12 @@ module.exports = async () => {
     auctions,
   } = stats
 
-  console.log('\nAuction pair ETH -> GNO')
+  console.log(`\nAuction pair ${sell.name} -> ${buy.name}`)
 
   if (sellTokenOraclePrice && buyTokenOraclePrice) {
     console.log(`Oracle prices:
-    1 ETH = ${getNumDenStr(sellTokenOraclePrice)} ETH
-    1 GNO = ${getNumDenStr(buyTokenOraclePrice)} ETH
+    1 ${sell.name} = ${getNumDenStr(sellTokenOraclePrice)} ETH
+    1 ${buy.name} = ${getNumDenStr(buyTokenOraclePrice)} ETH
     `)
   }
 
@@ -119,21 +135,21 @@ module.exports = async () => {
     let closingPriceStr
 
     if (closingPrice.some(n => n > 0)) {
-      closingPriceStr = `1 ETH = ${getNumDenStr(closingPrice)} GNO`
+      closingPriceStr = `1 ETH = ${getNumDenStr(closingPrice)} ${buy.name}`
     } else {
       closingPriceStr = 'N/A'
     }
 
     console.log(`    closingPrice: ${closingPriceStr}`)
 
-    if (price) console.log(`\n  currentPrice: 1 ETH = ${getNumDenStr(price)} GNO`)
+    if (price) console.log(`\n  currentPrice: 1 ${sell.name} = ${getNumDenStr(price)} ${buy.name}`)
 
     if (isLatestAuction && price && sellTokenOraclePrice && buyTokenOraclePrice) {
       const [num, den] = price
 
       const amountToClearAuction = Math.floor((sellVolumeCurrent * num) / den) - buyVolume
 
-      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} GNO`)
+      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} ${buy.name}`)
 
       const timeWhenAuctionClears = 86400 + auctionStart
 
