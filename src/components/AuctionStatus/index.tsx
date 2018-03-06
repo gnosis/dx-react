@@ -47,7 +47,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
     case Status.ENDED:
       return (
         <span>
-          <button id="claimToken" onClick={claimTokens} disabled={isClaiming}>
+          <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
             <i>CLAIM</i>
             <strong>{buyAmount} {buyToken}</strong>
             <span><img src={claim} /></span>
