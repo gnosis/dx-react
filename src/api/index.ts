@@ -349,6 +349,6 @@ async function initAPI(): Promise<dxAPI> {
     promisedTokens,
     promisedDutchX,
   ])
-
+  console.log('INDEX API => ', { web3, Tokens, DutchX })
   return { web3, Tokens, DutchX }
 }
