@@ -64,8 +64,17 @@ interface FilterObject {
 
 export type Filter = 'latest' | 'pending' | FilterObject | void
 
-export interface ERC20Interface {
+export interface SimpleContract {
+  address: Account | void,
+  at<T = SimpleContract>(address: Account): T,
+  setProvider(provider: any): void,
+  deployed<T = DeployedContract>(): Promise<T>,
+}
+export interface DeployedContract {
   address: Account,
+}
+
+export interface ERC20Interface extends DeployedContract {
   totalSupply(): Promise<BigNumber>,
   balanceOf(account: Account): Promise<BigNumber>,
   transfer(to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,

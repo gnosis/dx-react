@@ -6,6 +6,8 @@ import {
   GNOInterface,
   OWLInterface,
   MGNInterface,
+  SimpleContract,
+  DeployedContract,
 } from './types'
 
 const contractNames = [
@@ -29,10 +31,30 @@ interface ContractsMap {
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
   TokenMGN: MGNInterface,
-  Proxy: { address: string },
+  Proxy: DeployedContract,
 }
 
-const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
+const req = require.context(
+  '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
+  false,
+  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN)\.json$/,
+)
+
+type TokenArtifacts = [
+  './DutchExchange.json',
+  './Proxy.json',
+  './EtherToken.json',
+  './TokenGNO.json',
+  './TokenOWL.json',
+  './TokenOWLProxy.json',
+  './TokenMGN.json'
+]
+
+const reqKeys = req.keys() as TokenArtifacts
+const Contracts: SimpleContract[] = contractNames.map(
+  c => TruffleContract(req(reqKeys.find(key => key === `./${c}.json`))),
+)
+// const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
