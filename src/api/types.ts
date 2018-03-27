@@ -113,11 +113,11 @@ export interface OWLInterface extends ERC20Interface {
   Burnt: ContractEvent,
 }
 
-export interface TULInterface extends ERC20Interface {
+export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
-  unlockedTULs(account: Account): never,
-  lockedTULBalances(account: Account): Promise<BigNumber>,
+  unlockedTokens(account: Account): never,
+  lockedTokenBalances(account: Account): Promise<BigNumber>,
 
   updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
   updateMinter(_minter: Account, tx: TransactionObject): Promise<Receipt>,
@@ -167,7 +167,7 @@ export interface DXAuction {
   sellerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   buyerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   claimedAmounts(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
-  
+
   isInitialised(): Promise<boolean>,
 
   NewDeposit: ContractEvent,

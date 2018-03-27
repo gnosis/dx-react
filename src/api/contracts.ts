@@ -5,7 +5,7 @@ import {
   ETHInterface,
   GNOInterface,
   OWLInterface,
-  TULInterface,
+  MGNInterface,
 } from './types'
 
 const contractNames = [
@@ -13,7 +13,7 @@ const contractNames = [
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
-  'TokenTUL',
+  'TokenMGN',
   'Proxy',
 ]
 
@@ -28,11 +28,11 @@ interface ContractsMap {
   TokenETH: ETHInterface,
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
-  TokenTUL: TULInterface,
+  TokenMGN: MGNInterface,
   Proxy: { address: string },
 }
 
-const Contracts = contractNames.map(name => TruffleContract(require(`../../build/contracts/${name}.json`)))
+const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
@@ -59,7 +59,7 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   const deployedContracts = contractNames.reduce((acc, name, i) => {
-    acc[filename2ContractNameMap[name] || name] = instances[i]    
+    acc[filename2ContractNameMap[name] || name] = instances[i]
     return acc
   }, {}) as ContractsMap
 
@@ -67,6 +67,6 @@ async function init() {
 
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
   // console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
-
+  console.log(deployedContracts)
   return (window as any).Dd = deployedContracts
 }
