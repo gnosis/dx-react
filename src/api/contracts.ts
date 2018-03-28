@@ -6,6 +6,8 @@ import {
   GNOInterface,
   OWLInterface,
   MGNInterface,
+  SimpleContract,
+  DeployedContract,
 } from './types'
 
 const contractNames = [
@@ -15,6 +17,7 @@ const contractNames = [
   'TokenOWL',
   'TokenMGN',
   'Proxy',
+  'TokenOWLProxy',
 ]
 
 // fill contractsMap from here if available
@@ -29,16 +32,39 @@ interface ContractsMap {
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
   TokenMGN: MGNInterface,
-  Proxy: { address: string },
 }
 
-const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
+interface ContractsMapWProxy extends ContractsMap {
+  Proxy: DeployedContract,
+  TokenOWLProxy: DeployedContract,  
+}
+
+const req = require.context(
+  '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
+  false,
+  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN)\.json$/,
+)
+
+type TokenArtifact = 
+  './DutchExchange.json' |
+  './Proxy.json' |
+  './EtherToken.json' |
+  './TokenGNO.json' |
+  './TokenOWL.json' |
+  './TokenOWLProxy.json' |
+  './TokenMGN.json'
+
+const reqKeys = req.keys() as TokenArtifact[]
+const Contracts: SimpleContract[] = contractNames.map(
+  c => TruffleContract(req(reqKeys.find(key => key === `./${c}.json`))),
+)
+// const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
   acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
-}, {}) as ContractsMap & {DutchExchange: {at: Function}}
+}, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
 
 (window as any).m = contractsMap
 
@@ -61,12 +87,17 @@ async function init() {
   const deployedContracts = contractNames.reduce((acc, name, i) => {
     acc[filename2ContractNameMap[name] || name] = instances[i]
     return acc
-  }, {}) as ContractsMap
+  }, {}) as ContractsMapWProxy
 
   const { address: proxyAddress } = deployedContracts.Proxy
+  const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
 
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
+  deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
   // console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
+  delete deployedContracts.Proxy
+  delete deployedContracts.TokenOWLProxy
+
   console.log(deployedContracts)
-  return (window as any).Dd = deployedContracts
+  return (window as any).Dd = deployedContracts as ContractsMap
 }
