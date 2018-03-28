@@ -18,6 +18,7 @@ a.buttonCTA {
   cursor: pointer;
   outline: 0;
   margin: auto;
+  border: 0;
 
   &:hover {
     box-shadow: 0 6px 14px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.15);
@@ -41,6 +42,17 @@ a.buttonCTA {
     font-size: 20px;
     text-align: center;
   }
+
+  // &.white {
+  // 	 font-size: 16px;
+  //   background: $white;
+  //   color: $darkBlue;
+  //   text-decoration: none;
+  //   padding: 10px 20px;
+  //   border-radius: 3px;
+  //   text-align: center;
+  //   display: inline-block;
+  // }
 
   > i {
     margin: 0 0 0 5px;

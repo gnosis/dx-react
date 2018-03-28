@@ -3,14 +3,18 @@ import React from 'react'
 export const TextSquare: React.SFC = () => {
   return (
     <div className="intro">
-      <h1>Decentralised Token Auction Exchange.</h1>
+      <h1>Decentralized Token Auction Exchange</h1>
       <p>
-        DutchX is a token auction which uses a mechanism for determining a fair value for tokens.
-        This value is based on the demand from the community.
+        The DutchX is a decentralized exchange for ERC20 tokens and ETH,
+        determining a fair value for tokens based on the Dutch auction principle.
         <br /><br />
         No account needed. Direct trades between peers through smart contracts.
+        (1) Choose the token you would like to sell,
+        (2) pick the token you would like to receive for it,
+        (3) specify the amount to sell and your order gets automatically submitted into the next running auction
+        - no strategy needed!
         <br /><br />
-        <a href="#">How a Dutch Auction works</a>
+        <a className="buttonCTA" href="#">How the DutchX works</a>
       </p>
     </div>
   )
