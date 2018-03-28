@@ -72,8 +72,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
 
   before(async () => {
-    ({ DutchExchange: DX, TokenTUL: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
-    ({ DutchExchange: dx, TokenTUL: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
+    ({ DutchExchange: DX, TokenMGN: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
+    ({ DutchExchange: dx, TokenMGN: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
 
     dxa = DX.address;
 

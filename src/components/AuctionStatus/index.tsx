@@ -11,10 +11,7 @@ export interface AuctionStatusProps {
   buyToken: TokenCode,
   buyAmount: number,
   timeLeft: number,
-  status: Status,
-  completed: boolean,
-  index: number,
-  account: string,
+  status: Status
 }
 
 const getTimeStr = (timestamp: number) => {
@@ -38,12 +35,10 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
 }) => {
   switch (status) {
     case Status.ACTIVE:
-      return (
-        <span>
-          <h5>ESTIMATED COMPLETION TIME</h5>
-          <i>{getTimeStr(timeLeft)}</i>
-        </span>
-      )
+      return [
+          <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
+          <i key="1">{getTimeStr(timeLeft)}</i>
+        ] as any
     case Status.ENDED:
       return (
         <span>

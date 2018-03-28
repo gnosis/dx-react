@@ -2,6 +2,7 @@ import React from 'react'
 import { TokenCode } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { code2tokenMap, AuctionStatus } from 'globals'
+// import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
   getClosingPrice,
@@ -30,13 +31,11 @@ export interface AuctionStateState {
   status: AuctionStatus,
   sell: TokenCode,
   buy: TokenCode,
-  index: number,
   price: number[],
   timeToCompletion: number,
   userSelling: number,
   userGetting:  number,
   userCanClaim: number,
-  account: string,
   error: string,
 }
 
@@ -63,11 +62,8 @@ const getAuctionStatus = ({
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
 }
 
-const UPDATE_INTERVAL = 3000
-
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
-  return class AuctionStateUpdater extends React.Component<AuctionStateProps, AuctionStateState> {
-    interval: number
+  return class extends React.Component<AuctionStateProps, AuctionStateState> {
     state = {} as AuctionStateState
 
     async componentDidMount() {
@@ -77,11 +73,6 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         console.warn('invalid auction')
       }
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
-      this.interval = window.setInterval(this.updateAuctionState.bind(this), UPDATE_INTERVAL)
-    }
-
-    componentWillUnmount() {
-      window.clearInterval(this.interval)
     }
 
     async updateAuctionState() {
@@ -167,13 +158,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         status,
         sell,
         buy,
-        index,
         price: price.map(n => n.toNumber()),
         timeToCompletion,
         userSelling: sellerBalance.toNumber(),
         userGetting,
         userCanClaim,
-        account,
         error: null,
       })
 
@@ -188,7 +177,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
           <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
           </pre>
-          <Component {...this.props} {...this.state}/>
+          <Component {...this.props} {...this.state}/> :
           {error && <h3> Invalid auction: {error}</h3>}
         </div>
       )

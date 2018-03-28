@@ -64,8 +64,17 @@ interface FilterObject {
 
 export type Filter = 'latest' | 'pending' | FilterObject | void
 
-export interface ERC20Interface {
+export interface SimpleContract {
+  address: Account | void,
+  at<T = SimpleContract>(address: Account): T,
+  setProvider(provider: any): void,
+  deployed<T = DeployedContract>(): Promise<T>,
+}
+export interface DeployedContract {
   address: Account,
+}
+
+export interface ERC20Interface extends DeployedContract {
   totalSupply(): Promise<BigNumber>,
   balanceOf(account: Account): Promise<BigNumber>,
   transfer(to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
@@ -113,11 +122,11 @@ export interface OWLInterface extends ERC20Interface {
   Burnt: ContractEvent,
 }
 
-export interface TULInterface extends ERC20Interface {
+export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
-  unlockedTULs(account: Account): never,
-  lockedTULBalances(account: Account): Promise<BigNumber>,
+  unlockedTokens(account: Account): never,
+  lockedTokenBalances(account: Account): Promise<BigNumber>,
 
   updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
   updateMinter(_minter: Account, tx: TransactionObject): Promise<Receipt>,
@@ -149,12 +158,12 @@ export interface DXAuction {
   masterCopy(): Promise<Account>,
   masterCopyCountdown(): Promise<BigNumber>,
   auctioneer(): Promise<Account>,
-  ETH(): Promise<Account>,
-  ETHUSDOracle(): Promise<Account>,
+  ethToken(): Promise<Account>,
+  ethUSDOracle(): Promise<Account>,
   thresholdNewTokenPair(): Promise<BigNumber>,
   thresholdNewAuction(): Promise<BigNumber>,
-  TUL(): Promise<Account>,
-  OWL(): Promise<Account>,
+  frtToken(): Promise<Account>,
+  owlToken(): Promise<Account>,
   approvedTokens(address: Account): Promise<boolean>,
   latestAuctionIndices(token1: Account, token2: Account): Promise<BigNumber>,
   auctionStarts(token1: Account, token2: Account): Promise<BigNumber>,
@@ -167,7 +176,7 @@ export interface DXAuction {
   sellerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   buyerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   claimedAmounts(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
-  
+
   isInitialised(): Promise<boolean>,
 
   NewDeposit: ContractEvent,
@@ -186,7 +195,7 @@ export interface DXAuction {
   allEvents(filter: Filter): EventInstance,
 
   setupDutchExchange(
-    tokenTUL: Account,
+    tokenFRT: Account,
     tokenOWL: Account,
     auctioneer: Account,
     tokenETH: Account,
