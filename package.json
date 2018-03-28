@@ -87,7 +87,7 @@
     "react-autosuggest": "^9.0.0",
     "react-custom-scroll": "2.0.1",
     "react-datetime": "^2.10.1",
-    "react-dom": "16.0.0",
+    "react-dom": "^16.2.0",
     "react-hot-loader": "^3.0.0",
     "react-intl": "2.4.0",
     "react-modal": "^3.0.0",
