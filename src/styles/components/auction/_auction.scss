@@ -496,6 +496,16 @@ $headerHeight: 58px;
     height: 30px;
     width: 30px;
   }
+
+  &[disabled] {
+    &:hover {
+      box-shadow: none;
+    }
+
+    > span {
+      background-color: #ceb6a8;
+    }
+  }
 }
 
 .auctionProgress {

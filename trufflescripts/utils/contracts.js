@@ -2,7 +2,7 @@
 module.exports = (artifacts) => {
   const TokenETH = artifacts.require('./EtherToken.sol')
   const TokenGNO = artifacts.require('./TokenGNO.sol')
-  const TokenTUL = artifacts.require('./TokenTUL.sol')
+  const TokenTUL = artifacts.require('./TokenMGN.sol')
 
   const TokenOWLProxy = artifacts.require('./TokenOWLProxy.sol')
   const TokenOWL = artifacts.require('./TokenOWL.sol')
@@ -334,7 +334,7 @@ module.exports = (artifacts) => {
     if (index === undefined) index = await dx.getAuctionIndex(t1, t2)
 
     try {
-      const price = await dx.getPriceForJS.call(t1, t2, index)
+      const price = await dx.getCurrentAuctionPriceExt.call(t1, t2, index)
       return mapToNumber(price)
     } catch (error) {
       if (silent) return undefined
@@ -490,10 +490,10 @@ module.exports = (artifacts) => {
 
     const [auctioneer, ETH, ETHUSDOracle, TUL, OWL, ...prices] = await Promise.all([
       dx.auctioneer.call(),
-      dx.ETH.call(),
-      dx.ETHUSDOracle.call(),
-      dx.TUL.call(),
-      dx.OWL.call(),
+      dx.ethToken.call(),
+      dx.ethUSDOracle.call(),
+      dx.frtToken.call(),
+      dx.owlToken.call(),
       dx.thresholdNewTokenPair.call(),
       dx.thresholdNewAuction.call(),
     ])
@@ -546,15 +546,14 @@ module.exports = (artifacts) => {
         thresholdNewAuction,
       } = { ...params, ...options })
     }
+    const tx = { from: params.auctioneer }
 
-
-    return dx.updateExchangeParams(
-      auctioneer,
-      ETHUSDOracle,
-      thresholdNewTokenPair,
-      thresholdNewAuction,
-      { from: params.auctioneer },
-    )
+    return Promise.all([
+      dx.updateAuctioneer(auctioneer, tx),
+      dx.updateEthUSDOracle(ETHUSDOracle, tx),
+      dx.updateThresholdNewTokenPair(thresholdNewTokenPair, tx),
+      dx.updateThresholdNewAuction(thresholdNewAuction, tx),
+    ])
   }
 
   /**

@@ -254,7 +254,7 @@ export interface DXAuction {
     tx?: TransactionObject,
   ): Promise<Receipt>,
   getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  getPriceForJS(
+  getCurrentAuctionPriceExt(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,

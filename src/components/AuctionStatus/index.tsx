@@ -1,4 +1,5 @@
 import React from 'react'
+import TokenClaimingHOC, { TokenClaimingState } from 'components/TokenClaimingHOC'
 
 import { TokenCode } from 'types'
 import { AuctionStatus as Status } from 'globals'
@@ -24,25 +25,36 @@ const getTimeStr = (timestamp: number) => {
 
 const capitalize = (str: string) => str && (str[0].toUpperCase() + str.slice(1))
 
-const showStatus = ({ timeLeft, buyAmount, buyToken, status }: AuctionStatusProps) => {
+const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTokens: () => {} }> = ({
+  timeLeft,
+  buyAmount,
+  buyToken,
+  status,
+  claimTokens,
+  isClaiming,
+}) => {
   switch (status) {
     case Status.ACTIVE:
       return [
-        <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
-        <i key="1">{getTimeStr(timeLeft)}</i>,
-      ]
+          <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
+          <i key="1">{getTimeStr(timeLeft)}</i>
+        ] as any
     case Status.ENDED:
       return (
-        <button id="claimToken">
-          <i>CLAIM</i>
-          <strong>{buyAmount} {buyToken}</strong>
-          <span><img src={claim} /></span>
-        </button>
+        <span>
+          <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
+            <i>CLAIM</i>
+            <strong>{buyAmount} {buyToken}</strong>
+            <span><img src={claim} /></span>
+          </button>
+        </span>
       )
     default:
       return null
   }
 }
+
+const ShowStatusWithClaiming = TokenClaimingHOC(ShowStatus)
 
 const AuctionStatus: React.SFC<AuctionStatusProps> = (props) => {
   const { sellToken, buyToken, status } = props
@@ -59,9 +71,7 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = (props) => {
         <big data-status={status}>{capitalize(status)}</big>
       </span>
 
-      <span>
-        {showStatus(props)}
-      </span>
+      <ShowStatusWithClaiming {...props}/>
     </div>
   )
 }
