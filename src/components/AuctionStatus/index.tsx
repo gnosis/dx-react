@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TokenCode, Balance } from 'types'
+import { TokenCode } from 'types'
 import { AuctionStatus as Status } from 'globals'
 
 import claim from 'assets/claim.svg'
@@ -8,9 +8,18 @@ import claim from 'assets/claim.svg'
 export interface AuctionStatusProps {
   sellToken: TokenCode,
   buyToken: TokenCode,
-  buyAmount: Balance,
-  timeLeft: string,
+  buyAmount: number,
+  timeLeft: number,
   status: Status
+}
+
+const getTimeStr = (timestamp: number) => {
+  const date = new Date(timestamp)
+  const hh = date.getUTCHours()
+  const mm = date.getUTCMinutes()
+  const ss = date.getUTCSeconds()
+
+  return `${hh ? `${hh} hour(s) ` : ''}${mm ? `${mm} minute(s) ` : ''}${ss ? `${ss} second(s) ` : ''}`
 }
 
 const capitalize = (str: string) => str && (str[0].toUpperCase() + str.slice(1))
@@ -20,7 +29,7 @@ const showStatus = ({ timeLeft, buyAmount, buyToken, status }: AuctionStatusProp
     case Status.ACTIVE:
       return [
         <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
-        <i key="1">{timeLeft}</i>,
+        <i key="1">{getTimeStr(timeLeft)}</i>,
       ]
     case Status.ENDED:
       return (

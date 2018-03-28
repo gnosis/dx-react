@@ -1,6 +1,7 @@
 /* eslint no-console:0 */
 const { getTokenBalances, getTokenDeposits, deployed, getAllStatsForTokenPair } = require('./utils/contracts')(artifacts)
 const { getTime } = require('./utils')(web3)
+const argv = require('minimist')(process.argv.slice(4))
 
 const getTimeStr = (timestamp) => {
   const date = new Date(Math.abs(timestamp))
@@ -16,17 +17,24 @@ const getNumDenStr = ([num, den]) => `${num}/${den} = ${(num / den).toFixed(8)}`
 /**
  * truffle exec trufflescripts/get_auction_stats.js
  * prints stats for the current and past ETH -> GNO auctions
+ *  * @flags:
+ * --pair <sellToken,buyToken>                 add token pair, eth, gno by default
  */
 
 /* eslint no-console: 0 */
 module.exports = async () => {
-  console.warn(`
-    WARNING:
-    --------------------------------------------------------------------------
-    TESTS WILL NOT WORK IF PRICE_ORACLE DOES NOT YET SET A USD VALUE FOR ETHER!
-    --------------------------------------------------------------------------
-  `)
-  const { dx, eth, gno } = await deployed
+  const { dx, po, ...tokens } = await deployed
+
+  const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
+  const { [sell]: sellToken, [buy]: buyToken } = tokens
+
+  if (!sellToken || !buyToken) {
+    console.warn(`Unknown tokens (${sell}, ${buy}) specified. Aborting`)
+    return
+  }
+
+  const SELL = sell.toUpperCase()
+  const BUY = buy.toUpperCase()
 
   const { ETH: dxETH, GNO: dxGNO, TUL: dxTUL, OWL: dxOWL } = await getTokenBalances(dx.address)
 
@@ -41,12 +49,12 @@ module.exports = async () => {
   ])
 
   console.log('Deposits in the Exchange')
-  console.log(`  Master:\t${masterDeposits.ETH}\tETH,\t${masterDeposits.GNO}\tGNO`)
-  console.log(`  Seller:\t${sellerDeposits.ETH}\tETH,\t${sellerDeposits.GNO}\tGNO`)
-  console.log(`  Buyer:\t${buyerDeposits.ETH}\tETH,\t${buyerDeposits.GNO}\tGNO,`)
+  console.log(`  Master:\t${masterDeposits[SELL]}\t${SELL},\t${masterDeposits[BUY]}\t${BUY}`)
+  console.log(`  Seller:\t${sellerDeposits[SELL]}\t${SELL},\t${sellerDeposits[BUY]}\t${BUY}`)
+  console.log(`  Buyer:\t${buyerDeposits[SELL]}\t${SELL},\t${buyerDeposits[BUY]}\t${BUY},`)
 
   const now = getTime()
-  const stats = await getAllStatsForTokenPair({ sellToken: eth, buyToken: gno, accounts: [master, seller, buyer] })
+  const stats = await getAllStatsForTokenPair({ sellToken, buyToken, accounts: [master, seller, buyer] })
 
   const {
     sellTokenOraclePrice,
@@ -59,12 +67,12 @@ module.exports = async () => {
     auctions,
   } = stats
 
-  console.log('\nAuction pair ETH -> GNO')
+  console.log(`\nAuction pair ${SELL} -> ${BUY}`)
 
   if (sellTokenOraclePrice && buyTokenOraclePrice) {
     console.log(`Oracle prices:
-    1 ETH = ${getNumDenStr(sellTokenOraclePrice)} ETH
-    1 GNO = ${getNumDenStr(buyTokenOraclePrice)} ETH
+    1 ${SELL} = ${getNumDenStr(sellTokenOraclePrice)} ETH
+    1 ${BUY} = ${getNumDenStr(buyTokenOraclePrice)} ETH
     `)
   }
 
@@ -101,8 +109,6 @@ module.exports = async () => {
     const {
       auctionIndex,
       closingPrice,
-      // sellVolume,
-      // buyVolume,
       extraTokens,
       isLatestAuction,
       accounts,
@@ -119,21 +125,21 @@ module.exports = async () => {
     let closingPriceStr
 
     if (closingPrice.some(n => n > 0)) {
-      closingPriceStr = `1 ETH = ${getNumDenStr(closingPrice)} GNO`
+      closingPriceStr = `1 ${SELL} = ${getNumDenStr(closingPrice)} ${BUY}`
     } else {
       closingPriceStr = 'N/A'
     }
 
     console.log(`    closingPrice: ${closingPriceStr}`)
 
-    if (price) console.log(`\n  currentPrice: 1 ETH = ${getNumDenStr(price)} GNO`)
+    if (price) console.log(`\n  currentPrice: 1 ${SELL} = ${getNumDenStr(price)} ${BUY}`)
 
     if (isLatestAuction && price && sellTokenOraclePrice && buyTokenOraclePrice) {
       const [num, den] = price
 
       const amountToClearAuction = Math.floor((sellVolumeCurrent * num) / den) - buyVolume
 
-      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} GNO`)
+      if (amountToClearAuction > 0) console.log(`  to clear auction buy\t${amountToClearAuction} ${BUY}`)
 
       const timeWhenAuctionClears = 86400 + auctionStart
 
