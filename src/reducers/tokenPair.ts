@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount } from 'actions'
+import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair } from 'actions'
 import { TokenPair, Balance } from 'types'
 import { TokenItemProps } from 'components/TokenItem'
 
@@ -22,6 +22,12 @@ export default handleActions<TokenPair & { sellAmount: Balance }, TokenItemProps
       ...state,
       // TODO: restrict payload.sellAmount to [0, tokenBalances[state.sell]]
       ...action.payload,
+    }),
+    [swapTokensInAPair.toString()]: ({ sell, buy }) => ({
+      sell: buy,
+      buy: sell,
+      sellAmount: '0',
+      index: '0',
     }),
   },
   {
