@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import TokenPair from 'components/TokenPair'
-import { openOverlay } from 'actions'
+import { openOverlay, swapTokensInAPair } from 'actions'
 import { State } from 'types'
 
 const mapStateToProps = ({
@@ -14,4 +14,4 @@ const mapStateToProps = ({
   })
 
 
-export default connect(mapStateToProps, { openOverlay })(TokenPair)
+export default connect(mapStateToProps, { openOverlay, swapTokensInAPair })(TokenPair)
