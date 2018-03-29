@@ -9,6 +9,7 @@ export interface TokenPairProps {
   sellTokenBalance: Balance,
   buyTokenBalance: Balance,
   openOverlay(): any
+  swapTokensInAPair(): any
 }
 
 const TokenPair: React.SFC<TokenPairProps> = ({
@@ -17,6 +18,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   sellTokenBalance,
   buyTokenBalance,
   openOverlay,
+  swapTokensInAPair,
 }) => (
     <div className="tokenPair">
       <TokenItem
@@ -33,6 +35,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
         mod="buy"
         onClick={openOverlay}
       />
+      <div className="tokenPair-switch" onClick={swapTokensInAPair}></div>
     </div>
   )
 
