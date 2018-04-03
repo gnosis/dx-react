@@ -1,4 +1,5 @@
 import React from 'react'
+import ButtonCTA from 'components/ButtonCTA'
 
 export const TextSquare: React.SFC = () => {
   return (
@@ -7,14 +8,27 @@ export const TextSquare: React.SFC = () => {
       <p>
         The DutchX is a decentralized exchange for ERC20 tokens and ETH,
         determining a fair value for tokens based on the Dutch auction principle.
-        <br /><br />
+
+        <br />
+        <br />
+
         No account needed. Direct trades between peers through smart contracts.
-        (1) Choose the token you would like to sell,
-        (2) pick the token you would like to receive for it,
-        (3) specify the amount to sell and your order gets automatically submitted into the next running auction
-        - no strategy needed!
-        <br /><br />
-        <a className="buttonCTA" href="#">How the DutchX works</a>
+
+        <br />
+        <br />
+
+        <li>Choose the token you would like to sell</li>
+        <li>Pick the token you would like to receive</li>
+        <li>Specify the amount to sell</li>
+
+        <br />
+
+        Your order gets automatically submitted into the next running auction - no strategy needed!
+
+        <br />
+        <br />
+        { /*TODO: change this below - defaultProp is hurting this*/ }
+        <ButtonCTA className="void" to="#">How the DutchX works</ButtonCTA>
       </p>
     </div>
   )

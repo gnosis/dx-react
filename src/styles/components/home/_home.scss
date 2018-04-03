@@ -49,6 +49,10 @@
       display: flex;
       flex-wrap: wrap;
 
+      > p > li {
+        list-style: decimal;
+      }
+
       @media #{$tablet} {
         margin-right: 40px;
       }

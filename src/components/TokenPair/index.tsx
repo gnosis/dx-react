@@ -17,8 +17,9 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   sellTokenBalance,
   buyTokenBalance,
   openOverlay,
-}) => (
-    <div className="tokenPair noTokenList">{/* If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state */}
+}) =>
+    // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
+    <div className="tokenPair noTokenList">
       <TokenItem
         code={sellToken}
         name={code2tokenMap[sellToken]}
@@ -37,6 +38,5 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       {/* If no tokenlist uploaded display this message */}
       <span>Upload a token list before picking a token pair. Read more in our <a href="#" target="_blank">FAQ</a> on how it works.</span>
     </div>
-  )
 
 export default TokenPair
