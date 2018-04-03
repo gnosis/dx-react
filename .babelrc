@@ -1,18 +1,19 @@
 {
   "presets": [
-    "react",
-    [
-      "env",
-      {
-        "modules": false
-      }
-    ],
-    "stage-0"
+    ["@babel/preset-env", { "modules": false }],
+    "@babel/preset-react",
+    "@babel/flow"
   ],
   "plugins": [
     "react-hot-loader/babel",
-    "transform-decorators-legacy",
-    "lodash"
+    "@babel/plugin-proposal-object-rest-spread",
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    ["@babel/transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
   ],
   "env": {
     "production": {
