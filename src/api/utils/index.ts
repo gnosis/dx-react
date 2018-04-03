@@ -13,6 +13,12 @@ export const windowLoaded = new Promise((accept, reject) => {
   }, false)
 })
 
+export const readFileUpload = (file: any) =>
+    new Promise((resolve) => {
+      const r = new FileReader()
+      r.onload = (e: any) => resolve(e.target.result)
+      r.readAsArrayBuffer(file)
+    })
 
 export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
   (...args: any[]): Promise<any> => new Promise((res, rej) => {
