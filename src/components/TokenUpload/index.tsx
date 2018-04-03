@@ -13,7 +13,7 @@ interface TokenUploadProps {
   filePath?: string,
 }
 
-const TokenUpload = ({ fileHash, handleSendToIPFS, handleFileUpload }: TokenUploadProps) => {
+const TokenUpload = ({ fileBuffer, handleSendToIPFS, handleFileUpload }: TokenUploadProps) => {
   return (
     <div className="tokenUpload">
       <button className="buttonExit" />
@@ -35,10 +35,10 @@ const TokenUpload = ({ fileHash, handleSendToIPFS, handleFileUpload }: TokenUplo
           type="file"
         />
         <ButtonCTA
-          className={!fileHash && "buttonCTA-disabled"}
+          className={!fileBuffer && "buttonCTA-disabled"}
           onClick={handleSendToIPFS}
         >
-          {fileHash ? 'Upload' : 'Please select a file'}
+          {fileBuffer ? 'Upload' : 'Please select a file'}
         </ ButtonCTA>
       </form>
     </div>

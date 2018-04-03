@@ -3,10 +3,10 @@ import React from 'react'
 import { promisedIPFS } from 'api/IPFS'
 import { readFileUpload } from 'api/utils'
 
-const statePrint = {
+/* const statePrint = {
   position: 'fixed', left: 0, top: 0,
   zIndex: 999,
-}
+} */
 
 interface HOCState {
   oFile?: any,
@@ -70,25 +70,13 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
 
     render() {
       return (
-        <div>
-          {this.state.fileBuffer &&
-            <code style={statePrint as any}>
-              {JSON.stringify(
-                {
-                  buffer: this.state.fileBuffer,
-                  fileHash: this.state.fileHash,
-                  filePath: this.state.filePath,
-                  fileContent: this.state.fileContent,
-                }, null, 2)}
-            </code>}
-          <WrappedComponent
-            handleFileUpload = {this.handleFileUpload}
-            handleSendToIPFS = {this.handleSendToIPFS}
-            handleGrabFromIPFS = {this.handleGrabFromIPFS}
-            {...this.props}
-            {...this.state}
-          />
-        </div>
+        <WrappedComponent
+          handleFileUpload = {this.handleFileUpload}
+          handleSendToIPFS = {this.handleSendToIPFS}
+          handleGrabFromIPFS = {this.handleGrabFromIPFS}
+          {...this.props}
+          {...this.state}
+        />
       )
     }
   }
