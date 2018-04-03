@@ -27,6 +27,10 @@ const TokenPair: React.SFC<TokenPairProps> = ({
         mod="sell"
         onClick={openOverlay}
       />
+
+      {/* On click of this button, it should switch the token pair */}
+      <span className="tokenPairSwitcher"></span>
+
       <TokenItem
         code={buyToken}
         name={code2tokenMap[buyToken]}
