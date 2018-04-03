@@ -1,40 +1,48 @@
 import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
 
+import IPFSHOC from 'components/IPFSHOC'
+
 interface TokenUploadProps {
-  origFile?: any,
-  ipfsFile?: {
-    hash?: string,
-    name?: string,
-  }
+  handleSendToIPFS(): void;
+  handleFileUpload(): void;
+  oFile?: any,
+  fileContent?: any;
+  fileBuffer?: any,
+  fileHash?: string,
+  filePath?: string,
 }
 
-const TokenUpload = (props: TokenUploadProps) => {
-  console.log('PROPS = ', props)
+const TokenUpload = ({ fileHash, handleSendToIPFS, handleFileUpload }: TokenUploadProps) => {
   return (
     <div className="tokenUpload">
       <button className="buttonExit" />
       <span className="icon-tokenUpload" />
       <h2>Upload Token List</h2>
+
       <p>
         Upload a list of tokens to be added and start trading.
         JSON formatted files are supported with a max. filesize of 1MB.
       <br />
         Read our <a href="#">FAQ</a> on how this works.
       </p>
+
       <form>
-        <input type="file" name="tokenListFile" accept="application/json,.json" />
+        <input
+          accept="application/json,.json"
+          name="tokenListFile"
+          onChange={handleFileUpload}
+          type="file"
+        />
         <ButtonCTA
-          className="blue"
-          // className={!props.hash ? "gray": "blue"}
-          // disabled={ !props.hash }
-          // onClick={ props.sendToIPFS }
+          className={!fileHash && "buttonCTA-disabled"}
+          onClick={handleSendToIPFS}
         >
-          Upload
+          {fileHash ? 'Upload' : 'Please select a file'}
         </ ButtonCTA>
       </form>
     </div>
   )
 }
 
-export default TokenUpload
+export default IPFSHOC(TokenUpload)
