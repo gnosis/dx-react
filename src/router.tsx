@@ -24,7 +24,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history }) => (
       <Route path="/order" component={OrderPanel} />
       <Route path="/wallet" component={WalletPanel} />
       {/* TODO: check for valid params.addr and redirect if necessary */}
-      <Route path="/auction/:addr" component={AuctionPanel} />
+      <Route path="/auction/:sell-:buy-:index" component={AuctionPanel} />
     </div>
   </ConnectedRouter>
 )

@@ -18,16 +18,18 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
             <thead>
               <tr>
                 <th>Auction</th>
-                <th>Comitted</th>
+                <th>Index</th>
+                <th>Committed</th>
                 <th>Claim Token</th>
               </tr>
             </thead>
             <tbody>
               {ongoingAuctions.map(
                 auction =>
-                  <tr key={auction.id}>
-                    <td>{`${auction.sellToken}/${auction.buyToken}`}</td>
-                    <td>{`${auction.price} ${auction.sellToken}`}</td>
+                  <tr key={`${auction.sell}-${auction.buy}-${auction.index}`}>
+                    <td>{`${auction.sell}/${auction.buy}`}</td>
+                    <td>{`${auction.index}`}</td>
+                    <td>{`${auction.price} ${auction.sell}`}</td>
                     {auction.claim && <td><img src={require('assets/claim.svg')} /></td>}
                   </tr>,
               )}

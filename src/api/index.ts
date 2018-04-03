@@ -6,7 +6,7 @@ import { TokenCode, TokenPair, Account, Balance } from 'types'
 import { dxAPI, Index } from './types'
 import { BigNumber } from 'bignumber.js'
 
-const promisedAPI = initAPI()
+const promisedAPI = (window as any).AP = initAPI()
 
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
@@ -18,7 +18,7 @@ export const toEth = async (amt: number | string | BigNumber): Promise<string> =
   const { web3: { web3 } } = await promisedAPI
 
   return web3.toBigNumber(web3.fromWei(amt))
-} 
+}
 
 export const getCurrentAccount = async () => {
   const { web3 } = await promisedAPI
@@ -146,6 +146,34 @@ export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: numbe
   return DutchX.getClosingPrice(pair, auctionIdx)
 }
 
+export const getClosingPrice = async (pair: TokenPair, auctionIndex?: Index) => {
+  const { DutchX } = await promisedAPI
+
+  if (auctionIndex === undefined) auctionIndex = await DutchX.getLatestAuctionIndex(pair)
+
+  return DutchX.getClosingPrice(pair, auctionIndex)
+}
+
+export const getPrice = async (pair: TokenPair, auctionIndex?: Index) => {
+  const { DutchX } = await promisedAPI
+
+  if (auctionIndex === undefined) auctionIndex = await DutchX.getLatestAuctionIndex(pair)
+
+  return DutchX.getPrice(pair, auctionIndex)
+}
+
+export const getAuctionStart = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getAuctionStart(pair)
+}
+
+export const getTime = async () => {
+  const { web3 } = await promisedAPI
+
+  return web3.getTimestamp()
+}
+
 export const approveAndPostSellOrder = async (
   sell: TokenCode,
   buy: TokenCode,
@@ -233,8 +261,12 @@ export const getDXTokenBalance = async (token: TokenCode, account: Account) => {
  * @param account userccount, current web3 account by default
  */
 export const getSellerBalance = async (pair: TokenPair, index?: Index, account?: Account) => {
-  const { DutchX } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  const { DutchX } = await promisedAPI;
+
+  [index, account] = await Promise.all<Index, Account>([
+    index === undefined ? DutchX.getLatestAuctionIndex(pair) : index,
+    fillDefaultAccount(account),
+  ])
 
   return DutchX.getSellerBalances(pair, index, account)
 }
@@ -249,6 +281,23 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
   const { DutchX } = await promisedAPI
 
   return DutchX.claimSellerFunds(pair, index, account)
+}
+
+export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, account?: Account) => {
+  const { DutchX, web3: { web3 } } = await promisedAPI;
+
+  [index, account] = await Promise.all<Index, Account>([
+    index === undefined ? DutchX.getLatestAuctionIndex(pair) : index,
+    fillDefaultAccount(account),
+  ])
+
+  try {
+    const [claimable] = await DutchX.claimSellerFunds.call(pair, index, account)
+    return claimable as BigNumber
+  } catch (e) {
+    console.log('Nothing to claim')
+    return web3.toBigNumber(0) as BigNumber
+  }
 }
 
 /*
@@ -300,6 +349,6 @@ async function initAPI(): Promise<dxAPI> {
     promisedTokens,
     promisedDutchX,
   ])
-
+  console.log('INDEX API => ', { web3, Tokens, DutchX })
   return { web3, Tokens, DutchX }
 }

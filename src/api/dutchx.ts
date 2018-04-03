@@ -39,7 +39,7 @@ async function init(): Promise<DutchExchange> {
 
   const getLatestAuctionIndex = (pair: TokenPair) => {
     const [t1, t2] = getTokenPairAddresses(pair)
-    return dx.latestAuctionIndices.call(t1, t2)
+    return dx.getAuctionIndex.call(t1, t2)
   }
 
   const getAuctionStart = (pair: TokenPair) => {
@@ -56,7 +56,7 @@ async function init(): Promise<DutchExchange> {
   const getPrice = (pair: TokenPair, index: Index) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.getPriceForJS.call(t1, t2, index)
+    return dx.getCurrentAuctionPriceExt.call(t1, t2, index)
   }
 
   const getSellVolumesCurrent = (pair: TokenPair) => {
@@ -148,13 +148,25 @@ async function init(): Promise<DutchExchange> {
   const claimSellerFunds = (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.claimSellerFunds(t1, t2, account, index)
+    return dx.claimSellerFunds(t1, t2, account, index, { from: account })
+  }
+
+  claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.claimSellerFunds.call(t1, t2, account, index)
+  }
+
+  claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
+    const [t1, t2] = getTokenPairAddresses(pair)
+
+    return dx.claimSellerFunds.call(t1, t2, account, index)
   }
 
   const claimBuyerFunds = (pair: TokenPair, index: Index, account: Account) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.claimBuyerFunds(t1, t2, account, index)
+    return dx.claimBuyerFunds(t1, t2, account, index, { from: account })
   }
 
   const deposit = (code: TokenCode, amount: Balance, account: Account) => {

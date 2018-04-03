@@ -24,6 +24,7 @@ const argv = require('minimist')(process.argv.slice(4), { string: 'a' })
  * --seller           as the seller
  * --buyer            as the buyer
  * -a <address>       as the given address
+ * --add-only         only add token pair, don't skip to auction start
  */
 
 const hour = 3600
@@ -46,6 +47,9 @@ module.exports = async () => {
 
   let { auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken })
 
+  const SELL = sell.toUpperCase()
+  const BUY = buy.toUpperCase()
+
   const fastForward = () => {
     const now = getTime()
     const timeUntilStart = auctionStart - now
@@ -54,18 +58,20 @@ module.exports = async () => {
     if (timeUntilStart > 0) {
       console.log('auctionStart is set in the future. Skipping to it + 1 hour')
       increaseTimeBy(timeUntilStart + hour)
-      console.log(`${sell.toUpperCase()} -> ${buy.toUpperCase()} auction ${latestAuctionIndex} started`)
+      console.log(`${SELL} -> ${BUY} auction ${latestAuctionIndex} started`)
     }
   }
 
   // TokenPair already added
   if (latestAuctionIndex > 0) {
-    fastForward()
+    console.log(`${SELL} -> ${BUY} auction already available`)
+    if (!argv['add-only']) fastForward()
     return
   }
 
-
-  const [sellTokenFunding, buyTokenFunding] = argv.fund ? argv.fund.split(',') : [500, 500]
+  // if sellVolume of opposite auction (made up from token2Funding)isn't 0,
+  // auctionIndex isn't automatically increased on ClearAuction
+  const [sellTokenFunding, buyTokenFunding] = argv.fund ? argv.fund.split(',') : [500, 0]
 
   if (sellTokenFunding < 0 || buyTokenFunding < 0) {
     console.warn('Funding must be a positive number or 0')
@@ -90,9 +96,6 @@ module.exports = async () => {
     // set Master as default account
     account = master
   }
-
-  const SELL = sell.toUpperCase()
-  const BUY = buy.toUpperCase()
 
   const { [SELL]: sellTokenDeposit, [BUY]: buyTokenDeposit } = await getTokenDeposits(account)
 
@@ -172,8 +175,7 @@ module.exports = async () => {
   ({ auctionStart, latestAuctionIndex } = await getExchangeStatsForTokenPair({ sellToken, buyToken }))
 
   if (tx) {
-    console.log(`ETH -> GNO auction ${latestAuctionIndex} started`)
-  } else {
-    fastForward()
+    console.log(`${SELL} -> ${BUY} auction ${latestAuctionIndex} registered with DX`)
+    if (!argv['add-only']) fastForward()
   }
 }

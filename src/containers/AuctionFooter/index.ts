@@ -6,8 +6,8 @@ const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
   sellToken: sell,
   buyToken: buy,
   // TODO: get from redux store
-  sellAmount: '1',
-  buyAmount: '2.5520300',
+  sellAmount: 1,
+  buyAmount: 2.5520300,
   // TODO: compare with Status.ENDED
   auctionEnded: false,
 })

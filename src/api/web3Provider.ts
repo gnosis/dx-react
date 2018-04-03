@@ -45,6 +45,12 @@ async function init(): Promise<ProviderInterface> {
 
   const resetProvider = () => setProvider(getProvider())
 
+  const getTimestamp = async (block = 'latest') => {
+    const blockData = await promisify(web3.eth.getBlock, web3.eth)(block)
+
+    return blockData.timestamp
+  }
+
   return {
     getCurrentAccount,
     getAccounts,
@@ -57,5 +63,6 @@ async function init(): Promise<ProviderInterface> {
     web3,
     setProvider,
     resetProvider,
+    getTimestamp,
   }
 }
