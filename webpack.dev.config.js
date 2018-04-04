@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -21,7 +21,7 @@ const ethereumUrl =
 
 module.exports = {
   context: path.join(__dirname, 'src'),
-  entry: ['react-hot-loader/patch', 'bootstrap-loader', 'index.tsx'],
+  entry: 'index.tsx',
   devtool: 'eval-source-map',
   output: {
     publicPath: '/',
