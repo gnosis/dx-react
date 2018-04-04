@@ -56,6 +56,7 @@ module.exports = {
           options: {
             useBabel: true,
             useCache: true,
+            babelCore: '@babel/core',
           },
         },
       },
