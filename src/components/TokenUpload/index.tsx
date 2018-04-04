@@ -12,7 +12,7 @@ interface TokenUploadProps {
   fileHash?: string,
   filePath?: string,
 }
-
+// TODO: add link URL in line 26
 const TokenUpload = ({ fileBuffer, handleSendToIPFS, handleFileUpload }: TokenUploadProps) => {
   return (
     <div className="tokenUpload">

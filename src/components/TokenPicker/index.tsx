@@ -24,20 +24,18 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({ continueToOrder, to }) => (
       <h2>Pick Token Pair Auction</h2>
       <TokenPair />
 
-      {/*  Only show IF Tokenlist is NOT uploaded */}
+      {/*
+        * TODO: Remove? Not necessary and in TokenUpload
+        * Only show IF Tokenlist is NOT uploaded
+        */}
       <ButtonCTA onClick={continueToOrder} to={to}>Upload Tokenlist</ButtonCTA>
-      {/* END */}
 
       {/*  Only show IF Tokenlist IS uploaded */}
       <ButtonCTA onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
-      {/* END */}
 
       {/*  Only show IF Tokenlist IS uploaded | Shows the TokenUpload overlay */}
       <a href="#" className="showTokenUpload">Upload Additional Token List</a>
-      {/* END */}
-
     </div>
-    {/* END */}
 
     <TopAuctions />
   </div>
