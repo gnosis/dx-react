@@ -11,6 +11,7 @@ import tokenBalances from './tokenBalances'
 import ratioPairs from './ratioPairs'
 import settings from './settings'
 import notifications from './notifications'
+import ipfs from './ipfs'
 
 const reducers = combineReducers<State>({
   form: formReducer,
@@ -24,6 +25,7 @@ const reducers = combineReducers<State>({
   ratioPairs,
   notifications,
   settings,
+  ipfs,
 })
 
 const rootReducer: Reducer<State> = (state, action) => {
