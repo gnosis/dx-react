@@ -1,16 +1,34 @@
 import React from 'react'
+import ButtonCTA from 'components/ButtonCTA'
 
 export const TextSquare: React.SFC = () => {
   return (
     <div className="intro">
-      <h1>Decentralised Token Auction Exchange.</h1>
+      <h1>Decentralized Token Auction Exchange</h1>
       <p>
-        DutchX is a token auction which uses a mechanism for determining a fair value for tokens.
-        This value is based on the demand from the community.
-        <br /><br />
+        The DutchX is a decentralized exchange for ERC20 tokens and ETH,
+        determining a fair value for tokens based on the Dutch auction principle.
+
+        <br />
+        <br />
+
         No account needed. Direct trades between peers through smart contracts.
-        <br /><br />
-        <a href="#">How a Dutch Auction works</a>
+
+        <br />
+        <br />
+
+        <li>Choose the token you would like to sell</li>
+        <li>Pick the token you would like to receive</li>
+        <li>Specify the amount to sell</li>
+
+        <br />
+
+        Your order gets automatically submitted into the next running auction - no strategy needed!
+
+        <br />
+        <br />
+        { /*TODO: change this below - defaultProp is hurting this*/ }
+        <ButtonCTA className="void" to="#">How the DutchX works</ButtonCTA>
       </p>
     </div>
   )

@@ -23,6 +23,12 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       <big>{name}</big><code>{code}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{balance} {code}</p>
+
+      {/*
+      MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
+      Currently this is handled by CSS but we should implement the logic here to not output the element at all.
+      */}
+      <p className="noMGN">Any auction with <strong>{code}</strong> won't generate MGN</p>
     </div>
   )
 }

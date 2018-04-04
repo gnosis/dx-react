@@ -41,9 +41,11 @@ $greyBorder: #ced3db;
 $blue: #0072cf;
 $darkBlue: #1a4977;
 $red: #bf1600;
+$darkRed: #a94442;
 $orange: #ed5a00;
 $lila: #735ab7;
 $colorGNO: #00a6c4;
+$yellow: #fcf8e3;
 
 $max-width: 1090px;
 
@@ -54,7 +56,11 @@ $mono: "Courier New", Courier, monospace;
 $lucida: 'Lucida Sans', sans-serif;
 $arial: Arial, sans-serif;
 $verdana: Verdana, Geneva, sans-serif;
-// $bauer: "Bauer Icon";
+
+// Font weights
+$lighter: 300;
+$normal: 400;
+$bold: 500;
 
 // HTML Entity characters (e.g. for use with pseudo-elements)
 $x: "\2715"; // $x: "✕";

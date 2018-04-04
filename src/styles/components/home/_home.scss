@@ -1,6 +1,5 @@
 .home {
   max-width: $max-width;
-  // margin: 75px auto 0;
   margin: 0 auto;
   display: flex;
   font-family: inherit;
@@ -15,7 +14,7 @@
 
   h1 {
     font-family: inherit;
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 48px;
     color: $white;
     line-height: 1.2;
@@ -50,6 +49,10 @@
       display: flex;
       flex-wrap: wrap;
 
+      > p > li {
+        list-style: decimal;
+      }
+
       @media #{$tablet} {
         margin-right: 40px;
       }
@@ -70,7 +73,9 @@
     // Right module (coin picker)
     &:not(.intro) {
       flex: 0 0 550px;
-      height: 475px;
+      max-height: 550px;
+      height: auto;
+      padding: 25px 0;
       box-sizing: border-box;
       border-radius: 3px;
 
@@ -93,7 +98,7 @@
 
     > p {
       font-family: inherit;
-      font-size: 19px;
+      font-size: 16px;
       color: $white;
       line-height: 1.4;
 
@@ -111,18 +116,13 @@
         padding: 0 20px;
       }
     }
-
-    > p > a {
-      color: $white;
-      text-decoration: underline;
-    }
   } // end of > div
 
   .icon-walletUnlock {
     display: block;
     width: 125px;
     height: 104px;
-    margin: 0 auto 40px;
+    margin: 0 auto;
     flex-basis: 100%;
   }
 } // end of .home
@@ -130,6 +130,7 @@
 // state: no wallet connected
 .noWallet {
   background: rgba(255,255,255,0.08);
+  min-height: 440px;
   border: 2px dotted $white;
   padding: 0 50px;
   text-align: center;
@@ -141,11 +142,15 @@
   h2 {
     width: 100%;
     font-family: inherit;
-    font-weight: normal;
+    font-weight: $normal;
     font-size: 22px;
     color: $white;
     line-height: 1.2;
     margin: 0 auto 30px;
+  }
+
+  .buttonCTA {
+    margin: 40px auto 0;
   }
 }
 
@@ -158,9 +163,11 @@
   box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
   border: 2px solid transparent;
   background: $white;
+  min-height: 460px;
 }
 
-.tokenIntro {
+.tokenIntro,
+.tokenUpload {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -177,7 +184,7 @@
     font-family: inherit;
     margin-top: auto;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: $bold;
     color: $darkBlue;
     letter-spacing: 1px;
     line-height: 1.5;
@@ -189,9 +196,58 @@
     }
   }
 
+  > p {
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 80%;
+    margin: 15px auto 25px;
+    text-align: center;
+    color: $grey;
+  }
+
+  > form {
+    width: 80%;
+    height: 56px;
+    display: flex;
+    margin: 0 auto;
+    border-radius: 3px;
+    overflow: hidden;
+
+    > input[type="file"] {
+      background: $greyLight;
+      padding: 20px 15px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    > input[type="submit"] {
+      height: 100%;
+    }
+  }
+
+  .icon-tokenUpload {
+    display: block;
+    height: 56px;
+    width: 100%;
+    margin: 0 auto 20px;
+  }
+
   .buttonCTA {
     width: 80%;
   }
+}
+
+.tokenUpload {
+  position: absolute;
+  background: $white;
+  z-index: 10;
+}
+
+.showTokenUpload {
+  width: 100%;
+  margin: 15px auto 0;
+  text-decoration: underline;
+  text-align: center;
 }
 
 .tokenPair {
@@ -201,7 +257,7 @@
   width: 100%;
   text-align: center;
   position: relative;
-  margin: 5px auto 20px;
+  margin: 5px auto 10px;
 
   &-switch {
     display: block;
@@ -226,27 +282,72 @@
     padding: 15px;
   }
 
-  &::before {
-    // content: " ";
-    display: block;
+  // &::before {
+  //   .auctionContainer & {
+  //     content: " ";
+  //     display: block;
+  //     position: absolute;
+  //     margin: auto;
+  //     left: 0;
+  //     right: 0;
+  //     height: 49px;
+  //     background: url('#{$images}arrowSidesRight.svg') no-repeat center / 60px;
+  //     top: 70px;
+  //   }
+
+  //   @media #{$mobile} {
+  //     height: 30px;
+  //     top: 85px;
+  //     background-size: 30px;
+  //   }
+  // }
+}
+
+.tokenPairSwitcher {
+  display: block;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  height: 70px;
+  width: 70px;
+  cursor: pointer;
+  top: 100px;
+  border-radius: 60px;
+  will-change: box-shadow, transform;
+  transition: box-shadow, transform .15s ease, -webkit-box-shadow, -webkit-transform .15s ease;
+  background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
+
+  &:hover {
+    transform: translateY(-3px);
+    // box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  @media #{$mobile} {
+    height: 30px;
+    top: 85px;
+    background-size: 30px;
+  }
+}
+
+.noTokenList {
+  > span {
+    background: $yellow;
+    color: $darkRed;
     position: absolute;
-    margin: auto;
-    left: 0;
-    right: 0;
-    height: 49px;
-    top: 100px;
-    background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
+    top: 22%;
+    width: 40%;
+    padding: 25px;
+    font-size: 14px;
+    border-radius: 3px;
+    line-height: 1.4;
+    box-shadow: 0 0 20px 10px rgba(51, 51, 51, 0.08);
+  }
 
-    .auctionContainer & {
-      background: url('#{$images}arrowSidesRight.svg') no-repeat center / 60px;
-      top: 70px;
-    }
-
-    @media #{$mobile} {
-      height: 30px;
-      top: 85px;
-      background-size: 30px;
-    }
+  > span > a {
+    color: $darkRed;
+    font-weight: bold;
+    text-decoration: underline;
   }
 }
 
@@ -259,12 +360,18 @@
   text-align: center;
   text-transform: uppercase;
 
+  // Disable interaction when no token list has been suplied yet:
+  .noTokenList & {
+    pointer-events: none;
+    opacity: 0.25;
+  }
+
   // Alternate styles for when the `tokenOverlay` and the `auctionContainer` are the parents
   .tokenOverlay &,
   .auctionContainer & {
     box-sizing: border-box;
-    flex: 0 1 auto;
-    flex-basis: 31%;
+    flex: 0 1 31%;
+    // flex-basis: 31%;
     margin: 5px;
     padding: 15px;
 
@@ -282,7 +389,7 @@
     border: 1px solid $greyBorder;
   }
 
-  &:hover {
+  &:not(.disabled):hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
 
@@ -296,14 +403,20 @@
         color: $darkBlue;
       }
 
-      > abbr {
+      > code {
         background: $blue;
       }
     }
   }
 
-  &:hover > [data-coin] {
+  &:not(.disabled):hover > [data-coin] {
     border: 1px solid transparent;
+  }
+
+  // When a listed token is not available we grey it out
+  &.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   > strong {
@@ -312,7 +425,7 @@
     color: $darkBlue;
     letter-spacing: 1px;
     line-height: 1;
-    font-weight: normal;
+    font-weight: $normal;
     width: 100%;
     display: block;
     text-align: center;
@@ -337,11 +450,11 @@
     }
   }
 
-  > abbr {
+  > code {
     background: $blue;
     border-radius: 2px;
     font-family: inherit;
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 10px;
     color: $white;
     letter-spacing: 1px;
@@ -393,7 +506,7 @@
 
   > p {
     font-family: inherit;
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 11px;
     color: $blue;
     letter-spacing: 0.5px;
@@ -403,6 +516,10 @@
     &.noBalance {
       color: $greyText;
     }
+
+    &.noMGN {
+      display: none;
+    }
   }
 
   > [data-coin] {
@@ -410,10 +527,17 @@
     .auctionContainer & {
       height: 80px;
       width: 80px;
-      margin: 0 auto 10px;
       background-size: 35px auto;
     }
   }
+}
+
+.pair-noMGN {
+  background: $yellow;
+  color: $darkRed;
+  padding: 8px 5px;
+  width: 100%;
+  text-align: center;
 }
 
 .tokenOverlay {
@@ -445,6 +569,17 @@
     align-content: flex-start;
     align-items: flex-start;
     width: 100%;
+
+    .noMGN {
+      display: block;
+      width: 100%;
+      background: $yellow;
+      color: $darkRed;
+      font-size: 9px;
+      padding: 6px;
+      margin: 10px auto 0;
+      line-height: 1.4;
+    }
   }
 
   > .tokenList::-webkit-scrollbar-track {

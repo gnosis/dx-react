@@ -22,6 +22,11 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken, sellAmoun
     <AuctionHeader backTo="/">
       Token Auction {sellToken}/{buyToken}
     </AuctionHeader>
+
+    {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
+    <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>
+    {/* END */}
+
     <TokenPair />
     <AuctionPriceBar header="Closing Price" />
     <AuctionSellingGetting />

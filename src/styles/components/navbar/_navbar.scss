@@ -249,6 +249,9 @@ header {
     padding: 5px 10px;
     display: inline-block;
     font-size: 11px;
+    background: transparent;
+    color: white;
+    font-family: inherit;
 
     @media #{$mobile} {
       width: 58px;
@@ -565,5 +568,42 @@ header {
         height: calc(100vh - 59px);
       }
     }
+  }
+}
+
+.menuFeeBalance {
+  font-size: 11px;
+  color: $white;
+  line-height: 1;
+  height: 24px;
+  display: flex;
+  flex-wrap: nowrap;
+  // max-width: 152px;
+  justify-content: center;
+  align-items: flex-start;
+
+  &::after {
+    content: " ";
+    display: inline-block;
+    height: 22px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.25);
+    vertical-align: middle;
+    margin: 0 15px 0 10px;
+  }
+
+  > p {
+    flex: 1;
+    // max-width: 50%;
+    word-wrap: break-word;
+
+    &:first-child {
+      margin: 0 12px 0 0;
+    }
+  }
+
+  > p > strong {
+    letter-spacing: 1px;
+    display: block;
   }
 }

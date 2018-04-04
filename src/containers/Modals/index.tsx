@@ -3,9 +3,9 @@ import React, { Component, CSSProperties } from 'react'
 import { connect } from 'react-redux'
 import { closeModal, approveAndPostSellOrder } from 'actions'
 
-import { history } from 'index'
+import { history } from 'components/App'
 
-import { State, Modal } from 'types'  
+import { State, Modal } from 'types'
 
 import * as Modals from 'components/Modals'
 
@@ -41,7 +41,7 @@ class ModalContainer extends Component<ModalContainerProps> {
     const { isOpen } = this.props
     // if no changes
     if (nextProps.isOpen === isOpen) return
-        
+
     // If MODAL is OPEN block movement
     if (nextProps.isOpen) {
       unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
@@ -58,14 +58,14 @@ class ModalContainer extends Component<ModalContainerProps> {
 
     const Modal = Modals[modalName]
     if (!Modal) throw new Error('No correct modal')
-    
+
     return (
       <div style={backdropActive}>
         <Modal {...rest}/>
       </div>
     )
   }
-  
+
   render() {
     const { children, isOpen } = this.props
 
@@ -80,14 +80,14 @@ class ModalContainer extends Component<ModalContainerProps> {
 
 const mapState = ({
   blockchain,
-  modal: { 
-    modalName, 
-    modalProps, 
-    isOpen, 
+  modal: {
+    modalName,
+    modalProps,
+    isOpen,
   },
 }: State) => ({
   activeProvider: blockchain.activeProvider,
-  
+
   isOpen,
   modalName,
   modalProps,
