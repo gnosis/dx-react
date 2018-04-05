@@ -1,11 +1,6 @@
 import IPFS from 'ipfs'
 import { windowLoaded } from './utils'
-
-type FileBuffer = number[]
-interface oFile {
-  name: string,
-}
-
+import { FileBuffer, oFile } from 'types'
 /**
  * @returns Promise<IPFS>
  */

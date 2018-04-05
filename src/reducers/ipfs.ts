@@ -1,10 +1,10 @@
 import { handleActions } from 'redux-actions'
 
-import { setUploadFileParams, setIPFSFileHashAndPath } from 'actions/ipfs'
+import { setUploadFileParams, setIPFSFileHashAndPath, getFileContentFromIPFS } from 'actions/ipfs'
 
 export const reducer = handleActions(
   {
-    [setUploadFileParams as any]: (state: any, action: any) => {
+    [setUploadFileParams.toString()]: (state: {}, action: any) => {
       const { oFile, fileBuffer } = action.payload
       return {
         ...state,
@@ -12,7 +12,7 @@ export const reducer = handleActions(
         fileBuffer,
       }
     },
-    [setIPFSFileHashAndPath as any]: (state: any, action: any) => {
+    [setIPFSFileHashAndPath.toString()]: (state: {}, action: any) => {
       const { fileHash, filePath } = action.payload
       return {
         ...state,
@@ -20,12 +20,20 @@ export const reducer = handleActions(
         filePath,
       }
     },
+    [getFileContentFromIPFS.toString()]: (state: {}, action: any) => {
+      const { fileContent } = action.payload
+      return {
+        ...state,
+        fileContent,
+      }
+    },
   },
   {
-    oFile: undefined,
-    fileBuffer: undefined,
-    fileHash: undefined,
-    filePath: undefined,
+    oFile: {},
+    fileBuffer: [],
+    fileHash: '',
+    filePath: '',
+    fileContent: '',
   },
 )
 

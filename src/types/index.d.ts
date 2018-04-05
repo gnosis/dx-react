@@ -52,8 +52,8 @@ export type OngoingAuctions = AuctionObject[]
  * buyToken: token to buy
  * buyPrice: last closingPrice - from DutchExchange contract
  * claim: boolean yay or ney
- * 
- * 
+ *
+ *
  */
 export type AuctionObject = {
   index?: number,
@@ -110,14 +110,33 @@ export interface TokenOverlay {
   mod: TokenMod
 }
 
+export type FileBuffer = number[]
+export interface oFile {
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  size: number;
+  type: string;
+  webkitRelativePath: string;
+}
+
+export interface IPFS {
+  oFile?: oFile,
+  fileContent?: string;
+  fileBuffer?: FileBuffer,
+  fileHash?: string,
+  filePath?: string,
+}
+
 /**
- * represents global State of redux store 
+ * represents global State of redux store
  * @export
  * @interface State
  */
 export interface State {
   blockchain: Blockchain,
   modal: Modal,
+  ipfs: IPFS,
   tokenPair: TokenPair,
   tokenBalances: TokenBalances,
   tokenOverlay: TokenOverlay,
