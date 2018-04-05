@@ -1,24 +1,32 @@
 import { connect } from 'react-redux'
 
-import { setUploadFileParams, setIPFSFileHashAndPath } from 'actions/ipfs'
+import { setUploadFileParams, setIPFSFileHashAndPath, getFileContentFromIPFS, openModal } from 'actions'
 
 import IPFSHOC from 'components/IPFSHOC'
 import TokenUpload from 'components/TokenUpload'
 
-interface TokenUploadState {
+import { State } from 'types'
+
+const mapState = ({
   ipfs: {
-    fileBuffer: any;
-    oFile: any;
-    fileHash: any;
-    filePath: any;
-  }
-}
+    fileBuffer,
+    oFile,
+    fileHash,
+    filePath,
+    fileContent,
+  } }: Partial<State>) => ({
+    fileBuffer,
+    oFile,
+    fileHash,
+    filePath,
+    fileContent,
+  })
 
-const mapState = ({ ipfs: { fileBuffer, oFile, fileHash, filePath } }: TokenUploadState) => ({
-  fileBuffer,
-  oFile,
-  fileHash,
-  filePath,
-})
-
-export default connect(mapState, { setUploadFileParams, setIPFSFileHashAndPath })(IPFSHOC(TokenUpload) as any)
+export default connect(
+  mapState,
+  {
+    setUploadFileParams,
+    setIPFSFileHashAndPath,
+    getFileContentFromIPFS,
+    openModal,
+  })(IPFSHOC(TokenUpload) as any)
