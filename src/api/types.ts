@@ -125,7 +125,7 @@ export interface OWLInterface extends ERC20Interface {
 export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
-  unlockedTokens(account: Account): never,
+  unlockedTokens(account: Account): Promise<[BigNumber, BigNumber]>,
   lockedTokenBalances(account: Account): Promise<BigNumber>,
 
   updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
@@ -155,11 +155,13 @@ export interface Receipt {
 
 export interface DXAuction {
   address: Account,
-  masterCopy(): Promise<Account>,
+  newMasterCopy(): Promise<Account>,
   masterCopyCountdown(): Promise<BigNumber>,
   auctioneer(): Promise<Account>,
   ethToken(): Promise<Account>,
   ethUSDOracle(): Promise<Account>,
+  newProposalEthUSDOracle(): Promise<Account>,
+  oracleInterfaceCountdown(): Promise<BigNumber>,
   thresholdNewTokenPair(): Promise<BigNumber>,
   thresholdNewAuction(): Promise<BigNumber>,
   frtToken(): Promise<Account>,
@@ -203,14 +205,12 @@ export interface DXAuction {
     thresholdNewTokenPair: Balance,
     thresholdNewAuction: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
-  updateExchangeParams(
-    auctioneer: Account,
-    ethUSDOracle: Account,
-    thresholdNewTokenPair: Balance,
-    thresholdNewAuction: Balance,
-    tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): never,
+  updateAuctioneer(auctioneer: Account, tx: TransactionObject): Promise<Receipt>,
+  initiateEthUsdOracleUpdate(ethUSDOracle: Account, tx: TransactionObject): Promise<Receipt>,
+  updateEthUSDOracle(tx: TransactionObject): Promise<Receipt>,
+  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance,, tx: TransactionObject): Promise<Receipt>,
+  updateThresholdNewAuction(thresholdNewAuction: Balance, tx: TransactionObject): Promise<Receipt>,
   updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<Receipt>,
   startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
   updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
@@ -253,7 +253,30 @@ export interface DXAuction {
     auctionIndex: Index,
     tx?: TransactionObject,
   ): Promise<Receipt>,
+  closeTheoreticalClosedAuction(
+    sellToken: Account,
+    buyToken: Account,
+    auctionIndex: Index,
+    tx: TransactionObject,
+  ): Promise<Receipt>,
+  getUnclaimedBuyerFunds(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    auctionIndex: Index,
+  ): never, // WATCH: returns a struct, but may change
+  getFeeRatio(user: Account): never, // WATCH: returns a struct, but may change
+  getFeeRatioExt(user: Account): Promise<[BigNumber, BigNumber]>,
   getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
+  getPriceInPastAuction(sellToken: Account, buyToken: Account, auctionIndex: Index): never, // WATCH: returns a struct, but may change
+  getPriceInPastAuctionExt(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
+  getPriceOfTokenInLastAuction(token: Account): never, // WATCH: returns a struct, but may change
+  getPriceOfTokenInLastAuctionExt(token: Account): Promise<[BigNumber, BigNumber]>,
+  getCurrentAuctionPrice(
+    sellToken: Account,
+    buyToken: Account,
+    auctionIndex: Index,
+  ): never, // WATCH: returns a struct, but may change
   getCurrentAuctionPriceExt(
     sellToken: Account,
     buyToken: Account,
@@ -277,6 +300,31 @@ export interface DXAuction {
   ): Promise<[BigNumber, BigNumber]>,
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
+  getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
+  getRunningTokenPairs(tokens: Account[]): Promise<[Account[], Account[]]>,
+  getIndicesWithClaimableTokens(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
+  getSellerBalancesOfCurrentAuctions(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    user: Account,
+  ): Promise<BigNumber[]>,
+  claimTokensFromSeveralAuctionsAsSeller(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    auctionIndices: number[],
+    user: Account,
+  ): Promise<Receipt>,
+  claimTokensFromSeveralAuctionsAsBuyer(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    auctionIndices: number[],
+    user: Account,
+  ): Promise<Receipt>,
 }
 
 export interface DutchExchange {
