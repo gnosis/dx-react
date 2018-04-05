@@ -101,6 +101,7 @@
     "redux-form": "7.1.1",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
+    "run-with-testrpc": "^0.3.0",
     "sha1": "^1.1.1",
     "tempo": "^0.2.7",
     "truffle-contract": "^3.0.1",
