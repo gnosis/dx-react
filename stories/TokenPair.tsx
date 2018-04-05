@@ -35,6 +35,7 @@ const tokenPair = () => {
       buyToken={buy}
       sellTokenBalance={sellTokenBalance}
       buyTokenBalance={buyTokenBalance}
+      swapTokensInAPair={() => {}}
     />
   )
 }
