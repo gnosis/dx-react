@@ -7,6 +7,7 @@ import AuctionPriceBar from 'components/AuctionPriceBar'
 
 // TODO: create state for lastAuctionPrice for each token
 const mapState = (state: State) => {
+  // TODO: change price acquisition
   const { buy, sell, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
 
   return {

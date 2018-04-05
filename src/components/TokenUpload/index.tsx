@@ -17,7 +17,8 @@ const TokenUpload = (props: TokenUploadProps) => {
       <span className="icon-tokenUpload" />
       <h2>Upload Token List</h2>
       <p>
-        Upload a list of tokens to be added and start trading. JSON formatted files are supported with a max. filesize of 1MB.
+        Upload a list of tokens to be added and start trading.
+        JSON formatted files are supported with a max. filesize of 1MB.
       <br />
         Read our <a href="#">FAQ</a> on how this works.
       </p>
