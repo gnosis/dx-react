@@ -22,7 +22,7 @@ deploy:
     skip_cleanup: true
     local_dir: dist
     on:
-      branch: development
+      branch: develop
   - provider: s3
     bucket: dx-staging
     secret_access_key:
@@ -32,4 +32,4 @@ deploy:
     skip_cleanup: true
     local_dir: dist
     on:
-      branch: development_v2.0
+      branch: master
