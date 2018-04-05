@@ -13,7 +13,6 @@ env:
 install:
   - npm install
 deploy:
-  matrix:
   - provider: s3
     bucket: dx-development
     secret_access_key:
