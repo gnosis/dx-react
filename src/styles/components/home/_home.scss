@@ -49,8 +49,8 @@
       display: flex;
       flex-wrap: wrap;
 
-      > p > li {
-        list-style: decimal;
+      ul {
+        list-style: inside;
       }
 
       @media #{$tablet} {
@@ -374,6 +374,7 @@
     // flex-basis: 31%;
     margin: 5px;
     padding: 15px;
+    align-self: stretch;
 
     @media #{$tablet} {
       flex-basis: 23.5%;
