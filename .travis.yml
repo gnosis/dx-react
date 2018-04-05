@@ -8,7 +8,8 @@ node_js:
 before_install:
   - rm -rf node_modules
   - npm install -g truffle ganache-cli
-  - npm install --save-dev solidity-coverage codecov
+- env
+  NODE_ENV=development
 install:
   - npm install
 deploy:
