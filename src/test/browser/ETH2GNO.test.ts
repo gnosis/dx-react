@@ -8,7 +8,7 @@ declare module 'expect' {
 }
 
 import { delay, metamaskWarning } from '../utils'
-import web3Utils from '../../../trufflescripts/utils'
+import web3Utils from '../utils/trufflescriptsUtils.js'
 
 import DXart from '../../../build/contracts/DutchExchangeETHGNO.json'
 import ETHart from '../../../build/contracts/TokenETH.json'
