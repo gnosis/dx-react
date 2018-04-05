@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const NameAllModulesPlugin = require('name-all-modules-plugin')
 const BabiliPlugin = require('babili-webpack-plugin')
 
@@ -15,16 +15,18 @@ const nodeEnv = process.env.NODE_ENV || 'development'
 const version = process.env.BUILD_VERSION || pkg.version
 const build = process.env.BUILD_NUMBER || 'SNAPSHOT'
 
+/*
 const config = require('./src/config.json')
 
 const whitelist = config.productionWhitelist
 
 const ethereumUrl =
   process.env.ETHEREUM_URL || `${config.ethereum.protocol}://${config.ethereum.host}:${config.ethereum.port}`
+*/
 
 module.exports = {
   context: path.join(__dirname, 'src'),
-  entry: ['bootstrap-loader', 'index.tsx'],
+  entry: 'index.tsx',
   output: {
     path: `${__dirname}/dist`,
     chunkFilename: '[name].[chunkhash].js',
@@ -58,6 +60,7 @@ module.exports = {
           options: {
             useBabel: true,
             useCache: true,
+            babelCore: '@babel/core',
           },
         },
       },
@@ -152,24 +155,24 @@ module.exports = {
     }),
     new NameAllModulesPlugin(),
     new ExtractTextPlugin('[name].[contenthash].css'),
-    new FaviconsWebpackPlugin({
-      logo: 'assets/img/gnosis_logo_favicon.png',
-      // Generate a cache file with control hashes and
-      // don't rebuild the favicons until those hashes change
-      persistentCache: true,
-      icons: {
-        android: false,
-        appleIcon: false,
-        appleStartup: false,
-        coast: false,
-        favicons: true,
-        firefox: false,
-        opengraph: false,
-        twitter: false,
-        yandex: false,
-        windows: false,
-      },
-    }),
+    // new FaviconsWebpackPlugin({
+    //   logo: 'assets/img/gnosis_logo_favicon.png',
+    //   // Generate a cache file with control hashes and
+    //   // don't rebuild the favicons until those hashes change
+    //   persistentCache: true,
+    //   icons: {
+    //     android: false,
+    //     appleIcon: false,
+    //     appleStartup: false,
+    //     coast: false,
+    //     favicons: true,
+    //     firefox: false,
+    //     opengraph: false,
+    //     twitter: false,
+    //     yandex: false,
+    //     windows: false,
+    //   },
+    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/html/index.html'),
     }),
@@ -177,8 +180,8 @@ module.exports = {
       'process.env': {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
-        ETHEREUM_URL: JSON.stringify(ethereumUrl),
-        WHITELIST: whitelist,
+        // ETHEREUM_URL: JSON.stringify(ethereumUrl),
+        // WHITELIST: whitelist,
       },
     }),
     new BabiliPlugin(),
