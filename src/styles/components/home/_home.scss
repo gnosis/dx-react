@@ -49,8 +49,8 @@
       display: flex;
       flex-wrap: wrap;
 
-      > p > li {
-        list-style: decimal;
+      ul {
+        list-style: inside;
       }
 
       @media #{$tablet} {
@@ -259,6 +259,24 @@
   position: relative;
   margin: 5px auto 10px;
 
+  &-switch {
+    display: block;
+    position: absolute;
+    margin: auto;
+    left: 40%;
+    right: 40%;
+    height: 49px;
+    top: 100px;
+    background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
+    transition: transform .15s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-1px);
+      background-color: white;
+    }
+  }
+
   .auctionContainer & {
     margin-bottom: 10px;
     padding: 15px;
@@ -356,6 +374,7 @@
     // flex-basis: 31%;
     margin: 5px;
     padding: 15px;
+    align-self: stretch;
 
     @media #{$tablet} {
       flex-basis: 23.5%;

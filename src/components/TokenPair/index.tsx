@@ -9,6 +9,7 @@ export interface TokenPairProps {
   sellTokenBalance: Balance,
   buyTokenBalance: Balance,
   openOverlay(): any
+  swapTokensInAPair(): any
 }
 
 const TokenPair: React.SFC<TokenPairProps> = ({
@@ -17,6 +18,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   sellTokenBalance,
   buyTokenBalance,
   openOverlay,
+  swapTokensInAPair,
 }) =>
     // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
     <div className="tokenPair noTokenList">
@@ -29,7 +31,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       />
 
       {/* On click of this button, it should switch the token pair */}
-      <span className="tokenPairSwitcher"></span>
+      <span className="tokenPairSwitcher" onClick={swapTokensInAPair}></span>
 
       <TokenItem
         code={buyToken}

@@ -8,4 +8,4 @@ import App, { initializer } from 'components/App'
 /* global document */
 const rootElement = document.getElementById('root')
 
-ReactDOM.render( <App />, rootElement, initializer)
+ReactDOM.render(<App />, rootElement, initializer)
