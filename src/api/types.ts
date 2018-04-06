@@ -257,24 +257,38 @@ export interface DXAuction {
     auctionIndex: Index,
     tx: TransactionObject,
   ): Promise<Receipt>,
+  /**
+   * @returns Promise<[unclaimedBuyerFunds, currentPriceNum, currentPriceDen]>
+   */
   getUnclaimedBuyerFunds(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     auctionIndex: Index,
-  ): never, // WATCH: returns a struct, but may change
-  getFeeRatio(user: Account): never, // WATCH: returns a struct, but may change
+  ): Promise<[BigNumber, BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getFeeRatio(user: Account): Promise<[BigNumber, BigNumber]>,
   getFeeRatioExt(user: Account): Promise<[BigNumber, BigNumber]>,
-  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  getPriceInPastAuction(sellToken: Account, buyToken: Account, auctionIndex: Index): never, // WATCH: returns a struct, but may change
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getPriceInPastAuction(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
   getPriceInPastAuctionExt(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-  getPriceOfTokenInLastAuction(token: Account): never, // WATCH: returns a struct, but may change
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getPriceOfTokenInLastAuction(token: Account): Promise<[BigNumber, BigNumber]>,
   getPriceOfTokenInLastAuctionExt(token: Account): Promise<[BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
   getCurrentAuctionPrice(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
-  ): never, // WATCH: returns a struct, but may change
+  ): Promise<[BigNumber, BigNumber]>,
   getCurrentAuctionPriceExt(
     sellToken: Account,
     buyToken: Account,
@@ -306,6 +320,11 @@ export interface DXAuction {
     user: Account,
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,
+  getSellerBalancesOfCurrentAuctions(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    user: Account,
+  ): Promise<BigNumber[]>,
   getSellerBalancesOfCurrentAuctions(
     sellTokens: Account[],
     buyTokens: Account[],
