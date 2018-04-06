@@ -125,6 +125,9 @@ export interface OWLInterface extends ERC20Interface {
 export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
+  /**
+   * @returns Promise<[amountUnlocked, withdrawalTime]> 
+   */
   unlockedTokens(account: Account): Promise<[BigNumber, BigNumber]>,
   lockedTokenBalances(account: Account): Promise<BigNumber>,
 
@@ -296,24 +299,39 @@ export interface DXAuction {
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
+  /**
+   * @returns Promise<[tokens1[], tokens2[]]>
+   */
   getRunningTokenPairs(tokens: Account[]): Promise<[Account[], Account[]]>,
+  /**
+   * @returns Promise<[indices[], sellerBalances[]]>
+   */
   getIndicesWithClaimableTokensForSellers(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,
+  /**
+   * @returns Promise<[indices[], buyerBalances[]]>
+   */
   getIndicesWithClaimableTokensForBuyers(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,
+  /**
+   * @returns Promise<sellerBalances[]]>
+   */
   getSellerBalancesOfCurrentAuctions(
     sellTokens: Account[],
     buyTokens: Account[],
     user: Account,
   ): Promise<BigNumber[]>,
+  /**
+   * @returns Promise<sellerBalances[]]>
+   */
   getBuyerBalancesOfCurrentAuctions(
     sellTokens: Account[],
     buyTokens: Account[],
@@ -377,12 +395,14 @@ export interface DutchExchange {
 
 export type DutchExchangeEvents = 'NewDeposit' |
   'NewWithdrawal' |
+  'NewOracleProposal' |
+  'NewMasterCopyProposal' |
   'NewSellOrder' |
   'NewBuyOrder' |
   'NewSellerFundsClaim' |
   'NewBuyerFundsClaim' |
+  'NewTokenPair' |
   'AuctionCleared'
-
 
 export interface dxAPI {
   web3: ProviderInterface,
