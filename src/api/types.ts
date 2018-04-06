@@ -297,7 +297,13 @@ export interface DXAuction {
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
   getRunningTokenPairs(tokens: Account[]): Promise<[Account[], Account[]]>,
-  getIndicesWithClaimableTokens(
+  getIndicesWithClaimableTokensForSellers(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
+  getIndicesWithClaimableTokensForBuyers(
     sellToken: Account,
     buyToken: Account,
     user: Account,
@@ -308,7 +314,7 @@ export interface DXAuction {
     buyTokens: Account[],
     user: Account,
   ): Promise<BigNumber[]>,
-  getSellerBalancesOfCurrentAuctions(
+  getBuyerBalancesOfCurrentAuctions(
     sellTokens: Account[],
     buyTokens: Account[],
     user: Account,
