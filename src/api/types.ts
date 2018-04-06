@@ -180,6 +180,8 @@ export interface DXAuction {
   claimedAmounts(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
 
   NewDeposit: ContractEvent,
+  NewOracleProposal: ContractEvent,
+  NewMasterCopyProposal: ContractEvent,
   NewWithdrawal: ContractEvent,
   NewSellOrder: ContractEvent,
   NewBuyOrder: ContractEvent,
@@ -187,10 +189,6 @@ export interface DXAuction {
   NewBuyerFundsClaim: ContractEvent,
   NewTokenPair: ContractEvent,
   AuctionCleared: ContractEvent,
-  Log: ContractEvent,
-  LogOutstandingVolume: ContractEvent,
-  LogNumber: ContractEvent,
-  ClaimBuyerFunds: ContractEvent,
   allEvents(filter: Filter, cb: ErrorFirstCallback): void,
   allEvents(filter: Filter): EventInstance,
 
