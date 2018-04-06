@@ -270,26 +270,18 @@ export interface DXAuction {
    * @returns Promise<[priceNum, priceDen]>
    */
   getFeeRatio(user: Account): Promise<[BigNumber, BigNumber]>,
-  getFeeRatioExt(user: Account): Promise<[BigNumber, BigNumber]>,
   /**
    * @returns Promise<[priceNum, priceDen]>
    */
   getPriceInPastAuction(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-  getPriceInPastAuctionExt(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
   /**
    * @returns Promise<[priceNum, priceDen]>
    */
   getPriceOfTokenInLastAuction(token: Account): Promise<[BigNumber, BigNumber]>,
-  getPriceOfTokenInLastAuctionExt(token: Account): Promise<[BigNumber, BigNumber]>,
   /**
    * @returns Promise<[priceNum, priceDen]>
    */
   getCurrentAuctionPrice(
-    sellToken: Account,
-    buyToken: Account,
-    auctionIndex: Index,
-  ): Promise<[BigNumber, BigNumber]>,
-  getCurrentAuctionPriceExt(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
@@ -303,13 +295,6 @@ export interface DXAuction {
     amount: Balance,
     tx: TransactionObject,
   ): Promise<Receipt>,
-  getPriceOracleForJS(token: Account): Promise<[BigNumber, BigNumber]>,
-  historicalPriceOracleForJS(token: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-  computeRatioOfHistoricalPriceOraclesForJS(
-    tokenA: Account,
-    tokenB: Account,
-    auctionIndex: Index,
-  ): Promise<[BigNumber, BigNumber]>,
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
