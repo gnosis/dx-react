@@ -179,8 +179,6 @@ export interface DXAuction {
   buyerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   claimedAmounts(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
 
-  isInitialised(): Promise<boolean>,
-
   NewDeposit: ContractEvent,
   NewWithdrawal: ContractEvent,
   NewSellOrder: ContractEvent,
@@ -209,7 +207,7 @@ export interface DXAuction {
   updateAuctioneer(auctioneer: Account, tx: TransactionObject): Promise<Receipt>,
   initiateEthUsdOracleUpdate(ethUSDOracle: Account, tx: TransactionObject): Promise<Receipt>,
   updateEthUSDOracle(tx: TransactionObject): Promise<Receipt>,
-  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance,, tx: TransactionObject): Promise<Receipt>,
+  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance, tx: TransactionObject): Promise<Receipt>,
   updateThresholdNewAuction(thresholdNewAuction: Balance, tx: TransactionObject): Promise<Receipt>,
   updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<Receipt>,
   startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
