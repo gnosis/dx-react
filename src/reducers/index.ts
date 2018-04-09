@@ -12,6 +12,7 @@ import ratioPairs from './ratioPairs'
 import settings from './settings'
 import notifications from './notifications'
 import ipfs from './ipfs'
+import auctions from './auctions'
 
 const reducers = combineReducers<State>({
   form: formReducer,
@@ -26,6 +27,7 @@ const reducers = combineReducers<State>({
   notifications,
   settings,
   ipfs,
+  auctions,
 })
 
 const rootReducer: Reducer<State> = (state, action) => {
