@@ -13,7 +13,7 @@ export const windowLoaded = new Promise((accept, reject) => {
   }, false)
 })
 
-export const readFileUpload = (file: any) =>
+export const readFileUpload = (file: File) =>
     new Promise((resolve) => {
       const r = new FileReader()
       r.onload = (e: any) => resolve(e.target.result)
