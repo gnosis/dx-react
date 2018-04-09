@@ -110,18 +110,10 @@ export interface TokenOverlay {
   mod: TokenMod
 }
 
-export type FileBuffer = number[]
-export interface oFile {
-  lastModified: number;
-  lastModifiedDate: Date;
-  name: string;
-  size: number;
-  type: string;
-  webkitRelativePath: string;
-}
+export type FileBuffer = ArrayBuffer
 
 export interface IPFS {
-  oFile?: oFile,
+  oFile?: File,
   fileContent?: string;
   fileBuffer?: FileBuffer,
   fileHash?: string,

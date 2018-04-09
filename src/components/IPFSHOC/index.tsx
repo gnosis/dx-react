@@ -1,11 +1,11 @@
 import React from 'react'
 
 import { promisedIPFS } from 'api/IPFS'
-import { FileBuffer, oFile } from 'types'
+import { FileBuffer } from 'types'
 import { readFileUpload } from 'api/utils'
 
 export interface HOCState {
-  oFile?: oFile,
+  oFile?: File,
   fileContent?: string;
   fileBuffer?: FileBuffer,
   fileHash?: string,

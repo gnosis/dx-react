@@ -1,6 +1,6 @@
 import IPFS from 'ipfs'
 import { windowLoaded } from './utils'
-import { FileBuffer, oFile } from 'types'
+import { FileBuffer } from 'types'
 /**
  * @returns Promise<IPFS>
  */
@@ -20,7 +20,7 @@ async function init() {
    * ipfsAddFile - takes uint8Array Buffer and sends to IPFS node
    * @param {uint8[]} fileBuffer - uint8Array encoded JSON
    */
-  const ipfsAddFile = async (fileBuffer: FileBuffer, oFile: oFile) => {
+  const ipfsAddFile = async (fileBuffer: FileBuffer, oFile: File) => {
     const [file0] = await ipfs.files.add({
       path: oFile.name,
       content: Buffer.from(fileBuffer),

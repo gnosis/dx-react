@@ -16,10 +16,11 @@ export const TextSquare: React.SFC = () => {
 
         <br />
         <br />
-
-        <li>Choose the token you would like to sell</li>
-        <li>Pick the token you would like to receive</li>
-        <li>Specify the amount to sell</li>
+        <ul>
+          <li>Choose the token you would like to sell</li>
+          <li>Pick the token you would like to receive</li>
+          <li>Specify the amount to sell</li>
+        </ul>
 
         <br />
 

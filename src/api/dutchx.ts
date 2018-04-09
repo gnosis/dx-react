@@ -56,7 +56,7 @@ async function init(): Promise<DutchExchange> {
   const getPrice = (pair: TokenPair, index: Index) => {
     const [t1, t2] = getTokenPairAddresses(pair)
 
-    return dx.getCurrentAuctionPriceExt.call(t1, t2, index)
+    return dx.getCurrentAuctionPrice.call(t1, t2, index)
   }
 
   const getSellVolumesCurrent = (pair: TokenPair) => {
