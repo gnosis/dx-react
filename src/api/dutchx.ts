@@ -21,19 +21,19 @@ async function init(): Promise<DutchExchange> {
     acc[key.replace('Token', '')] = contr.address
     return acc
   }, {}) as T2A
-  
+
   const getTokenAddress = (code: TokenCode) => {
     const address = token2Address[code]
-  
+
     if (!address) throw new Error(`No known address for ${code} token`)
-  
+
     return address
   }
-  
+
   const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => {
     const sellAddress = getTokenAddress(sell)
     const buyAddress = getTokenAddress(buy)
-  
+
     return [sellAddress, buyAddress]
   }
 
@@ -108,7 +108,7 @@ async function init(): Promise<DutchExchange> {
     account: Account,
   ) => {
     const [t1, t2] = getTokenPairAddresses(pair)
-    
+
     return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
   }
 
@@ -210,6 +210,10 @@ async function init(): Promise<DutchExchange> {
     return dx.balances.call(token, account)
   }
 
+  const getRunningTokenPairs = (tokenList: string[]) => dx.getRunningTokenPairs.call(tokenList)
+
+  const getSellerBalancesOfCurrentAuctions = (sellTokenArr: string[], buyTokenArr: string[], account: Account) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, account)
+
   const event: DutchExchange['event'] = (
     eventName: DutchExchangeEvents,
     valueFilter: object | void,
@@ -241,6 +245,8 @@ async function init(): Promise<DutchExchange> {
     getExtraTokens,
     getSellerBalances,
     getBuyerBalances,
+    getRunningTokenPairs,
+    getSellerBalancesOfCurrentAuctions,
     getClaimedAmounts,
     postSellOrder,
     postBuyOrder,

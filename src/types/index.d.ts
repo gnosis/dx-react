@@ -126,6 +126,7 @@ export interface IPFS {
  * @interface State
  */
 export interface State {
+  auctions: any,
   blockchain: Blockchain,
   modal: Modal,
   ipfs: IPFS,

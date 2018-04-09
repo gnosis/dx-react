@@ -3,7 +3,13 @@ import { BigNumber } from 'bignumber.js'
 
 type Balance = B | BigNumber | number
 export type Index = number | BigNumber
+export interface DefaultTokenObject {
+  name: TokenCode;
+  address: Account;
+  imgData: any;
 
+}
+export type DefaultTokenList = DefaultTokenObject[]
 
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
@@ -126,7 +132,7 @@ export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
   /**
-   * @returns Promise<[amountUnlocked, withdrawalTime]> 
+   * @returns Promise<[amountUnlocked, withdrawalTime]>
    */
   unlockedTokens(account: Account): Promise<[BigNumber, BigNumber]>,
   lockedTokenBalances(account: Account): Promise<BigNumber>,
@@ -367,6 +373,8 @@ export interface DutchExchange {
   getSellerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getBuyerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getClaimedAmounts(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
+  getRunningTokenPairs(tokenList: string[]): Promise<any>,
+  getSellerBalancesOfCurrentAuctions(sellTokenArr: string[], buyTokenArr: string[], account: Account): Promise<any[]>,
 
   postSellOrder(
     pair: TokenPair,
