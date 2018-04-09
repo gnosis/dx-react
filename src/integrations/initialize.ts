@@ -1,4 +1,5 @@
 import { promisify } from 'api/utils'
+import { getTime } from 'api'
 import { ETHEREUM_NETWORKS } from './constants'
 import { WalletProvider, ConnectedInterface } from './types'
 import { Account, Balance } from 'types'
@@ -7,7 +8,7 @@ import MetamaskProvider from './metamask'
 import ParityProvider from './parity'
 import RemoteProvider from './remote'
 
-const WATCHER_INTERVAL = 10000
+const WATCHER_INTERVAL = 5000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,
@@ -35,7 +36,8 @@ const shallowDifferent = (obj1: object, obj2: object) => {
   return keys1.some(key => obj1[key] !== obj2[key])
 }
 
-export default async ({ registerProvider, updateProvider }: ConnectedInterface) => {
+export default async ({ registerProvider, updateProvider, updateMainAppState }: ConnectedInterface | any) => {
+  let prevTime: any
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -58,26 +60,26 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
 
   const watcher = async (provider: WalletProvider) => {
     if (!provider.checkAvailability()) return
-
+    //@ts-ignore
+    provider.state.timestamp = prevTime
     try {
-      const [account, network] = await Promise.all<Account, ETHEREUM_NETWORKS>([
+      const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
         getAccount(provider),
         getNetwork(provider),
-      ])
-
-      // only get balance if accaount is not undefined
-      const balance = account && await getBalance(provider, account)
-
-      const available = !!(provider.walletAvailable && account)
-
-
-      const newState = { account, network, balance, available }
+        getTime(),
+      ]),
+      balance = account && await getBalance(provider, account),
+      available = !!(provider.walletAvailable && account),
+      newState = { account, network, balance, available, timestamp }
 
       // if data changed
       // TODO: watch for account, timestamp, blocknumber change and update everything in state
       if (shallowDifferent(provider.state, newState)) {
+        // reset module timestamp with updated timestamp
+        prevTime = timestamp
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
+        await updateMainAppState()
       }
     } catch (err) {
       console.warn(err)
