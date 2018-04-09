@@ -74,6 +74,7 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
       const newState = { account, network, balance, available }
 
       // if data changed
+      // TODO: watch for account, timestamp, blocknumber change and update everything in state
       if (shallowDifferent(provider.state, newState)) {
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)

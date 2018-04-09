@@ -125,7 +125,10 @@ export interface OWLInterface extends ERC20Interface {
 export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
-  unlockedTokens(account: Account): never,
+  /**
+   * @returns Promise<[amountUnlocked, withdrawalTime]> 
+   */
+  unlockedTokens(account: Account): Promise<[BigNumber, BigNumber]>,
   lockedTokenBalances(account: Account): Promise<BigNumber>,
 
   updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
@@ -155,11 +158,13 @@ export interface Receipt {
 
 export interface DXAuction {
   address: Account,
-  masterCopy(): Promise<Account>,
+  newMasterCopy(): Promise<Account>,
   masterCopyCountdown(): Promise<BigNumber>,
   auctioneer(): Promise<Account>,
   ethToken(): Promise<Account>,
   ethUSDOracle(): Promise<Account>,
+  newProposalEthUSDOracle(): Promise<Account>,
+  oracleInterfaceCountdown(): Promise<BigNumber>,
   thresholdNewTokenPair(): Promise<BigNumber>,
   thresholdNewAuction(): Promise<BigNumber>,
   frtToken(): Promise<Account>,
@@ -177,9 +182,9 @@ export interface DXAuction {
   buyerBalances(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
   claimedAmounts(token1: Account, token2: Account, index: Index, account: Account): Promise<BigNumber>,
 
-  isInitialised(): Promise<boolean>,
-
   NewDeposit: ContractEvent,
+  NewOracleProposal: ContractEvent,
+  NewMasterCopyProposal: ContractEvent,
   NewWithdrawal: ContractEvent,
   NewSellOrder: ContractEvent,
   NewBuyOrder: ContractEvent,
@@ -187,10 +192,6 @@ export interface DXAuction {
   NewBuyerFundsClaim: ContractEvent,
   NewTokenPair: ContractEvent,
   AuctionCleared: ContractEvent,
-  Log: ContractEvent,
-  LogOutstandingVolume: ContractEvent,
-  LogNumber: ContractEvent,
-  ClaimBuyerFunds: ContractEvent,
   allEvents(filter: Filter, cb: ErrorFirstCallback): void,
   allEvents(filter: Filter): EventInstance,
 
@@ -203,14 +204,12 @@ export interface DXAuction {
     thresholdNewTokenPair: Balance,
     thresholdNewAuction: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
-  updateExchangeParams(
-    auctioneer: Account,
-    ethUSDOracle: Account,
-    thresholdNewTokenPair: Balance,
-    thresholdNewAuction: Balance,
-    tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): never,
+  updateAuctioneer(auctioneer: Account, tx: TransactionObject): Promise<Receipt>,
+  initiateEthUsdOracleUpdate(ethUSDOracle: Account, tx: TransactionObject): Promise<Receipt>,
+  updateEthUSDOracle(tx: TransactionObject): Promise<Receipt>,
+  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance, tx: TransactionObject): Promise<Receipt>,
+  updateThresholdNewAuction(thresholdNewAuction: Balance, tx: TransactionObject): Promise<Receipt>,
   updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<Receipt>,
   startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
   updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
@@ -253,8 +252,37 @@ export interface DXAuction {
     auctionIndex: Index,
     tx?: TransactionObject,
   ): Promise<Receipt>,
-  getPrice(sellToken: Account, buyToken: Account, auctionIndex: Index): never,
-  getCurrentAuctionPriceExt(
+  closeTheoreticalClosedAuction(
+    sellToken: Account,
+    buyToken: Account,
+    auctionIndex: Index,
+    tx: TransactionObject,
+  ): Promise<Receipt>,
+  /**
+   * @returns Promise<[unclaimedBuyerFunds, currentPriceNum, currentPriceDen]>
+   */
+  getUnclaimedBuyerFunds(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    auctionIndex: Index,
+  ): Promise<[BigNumber, BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getFeeRatio(user: Account): Promise<[BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getPriceInPastAuction(sellToken: Account, buyToken: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getPriceOfTokenInLastAuction(token: Account): Promise<[BigNumber, BigNumber]>,
+  /**
+   * @returns Promise<[priceNum, priceDen]>
+   */
+  getCurrentAuctionPrice(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
@@ -268,15 +296,59 @@ export interface DXAuction {
     amount: Balance,
     tx: TransactionObject,
   ): Promise<Receipt>,
-  getPriceOracleForJS(token: Account): Promise<[BigNumber, BigNumber]>,
-  historicalPriceOracleForJS(token: Account, auctionIndex: Index): Promise<[BigNumber, BigNumber]>,
-  computeRatioOfHistoricalPriceOraclesForJS(
-    tokenA: Account,
-    tokenB: Account,
-    auctionIndex: Index,
-  ): Promise<[BigNumber, BigNumber]>,
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
+  getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
+  /**
+   * @returns Promise<[tokens1[], tokens2[]]>
+   */
+  getRunningTokenPairs(tokens: Account[]): Promise<[Account[], Account[]]>,
+  /**
+   * @returns Promise<[indices[], sellerBalances[]]>
+   */
+  getIndicesWithClaimableTokensForSellers(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
+  /**
+   * @returns Promise<[indices[], buyerBalances[]]>
+   */
+  getIndicesWithClaimableTokensForBuyers(
+    sellToken: Account,
+    buyToken: Account,
+    user: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
+  /**
+   * @returns Promise<sellerBalances[]]>
+   */
+  getSellerBalancesOfCurrentAuctions(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    user: Account,
+  ): Promise<BigNumber[]>,
+  /**
+   * @returns Promise<sellerBalances[]]>
+   */
+  getBuyerBalancesOfCurrentAuctions(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    user: Account,
+  ): Promise<BigNumber[]>,
+  claimTokensFromSeveralAuctionsAsSeller(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    auctionIndices: number[],
+    user: Account,
+  ): Promise<Receipt>,
+  claimTokensFromSeveralAuctionsAsBuyer(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    auctionIndices: number[],
+    user: Account,
+  ): Promise<Receipt>,
 }
 
 export interface DutchExchange {
@@ -323,12 +395,14 @@ export interface DutchExchange {
 
 export type DutchExchangeEvents = 'NewDeposit' |
   'NewWithdrawal' |
+  'NewOracleProposal' |
+  'NewMasterCopyProposal' |
   'NewSellOrder' |
   'NewBuyOrder' |
   'NewSellerFundsClaim' |
   'NewBuyerFundsClaim' |
+  'NewTokenPair' |
   'AuctionCleared'
-
 
 export interface dxAPI {
   web3: ProviderInterface,
