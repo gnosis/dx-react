@@ -210,9 +210,13 @@ async function init(): Promise<DutchExchange> {
     return dx.balances.call(token, account)
   }
 
-  const getRunningTokenPairs = (tokenList: string[]) => dx.getRunningTokenPairs.call(tokenList)
+  const getRunningTokenPairs = (tokenList: Account[]) => dx.getRunningTokenPairs.call(tokenList)
 
-  const getSellerBalancesOfCurrentAuctions = (sellTokenArr: string[], buyTokenArr: string[], account: Account) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, account)
+  const getSellerBalancesOfCurrentAuctions = (sellTokenArr: Account[], buyTokenArr: Account[], account: Account) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, account)
+
+  const getIndicesWithClaimableTokensForSellers = (sellToken: Account, buyToken: Account, account: Account, lastNAuctions: number = 0) => dx.getIndicesWithClaimableTokensForSellers.call(sellToken, buyToken, account, lastNAuctions)
+
+  const getFeeRatio = (account: Account) => dx.getFeeRatio.call(account)
 
   const event: DutchExchange['event'] = (
     eventName: DutchExchangeEvents,
@@ -247,7 +251,9 @@ async function init(): Promise<DutchExchange> {
     getBuyerBalances,
     getRunningTokenPairs,
     getSellerBalancesOfCurrentAuctions,
+    getIndicesWithClaimableTokensForSellers,
     getClaimedAmounts,
+    getFeeRatio,
     postSellOrder,
     postBuyOrder,
     claimSellerFunds,
