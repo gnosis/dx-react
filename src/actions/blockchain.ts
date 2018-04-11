@@ -1,18 +1,24 @@
+import { push } from 'connected-react-router'
+import { createAction } from 'redux-actions'
+
 import {
   closingPrice,
   depositAndSell,
   depositETH,
   getCurrentAccount,
-  getCurrentBalance,
   getDXTokenBalance,
   getEtherTokenBalance,
+  getFeeRatio,
   getSellerOngoingAuctions,
   getTokenAllowance,
   getTokenBalances,
   postSellOrder,
   tokenApproval,
   toWei,
+  getETHBalance,
 } from 'api'
+
+import { promisedContractsMap } from 'api/contracts'
 
 import {
   openModal,
@@ -23,15 +29,12 @@ import {
   setOngoingAuctions,
 } from 'actions'
 
-import { timeoutCondition } from '../utils/helpers'
-import { createAction } from 'redux-actions'
-import { push } from 'connected-react-router'
 import { findDefaultProvider } from 'selectors/blockchain'
 
-import { TokenBalances, Account, Balance, State, TokenCode } from 'types'
+import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber } from 'bignumber.js'
-import { promisedContractsMap } from 'api/contracts';
+import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
+
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -52,16 +55,19 @@ export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CO
 export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
-export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: Balance }>('SET_CURRENT_BALANCE')
+export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: Balance | BigNumber }>('SET_CURRENT_BALANCE')
 export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
 
+export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
+export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
+
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 export const updateMainAppState = () => async (dispatch: Function) => {
-  const { TokenETH, TokenGNO, TokenOWL } = await promisedContractsMap,
-  currentAccount = await getCurrentAccount()
+  const { TokenETH, TokenGNO, TokenOWL, TokenMGN } = await promisedContractsMap,
+    currentAccount = await getCurrentAccount()
 
   // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
   const defObj = [
@@ -80,6 +86,11 @@ export const updateMainAppState = () => async (dispatch: Function) => {
       address: TokenOWL.address,
       imgData: '',
     },
+    {
+      name: 'MGN',
+      address: TokenMGN.address,
+      imgData: '',
+    },
   ]
   const tokenNameList = defObj.map(t => t.name)
   // Check state in parallel
@@ -92,33 +103,40 @@ export const updateMainAppState = () => async (dispatch: Function) => {
     * MGN fee ratio
     * localStorage changes
    */
-  const [ongoingAuctions, tokenBalances] = await Promise.all([
+  const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
     // @ts-ignore
     getSellerOngoingAuctions(defObj, currentAccount),
-    getTokenBalances(tokenNameList as TokenCode[]),
+    calcAllTokenBalances(tokenNameList as TokenCode[]),
+    getFeeRatio(currentAccount),
   ])
 
+  /* console.log(`
+  ongoingAuctions:  ${JSON.stringify(ongoingAuctions, undefined, 2)}
+  tokenBalances:    ${tokenBalances}
+  feeRatio:         ${feeRatio}
+  `) */
+
+  // @ts-ignore
+  const mgn = tokenBalances.find(t => t.name === 'MGN')
+
   // dispatch Actions
+  tokenBalances.forEach((token: any) =>
+  dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+
   dispatch(setOngoingAuctions({ ongoingAuctions }))
-  tokenBalances.forEach((token: any) => dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+  dispatch(setFeeRatio({ feeRatio: feeRatio.toNumber() }))
+  dispatch(setTokenSupply({ mgnSupply: mgn.balance }))
 }
 
-async function calcAllTokenBalances() {
+async function calcAllTokenBalances(tokens?: TokenCode[]) {
   // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
-  const tokenBalances = (await getTokenBalances())
-    .map(({ name, balance }) => {
-      if (name === 'ETH') {
-        return {
-          name,
-          balance: balance.toString(),
-        }
-      }
-      return {
-        name,
-        balance: (balance.toNumber() / 10 ** 18).toString(),
-      }
-    })
-    return tokenBalances
+  const tokenBalances = (await getTokenBalances(tokens))
+    .map(({ name, balance }) => ({
+      name,
+      balance: balance.div(10 ** 18).toString(),
+    }))
+
+  return tokenBalances
 }
 
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
@@ -144,17 +162,17 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   // connect
   try {
     let account: Account
-    let currentBalance: Balance
+    let currentBalance: Balance | BigNumber
     let tokenBalances: { name: TokenCode, balance: Balance }[]
 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
         account = await getCurrentAccount()
-        currentBalance = (await getCurrentBalance('ETH', account)).toString()
+        currentBalance = (await getETHBalance(account, true)).toString()
         // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
         tokenBalances = await calcAllTokenBalances()
-        await dispatch(getClosingPrice())
+        return dispatch(getClosingPrice())
       } catch (e) {
         console.log(e)
       }
@@ -366,7 +384,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     const { name, balance } = tokenBalances.find(({ name }) => name === sell)
 
     // new balance for the token just sold
-    dispatch(setTokenBalance({ tokenName: name, balance: balance.toString() }))
+    dispatch(setTokenBalance({ tokenName: name, balance: balance.div(10 ** 18).toString() }))
 
     // proceed to /auction/0x03494929349594
     dispatch(push(`auction/${sell}-${buy}-${index}`))
