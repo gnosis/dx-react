@@ -9,9 +9,8 @@ import {
   setCurrentBalance,
   setCurrentAccountAddress,
   fetchTokens,
-  // setGasCost, 
-  // setGasPrice, 
-  // setEtherTokens,
+  setFeeRatio,
+  setTokenSupply,
 } from 'actions/blockchain'
 
 import { GAS_COST } from 'utils/constants'
@@ -88,24 +87,14 @@ const reducer = handleActions({
     ...state,
     tokens: action.payload,
   }),
-  // [setGasCost]: (state, action) => ({
-  //   ...state,
-  //   [action.payload.entityType]: {
-  //     ...state[action.payload.entityType],
-  //     [action.payload.contractType]: action.payload.gasCost,
-  //   },
-  // }),
-  // [setGasPrice]: (state, action) => ({
-  //   ...state,
-  //   [action.payload.entityType]: action.payload.gasPrice,
-  // }),
-  // [setEtherTokens]: (state, action) => ({
-  //   ...state,
-  //   [action.payload.entityType]: {
-  //     ...state[action.payload.entityType],
-  //     [action.payload.account]: action.payload.etherTokens,
-  //   },
-  // }),
+  [setFeeRatio.toString()]: (state: State, action: any) => ({
+    ...state,
+    feeRatio: action.payload.feeRatio,
+  }),
+  [setTokenSupply.toString()]: (state: State, action: any) => ({
+    ...state,
+    mgnSupply: action.payload.mgnSupply,
+  }),
 },
   {
     gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
@@ -117,17 +106,10 @@ const reducer = handleActions({
     currentAccount: undefined,
     currentBalance: undefined,
     ongoingAuctions: [],
-    tokens: {
-      // GNO: {  
-      //   name: 'GNO',
-      //   balance: 1.2123123, 
-      // },
-      // ETH: {
-      //   name: 'ETHER',
-      //   balance: 1.45654,
-      // },  
-    },
-  },  
+    tokens: {},
+    feeRatio: undefined,
+    mgnSupply: undefined,
+  },
 )
 
 export default reducer

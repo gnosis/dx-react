@@ -9,9 +9,9 @@ import { setTokenBalance } from 'actions/tokenBalances'
 // TODO: fill in when we have actions + fill in rest of Tokens + proper typing
 export default handleActions<TokenBalances>(
   {
-    [setTokenBalance.toString()]: (state, action) => ({
+    [setTokenBalance.toString()]: (state: any, action: any) => ({
       ...state,
-      [action.payload['tokenName']]: action.payload['balance'],
+      [action.payload.tokenName]: action.payload.balance,
     }),
   },
   // zeroBalance
