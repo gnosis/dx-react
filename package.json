@@ -99,6 +99,7 @@
     "react-textarea-autosize": "^5.1.0",
     "redux": "^3.6.0",
     "redux-actions": "^2.0.1",
+    "redux-batched-actions": "^0.2.1",
     "redux-form": "7.1.1",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",

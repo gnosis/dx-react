@@ -34,6 +34,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
+import { batchActions } from 'redux-batched-actions'
 
 
 export enum TypeKeys {
@@ -120,28 +121,20 @@ export const updateMainAppState = () => async (dispatch: Function) => {
   const mgn = tokenBalances.find(t => t.name === 'MGN')
 
   // dispatch Actions
-  tokenBalances.forEach((token: any) =>
-    dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+  dispatch(batchActions(tokenBalances.map((token: { name: string, balance: string }) =>
+    setTokenBalance({ tokenName: token.name, balance: token.balance }))))
+
+  /* tokenBalances.forEach((token: any) =>
+    dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance }))) */
 
   dispatch(setOngoingAuctions({ ongoingAuctions }))
   dispatch(setFeeRatio({ feeRatio: feeRatio.toNumber() }))
   dispatch(setTokenSupply({ mgnSupply: mgn.balance }))
 }
 
-async function calcAllTokenBalances(tokens?: TokenCode[]) {
-  // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
-  const tokenBalances = (await getTokenBalances(tokens))
-    .map(({ name, balance }) => ({
-      name,
-      balance: balance.div(10 ** 18).toString(),
-    }))
-
-  return tokenBalances
-}
-
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
 /**
- * (Re)-Initializes Gnosis.js connection according to current providers settings
+ * (Re)-Initializes DutchX connection according to current providers settings
  */
 export const initDutchX = () => async (dispatch: Function, getState: any) => {
   // initialize
@@ -184,8 +177,8 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     dispatch(setCurrentBalance({ currentBalance }))
 
     // Grab each TokenBalance and dispatch
-    tokenBalances.forEach(token =>
-      dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+    dispatch(batchActions(tokenBalances.map((token: { name: string, balance: string }) =>
+      setTokenBalance({ tokenName: token.name, balance: token.balance }))))
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
@@ -203,69 +196,6 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
   } catch (e) {
     console.log(e)
   }
-}
-
-const errorHandling = (error: Error) => async (dispatch: Function, getState: Function) => {
-  const { blockchain: { activeProvider } } = getState()
-  const normError = error.message
-  console.error('An error has occurred: ', normError)
-  // close to unmount
-  dispatch(closeModal())
-
-  // go home stacy
-  dispatch(push('/'))
-
-  dispatch(openModal({
-    modalName: 'TransactionModal',
-    modalProps: {
-      header: `TRANSACTION FAILED/CANCELLED`,
-      body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
-      button: true,
-      error: normError,
-    },
-  }))
-}
-
-/**
- * checkEthTokenBalance > returns false or EtherToken Balance
- * @param token
- * @param weiSellAmount
- * @param account
- * @returns boolean | BigNumber <false, amt>
- */
-const checkEthTokenBalance = async (
-  token: TokenCode,
-  weiSellAmount: BigNumber,
-  account?: Account,
-): Promise<boolean | BigNumber> => {
-  // BYPASS[return false] => if token is not ETHER
-  if (token !== 'ETH') return false
-  // CONSIDER/TODO: wrappedETH in state or TokenBalance
-  const wrappedETH = await getEtherTokenBalance(token, account)
-  // BYPASS[return false] => if wrapped Eth is enough
-  if (wrappedETH.gte(weiSellAmount)) return false
-
-  return weiSellAmount.minus(wrappedETH)
-}
-
-/**
- * checkTokenAllowance > returns false or Token[name] Allowance
- * @param token
- * @param weiSellAmount
- * @param account
- * @returns boolean | BigNumber <false, amt>
- */
-const checkTokenAllowance = async (
-  token: TokenCode,
-  weiSellAmount: BigNumber,
-  account?: Account,
-): Promise<boolean | BigNumber> => {
-  // perform checks
-  const tokenAllowance = await getTokenAllowance(token, account)
-  // return false if wrapped Eth is enough
-  if (tokenAllowance.gte(weiSellAmount)) return false
-
-  return tokenAllowance
 }
 
 /**
@@ -322,20 +252,6 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
     }
   } catch (e) {
     dispatch(errorHandling(e))
-  }
-}
-
-// @ts-ignore
-const simulateTX = async (txFn: Function, txProps: Partial<State>[]) => {
-  // Simulate Sell order before real transaction
-  try {
-    console.log(txFn)
-    const simResp = await txFn(...txProps)
-    console.log('simResp == ', simResp)
-  } catch (e) {
-    // TODO: fire action blocking button
-    console.error('TX Simulation failed => ', e)
-    return
   }
 }
 
@@ -441,4 +357,94 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
   } catch (error) {
     dispatch(errorHandling(error))
   }
+}
+
+/**
+ * checkEthTokenBalance > returns false or EtherToken Balance
+ * @param token
+ * @param weiSellAmount
+ * @param account
+ * @returns boolean | BigNumber <false, amt>
+ */
+async function checkEthTokenBalance(
+  token: TokenCode,
+  weiSellAmount: BigNumber,
+  account?: Account,
+): Promise<boolean | BigNumber> {
+  // BYPASS[return false] => if token is not ETHER
+  if (token !== 'ETH') return false
+  // CONSIDER/TODO: wrappedETH in state or TokenBalance
+  const wrappedETH = await getEtherTokenBalance(token, account)
+  // BYPASS[return false] => if wrapped Eth is enough
+  if (wrappedETH.gte(weiSellAmount)) return false
+
+  return weiSellAmount.minus(wrappedETH)
+}
+
+/**
+ * checkTokenAllowance > returns false or Token[name] Allowance
+ * @param token
+ * @param weiSellAmount
+ * @param account
+ * @returns boolean | BigNumber <false, amt>
+ */
+async function checkTokenAllowance(
+  token: TokenCode,
+  weiSellAmount: BigNumber,
+  account?: Account,
+): Promise<boolean | BigNumber> {
+  // perform checks
+  const tokenAllowance = await getTokenAllowance(token, account)
+  // return false if wrapped Eth is enough
+  if (tokenAllowance.gte(weiSellAmount)) return false
+
+  return tokenAllowance
+}
+
+function errorHandling(error: Error) {
+  return async (dispatch: Function, getState: Function) => {
+    const { blockchain: { activeProvider } } = getState()
+    const normError = error.message
+    console.error('An error has occurred: ', normError)
+    // close to unmount
+    dispatch(closeModal())
+
+    // go home stacy
+    dispatch(push('/'))
+
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `TRANSACTION FAILED/CANCELLED`,
+        body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
+        button: true,
+        error: normError,
+      },
+    }))
+  }
+}
+
+// @ts-ignore
+async function simulateTX(txFn: Function, txProps: Partial<State>[]) {
+  // Simulate Sell order before real transaction
+  try {
+    console.log(txFn)
+    const simResp = await txFn(...txProps)
+    console.log('simResp == ', simResp)
+  } catch (e) {
+    // TODO: fire action blocking button
+    console.error('TX Simulation failed => ', e)
+    return
+  }
+}
+
+async function calcAllTokenBalances(tokens?: TokenCode[]) {
+  // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
+  const tokenBalances = (await getTokenBalances(tokens))
+    .map(({ name, balance }) => ({
+      name,
+      balance: balance.div(10 ** 18).toString(),
+    }))
+
+  return tokenBalances
 }
