@@ -7,6 +7,8 @@ interface Code2Name {
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  MGN: 'MAGNOLIA',
+  OWL: 'OWL',
 }
 
 export type TokenCode = keyof Code2Name

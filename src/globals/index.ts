@@ -7,6 +7,8 @@ export const code2tokenMap: Code2Name = {
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  MGN: 'MAGNOLIA',
+  OWL: 'OWL',
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]

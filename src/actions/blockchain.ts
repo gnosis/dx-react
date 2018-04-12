@@ -35,6 +35,7 @@ import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
 import { batchActions } from 'redux-batched-actions'
+import { DefaultTokenList } from 'api/types';
 
 
 export enum TypeKeys {
@@ -71,7 +72,7 @@ export const updateMainAppState = () => async (dispatch: Function) => {
     currentAccount = await getCurrentAccount()
 
   // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
-  const defObj = [
+  const defObj: DefaultTokenList = [
     {
       name: 'ETH',
       address: TokenETH.address,
@@ -105,31 +106,21 @@ export const updateMainAppState = () => async (dispatch: Function) => {
     * localStorage changes
    */
   const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
-    // @ts-ignore
     getSellerOngoingAuctions(defObj, currentAccount),
     calcAllTokenBalances(tokenNameList as TokenCode[]),
     getFeeRatio(currentAccount),
   ])
 
-  /* console.log(`
-  ongoingAuctions:  ${JSON.stringify(ongoingAuctions, undefined, 2)}
-  tokenBalances:    ${tokenBalances}
-  feeRatio:         ${feeRatio}
-  `) */
-
-  // @ts-ignore
   const mgn = tokenBalances.find(t => t.name === 'MGN')
 
   // dispatch Actions
-  dispatch(batchActions(tokenBalances.map((token: { name: string, balance: string }) =>
-    setTokenBalance({ tokenName: token.name, balance: token.balance }))))
-
-  /* tokenBalances.forEach((token: any) =>
-    dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance }))) */
-
-  dispatch(setOngoingAuctions({ ongoingAuctions }))
-  dispatch(setFeeRatio({ feeRatio: feeRatio.toNumber() }))
-  dispatch(setTokenSupply({ mgnSupply: mgn.balance }))
+  dispatch(batchActions([
+    ...tokenBalances.map((token: { name: string, balance: string }) =>
+    setTokenBalance({ tokenName: token.name, balance: token.balance })),
+    setOngoingAuctions({ ongoingAuctions }),
+    setFeeRatio({ feeRatio: feeRatio.toNumber() }),
+    setTokenSupply({ mgnSupply: mgn.balance }),
+  ]))
 }
 
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
