@@ -1,4 +1,4 @@
-import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
+import { registerProvider, updateProvider, initDutchX, updateMainAppState } from 'actions/blockchain'
 import initialize from './initialize'
 
 import { Store } from 'redux'
@@ -16,6 +16,7 @@ export default async function walletIntegration(store: Store<any>) {
     getState,
     updateProvider: dispatchProviderAction(updateProvider),
     registerProvider: dispatchProviderAction(registerProvider),
+    updateMainAppState: dispatchProviderAction(updateMainAppState),
   }
 
   try {

@@ -13,9 +13,8 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
-      <small>{balance != null ? balance : 'loading...'} ETH</small>
+      <small>{balance != null ? Number(balance).toFixed(4) : 'loading...'} ETH</small>
     </span>
-
     <div>
         <table>
           <thead>
@@ -25,7 +24,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
             </tr>
           </thead>
           <tbody>
-            {Object.keys(tokens).map((token: any) => 
+            {Object.keys(tokens).map((token: any) =>
               <tr key={token}>
                 <td>{token}</td>
                 <td>{Number(tokens[token]).toFixed(4)}</td>

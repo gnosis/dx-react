@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 interface Code2Name {
   ETH: 'ETHER',
   GNO: 'GNOSIS',
@@ -5,12 +7,15 @@ interface Code2Name {
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  MGN: 'MAGNOLIA',
+  OWL: 'OWL',
 }
 
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
 export type Balance = string
 export type Account = string
+export type BigNumber = BigNumber
 
 interface Providers {
   [provider: string]: any,
@@ -30,6 +35,8 @@ export interface Blockchain {
   connectionTried?: boolean,
   providersLoaded?: boolean,
   dutchXInitialized?: boolean,
+  feeRatio?: number,
+  mgnSupply?: Balance,
 }
 
 export interface Modal {
@@ -56,14 +63,17 @@ export type OngoingAuctions = AuctionObject[]
  *
  */
 export type AuctionObject = {
-  index?: number,
-  sell: TokenCode,
-  buy: TokenCode,
-  price: number,
-  balance?: Balance,
-  claim: boolean,
-  contractAddress?: Account,
-  timestamp?: string,
+  sell: {
+    name: TokenCode,
+    address: Account,
+  },
+  buy: {
+    name: TokenCode,
+    address: Account,
+  },
+  claim?: boolean,
+  indices?: string[] | BigNumber[],
+  balancePerIndex?: string[] | BigNumber[],
 }
 
 export type TokenBalances = {[code in TokenCode]?: Balance }
@@ -126,6 +136,7 @@ export interface IPFS {
  * @interface State
  */
 export interface State {
+  auctions: any,
   blockchain: Blockchain,
   modal: Modal,
   ipfs: IPFS,
