@@ -121,7 +121,7 @@ export const updateMainAppState = () => async (dispatch: Function) => {
 
   // dispatch Actions
   tokenBalances.forEach((token: any) =>
-  dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
+    dispatch(setTokenBalance({ tokenName: token.name, balance: token.balance })))
 
   dispatch(setOngoingAuctions({ ongoingAuctions }))
   dispatch(setFeeRatio({ feeRatio: feeRatio.toNumber() }))

@@ -64,16 +64,15 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
     provider.state.timestamp = prevTime
     try {
       const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
-        getAccount(provider),
-        getNetwork(provider),
-        getTime(),
-      ]),
-      balance = account && await getBalance(provider, account),
-      available = !!(provider.walletAvailable && account),
-      newState = { account, network, balance, available, timestamp }
+          getAccount(provider),
+          getNetwork(provider),
+          getTime(),
+        ]),
+        balance = account && await getBalance(provider, account),
+        available = !!(provider.walletAvailable && account),
+        newState = { account, network, balance, available, timestamp }
 
       // if data changed
-      // TODO: watch for account, timestamp, blocknumber change and update everything in state
       if (shallowDifferent(provider.state, newState)) {
         // reset module timestamp with updated timestamp
         prevTime = timestamp
@@ -93,9 +92,11 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
     }
   }
 
+  // TODO: check what initilaize does
   providers.forEach((provider) => {
     // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
+    if (!provider.walletAvailable) return
     // dispatch action to save provider name and proirity
     registerProvider(provider.providerName, { priority: provider.priority })
     // get account, balance, etc. state

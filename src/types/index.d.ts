@@ -70,9 +70,8 @@ export type AuctionObject = {
     address: Account,
   },
   claim?: boolean,
-  indices?: string[],
-  balancePerIndex?: string[],
-  timestamp?: string,
+  indices?: string[] | BigNumber[],
+  balancePerIndex?: string[] | BigNumber[],
 }
 
 export type TokenBalances = {[code in TokenCode]?: Balance }

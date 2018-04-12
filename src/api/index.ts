@@ -3,7 +3,7 @@ import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
-import { dxAPI, Index, DefaultTokenList } from './types'
+import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
 
 const promisedAPI = (window as any).AP = initAPI()
 
@@ -371,58 +371,76 @@ export const withdraw = async (code: TokenCode, amount: Balance, account?: Accou
 * @param account
 * @returns { Promise<AuctionObject[]> } returns new Array of AuctionObject
 */
+
 export const getSellerOngoingAuctions = async (tokensJSON: DefaultTokenList, account: Account): Promise<AuctionObject[]> => {
   const { DutchX } = await promisedAPI
   // assuming tokensJSON comes in form:
-  // defaultToken = { name: 'Ether Token', address: '0xAg9823nfejcdksak1o38fFa09384', ... }
-  const tokensJSONAddresses = tokensJSON.map((t: any) => t.address)
-  const runningPairsArr = await DutchX.getRunningTokenPairs(tokensJSONAddresses)
+  // defaultToken = { name: 'Ether Token', address: '0xAg9823nfejcdksak1o38fFa09384', imgBytes: [ ... ] }
+  const tokensJSONAddresses: Account[] = tokensJSON.map(t => t.address)
+  try {
+    const runningPairsArr = await DutchX.getRunningTokenPairs(tokensJSONAddresses)
 
-  // get Array back of Auctions user is in
-  // grab sellerBalance of USER for each current ongoing auction
-  // @ts-ignore
-  const sellerOngoingAuctions: any[] = (await DutchX.getSellerBalancesOfCurrentAuctions(...runningPairsArr, account)).map((res: any) => res.toNumber())
+    // get Array back of Auctions user is in
+    // grab sellerBalance of USER for each current ongoing auction
+    // @ts-ignore
+    const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(...runningPairsArr, account)).map((res: any) => res.toNumber())
+    // we know user is participating in (runningPairsArr[0][0]-runningPairsArr[1][0] && runningPairsArr[0][3]-runningPairsArr[1][3])
 
-  // Reduce tokensJSON array into array containing:
-  // ===> 1. TokenPairs being traded
-  // ===> 2. Indices running
-  // ===> 3. Sellerbalances in each
-  const ongoingAuctions = tokensJSON.reduce((accum, _, index, origArr) => {
-    if (!sellerOngoingAuctions[index]) return accum
+    // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
+    // or at least memoize calculation with reselect
+    const addressesToTokenJSON = tokensJSON.reduce((acc, tk) => {
+      acc[tk.address] = tk
+      return acc
+    }, {}) as {[P in TokenCode]: DefaultTokenObject}
+    const [runningPairsS, runningPairsB] = runningPairsArr
 
-    // pair = [ '0x68hFkjhsfF78', '0xLKJ89873FFF' ]
-    const pair = [runningPairsArr[0][index], runningPairsArr[1][index]]
+    const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
+    const ongoingAuctions: {sell: DefaultTokenObject, buy: DefaultTokenObject}[] = sellerOngoingAuctions.reduce((accum, bal, index) => {
+      if (!bal) return accum
 
-    let sell = {}, buy = {}
+      const s = runningPairsS[index]
+      const b = runningPairsB[index]
 
-    // for each pair, check against tokenList for address
-    pair.forEach((p, index) => {
-      origArr.forEach((token: any) => {
-        // match pair[0] or pair[1] with token.address ELSE return
-        if (token.address !== p) return
-        if (index === 0) return sell = { name: token.name, address: p }
-        return buy = { name: token.name, address: p }
-      })
+      const sell = addressesToTokenJSON[s]
+      const buy = addressesToTokenJSON[b]
+      if (sell && buy) {
+        accum.push({ sell, buy })
+        promisedClaimableTokens.push(
+          DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, account, 0),
+        )
+      }
+
+      return accum
+    }, [])
+
+    if (ongoingAuctions.length === 0) return []
+
+    // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
+    // Array indices are lined up
+    // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
+    const claimableTokens = await Promise.all(promisedClaimableTokens)
+    console.log('claimableTokens ', claimableTokens)
+    console.log(`
+      claimableTokens = ${claimableTokens}
+      specific arr    = ${claimableTokens[0][0]}
+      length          = ${claimableTokens[0][0].length}
+    `)
+
+    // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
+    const auctionsArray = ongoingAuctions.map((auction, index) => {
+      const [indices, balancePerIndex] = claimableTokens[index]
+      return {
+        ...auction,
+        indices,
+        balancePerIndex,
+        claim: indices.length >= 2,
+      }
     })
 
-    return [...accum, { sell, buy }]
-  }, [])
-
-  // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
-  // Array indices are lined up
-  // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
-  const claimableTokens = await Promise.all(ongoingAuctions.map(auction => DutchX.getIndicesWithClaimableTokensForSellers(auction.sell.address, auction.buy.address, account, 0)))
-
-  const auctionsArray = ongoingAuctions.map((auction, index) => {
-    return {
-      ...auction,
-      indices: claimableTokens[index][0],
-      balancePerIndex: claimableTokens[index][1],
-      claim: claimableTokens[index][0].length >= 2,
-    }
-  })
-
-  return auctionsArray
+    return auctionsArray
+  } catch (e) {
+    console.warn(e)
+  }
 }
 
 async function initAPI(): Promise<dxAPI> {
