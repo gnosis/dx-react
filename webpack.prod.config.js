@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const NameAllModulesPlugin = require('name-all-modules-plugin')
-const BabiliPlugin = require('babili-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -184,6 +184,6 @@ module.exports = {
         // WHITELIST: whitelist,
       },
     }),
-    new BabiliPlugin(),
+    new UglifyJsPlugin(),
   ],
 }
