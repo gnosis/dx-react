@@ -8,7 +8,7 @@ import MetamaskProvider from './metamask'
 import ParityProvider from './parity'
 import RemoteProvider from './remote'
 
-const WATCHER_INTERVAL = 5000
+const WATCHER_INTERVAL = 10000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,
@@ -36,6 +36,7 @@ const shallowDifferent = (obj1: object, obj2: object) => {
   return keys1.some(key => obj1[key] !== obj2[key])
 }
 
+// Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
 export default async ({ registerProvider, updateProvider, updateMainAppState }: ConnectedInterface | any) => {
   let prevTime: any
 
@@ -44,7 +45,6 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
 
     return account
   }
-
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
     const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
@@ -58,9 +58,11 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
     return provider.web3.fromWei(balance, 'ether').toString()
   }
 
+  // Fired on setInterval every 10 seconds
   const watcher = async (provider: WalletProvider) => {
     if (!provider.checkAvailability()) return
-    //@ts-ignore
+
+    // set block timestamp to provider state and compare
     provider.state.timestamp = prevTime
     try {
       const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
@@ -92,7 +94,6 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
     }
   }
 
-  // TODO: check what initilaize does
   providers.forEach((provider) => {
     // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
