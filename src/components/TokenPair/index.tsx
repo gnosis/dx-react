@@ -8,7 +8,7 @@ export interface TokenPairProps {
   buyToken: TokenCode,
   sellTokenBalance: Balance,
   buyTokenBalance: Balance,
-  fileHash: string,
+  needsTokens(): boolean,
   openOverlay(): any
   swapTokensInAPair(): any
 }
@@ -20,10 +20,10 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   buyTokenBalance,
   openOverlay,
   swapTokensInAPair,
-  fileHash,
+  needsTokens,
 }) =>
     // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
-    <div className={fileHash ? 'tokenPair' : 'tokenPair noTokenList'}>
+    <div className={!needsTokens() ? 'tokenPair' : 'tokenPair noTokenList'}>
       <TokenItem
         code={sellToken}
         name={code2tokenMap[sellToken]}
@@ -33,7 +33,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       />
 
       {/* On click of this button, it should switch the token pair */}
-      {fileHash
+      {!needsTokens()
         ? <span className="tokenPairSwitcher" onClick={swapTokensInAPair}></span>
         : <span>Upload a token list before picking a token pair. Read more in our <a href="#" target="_blank">FAQ</a> on how it works.</span>
       }

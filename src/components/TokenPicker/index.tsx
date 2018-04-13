@@ -13,12 +13,12 @@ interface TokenPickerProps {
   to: string,
 }
 
-const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continueToOrder, fileHash, to }) => (
+const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continueToOrder, needsTokens, to }) => (
 
   <div className="tokenPicker">
     <TokenOverlay />
 
-    {!fileHash
+    {needsTokens()
       ?
       <TokenUpload />
       :

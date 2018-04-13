@@ -3,8 +3,11 @@ import React from 'react'
 import { promisedIPFS } from 'api/IPFS'
 import { FileBuffer } from 'types'
 import { readFileUpload } from 'api/utils'
+import { DefaultTokenObject } from 'api/types'
 
 export interface HOCState {
+  customTokenList: DefaultTokenObject[] | any,
+  defaultTokenList: DefaultTokenObject[],
   oFile?: File,
   fileContent?: string;
   fileBuffer?: FileBuffer,
@@ -14,6 +17,7 @@ export interface HOCState {
   setIPFSFileHashAndPath({}): void,
   getFileContentFromIPFS({}): void,
   openModal({}): void,
+  needsTokens(): boolean,
 }
 
 // HOC that injects IPFS node instructions

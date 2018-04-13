@@ -3,10 +3,11 @@ import TokenPicker from 'components/TokenPicker'
 import { continueToOrder } from 'actions'
 
 import { HOCState } from 'components/IPFSHOC'
+import { State } from 'types'
 
-const mapState = ({ ipfs: { fileBuffer, fileHash } }: any) => ({
+const mapState = ({ ipfs: { fileBuffer, fileHash }, tokenList: { defaultTokenList, customTokenList } }: State) => ({
   fileBuffer,
-  fileHash,
+  needsTokens: () => fileHash && defaultTokenList && customTokenList,
 })
 
 export default connect<Partial<HOCState>, { continueToOrder(): void }, { to: string }>(mapState, { continueToOrder })(TokenPicker)
