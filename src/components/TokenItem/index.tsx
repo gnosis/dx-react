@@ -7,6 +7,7 @@ export interface TokenItemProps {
   balance: Balance,
   name: TokenName,
   code: TokenCode,
+  generatesMGN?: boolean,
 }
 
 const mod2Title: {[P in TokenMod]: string} = {
@@ -14,7 +15,7 @@ const mod2Title: {[P in TokenMod]: string} = {
   buy: 'RECEIVE',
 }
 
-const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
+const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ...rest }) => {
   const { mod, balance, name, code } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
@@ -28,7 +29,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
       Currently this is handled by CSS but we should implement the logic here to not output the element at all.
       */}
-      <p className="noMGN">Any auction with <strong>{code}</strong> won't generate MGN</p>
+      {!generatesMGN && <p className="noMGN">Any auction with <strong>{code}</strong> won't generate MGN</p>}
     </div>
   )
 }
