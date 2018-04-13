@@ -1,4 +1,4 @@
-import { registerProvider, updateProvider, initDutchX } from '../actions/blockchain'
+import { registerProvider, updateProvider, initDutchX, setApprovedTokens } from '../actions'
 import initialize from './initialize'
 
 import { Store } from 'redux'
@@ -17,6 +17,11 @@ export default async function walletIntegration(store: Store<any>) {
     updateProvider: dispatchProviderAction(updateProvider),
     registerProvider: dispatchProviderAction(registerProvider),
   }
+
+  // TODO: fetch approvedTokens list from api
+  // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
+  // then only dispatch that list
+  dispatch(setApprovedTokens(['ETH', 'GNO']))
 
   try {
     await initialize(providerOptions)
