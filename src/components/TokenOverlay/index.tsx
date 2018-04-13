@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
 import { code2tokenMap } from 'globals'
-import { TokenCode, TokenBalances, TokenMod } from 'types'
+import { TokenCode, TokenBalances, TokenMod, State } from 'types'
 import { TokenItemProps } from '../TokenItem'
 import { createSelector } from 'reselect'
 
@@ -22,6 +22,7 @@ export interface TokenOverlayProps {
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
+  approvedTokens: State['approvedTokens'],
 }
 
 interface TokenOverlayState {
@@ -56,7 +57,7 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
   render() {
     if (!this.props.open) return null
 
-    const { tokenBalances } = this.props
+    const { tokenBalances, approvedTokens } = this.props
     const { filter } = this.state
 
     const filteredTokens = filterTokens(this.state, this.props)
@@ -64,7 +65,12 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     return (
       <div className="tokenOverlay">
         <TokenOverlayHeader onChange={this.changeFilter} closeOverlay={this.closeOverlay} value={filter} />
-        <TokenList tokens={filteredTokens} balances={tokenBalances} onTokenClick={this.selectTokenAndCloseOverlay} />
+        <TokenList
+          tokens={filteredTokens}
+          balances={tokenBalances}
+          onTokenClick={this.selectTokenAndCloseOverlay}
+          approvedTokens={approvedTokens}
+        />
       </div>
     )
   }
