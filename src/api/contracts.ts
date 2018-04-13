@@ -16,6 +16,8 @@ const contractNames = [
   'TokenGNO',
   'TokenOWL',
   'TokenMGN',
+  'TokenOMG',
+  'TokenRDN',
   'Proxy',
   'TokenOWLProxy',
 ]
@@ -32,27 +34,31 @@ interface ContractsMap {
   TokenGNO: GNOInterface,
   TokenOWL: OWLInterface,
   TokenMGN: MGNInterface,
+  TokenOMG: GNOInterface,
+  TokenRDN: GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
   Proxy: DeployedContract,
-  TokenOWLProxy: DeployedContract,  
+  TokenOWLProxy: DeployedContract,
 }
 
 const req = require.context(
   '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
   false,
-  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN)\.json$/,
+  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN|TokenOMG|TokenRDN)\.json$/,
 )
 
-type TokenArtifact = 
+type TokenArtifact =
   './DutchExchange.json' |
   './Proxy.json' |
   './EtherToken.json' |
   './TokenGNO.json' |
   './TokenOWL.json' |
   './TokenOWLProxy.json' |
-  './TokenMGN.json'
+  './TokenMGN.json' |
+  './TokenOMG.json' |
+  './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
 const Contracts: SimpleContract[] = contractNames.map(

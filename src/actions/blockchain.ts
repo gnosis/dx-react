@@ -1,5 +1,6 @@
 import { push } from 'connected-react-router'
 import { createAction } from 'redux-actions'
+import { batchActions } from 'redux-batched-actions'
 
 import {
   closingPrice,
@@ -18,7 +19,8 @@ import {
   getETHBalance,
 } from 'api'
 
-import { promisedContractsMap } from 'api/contracts'
+// TODO: remove
+import defaultTokensTesting from 'api/apiTesting'
 
 import {
   openModal,
@@ -29,14 +31,12 @@ import {
   setOngoingAuctions,
 } from 'actions'
 
+
 import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
-import { batchActions } from 'redux-batched-actions'
-import { DefaultTokenList } from 'api/types';
-
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -68,33 +68,10 @@ export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('S
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 export const updateMainAppState = () => async (dispatch: Function) => {
-  const { TokenETH, TokenGNO, TokenOWL, TokenMGN } = await promisedContractsMap,
-    currentAccount = await getCurrentAccount()
+  const currentAccount = await getCurrentAccount()
+  const { elements: defObj } = await defaultTokensTesting()
 
-  // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
-  const defObj: DefaultTokenList = [
-    {
-      name: 'ETH',
-      address: TokenETH.address,
-      imgData: '',
-    },
-    {
-      name: 'GNO',
-      address: TokenGNO.address,
-      imgData: '',
-    },
-    {
-      name: 'OWL',
-      address: TokenOWL.address,
-      imgData: '',
-    },
-    {
-      name: 'MGN',
-      address: TokenMGN.address,
-      imgData: '',
-    },
-  ]
-  const tokenNameList = defObj.map(t => t.name)
+  const tokenNameList = defObj.map(t => t.symbol)
   // Check state in parallel
   /*
     * Provider?

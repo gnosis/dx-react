@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DefaultTokens, DefaultTokenObject } from 'api/types';
 
 interface Code2Name {
   ETH: 'ETHER',
@@ -9,6 +10,7 @@ interface Code2Name {
   GNT: 'GOLEM',
   MGN: 'MAGNOLIA',
   OWL: 'OWL',
+  RDN: 'RAIDEN',
 }
 
 export type TokenCode = keyof Code2Name
@@ -64,11 +66,13 @@ export type OngoingAuctions = AuctionObject[]
  */
 export type AuctionObject = {
   sell: {
-    name: TokenCode,
+    name: TokenName,
+    symbol: TokenCode,
     address: Account,
   },
   buy: {
-    name: TokenCode,
+    name: TokenName,
+    symbol: TokenCode,
     address: Account,
   },
   claim?: boolean,
@@ -78,6 +82,10 @@ export type AuctionObject = {
 
 export type TokenBalances = {[code in TokenCode]?: Balance }
 
+export interface TokenList {
+  defaultTokenList: DefaultTokenObject[];
+  customTokenList: DefaultTokenObject[] | any;
+}
 
 /**
  * represents chosen TokenPair
@@ -140,8 +148,9 @@ export interface State {
   blockchain: Blockchain,
   modal: Modal,
   ipfs: IPFS,
-  tokenPair: TokenPair,
-  tokenBalances: TokenBalances,
-  tokenOverlay: TokenOverlay,
   ratioPairs: RatioPairs
+  tokenBalances: TokenBalances,
+  tokenList: TokenList,
+  tokenPair: TokenPair,
+  tokenOverlay: TokenOverlay,
 }

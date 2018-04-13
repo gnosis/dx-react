@@ -1,13 +1,16 @@
-import { Account, Balance as B, TokenCode, TokenPair } from 'types'
-import { BigNumber } from 'bignumber.js'
+import { Account, Balance as B, BigNumber, TokenCode, TokenName, TokenPair } from 'types'
 
 type Balance = B | BigNumber | number
 export type Index = number | BigNumber
+export interface DefaultTokens {
+  elements: DefaultTokenList;
+  page: number,
+  hasMorePages: boolean;
+}
 export interface DefaultTokenObject {
-  name: TokenCode;
+  name: TokenName;
+  symbol: TokenCode;
   address: Account;
-  imgData: any;
-
 }
 export type DefaultTokenList = DefaultTokenObject[]
 
