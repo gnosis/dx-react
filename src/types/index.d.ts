@@ -121,5 +121,6 @@ export interface State {
   tokenPair: TokenPair,
   tokenBalances: TokenBalances,
   tokenOverlay: TokenOverlay,
-  ratioPairs: RatioPairs
+  ratioPairs: RatioPairs,
+  approvedTokens: Set<TokenCode>,
 }
