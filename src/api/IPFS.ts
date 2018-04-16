@@ -7,7 +7,7 @@ import { FileBuffer } from 'types'
 const setupIPFS = async () => {
   await windowLoaded
 
-  const node = new IPFS()
+  const node = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
   return node
 }
 

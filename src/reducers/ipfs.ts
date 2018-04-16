@@ -5,11 +5,12 @@ import { setUploadFileParams, setIPFSFileHashAndPath, getFileContentFromIPFS } f
 export const reducer = handleActions(
   {
     [setUploadFileParams.toString()]: (state: {}, action: any) => {
-      const { oFile, fileBuffer } = action.payload
+      const { oFile, fileBuffer, json } = action.payload
       return {
         ...state,
         oFile,
         fileBuffer,
+        json,
       }
     },
     [setIPFSFileHashAndPath.toString()]: (state: {}, action: any) => {
@@ -30,10 +31,11 @@ export const reducer = handleActions(
   },
   {
     oFile: {},
-    fileBuffer: [],
+    fileBuffer: null,
     fileHash: '',
     filePath: '',
     fileContent: '',
+    json: null,
   },
 )
 

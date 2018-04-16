@@ -18,7 +18,7 @@ const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continue
   <div className="tokenPicker">
     <TokenOverlay />
 
-    {needsTokens()
+    {needsTokens
       ?
       <TokenUpload />
       :

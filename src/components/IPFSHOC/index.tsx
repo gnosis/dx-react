@@ -2,8 +2,10 @@ import React from 'react'
 
 import { promisedIPFS } from 'api/IPFS'
 import { FileBuffer } from 'types'
-import { readFileUpload } from 'api/utils'
+import { readFileUpload, readFileAsText } from 'api/utils'
 import { DefaultTokenObject } from 'api/types'
+
+import localForage from 'localforage'
 
 export interface HOCState {
   customTokenList: DefaultTokenObject[] | any,
@@ -17,7 +19,7 @@ export interface HOCState {
   setIPFSFileHashAndPath({}): void,
   getFileContentFromIPFS({}): void,
   openModal({}): void,
-  needsTokens(): boolean,
+  needsTokens: boolean,
 }
 
 // HOC that injects IPFS node instructions
@@ -29,7 +31,30 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
       const { setUploadFileParams, openModal } = this.props
 
       console.warn('Detected change: ', oFile)
+      // File dialog was cancelled
       if (!oFile) {
+        return setUploadFileParams({
+          oFile: {},
+          fileBuffer: null,
+          json: null,
+        })
+      }
+      
+      try {
+        // TODO: 39-44 optimize execution
+        const text = await readFileAsText(oFile)
+        const json = JSON.parse(text)
+        // TODO try catch invalid JSONs
+        localForage.setItem('customTokens', json)
+        // HTML5 API to read file and set state as contents
+        const fileBuffer = await readFileUpload(oFile)
+  
+  
+        // setState
+        return setUploadFileParams({ oFile, fileBuffer, json })
+        
+      } catch (error) {
+        console.error(error)
         return openModal({
           modalName: 'TransactionModal',
           modalProps: {
@@ -39,16 +64,11 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
             File must be formatted specifically as discussed here: https://some-site.com
             `,
             button: true,
-            error: 'Please select a valid JSON file less than 1mb',
+            error: error.message,
           },
         })
       }
 
-      // HTML5 API to read file and set state as contents
-      const fileBuffer = await readFileUpload(oFile)
-
-      // setState
-      return setUploadFileParams({ oFile, fileBuffer })
     }
 
     handleSendToIPFS = async () => {

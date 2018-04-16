@@ -20,6 +20,13 @@ export const readFileUpload = (file: File) =>
       r.readAsArrayBuffer(file)
     })
 
+export const readFileAsText = (file: File): Promise<string> =>
+    new Promise((resolve) => {
+      const r = new FileReader()
+      r.onload = (e: any) => resolve(e.target.result)
+      r.readAsText(file)
+    })
+
 export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
   (...args: any[]): Promise<any> => new Promise((res, rej) => {
     func.apply(context, [...defArgs, ...args, (err: Error, result: any) => err ? rej(err) : res(result)])
