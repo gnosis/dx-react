@@ -10,4 +10,5 @@ const mapState = ({ ipfs: { fileBuffer, fileHash }, tokenList: { customTokenList
   needsTokens: !(fileHash && customTokenList),
 })
 
-export default connect<Partial<HOCState>, { continueToOrder(): void }, { to: string }>(mapState, { continueToOrder })(TokenPicker)
+export default connect<Partial<HOCState>, { continueToOrder(): void }, { to: string }>
+  (mapState, { continueToOrder })(TokenPicker)

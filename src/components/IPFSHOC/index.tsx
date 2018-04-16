@@ -2,7 +2,7 @@ import React from 'react'
 
 import { promisedIPFS } from 'api/IPFS'
 import { FileBuffer } from 'types'
-import { readFileUpload, readFileAsText } from 'api/utils'
+import { readFileUpload, readFileAsText, checkTokenListJSON } from 'api/utils'
 import { DefaultTokenObject } from 'api/types'
 
 import localForage from 'localforage'
@@ -44,6 +44,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         // TODO: 39-44 optimize execution
         const text = await readFileAsText(oFile)
         const json = JSON.parse(text)
+        await checkTokenListJSON(json)
         // TODO try catch invalid JSONs
         localForage.setItem('customTokens', json)
         // HTML5 API to read file and set state as contents
@@ -76,7 +77,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
       try {
         const { fileHash, filePath } = await ipfsAddFile(fileBuffer, oFile)
 
-        //setState
+        // setState
         return setIPFSFileHashAndPath({
           fileHash,
           filePath,
