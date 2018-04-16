@@ -20,6 +20,7 @@ export interface ProviderInterface {
   getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
+  isAddress(address: Account): boolean,
   currentProvider: Function,
   web3: any,
   setProvider(provider: any): void,
@@ -378,8 +379,17 @@ export interface DutchExchange {
   getBuyerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getClaimedAmounts(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getRunningTokenPairs(tokenList: Account[]): Promise<[Account[], Account[]]>,
-  getSellerBalancesOfCurrentAuctions(sellTokenArr: Account[], buyTokenArr: Account[], account: Account): Promise<number[]>,
-  getIndicesWithClaimableTokensForSellers(sellToken: Account, buyToken: Account, account: Account, lastNAuctions: number): Promise<[BigNumber[], BigNumber[]]>,
+  getSellerBalancesOfCurrentAuctions(
+    sellTokenArr: Account[],
+    buyTokenArr: Account[],
+    account: Account,
+  ): Promise<number[]>,
+  getIndicesWithClaimableTokensForSellers(
+    sellToken: Account,
+    buyToken: Account,
+    account: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
   getFeeRatio(account: Account): Promise<[BigNumber, BigNumber]>,
 
   postSellOrder(

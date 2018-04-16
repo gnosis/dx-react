@@ -43,6 +43,8 @@ async function init(): Promise<ProviderInterface> {
 
   const setProvider = web3.setProvider.bind(web3)
 
+  const isAddress = web3.isAddress.bind(web3)
+
   const resetProvider = () => setProvider(getProvider())
 
   const getTimestamp = async (block = 'latest') => {
@@ -57,6 +59,7 @@ async function init(): Promise<ProviderInterface> {
     getETHBalance,
     getNetwork,
     isConnected,
+    isAddress,
     get currentProvider() {
       return web3.currentProvider
     },
