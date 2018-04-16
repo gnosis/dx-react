@@ -1,9 +1,16 @@
-import { promisedContractsMap } from 'api/contracts';
+import { promisedContractsMap } from 'api/contracts'
 
-import { DefaultTokens } from 'api/types';
+import { DefaultTokens } from 'api/types'
 
 export default async () => {
-  const { TokenETH, TokenGNO, TokenOWL, TokenMGN, TokenOMG, TokenRDN } = await promisedContractsMap
+  const {
+    TokenETH,
+    TokenGNO,
+    TokenOWL,
+    TokenMGN,
+    // TokenOMG,
+    // TokenRDN,
+  } = await promisedContractsMap
 
   // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
   return {
@@ -11,35 +18,35 @@ export default async () => {
       {
         name: 'ETHER',
         symbol: 'ETH',
-        address: TokenETH.address
+        address: TokenETH.address,
       },
       {
         name: 'GNOSIS',
         symbol: 'GNO',
-        address: TokenGNO.address
+        address: TokenGNO.address,
       },
       {
         name: 'OWL',
         symbol: 'OWL',
-        address: TokenOWL.address
+        address: TokenOWL.address,
       },
       {
         name: 'MAGNOLIA',
         symbol: 'MGN',
-        address: TokenMGN.address
+        address: TokenMGN.address,
       },
-      {
-        name: 'OMISEGO',
-        symbol: 'OMG',
-        address: TokenOMG.address
-      },
-      {
-        name: 'RAIDEN',
-        symbol: 'RDN',
-        address: TokenRDN.address
-      },
+      // {
+      //   name: 'OMISEGO',
+      //   symbol: 'OMG',
+      //   address: TokenOMG.address
+      // },
+      // {
+      //   name: 'RAIDEN',
+      //   symbol: 'RDN',
+      //   address: TokenRDN.address
+      // },
     ],
     page: 1,
-    hasMorePages: false
+    hasMorePages: false,
   } as DefaultTokens
 }
