@@ -31,7 +31,6 @@ const TokenUpload = ({
 }: TokenUploadProps) => {
   return (
     <div className="tokenUpload">
-      <button className="buttonExit" />
       <span className="icon-tokenUpload" />
       <h2>Upload Token List</h2>
 
