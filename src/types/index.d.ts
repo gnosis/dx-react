@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { DefaultTokens, DefaultTokenObject } from 'api/types';
+import { DefaultTokens, DefaultTokenObject } from 'api/types'
+import { TokenListType } from 'containers/TokenUpload'
 
 interface Code2Name {
   ETH: 'ETHER',
@@ -84,7 +85,9 @@ export type TokenBalances = {[code in TokenCode]?: Balance }
 
 export interface TokenList {
   defaultTokenList: DefaultTokenObject[];
-  customTokenList: DefaultTokenObject[] | any;
+  customTokenList: DefaultTokenObject[];
+  combinedTokenList: DefaultTokenObject[];
+  type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
 }
 
 /**
@@ -136,6 +139,7 @@ export interface IPFS {
   fileBuffer?: FileBuffer,
   fileHash?: string,
   filePath?: string,
+  json?: Object
 }
 
 /**

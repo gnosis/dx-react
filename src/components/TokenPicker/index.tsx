@@ -9,11 +9,12 @@ import TopAuctions from 'containers/TopAuctions'
 import { HOCState } from 'components/IPFSHOC'
 
 interface TokenPickerProps {
-  continueToOrder(): any,
-  to: string,
+  continueToOrder(): any;
+  setTokenListType({}): void;
+  to: string;
 }
 
-const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continueToOrder, needsTokens, to }) => (
+const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continueToOrder, needsTokens, to, setTokenListType }) => (
 
   <div className="tokenPicker">
     <TokenOverlay />
@@ -26,7 +27,7 @@ const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continue
         <h2>Pick Token Pair Auction</h2>
         <TokenPair />
         <ButtonCTA onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
-        <a href="#" className="showTokenUpload">Upload Additional Token List</a>
+        <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'UPLOAD' })}>Upload Additional Token List</a>
       </div>
     }
 

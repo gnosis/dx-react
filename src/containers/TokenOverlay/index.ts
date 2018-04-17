@@ -4,7 +4,7 @@ import { closeOverlay, selectTokenPairAndRatioPair } from 'actions'
 import { State } from 'types'
 
 const defaultTokensSelector = (tokenList: State['tokenList']) => {
-  const tokens = tokenList.defaultTokenList
+  const tokens = tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList
   // console.log('LOCALFORAGE SELECTOR == ', tokens.elements.map(tok => tok.symbol))
   return tokens.map(tok => tok.symbol)
 }

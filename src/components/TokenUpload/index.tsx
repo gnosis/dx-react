@@ -2,18 +2,33 @@ import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
 
 import IPFSHOC from 'components/IPFSHOC'
+import { DefaultTokenObject } from 'api/types'
 
 interface TokenUploadProps {
   handleSendToIPFS(): void;
   handleFileUpload(): void;
-  oFile?: any,
-  fileContent?: any;
-  fileBuffer?: any,
-  fileHash?: string,
-  filePath?: string,
+  setTokenListType({}): void;
+  customTokenList: DefaultTokenObject[];
+  // IPFS
+  fileContent?: string;
+  fileBuffer?: ArrayBuffer;
+  fileHash?: string;
+  filePath?: string
+  json?: Object;
+  oFile?: File;
 }
 // TODO: add link URL in line 26
-const TokenUpload = ({ fileBuffer, oFile, fileHash, filePath, handleSendToIPFS, handleFileUpload }: TokenUploadProps) => {
+const TokenUpload = ({
+  customTokenList,
+  fileBuffer,
+  fileHash,
+  filePath,
+  json,
+  oFile,
+  handleFileUpload,
+  handleSendToIPFS,
+  setTokenListType,
+}: TokenUploadProps) => {
   return (
     <div className="tokenUpload">
       <button className="buttonExit" />
@@ -42,6 +57,9 @@ const TokenUpload = ({ fileBuffer, oFile, fileHash, filePath, handleSendToIPFS, 
         </ ButtonCTA>
       </form>
 
+      {customTokenList.length && <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'CUSTOM' })}>Use pre-existing custom token list</a>}
+      <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'DEFAULT' })}>Use default token list</a>
+
       {/* TODO: remove */}
       <code style={{ backgroundColor: 'salmon', position: 'fixed', left: 0, top: 0, zIndex: 999 }}>
         {'FileBuffer: ' + fileBuffer}
@@ -51,6 +69,8 @@ const TokenUpload = ({ fileBuffer, oFile, fileHash, filePath, handleSendToIPFS, 
         {'fileHash: ' + fileHash}
         <br />
         {'filePath: ' + filePath}
+        <br />
+        {'json: ' + JSON.stringify(json, undefined, 2)}
       </code>
     </div>
   )
