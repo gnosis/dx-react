@@ -28,7 +28,6 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   const getDefaultTokens = async () => {
-    // @ts-ignore
     let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
       localForage.getItem('defaultTokens'),
       localForage.getItem('customTokens'),
