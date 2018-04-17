@@ -13,7 +13,7 @@ const mapStateToProps = ({
     buyToken: buy,
     sellTokenBalance,
     buyTokenBalance,
-    needsTokens: () => fileHash && defaultTokenList && customTokenList,
+    needsTokens: !!(fileHash && defaultTokenList && customTokenList),
   })
 
 

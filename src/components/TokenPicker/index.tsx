@@ -6,15 +6,14 @@ import TokenUpload from 'containers/TokenUpload'
 import ButtonCTA from '../ButtonCTA'
 import TopAuctions from 'containers/TopAuctions'
 
-import { HOCState } from 'components/IPFSHOC'
-
-interface TokenPickerProps {
+export interface TokenPickerProps {
   continueToOrder(): any;
   setTokenListType({}): void;
   to: string;
+  needsTokens: boolean;
 }
 
-const TokenPicker: React.SFC<TokenPickerProps & Partial<HOCState>> = ({ continueToOrder, needsTokens, to, setTokenListType }) => (
+const TokenPicker: React.SFC<TokenPickerProps> = ({ continueToOrder, needsTokens, to, setTokenListType }) => (
 
   <div className="tokenPicker">
     <TokenOverlay />

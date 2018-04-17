@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
-import TokenPicker from 'components/TokenPicker'
+import TokenPicker, { TokenPickerProps } from 'components/TokenPicker'
 import { continueToOrder } from 'actions'
 import { setTokenListType } from 'containers/TokenUpload'
 
-import { HOCState } from 'components/IPFSHOC'
 import { State } from 'types'
 
 const mapState = ({ ipfs: { fileBuffer, fileHash }, tokenList: { customTokenList, type } }: State) => ({
@@ -11,5 +10,5 @@ const mapState = ({ ipfs: { fileBuffer, fileHash }, tokenList: { customTokenList
   needsTokens: type === 'UPLOAD' || !(fileHash && customTokenList),
 })
 
-export default connect<Partial<HOCState>, { continueToOrder(): void }, { to: string }>
+export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to'>>
   (mapState, { continueToOrder, setTokenListType })(TokenPicker)
