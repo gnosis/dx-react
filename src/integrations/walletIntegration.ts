@@ -5,7 +5,7 @@ import initialize from './initialize'
 import { registerProvider, updateProvider, initDutchX, updateMainAppState } from 'actions/blockchain'
 
 import tokensMap from 'api/apiTesting'
-import { setDefaultTokenList, setCustomTokenList } from 'actions'
+import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath } from 'actions'
 import { DefaultTokens } from 'api/types'
 
 import { promisedIPFS } from 'api/IPFS'
@@ -28,6 +28,7 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   const getDefaultTokens = async () => {
+    // @ts-ignore
     let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
       localForage.getItem('defaultTokens'),
       localForage.getItem('customTokens'),
@@ -45,6 +46,8 @@ export default async function walletIntegration(store: Store<any>) {
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
     }
+
+    if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
 
     if (customTokens) {
       dispatch(setCustomTokenList({ customTokenList: customTokens }))
