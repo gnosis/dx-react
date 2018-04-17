@@ -1,20 +1,21 @@
 import IPFS from 'ipfs'
-import { windowLoaded } from './utils'
 import { FileBuffer } from 'types'
 /**
  * @returns Promise<IPFS>
  */
 const setupIPFS = async () => {
-  await windowLoaded
-
   const node = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+  await new Promise((resolve, reject) => {
+    node.on('ready', resolve)
+    node.on('error', reject)
+  })
   return node
 }
 
 export const promisedIPFS = init()
 
 async function init() {
-  const ipfs = await setupIPFS()
+  const ipfs = await setupIPFS()  
 
   /**
    * ipfsAddFile - takes uint8Array Buffer and sends to IPFS node
@@ -40,7 +41,7 @@ async function init() {
    * ipfsGetAndDecode - grabs IPFS file via hash and decodes from uint8Array to string
    * @param {string} fileHash - hash value stored in IPFS
    */
-  const ipfsGetAndDecode = async (fileHash: string) => {
+  const ipfsGetAndDecode = async (fileHash: string): Promise<string> => {
     const [file0] = await ipfs.files.get(fileHash)
     const { content: contentArrayBuffer } = file0
 

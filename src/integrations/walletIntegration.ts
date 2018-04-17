@@ -5,8 +5,11 @@ import initialize from './initialize'
 import { registerProvider, updateProvider, initDutchX, updateMainAppState } from 'actions/blockchain'
 
 import tokensMap from 'api/apiTesting'
-import { setDefaultTokenList } from 'actions'
+import { setDefaultTokenList, setCustomTokenList } from 'actions'
 import { DefaultTokens } from 'api/types'
+
+import { promisedIPFS } from 'api/IPFS'
+import { checkTokenListJSON } from 'api/utils'
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState } = store
@@ -25,7 +28,11 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   const getDefaultTokens = async () => {
-    let defaultTokens = await localForage.getItem('defaultTokens') as DefaultTokens
+    let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
+      localForage.getItem('defaultTokens'),
+      localForage.getItem('customTokens'),
+      localForage.getItem('customListHash'),
+    ])
     const isDefaultTokensAvailable = !!(defaultTokens)
 
     // IF (!defJSONObj in localForage) return anxo/api/v1/defaultTokens.json
@@ -37,6 +44,17 @@ export default async function walletIntegration(store: Store<any>) {
       defaultTokens = await tokensMap()
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
+    }
+
+    if (customTokens) {
+      dispatch(setCustomTokenList({ customTokenList: customTokens }))
+    } else if (customListHash) {
+      const { ipfsGetAndDecode } = await promisedIPFS
+      const fileContent = await ipfsGetAndDecode(customListHash)
+      const json = JSON.parse(fileContent)
+      await checkTokenListJSON(json)
+      localForage.setItem('customTokens', json)
+      dispatch(setCustomTokenList({ customTokenList: json }))
     }
     return dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
   }

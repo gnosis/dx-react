@@ -83,6 +83,8 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
       try {
         const { fileHash, filePath } = await ipfsAddFile(fileBuffer, oFile)
 
+        localForage.setItem('customListHash', fileHash)
+
         // setState
         return batchTokenListTypeAndFileParams(
           {
