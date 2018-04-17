@@ -39,7 +39,7 @@ export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
 const tokenFieldsChecks = {
   address: (addr: Account, web3: ProviderInterface) => {
     if (typeof addr !== 'string') return 'token address should be a string'
-    if (!web3.isAddress(addr)) return 'token address isn\'t a vaild Etehreum address'
+    if (!web3.isAddress(addr)) return 'token address isn\'t a vaild Ethereum address'
   },
   name: (name: string) => {
     if (typeof name !== 'string') return 'token name should be a string'
@@ -58,6 +58,6 @@ export const checkTokenListJSON = async (json: DefaultTokenList) => {
   let errMessage
   for (const token of json) {
     Object.keys(token).some(key => errMessage = tokenFieldsChecks[key](token[key], web3))
-    if (errMessage) throw new Error(`Token ${token} is invalid format: ${errMessage}`)
+    if (errMessage) throw new Error(`Token ${JSON.stringify(token)} is invalid format: ${errMessage}`)
   }
 }

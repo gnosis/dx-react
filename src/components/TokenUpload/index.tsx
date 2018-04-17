@@ -57,7 +57,7 @@ const TokenUpload = ({
         </ ButtonCTA>
       </form>
 
-      {customTokenList.length && <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'CUSTOM' })}>Use pre-existing custom token list</a>}
+      {customTokenList.length > 0 && <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'CUSTOM' })}>Use pre-existing custom token list</a>}
       <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'DEFAULT' })}>Use default token list</a>
 
       {/* TODO: remove */}

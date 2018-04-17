@@ -18,7 +18,6 @@ export default handleActions(
       customTokenList: action.payload.customTokenList,
       combinedTokenList: [
         ...state.defaultTokenList,
-        ...state.customTokenList,
         ...action.payload.customTokenList,
       ],
     }),
