@@ -26,7 +26,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({ continueToOrder, needsTokens
         <h2>Pick Token Pair Auction</h2>
         <TokenPair />
         <ButtonCTA onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
-        <a className="showTokenUpload" onClick={() => setTokenListType({ type: 'UPLOAD' })}>Upload Additional Token List</a>
+        <a className="showTokenUpload" onClick={(e) => (e.preventDefault(), setTokenListType({ type: 'UPLOAD' }))}>Upload Additional Token List</a>
       </div>
     }
 
