@@ -426,20 +426,13 @@ export const getSellerOngoingAuctions = async (
     // Array indices are lined up
     // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
     const claimableTokens = await Promise.all(promisedClaimableTokens)
-    console.log('claimableTokens ', claimableTokens)
-    console.log(`
-      claimableTokens = ${claimableTokens}
-      specific arr    = ${claimableTokens[0][0]}
-      length          = ${claimableTokens[0][0].length}
-    `)
-
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
     const auctionsArray = ongoingAuctions.map((auction, index) => {
       const [indices, balancePerIndex] = claimableTokens[index]
       return {
         ...auction,
         indices,
-        balancePerIndex,
+        balancePerIndex: balancePerIndex.map(i => i.div(10 ** 18)),
         claim: indices.length >= 2,
       }
     })
