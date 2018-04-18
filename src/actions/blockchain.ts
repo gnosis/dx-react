@@ -299,18 +299,21 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     console.log('userDXBalance = ', userDXBalance)
 
     // if user's sellAmt > DX.balance(token)
-    // deposit(sellAmt) && postSellOrder(sellAmt) 
+    // deposit(sellAmt) && postSellOrder(sellAmt)
+    let receipt
     if (weiSellAmt.greaterThan(userDXBalance)) {
       // TODO: discuss this with Dmitry and Alex
       // const calcedSellAmt = (weiSellAmt.plus(userDXBalance)).toString()
-      const receipt = await depositAndSell(sell, buy, weiSellAmt.toString(), currentAccount)
+      receipt = await depositAndSell(sell, buy, weiSellAmt.toString(), currentAccount)
       console.log('depositAndSell receipt', receipt)
 
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-      const receipt = await postSellOrder(sell, buy, weiSellAmt.toString(), index, currentAccount)
+      receipt = await postSellOrder(sell, buy, weiSellAmt.toString(), index, currentAccount)
       console.log('postSellOrder receipt', receipt)
     }
+    const { args: { auctionIndex } } = receipt.logs.find(log => log.event === 'NewSellOrder')
+    console.log(`sell order went to ${sell}-${buy}-${auctionIndex.toString()}`)
     dispatch(closeModal()) 
 
     // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
@@ -321,7 +324,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     dispatch(setTokenBalance({ tokenName: name, balance: balance.toString() }))
 
     // proceed to /auction/0x03494929349594
-    dispatch(push(`auction/${sell}-${buy}-${index}`))
+    dispatch(push(`auction/${sell}-${buy}-${auctionIndex.toString()}`))
 
     // reset sellAmount
     dispatch(setSellTokenAmount({ sellAmount: 0 }))
