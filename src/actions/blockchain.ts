@@ -36,7 +36,9 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
+import { BigNumber, TokenBalances, Account, Balance, State, TokenCode, TokenAddresses } from 'types'
+import { promisedContractsMap } from 'api/contracts'
+import { DefaultTokenObject } from 'api/types'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -68,10 +70,12 @@ export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('S
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 export const updateMainAppState = () => async (dispatch: Function) => {
-  const currentAccount = await getCurrentAccount()
-  const { elements: defObj } = await defaultTokensTesting()
+  const [{ TokenMGN }, currentAccount, { elements: defObj }] = await Promise.all([
+    promisedContractsMap,
+    getCurrentAccount(),
+    defaultTokensTesting(),
+  ])
 
-  const tokenNameList = defObj.map(t => t.symbol)
   // Check state in parallel
   /*
     * Provider?
@@ -84,11 +88,13 @@ export const updateMainAppState = () => async (dispatch: Function) => {
    */
   const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
     getSellerOngoingAuctions(defObj, currentAccount),
-    calcAllTokenBalances(tokenNameList as TokenCode[]),
+    calcAllTokenBalances(defObj as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
   ])
 
-  const mgn = tokenBalances.find(t => t.name === 'MGN')
+  console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
+
+  const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
 
   // dispatch Actions
   dispatch(batchActions([
@@ -105,9 +111,9 @@ export const updateMainAppState = () => async (dispatch: Function) => {
  * (Re)-Initializes DutchX connection according to current providers settings
  */
 export const initDutchX = () => async (dispatch: Function, getState: any) => {
+  const state = getState()
   // initialize
   try {
-    const state = getState()
 
     // determine new provider
     const newProvider: any = findDefaultProvider(state)
@@ -124,15 +130,16 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   try {
     let account: Account
     let currentBalance: Balance | BigNumber
-    let tokenBalances: { name: TokenCode, balance: Balance }[]
+    let tokenBalances: { name: any, address: string, balance: Balance }[]
 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
+        const tokenAddresses = state.tokenList.combinedTokenList
         account = await getCurrentAccount()
         currentBalance = (await getETHBalance(account, true)).toString()
         // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
-        tokenBalances = await calcAllTokenBalances()
+        tokenBalances = await calcAllTokenBalances(tokenAddresses)
         return dispatch(getClosingPrice())
       } catch (e) {
         console.log(e)
@@ -264,7 +271,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     }
     const { args: { auctionIndex } } = receipt.logs.find(log => log.event === 'NewSellOrder')
     console.log(`sell order went to ${sell}-${buy}-${auctionIndex.toString()}`)
-    dispatch(closeModal()) 
+    dispatch(closeModal())
 
     // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
     const tokenBalances = await getTokenBalances(undefined, currentAccount)
@@ -409,11 +416,12 @@ async function simulateTX(txFn: Function, txProps: Partial<State>[]) {
   }
 }
 
-async function calcAllTokenBalances(tokens?: TokenCode[]) {
+async function calcAllTokenBalances(tokenList?: DefaultTokenObject[]) {
   // TODO: pass a list of tokens from state or globals, for now ['ETH', 'GNO'] is default
-  const tokenBalances = (await getTokenBalances(tokens))
-    .map(({ name, balance }) => ({
+  const tokenBalances = (await getTokenBalances(tokenList))
+    .map(({ name, address, balance }) => ({
       name,
+      address,
       balance: balance.div(10 ** 18).toString(),
     }))
 

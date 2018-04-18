@@ -29,13 +29,13 @@ const filename2ContractNameMap = {
 
 
 interface ContractsMap {
-  DutchExchange: DXAuction
-  TokenETH: ETHInterface,
-  TokenGNO: GNOInterface,
-  TokenOWL: OWLInterface,
-  TokenMGN: MGNInterface,
-  TokenOMG: GNOInterface,
-  TokenRDN: GNOInterface,
+  DutchExchange:  DXAuction,
+  TokenETH:       ETHInterface,
+  TokenGNO:       GNOInterface,
+  TokenOWL:       OWLInterface,
+  TokenMGN:       MGNInterface,
+  TokenOMG:       GNOInterface,
+  TokenRDN:       GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
@@ -43,6 +43,7 @@ interface ContractsMapWProxy extends ContractsMap {
   TokenOWLProxy: DeployedContract,
 }
 
+export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/gnosis-core-contracts/build/contracts/HumanFriendlyToken.json'))
 const req = require.context(
   '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
   false,
@@ -60,11 +61,12 @@ type TokenArtifact =
   './TokenOMG.json' |
   './TokenRDN.json'
 
+
+
 const reqKeys = req.keys() as TokenArtifact[]
 const Contracts: SimpleContract[] = contractNames.map(
   c => TruffleContract(req(reqKeys.find(key => key === `./${c}.json`))),
 )
-// const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
@@ -74,7 +76,7 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
 
 (window as any).m = contractsMap
 
-export const setProvider = (provider: any) => Contracts.forEach((contract) => {
+export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
 })
 
@@ -95,12 +97,13 @@ async function init() {
     return acc
   }, {}) as ContractsMapWProxy
 
+  console.log('​deployedContracts', deployedContracts)
   const { address: proxyAddress } = deployedContracts.Proxy
   const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
 
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
   deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
-  // console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
+
   delete deployedContracts.Proxy
   delete deployedContracts.TokenOWLProxy
 

@@ -15,6 +15,7 @@ interface Code2Name {
 
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
+export type TokenAddresses = Account[]
 export type Balance = string
 export type Account = string
 export type BigNumber = BigNumber

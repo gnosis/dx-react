@@ -2,8 +2,9 @@ import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
 
-import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
+import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, TokenAddresses } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
+import { promisedContractsMap } from './contracts'
 
 const promisedAPI = (window as any).AP = initAPI()
 
@@ -59,40 +60,42 @@ export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: 
   return Tokens.getTokenBalance(tokenName, account)
 }
 
-export const getTokenBalance = async (code: TokenCode, account?: Account) => {
+export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
-  if (code === 'ETH') {
-    const { getETHBalance } = await promisedWeb3
 
-    return getETHBalance(account)
-  }
+  const [{ Tokens }, { TokenETH }] = await Promise.all([
+    promisedAPI,
+    promisedContractsMap,
+  ])
 
-  const { Tokens } = await promisedAPI
+  if (tokenAddress === TokenETH.address) return getETHBalance(account, true)
+
   // account would normally be taken from redux state and passed inside an action
   // but just in case
 
-  return Tokens.getTokenBalance(code, account)
+  return Tokens.getTokenBalance(tokenAddress, account)
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
-export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
+export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?: Account) => {
   account = await fillDefaultAccount(account)
 
-  const balances = await Promise.all(tokenList.map(code => getTokenBalance(code, account)))
+  const balances = await Promise.all(tokenList.map(tok => getTokenBalance(tok.address, account)))
 
-  // [{name: 'ETH': balance: Balance}, {...}]
-  return tokenList.map((code, i) => ({
-    name: code,
+  // [{ name: 'ETH': balance: Balance }, { ... }]
+  return tokenList.map((token, i) => ({
+    name: token.symbol || token.name || 'Unknown Token',
+    address: token.address,
     balance: balances[i] as BigNumber,
   }))
 }
 
 export const getEtherTokenBalance = async (token: TokenCode, account?: Account) => {
   if (token !== 'ETH') return
-  const { Tokens } = await promisedAPI
+  const { web3: { getETHBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return Tokens.getTokenBalance('ETH', account)
+  return getETHBalance(account, true)
 }
 
 export const getTokenAllowance = async (token: TokenCode, account?: Account) => {

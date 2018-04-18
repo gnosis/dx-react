@@ -39,12 +39,12 @@ export interface TransactionObject {
 }
 
 export interface TokensInterface {
-  getTokenBalance(code: TokenCode, account: Account): Promise<BigNumber>,
-  getTotalSupply(code: TokenCode): Promise<BigNumber>,
-  transfer(code: TokenCode, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
+  getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
+  getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
+  transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(tokenAddress: Account, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  allowance(tokenAddress: Account, owner: Account, spender: Account): Promise<BigNumber>,
 
   depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
   withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
@@ -76,6 +76,7 @@ export type Filter = 'latest' | 'pending' | FilterObject | void
 
 export interface SimpleContract {
   address: Account | void,
+  contractName: string,
   at<T = SimpleContract>(address: Account): T,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
