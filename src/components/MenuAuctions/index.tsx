@@ -26,10 +26,10 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
             <tbody>
               {ongoingAuctions.map(
                 (auction, i) =>
-                  <tr key={`${auction.sell.name}-${auction.buy.name}-${i}`}>
-                    <td>{`${auction.sell.name}/${auction.buy.name}`}</td>
+                  <tr key={`${auction.sell.symbol}-${auction.buy.symbol}-${i}`}>
+                    <td>{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
                     <td>{`${auction.indices[auction.indices.length - 1]}`}</td>
-                    <td>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1] || 'N/A'} ${auction.sell.name}`}</td>
+                    <td>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1] || 'N/A'} ${auction.sell.symbol}`}</td>
                     {auction.claim && <td><img src={require('assets/claim.svg')} /></td>}
                   </tr>,
               )}

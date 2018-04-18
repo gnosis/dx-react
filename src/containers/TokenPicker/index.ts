@@ -4,9 +4,18 @@ import { continueToOrder, setTokenListType } from 'actions'
 
 import { State } from 'types'
 
-const mapState = ({ ipfs: { fileBuffer, fileHash }, tokenList: { customTokenList, type } }: State) => ({
+const mapState = ({
+  ipfs: {
+    fileBuffer,
+  },
+  tokenList: {
+    customTokenList,
+    defaultTokenList,
+    type,
+  },
+}: State) => ({
   fileBuffer,
-  needsTokens: type === 'UPLOAD' || !(fileHash && customTokenList.length > 0),
+  needsTokens: type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
 })
 
 export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to'>>

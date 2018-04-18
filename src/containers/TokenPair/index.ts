@@ -4,8 +4,7 @@ import { openOverlay, swapTokensInAPair } from 'actions'
 import { State } from 'types'
 
 const mapStateToProps = ({
-  ipfs: { fileHash },
-  tokenList: { defaultTokenList, customTokenList },
+  tokenList: { defaultTokenList, customTokenList, type },
   tokenPair: { sell, buy },
   tokenBalances: { [sell]: sellTokenBalance = 0, [buy]: buyTokenBalance = 0 },
   }: State) => ({
@@ -13,7 +12,7 @@ const mapStateToProps = ({
     buyToken: buy,
     sellTokenBalance,
     buyTokenBalance,
-    needsTokens: !!(fileHash && defaultTokenList && customTokenList),
+    needsTokens: type !== 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
   })
 
 
