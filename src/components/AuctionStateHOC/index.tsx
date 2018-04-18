@@ -53,17 +53,17 @@ const getAuctionStatus = ({
   index,
   currentAuctionIndex,
   auctionStart,
-  now,
   price,
 }: AuctionStatusArgs) => {
   if (!closingPrice[1].equals(0)) return AuctionStatus.ENDED
-  if (currentAuctionIndex.lessThan(index) && auctionStart.greaterThan(now)) return AuctionStatus.PLANNED
+  // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
+  if (currentAuctionIndex.lessThan(index)) return AuctionStatus.PLANNED
   if (auctionStart.equals(1)) return AuctionStatus.INIT
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
 }
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
-  return class extends React.Component<AuctionStateProps, AuctionStateState> {
+  return class AuctionStateHOC extends React.Component<AuctionStateProps, AuctionStateState> {
     state = {} as AuctionStateState
 
     async componentDidMount() {
