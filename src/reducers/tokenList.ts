@@ -1,7 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-import { setDefaultTokenList, setCustomTokenList } from 'actions'
-import { setTokenListType } from 'containers/TokenUpload'
+import { setDefaultTokenList, setCustomTokenList, setTokenListType } from 'actions'
 import { DefaultTokenObject } from 'api/types'
 
 import { createSelector } from 'reselect'
@@ -23,7 +22,7 @@ const combine = createSelector(
     for (const token of list2) {
       if (!set.has(token.address)) list.push(token)
     }
-  
+
     return list
   },
 )

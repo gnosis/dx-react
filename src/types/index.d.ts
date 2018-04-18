@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
-import { TokenListType } from 'containers/TokenUpload'
 
 interface Code2Name {
   ETH: 'ETHER',
@@ -82,6 +81,12 @@ export type AuctionObject = {
 }
 
 export type TokenBalances = {[code in TokenCode]?: Balance }
+
+export interface TokenListType {
+  CUSTOM: 'CUSTOM',
+  DEFAULT: 'DEFAULT',
+  UPLOAD: 'UPLOAD',
+}
 
 export interface TokenList {
   defaultTokenList: DefaultTokenObject[];
