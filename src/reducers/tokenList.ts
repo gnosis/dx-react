@@ -52,6 +52,6 @@ export default handleActions(
     defaultTokenList:   [],
     customTokenList:    [],
     combinedTokenList:  [],
-    type: undefined,
+    type: 'UPLOAD',
   },
 )
