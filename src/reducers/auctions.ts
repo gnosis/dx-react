@@ -13,7 +13,7 @@ export const reducer = handleActions(
     },
   },
   {
-    ongoingAuctions: []
+    ongoingAuctions: [],
   },
 )
 

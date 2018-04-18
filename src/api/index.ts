@@ -371,8 +371,10 @@ export const withdraw = async (code: TokenCode, amount: Balance, account?: Accou
 * @param account
 * @returns { Promise<AuctionObject[]> } returns new Array of AuctionObject
 */
-
-export const getSellerOngoingAuctions = async (tokensJSON: DefaultTokenList, account: Account): Promise<AuctionObject[]> => {
+export const getSellerOngoingAuctions = async (
+  tokensJSON: DefaultTokenList,
+  account: Account,
+): Promise<AuctionObject[]> => {
   const { DutchX } = await promisedAPI
   // assuming tokensJSON comes in form:
   // defaultToken = { name: 'Ether Token', address: '0xAg9823nfejcdksak1o38fFa09384', imgBytes: [ ... ] }
@@ -383,7 +385,9 @@ export const getSellerOngoingAuctions = async (tokensJSON: DefaultTokenList, acc
     // get Array back of Auctions user is in
     // grab sellerBalance of USER for each current ongoing auction
     // @ts-ignore
-    const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(...runningPairsArr, account)).map((res: any) => res.toNumber())
+    const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
+      ...runningPairsArr, account)
+    ).map((res: any) => res.toNumber())
     // we know user is participating in (runningPairsArr[0][0]-runningPairsArr[1][0] && runningPairsArr[0][3]-runningPairsArr[1][3])
 
     // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
@@ -391,11 +395,14 @@ export const getSellerOngoingAuctions = async (tokensJSON: DefaultTokenList, acc
     const addressesToTokenJSON = tokensJSON.reduce((acc, tk) => {
       acc[tk.address] = tk
       return acc
-    }, {}) as {[P in TokenCode]: DefaultTokenObject}
+    }, {}) as { [P in TokenCode]: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
 
     const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
-    const ongoingAuctions: {sell: DefaultTokenObject, buy: DefaultTokenObject}[] = sellerOngoingAuctions.reduce((accum, bal, index) => {
+    const ongoingAuctions: {
+      sell: DefaultTokenObject,
+      buy: DefaultTokenObject,
+    }[] = sellerOngoingAuctions.reduce((accum, bal, index) => {
       if (!bal) return accum
 
       const s = runningPairsS[index]

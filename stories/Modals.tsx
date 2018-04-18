@@ -30,9 +30,5 @@ const Provider = makeProviderDecorator(storeInit(modalState))
 storiesOf(`Modal`, module)
   .addDecorator(StoryRouter())
   .addDecorator(Provider)
-  .addWithJSX('Transaction Modal', () =>
-    <TransactionModal {...modalState}/>
-  )
-  .addWithJSX('Approval Modal', () =>
-    <ApprovalModal {...modalState}/>
-  )
+  .addWithJSX('Transaction Modal', () => <TransactionModal {...modalState}/>)
+  .addWithJSX('Approval Modal', () => <ApprovalModal {...modalState}/>)
