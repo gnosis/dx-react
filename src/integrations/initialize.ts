@@ -1,4 +1,5 @@
 import { promisify } from 'api/utils'
+import { getTime } from 'api'
 import { ETHEREUM_NETWORKS } from './constants'
 import { WalletProvider, ConnectedInterface } from './types'
 import { Account, Balance } from 'types'
@@ -35,14 +36,15 @@ const shallowDifferent = (obj1: object, obj2: object) => {
   return keys1.some(key => obj1[key] !== obj2[key])
 }
 
-export default async ({ registerProvider, updateProvider }: ConnectedInterface) => {
+// Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
+export default async ({ registerProvider, updateProvider, updateMainAppState }: ConnectedInterface | any) => {
+  let prevTime: any
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
 
     return account
   }
-
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
     const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
@@ -56,28 +58,29 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
     return provider.web3.fromWei(balance, 'ether').toString()
   }
 
+  // Fired on setInterval every 10 seconds
   const watcher = async (provider: WalletProvider) => {
     if (!provider.checkAvailability()) return
 
+    // set block timestamp to provider state and compare
+    provider.state.timestamp = prevTime
     try {
-      const [account, network] = await Promise.all<Account, ETHEREUM_NETWORKS>([
-        getAccount(provider),
-        getNetwork(provider),
-      ])
-
-      // only get balance if accaount is not undefined
-      const balance = account && await getBalance(provider, account)
-
-      const available = !!(provider.walletAvailable && account)
-
-
-      const newState = { account, network, balance, available }
+      const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
+          getAccount(provider),
+          getNetwork(provider),
+          getTime(),
+        ]),
+        balance = account && await getBalance(provider, account),
+        available = !!(provider.walletAvailable && account),
+        newState = { account, network, balance, available, timestamp }
 
       // if data changed
-      // TODO: watch for account, timestamp, blocknumber change and update everything in state
       if (shallowDifferent(provider.state, newState)) {
+        // reset module timestamp with updated timestamp
+        prevTime = timestamp
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
+        await updateMainAppState()
       }
     } catch (err) {
       console.warn(err)
@@ -94,6 +97,7 @@ export default async ({ registerProvider, updateProvider }: ConnectedInterface) 
   providers.forEach((provider) => {
     // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
+    if (!provider.walletAvailable) return
     // dispatch action to save provider name and proirity
     registerProvider(provider.providerName, { priority: provider.priority })
     // get account, balance, etc. state

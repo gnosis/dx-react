@@ -1,3 +1,6 @@
+import BigNumber from 'bignumber.js'
+import { DefaultTokens, DefaultTokenObject } from 'api/types'
+
 interface Code2Name {
   ETH: 'ETHER',
   GNO: 'GNOSIS',
@@ -5,12 +8,16 @@ interface Code2Name {
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  MGN: 'MAGNOLIA',
+  OWL: 'OWL',
+  RDN: 'RAIDEN',
 }
 
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
 export type Balance = string
 export type Account = string
+export type BigNumber = BigNumber
 
 interface Providers {
   [provider: string]: any,
@@ -30,6 +37,8 @@ export interface Blockchain {
   connectionTried?: boolean,
   providersLoaded?: boolean,
   dutchXInitialized?: boolean,
+  feeRatio?: number,
+  mgnSupply?: Balance,
 }
 
 export interface Modal {
@@ -52,22 +61,39 @@ export type OngoingAuctions = AuctionObject[]
  * buyToken: token to buy
  * buyPrice: last closingPrice - from DutchExchange contract
  * claim: boolean yay or ney
- * 
- * 
+ *
+ *
  */
 export type AuctionObject = {
-  index?: number,
-  sell: TokenCode,
-  buy: TokenCode,
-  price: number,
-  balance?: Balance,
-  claim: boolean,
-  contractAddress?: Account,
-  timestamp?: string,
+  sell: {
+    name: TokenName,
+    symbol: TokenCode,
+    address: Account,
+  },
+  buy: {
+    name: TokenName,
+    symbol: TokenCode,
+    address: Account,
+  },
+  claim?: boolean,
+  indices?: string[] | BigNumber[],
+  balancePerIndex?: string[] | BigNumber[],
 }
 
 export type TokenBalances = {[code in TokenCode]?: Balance }
 
+export interface TokenListType {
+  CUSTOM: 'CUSTOM',
+  DEFAULT: 'DEFAULT',
+  UPLOAD: 'UPLOAD',
+}
+
+export interface TokenList {
+  defaultTokenList: DefaultTokenObject[];
+  customTokenList: DefaultTokenObject[];
+  combinedTokenList: DefaultTokenObject[];
+  type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
+}
 
 /**
  * represents chosen TokenPair
@@ -110,16 +136,30 @@ export interface TokenOverlay {
   mod: TokenMod
 }
 
+export type FileBuffer = ArrayBuffer
+
+export interface IPFS {
+  oFile?: File,
+  fileContent?: string;
+  fileBuffer?: FileBuffer,
+  fileHash?: string,
+  filePath?: string,
+  json?: Object
+}
+
 /**
- * represents global State of redux store 
+ * represents global State of redux store
  * @export
  * @interface State
  */
 export interface State {
+  auctions: any,
   blockchain: Blockchain,
   modal: Modal,
-  tokenPair: TokenPair,
-  tokenBalances: TokenBalances,
-  tokenOverlay: TokenOverlay,
+  ipfs: IPFS,
   ratioPairs: RatioPairs
+  tokenBalances: TokenBalances,
+  tokenList: TokenList,
+  tokenPair: TokenPair,
+  tokenOverlay: TokenOverlay,
 }

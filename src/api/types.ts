@@ -1,16 +1,26 @@
-import { Account, Balance as B, TokenCode, TokenPair } from 'types'
-import { BigNumber } from 'bignumber.js'
+import { Account, Balance as B, BigNumber, TokenCode, TokenName, TokenPair } from 'types'
 
 type Balance = B | BigNumber | number
 export type Index = number | BigNumber
-
+export interface DefaultTokens {
+  elements: DefaultTokenList;
+  page: number,
+  hasMorePages: boolean;
+}
+export interface DefaultTokenObject {
+  name: TokenName;
+  symbol: TokenCode;
+  address: Account;
+}
+export type DefaultTokenList = DefaultTokenObject[]
 
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
-  getETHBalance(account: Account): Promise<BigNumber>,
+  getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
+  isAddress(address: Account): boolean,
   currentProvider: Function,
   web3: any,
   setProvider(provider: any): void,
@@ -126,7 +136,7 @@ export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
   /**
-   * @returns Promise<[amountUnlocked, withdrawalTime]> 
+   * @returns Promise<[amountUnlocked, withdrawalTime]>
    */
   unlockedTokens(account: Account): Promise<[BigNumber, BigNumber]>,
   lockedTokenBalances(account: Account): Promise<BigNumber>,
@@ -355,6 +365,7 @@ export interface DutchExchange {
   address: Account,
 
   isTokenApproved(code: TokenCode): Promise<boolean>,
+
   getBalance(code: TokenCode, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
@@ -367,6 +378,19 @@ export interface DutchExchange {
   getSellerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getBuyerBalances(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
   getClaimedAmounts(pair: TokenPair, index: Index, account: Account): Promise<BigNumber>,
+  getRunningTokenPairs(tokenList: Account[]): Promise<[Account[], Account[]]>,
+  getSellerBalancesOfCurrentAuctions(
+    sellTokenArr: Account[],
+    buyTokenArr: Account[],
+    account: Account,
+  ): Promise<number[]>,
+  getIndicesWithClaimableTokensForSellers(
+    sellToken: Account,
+    buyToken: Account,
+    account: Account,
+    lastNAuctions: number,
+  ): Promise<[BigNumber[], BigNumber[]]>,
+  getFeeRatio(account: Account): Promise<[BigNumber, BigNumber]>,
 
   postSellOrder(
     pair: TokenPair,
@@ -382,10 +406,10 @@ export interface DutchExchange {
   ): Promise<Receipt>,
   claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
   claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
+  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
   deposit(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
   withdraw(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
   depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<Receipt>,
-  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,

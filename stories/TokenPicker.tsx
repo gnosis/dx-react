@@ -2,6 +2,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
+import { boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-router'
 
 import TokenPicker from 'components/TokenPicker'
@@ -39,7 +40,11 @@ storiesOf('TokenPicker', module)
   .addDecorator(StoryRouter())
   .addDecorator(makeProviderDecorator(store))
   .addDecorator(CenterDecor)
-  .addWithJSX('main', () => <TokenPicker
-    continueToOrder={action('Continue to order details')}
-    to=""
-  />)
+  .addWithJSX('main', () => (
+    <TokenPicker
+      continueToOrder={action('Continue to order details')}
+      setTokenListType={() => {}}
+      needsTokens={boolean('needsTokens', false)}
+      to=""
+    />
+))

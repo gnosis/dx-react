@@ -36,9 +36,9 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
   switch (status) {
     case Status.ACTIVE:
       return [
-          <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
-          <i key="1">{getTimeStr(timeLeft)}</i>
-        ] as any
+        <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
+        <i key="1">{getTimeStr(timeLeft)}</i>,
+      ] as any
     case Status.ENDED:
       return (
         <span>

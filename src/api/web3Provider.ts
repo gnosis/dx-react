@@ -7,7 +7,7 @@ const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
     return window.web3.currentProvider
   }
-  
+
   return new Web3.providers.HttpProvider('http://localhost:8545')
 }
 
@@ -31,10 +31,10 @@ async function init(): Promise<ProviderInterface> {
     return account
   }
 
-  const getETHBalance = async (account: Account) => {
+  const getETHBalance = async (account: Account, inETH?: boolean) => {
     const wei = await getBalance(account)
 
-    return web3.fromWei(wei, 'ether')
+    return inETH ? web3.fromWei(wei, 'ether') : wei
   }
 
   const getNetwork = promisify(web3.version.getNetwork, web3.version)
@@ -42,6 +42,8 @@ async function init(): Promise<ProviderInterface> {
   const isConnected = web3.isConnected.bind(web3)
 
   const setProvider = web3.setProvider.bind(web3)
+
+  const isAddress = web3.isAddress.bind(web3)
 
   const resetProvider = () => setProvider(getProvider())
 
@@ -57,6 +59,7 @@ async function init(): Promise<ProviderInterface> {
     getETHBalance,
     getNetwork,
     isConnected,
+    isAddress,
     get currentProvider() {
       return web3.currentProvider
     },

@@ -96,7 +96,7 @@
       }
     }
 
-    > p {
+    > p, > .textSquareInnerContainer {
       font-family: inherit;
       font-size: 16px;
       color: $white;
@@ -248,6 +248,7 @@
   margin: 15px auto 0;
   text-decoration: underline;
   text-align: center;
+  cursor: pointer;
 }
 
 .tokenPair {

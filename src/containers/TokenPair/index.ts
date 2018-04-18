@@ -4,6 +4,7 @@ import { openOverlay, swapTokensInAPair } from 'actions'
 import { State } from 'types'
 
 const mapStateToProps = ({
+  tokenList: { defaultTokenList, customTokenList, type },
   tokenPair: { sell, buy },
   tokenBalances: { [sell]: sellTokenBalance = 0, [buy]: buyTokenBalance = 0 },
   }: State) => ({
@@ -11,6 +12,7 @@ const mapStateToProps = ({
     buyToken: buy,
     sellTokenBalance,
     buyTokenBalance,
+    needsTokens: type !== 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
   })
 
 

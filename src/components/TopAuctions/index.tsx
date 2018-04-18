@@ -13,7 +13,11 @@ const TopAuctions: React.SFC<TopAuctionsProps> = ({ pairs, selectTokenPairAndSet
     <ul>
       {pairs.map(({ sell, buy, price }) => {
         const pair = `${buy}/${sell}`
-        return <li key={pair} onClick={() => selectTokenPairAndSetClosingPrice({ sell, buy })}><strong>{pair}</strong> {price}</li>
+        return (
+          <li key={pair} onClick={() => selectTokenPairAndSetClosingPrice({ sell, buy })}>
+            <strong>{pair}</strong> {price}
+          </li>
+        )
       })}
     </ul>
   </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { object } from '@storybook/addon-knobs'
+import { object, boolean } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
 import TokenPair from 'components/TokenPair'
@@ -36,6 +36,7 @@ const tokenPair = () => {
       sellTokenBalance={sellTokenBalance}
       buyTokenBalance={buyTokenBalance}
       swapTokensInAPair={() => {}}
+      needsTokens={boolean('needsTokens', false)}
     />
   )
 }

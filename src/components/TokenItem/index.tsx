@@ -22,7 +22,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       <i data-coin={code}></i>
       <big>{name}</big><code>{code}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
-      <p className={balance ? undefined : 'noBalance'}>{balance} {code}</p>
+      <p className={balance ? undefined : 'noBalance'}>{Number(balance).toFixed(4)} {code}</p>
 
       {/*
       MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
