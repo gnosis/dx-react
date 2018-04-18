@@ -35,7 +35,9 @@
         "ignoreTemplateLiterals": true
       }
     ],
-    "strict-boolean-expressions": false
+    "strict-boolean-expressions": false,
+    "prefer-const": [true, {"destructuring": "all"}],
+    "ter-arrow-parens": false
   },
   "rulesDirectory": []
 }

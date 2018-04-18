@@ -448,7 +448,7 @@ export const getSellerOngoingAuctions = async (
   } catch (e) {
     console.warn(e)
   }
-}
+} // @ts-ignore
 
 async function initAPI(): Promise<dxAPI> {
   const [web3, Tokens, DutchX] = await Promise.all([
