@@ -13,4 +13,5 @@ export const setTokenListType = createAction<{ type: TokenListType['CUSTOM' | 'D
 export const batchTokenListTypeAndFileParams = (p1: { customTokenList: DefaultTokenObject[] }, p2: {}) => batchActions([
   setCustomTokenList(p1),
   setIPFSFileHashAndPath(p2),
+  setTokenListType({ type: 'CUSTOM' }),
 ])

@@ -6,18 +6,22 @@ import { DefaultTokenObject } from 'api/types'
 import { createSelector } from 'reselect'
 
 const makeASet = createSelector(
-  (state: any, action: any) => action.payload.defaultTokenList || state.defaultTokenList,
+  (state: any) => state.combinedTokenList,
   list => new Set(list.map((t: DefaultTokenObject) => t.address)),
 )
 const copyList = createSelector(
-  (state: any, action: any) => action.payload.defaultTokenList || state.defaultTokenList,
+  (state: any) => state.combinedTokenList,
   list => list.slice(),
 )
 
 const combine = createSelector(
+  // addresses of defaultTokens in Set
   makeASet,
+  // copy of defaultTokensList
   copyList,
-  (state, action) => action.payload.customTokenList || state.customTokenList,
+  // customTokensList uploaded by user
+  (_: never, action: any) => action.payload.customTokenList || action.payload.defaultTokenList,
+  // filter through customTokenList and remove dup addresses AGAINST Set
   (set, list, list2) => {
     for (const token of list2) {
       if (!set.has(token.address)) list.push(token)
@@ -32,25 +36,22 @@ export default handleActions(
     [setDefaultTokenList.toString()]: (state: any, action: any) => ({
       ...state,
       defaultTokenList: action.payload.defaultTokenList,
-      combinedTokenList: combine(state, action),
+      combinedTokenList: combine(state,action),
     }),
     [setCustomTokenList.toString()]: (state: any, action: any) => ({
       ...state,
       customTokenList: action.payload.customTokenList,
       combinedTokenList: combine(state, action),
     }),
-    [setTokenListType.toString()]: (state: any, action: any) => {
-      const { type } = action.payload
-      return {
-        ...state,
-        type,
-      }
-    },
+    [setTokenListType.toString()]: (state: any, action: any) => ({
+      ...state,
+      type: action.payload.type,
+    }),
   },
   {
-    defaultTokenList: [],
-    customTokenList: [],
-    combinedTokenList: [],
+    defaultTokenList:   [],
+    customTokenList:    [],
+    combinedTokenList:  [],
     type: undefined,
   },
 )
