@@ -11,6 +11,7 @@ export interface DefaultTokenObject {
   name: TokenName;
   symbol: TokenCode;
   address: Account;
+  decimal: number;
 }
 export type DefaultTokenList = DefaultTokenObject[]
 

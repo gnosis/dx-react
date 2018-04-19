@@ -104,8 +104,8 @@ export interface TokenList {
  * @interface TokenPair
  */
 export interface TokenPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   sellAmount?: Balance,
   index?: string,
   allowanceLeft?: Balance,
