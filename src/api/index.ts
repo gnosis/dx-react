@@ -95,7 +95,7 @@ export const getEtherTokenBalance = async (token: TokenCode, account?: Account) 
   const { web3: { getETHBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return getETHBalance(account, true)
+  return getETHBalance(account)
 }
 
 export const getTokenAllowance = async (token: TokenCode, account?: Account) => {
