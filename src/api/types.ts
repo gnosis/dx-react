@@ -43,7 +43,13 @@ export interface TokensInterface {
   getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
   getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
   transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  transferFrom(tokenAddress: Account, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(
+    tokenAddress: Account,
+    from: Account,
+    to: Account,
+    value: Balance,
+    tx: TransactionObject,
+  ): Promise<Receipt>,
   approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(tokenAddress: Account, owner: Account, spender: Account): Promise<BigNumber>,
 
@@ -366,9 +372,9 @@ export interface DXAuction {
 export interface DutchExchange {
   address: Account,
 
-  isTokenApproved(code: TokenCode): Promise<boolean>,
+  isTokenApproved(tokenAddress: Account): Promise<boolean>,
 
-  getBalance(code: TokenCode, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
+  getBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
@@ -409,8 +415,8 @@ export interface DutchExchange {
   claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
   claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
   claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
-  deposit(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
-  withdraw(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
+  deposit(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
+  withdraw(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
   depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<Receipt>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
