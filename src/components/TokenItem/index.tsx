@@ -1,5 +1,5 @@
 import React from 'react'
-import { TokenCode, TokenName, TokenMod, Balance } from 'types'
+import { TokenCode, TokenName, TokenMod, Balance, Account } from 'types'
 
 export interface TokenItemProps {
   onClick?(props: TokenItemProps): any,
@@ -7,6 +7,7 @@ export interface TokenItemProps {
   balance: Balance,
   name: TokenName,
   code: TokenCode,
+  address: Account,
 }
 
 const mod2Title: {[P in TokenMod]: string} = {

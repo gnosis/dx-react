@@ -1,5 +1,5 @@
 import React from 'react'
-import { TokenCode } from 'types'
+import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { code2tokenMap, AuctionStatus } from 'globals'
 // import { promisedDutchX } from 'api/dutchx'
@@ -19,18 +19,21 @@ export interface AuctionStateProps {
   match: {
     params: {
       index: string,
-      buy: TokenCode,
-      sell: TokenCode,
+      buy: TokenCode | TokenName | Account,
+      sell: TokenCode | TokenName | Account,
     },
     url: string,
-  }
+  },
+  tokenList: DefaultTokenObject[],
+  address2Token: { [P in Account]: DefaultTokenObject },
+  symbol2Token: { [P in TokenCode]: DefaultTokenObject },
 }
 
 export interface AuctionStateState {
   completed: boolean,
   status: AuctionStatus,
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   price: number[],
   timeToCompletion: number,
   userSelling: number,
@@ -76,8 +79,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
     }
 
     async updateAuctionState() {
-      const { sell, buy, index: indexParam } = this.props.match.params
+      const { match, address2Token, symbol2Token } = this.props
+      const { sell, buy, index: indexParam } = match.params
       const index = +indexParam
+
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
         const error = `wrong index format: ${indexParam}`
@@ -88,7 +93,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         return
       }
 
-      if (!code2tokenMap[sell] || !code2tokenMap[buy]) {
+      if (
+        !address2Token[sell] || !address2Token[buy] ||
+        !symbol2Token[sell] || !symbol2Token[buy]
+      ) {
         const error = `${sell}->${buy} auction isn't supported in Frontend UI`
         console.warn(error)
         this.setState({
@@ -97,7 +105,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         return
       }
 
-      const pair = { sell, buy }
+      const pair = {
+        sell: address2Token[sell] || symbol2Token[sell],
+        buy: address2Token[buy] || symbol2Token[buy],
+      }
 
       const currentAuctionIndex = await getLatestAuctionIndex(pair)
       console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
@@ -156,8 +167,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       this.setState({
         completed: status === AuctionStatus.ENDED,
         status,
-        sell,
-        buy,
+        sell: pair.sell,
+        buy: pair.buy,
         price: price.map(n => n.toNumber()),
         timeToCompletion,
         userSelling: sellerBalance.toNumber(),

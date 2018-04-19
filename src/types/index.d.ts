@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
+export {DefaultTokens, DefaultTokenObject}
 
-interface Code2Name {
+export interface Code2Name {
   ETH: 'ETHER',
   GNO: 'GNOSIS',
   REP: 'AUGUR',
@@ -81,7 +82,7 @@ export type AuctionObject = {
   balancePerIndex?: string[] | BigNumber[],
 }
 
-export type TokenBalances = {[code in TokenCode]?: Balance }
+export type TokenBalances = { [P in Account]: Balance }
 
 export interface TokenListType {
   CUSTOM: 'CUSTOM',
@@ -104,8 +105,8 @@ export interface TokenList {
  * @interface TokenPair
  */
 export interface TokenPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   sellAmount?: Balance,
   index?: string,
   allowanceLeft?: Balance,
@@ -116,8 +117,8 @@ export interface TokenPair {
  * used in TopAuctions
  */
 export interface RatioPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   price: Balance,
 }
 

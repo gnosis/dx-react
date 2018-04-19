@@ -8,7 +8,7 @@ import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/Au
 const mapState = (state: State) => {
   // TODO: always have some price for every pair in RatioPairs
   const { sell, buy, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
-  const { [sell]: sellTokenBalance } = state.tokenBalances
+  const { [sell.address]: sellTokenBalance } = state.tokenBalances
   const { sellAmount } = state.tokenPair
 
   return ({

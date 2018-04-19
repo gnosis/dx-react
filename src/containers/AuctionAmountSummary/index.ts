@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 
-import { State, RatioPairs, TokenCode } from 'types'
+import { State, RatioPairs, DefaultTokenObject } from 'types'
 import AuctionAmountSummary from 'components/AuctionAmountSummary'
 
 // TODO: move to selectors
@@ -9,7 +9,7 @@ const findRatioPair = createSelector(
   ({ tokenPair }) => tokenPair.sell,
   ({ tokenPair }) => tokenPair.buy,
   ({ ratioPairs }) => ratioPairs,
-  (sell: TokenCode, buy: TokenCode, ratioPairs: RatioPairs) => ratioPairs.find(
+  (sell: DefaultTokenObject, buy: DefaultTokenObject, ratioPairs: RatioPairs) => ratioPairs.find(
     pair => pair.sell === sell && pair.buy === buy),
 )
 
