@@ -1,11 +1,11 @@
 import React from 'react'
 import { claimSellerFunds } from 'api'
-import { TokenCode } from 'types'
+import { DefaultTokenObject } from 'types'
 
 export interface TokenClaimingProps {
   completed: boolean,
-  sellToken: TokenCode,
-  buyToken: TokenCode,
+  sellToken: DefaultTokenObject,
+  buyToken: DefaultTokenObject,
   index: number,
   buyAmount: number,
   account: string,
@@ -39,7 +39,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
 
       try {
         // start claimFunds request
-        console.log(`claiming tokens for ${account} for ${sell}->${buy}-${index}`)
+        console.log(
+          `claiming tokens for ${account} for
+          ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
+        )
         await claimSellerFunds({ sell, buy }, index, account)
         // if succeeds change isClaiming state
         this.setState({
