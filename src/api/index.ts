@@ -4,8 +4,15 @@ import { promisedDutchX } from './dutchx'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
+import { promisedContractsMap } from './contracts'
 
 const promisedAPI = (window as any).AP = initAPI()
+
+/* =================================================================
+====================================================================
+WEB3 API
+====================================================================
+===================================================================*/
 
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
@@ -33,7 +40,7 @@ export const getAllAccounts = async () => {
   return web3.getAccounts()
 }
 
-// ether balance, not ETH tokens
+// Web3 ether balance, not ETH tokens
 export const getETHBalance = async (account?: Account, inETH?: boolean) => {
   const { web3 } = await promisedAPI
   account = await web3.getCurrentAccount()
@@ -41,8 +48,21 @@ export const getETHBalance = async (account?: Account, inETH?: boolean) => {
   return web3.getETHBalance(account, inETH)
 }
 
+export const getTime = async () => {
+  const { web3 } = await promisedAPI
+
+  return web3.getTimestamp()
+}
+
+/* =================================================================
+====================================================================
+TOKENS API
+====================================================================
+===================================================================*/
+
 // ETH token balance
-export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: Account) => {
+// TODO: delete or keep
+/* export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: Account) => {
   account = await fillDefaultAccount(account)
 
   if (tokenName && tokenName === 'ETH') {
@@ -57,70 +77,77 @@ export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: 
 
   // should probably change name here to WETH
   return Tokens.getTokenBalance(tokenName, account)
-}
+} */
 
-export const getTokenBalance = async (code: TokenCode, account?: Account) => {
+export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
-  if (code === 'ETH') {
-    const { getETHBalance } = await promisedWeb3
 
-    return getETHBalance(account)
-  }
+  const [{ Tokens }, { TokenETH }] = await Promise.all([
+    promisedAPI,
+    promisedContractsMap,
+  ])
 
-  const { Tokens } = await promisedAPI
+  if (tokenAddress === TokenETH.address) return getETHBalance(account, false)
+
   // account would normally be taken from redux state and passed inside an action
   // but just in case
 
-  return Tokens.getTokenBalance(code, account)
+  return Tokens.getTokenBalance(tokenAddress, account)
 }
 
 // TODO: remove ['ETH', 'GNO'] default, use actions for this
-export const getTokenBalances = async (tokenList: TokenCode[] = ['ETH', 'GNO'], account?: Account) => {
+export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?: Account) => {
   account = await fillDefaultAccount(account)
 
-  const balances = await Promise.all(tokenList.map(code => getTokenBalance(code, account)))
+  const balances = await Promise.all(tokenList.map(tok => getTokenBalance(tok.address, account)))
 
-  // [{name: 'ETH': balance: Balance}, {...}]
-  return tokenList.map((code, i) => ({
-    name: code,
+  // [{ name: 'ETH': balance: Balance }, { ... }]
+  return tokenList.map((token, i) => ({
+    name: token.symbol || token.name || 'Unknown Token',
+    address: token.address,
     balance: balances[i] as BigNumber,
   }))
 }
 
-export const getEtherTokenBalance = async (token: TokenCode, account?: Account) => {
-  if (token !== 'ETH') return
-  const { Tokens } = await promisedAPI
+export const getEtherTokenBalance = async (account?: Account) => {
+  const { web3: { getETHBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return Tokens.getTokenBalance('ETH', account)
+  return getETHBalance(account, true)
 }
 
-export const getTokenAllowance = async (token: TokenCode, account?: Account) => {
+export const getTokenAllowance = async (tokenAddress: Account, userAddress?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.allowance(token, account, DutchX.address)
+  return Tokens.allowance(tokenAddress, userAddress, DutchX.address)
 }
 
-export const tokenApproval = async (token: TokenCode, amount: Balance, account?: Account) => {
+export const tokenApproval = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.approve(token, DutchX.address, amount, { from: account })
+  return Tokens.approve(tokenAddress, DutchX.address, amount, { from: userAddress })
 }
 
-export const tokenSupply = async (code: TokenCode) => {
+export const tokenSupply = async (tokenAddress: Account) => {
   const { Tokens } = await promisedAPI
 
-  return Tokens.getTotalSupply(code)
+  return Tokens.getTotalSupply(tokenAddress)
 }
 
-export const depositETH = async (amount: Balance, account?: Account) => {
+export const depositETH = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.depositETH({ from: account, value: amount })
+  return Tokens.depositETH({ from: userAddress, value: amount })
 }
+
+/* =================================================================
+====================================================================
+DUTCH-EXCHANGE API
+====================================================================
+===================================================================*/
 
 export const getLatestAuctionIndex = async (pair: TokenPair) => {
   const { DutchX } = await promisedAPI
@@ -135,10 +162,8 @@ export const getLatestAuctionIndex = async (pair: TokenPair) => {
  * @param aDiff - Number to offset auctionIndex by - if left blank defaults to lastAuction (-1)
  * @returns [BigNumber(num), BigNumber(den)]
  */
-// TODO: pass in the whole TokenPair from the action
-export const closingPrice = async (sell: TokenCode, buy: TokenCode, aDiff: number = -1) => {
+export const closingPrice = async (pair: TokenPair, aDiff: number = -1) => {
   const { DutchX } = await promisedAPI
-  const pair = { sell, buy }
 
   const currentAuctionIdx = await DutchX.getLatestAuctionIndex(pair)
 
@@ -173,15 +198,9 @@ export const getAuctionStart = async (pair: TokenPair) => {
   return DutchX.getAuctionStart(pair)
 }
 
-export const getTime = async () => {
-  const { web3 } = await promisedAPI
-
-  return web3.getTimestamp()
-}
-
 export const approveAndPostSellOrder = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   index: Index,
   account?: Account,
@@ -191,7 +210,7 @@ export const approveAndPostSellOrder = async (
   account = await fillDefaultAccount(account)
 
   // TODO: in future ask for a larger allowance
-  const receipt = await Tokens.approve(sell, DutchX.address, amount, { from: account })
+  const receipt = await Tokens.approve(sell.address, DutchX.address, amount, { from: account })
   console.log('approved tx', receipt)
 
   return DutchX.postSellOrder(pair, amount, index, account)
@@ -199,8 +218,8 @@ export const approveAndPostSellOrder = async (
 
 // TODO: pass in the whole TokenPair from the action
 export const postSellOrder = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   index: Index,
   account?: Account,
@@ -227,8 +246,8 @@ postSellOrder.call = async (
 }
 
 export const depositAndSell = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   account?: Account,
 ) => {
@@ -252,11 +271,11 @@ depositAndSell.call = async (
   return DutchX.depositAndSell.call(pair, amount, account)
 }
 
-export const getDXTokenBalance = async (token: TokenCode, account: Account) => {
+export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  userAccount = await fillDefaultAccount(userAccount)
 
-  return DutchX.getBalance(token, account)
+  return DutchX.getBalance(tokenAddress, userAccount)
 }
 
 /*
@@ -441,7 +460,7 @@ export const getSellerOngoingAuctions = async (
   } catch (e) {
     console.warn(e)
   }
-} // @ts-ignore
+}
 
 async function initAPI(): Promise<dxAPI> {
   const [web3, Tokens, DutchX] = await Promise.all([

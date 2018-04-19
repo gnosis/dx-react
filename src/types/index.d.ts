@@ -15,6 +15,7 @@ interface Code2Name {
 
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
+export type TokenAddresses = Account[]
 export type Balance = string
 export type Account = string
 export type BigNumber = BigNumber
@@ -103,8 +104,8 @@ export interface TokenList {
  * @interface TokenPair
  */
 export interface TokenPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   sellAmount?: Balance,
   index?: string,
   allowanceLeft?: Balance,

@@ -11,6 +11,7 @@ export interface DefaultTokenObject {
   name: TokenName;
   symbol: TokenCode;
   address: Account;
+  decimal: number;
 }
 export type DefaultTokenList = DefaultTokenObject[]
 
@@ -39,12 +40,18 @@ export interface TransactionObject {
 }
 
 export interface TokensInterface {
-  getTokenBalance(code: TokenCode, account: Account): Promise<BigNumber>,
-  getTotalSupply(code: TokenCode): Promise<BigNumber>,
-  transfer(code: TokenCode, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  transferFrom(code: TokenCode, from: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  approve(code: TokenCode, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
-  allowance(code: TokenCode, owner: Account, spender: Account): Promise<BigNumber>,
+  getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
+  getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
+  transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transferFrom(
+    tokenAddress: Account,
+    from: Account,
+    to: Account,
+    value: Balance,
+    tx: TransactionObject,
+  ): Promise<Receipt>,
+  approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  allowance(tokenAddress: Account, owner: Account, spender: Account): Promise<BigNumber>,
 
   depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
   withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
@@ -76,6 +83,7 @@ export type Filter = 'latest' | 'pending' | FilterObject | void
 
 export interface SimpleContract {
   address: Account | void,
+  contractName: string,
   at<T = SimpleContract>(address: Account): T,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
@@ -364,9 +372,9 @@ export interface DXAuction {
 export interface DutchExchange {
   address: Account,
 
-  isTokenApproved(code: TokenCode): Promise<boolean>,
+  isTokenApproved(tokenAddress: Account): Promise<boolean>,
 
-  getBalance(code: TokenCode, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
+  getBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
@@ -407,8 +415,8 @@ export interface DutchExchange {
   claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
   claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
   claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
-  deposit(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
-  withdraw(code: TokenCode, amount: Balance, account: Account): Promise<Receipt>,
+  deposit(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
+  withdraw(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
   depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<Receipt>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
