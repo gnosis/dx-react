@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
-export {DefaultTokens, DefaultTokenObject}
+export { DefaultTokens, DefaultTokenObject }
+
+export type Providers = {
+  METAMASK: 'METAMASK',
+  MIST: 'MIST',
+}
 
 export interface Code2Name {
   ETH: 'ETHER',

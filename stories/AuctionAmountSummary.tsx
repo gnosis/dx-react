@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { text, number } from '@storybook/addon-knobs'
-import { TokenCode } from 'types'
+import { object, number } from '@storybook/addon-knobs'
+import { DefaultTokenObject } from 'types'
 
 import AuctionAmountSummary from 'components/AuctionAmountSummary'
 
@@ -20,8 +20,8 @@ storiesOf('AuctionAmountSummary', module)
   .addDecorator(CenterDecor)
   .addWithJSX('PANEL 3', () => (
     <AuctionAmountSummary
-      buyToken={text('buyToken', 'GNO') as TokenCode}
-      sellToken={text('sellToken', 'ETH') as TokenCode}
+      buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
+      sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
       sellTokenAmount={number('sellAmount', 1.00000000).toString()}
       buyTokenAmount={number('buyAmount', 0.459459434).toString()}
     />

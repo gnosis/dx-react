@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { storiesOf, StoryDecorator } from '@storybook/react'
-import { text } from '@storybook/addon-knobs'
+import { object, text } from '@storybook/addon-knobs'
 
-import { TokenCode } from 'types'
+import { DefaultTokenObject } from 'types'
 
 import AuctionPriceBar from 'components/AuctionPriceBar'
 
@@ -30,9 +30,9 @@ const story = storiesOf('ClosingPriceBar', module)
 for (const vrs of Object.keys(variations)) {
   story.addWithJSX(vrs, () => 
     <AuctionPriceBar
-      buyToken={text('buyToken', 'GNO') as TokenCode} 
+      buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
+      sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
       header={variations[vrs].header}
-      sellToken={text('sellToken', 'ETH') as TokenCode}
       sellTokenPrice={text('sellPrice', '0')}
     />,
   )

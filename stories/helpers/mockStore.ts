@@ -53,8 +53,8 @@ export const bcLocalHost: Partial<State> = {
 
 export const tokenPairState: Partial<State> = {
   tokenPair: {
-    sell: 'ETH',
-    buy: '1ST',
+    sell: { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 },
+    buy: { name: 'FIRST BLOOD', symbol: '1ST', address: '', decimals: 18 },
     sellAmount: '0',
   },
 }

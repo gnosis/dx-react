@@ -26,7 +26,7 @@ const getModFromArgs = decorateAction([
 
 const tokenPair = () => {
   const { sell, buy } = object('tokenPair', codePair)
-  const { [sell]: sellTokenBalance, [buy]: buyTokenBalance } = object('tokenBalances', tokenBalances)
+  const { [sell.address]: sellTokenBalance, [buy.address]: buyTokenBalance } = object('tokenBalances', tokenBalances)
 
   return (
     <TokenPair
