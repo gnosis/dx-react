@@ -36,7 +36,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, Balance, State, TokenCode, TokenAddresses } from 'types'
+import { BigNumber, TokenBalances, Account, Balance, State, TokenCode } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 

@@ -6,8 +6,6 @@ import AuctionHeader from 'components/AuctionHeader'
 import AuctionProgress from 'components/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
 
-import BuyButton from 'components/BuyButton'
-
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
 import { AuctionStatus as Status } from 'globals'
@@ -27,7 +25,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
   sell, buy,
   status, completed, timeToCompletion,
-  userSelling, userGetting, userCanClaim, 
+  userSelling, userGetting, userCanClaim,
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
@@ -41,7 +39,6 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
       timeLeft={timeToCompletion}
       status={status}
     />
-    <BuyButton />
     <AuctionProgress progress={getAuctionProgress(status)} />
     <AuctionFooter
       sellToken={sell}

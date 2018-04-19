@@ -2,7 +2,7 @@ import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
 
-import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, TokenAddresses } from 'types'
+import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
 import { promisedContractsMap } from './contracts'
 
@@ -444,7 +444,7 @@ export const getSellerOngoingAuctions = async (
   } catch (e) {
     console.warn(e)
   }
-} // @ts-ignore
+}
 
 async function initAPI(): Promise<dxAPI> {
   const [web3, Tokens, DutchX] = await Promise.all([
