@@ -45,7 +45,7 @@ interface ContractsMapWProxy extends ContractsMap {
 
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/gnosis-core-contracts/build/contracts/HumanFriendlyToken.json'))
 const req = require.context(
-  '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
+  '@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
   false,
   /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN|TokenOMG|TokenRDN)\.json$/,
 )
