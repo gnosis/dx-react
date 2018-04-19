@@ -11,10 +11,6 @@ type T2A = Partial<{[P in TokenCode]: string}>
 
 async function init(): Promise<DutchExchange> {
   const { DutchExchange: dx, ...tokens } = await promisedContractsMap
-  // const token2Address: T2A = {
-  //   ETH: '0x283hduie',
-  //   GNO: '0x3u4376',
-  // }
 
   const token2Address = Object.keys(tokens).reduce((acc, key) => {
     const contr = tokens[key]

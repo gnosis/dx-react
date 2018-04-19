@@ -11,7 +11,7 @@ async function init(): Promise<TokensInterface> {
 
   const getToken = (tokenAddress: Account) => {
     try {
-      return (HumanFriendlyToken as any).at(tokenAddress)
+      return HumanFriendlyToken.at(tokenAddress)
     } catch (error) {
       throw new Error(error.message)
     }
