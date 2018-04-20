@@ -6,7 +6,7 @@ export interface TokenItemProps {
   mod?: TokenMod,
   balance: Balance,
   name: TokenName,
-  code: TokenCode,
+  symbol: TokenCode,
   address: Account,
 }
 
@@ -16,20 +16,20 @@ const mod2Title: {[P in TokenMod]: string} = {
 }
 
 const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
-  const { mod, balance, name, code } = rest
+  const { mod, balance, name, symbol } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
-      <i data-coin={code}></i>
-      <big>{name}</big><code>{code}</code>
+      <i data-coin={symbol}></i>
+      <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
-      <p className={balance ? undefined : 'noBalance'}>{Number(balance).toFixed(4)} {code}</p>
+      <p className={balance ? undefined : 'noBalance'}>{Number(balance).toFixed(4)} {symbol}</p>
 
       {/*
       MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
       Currently this is handled by CSS but we should implement the logic here to not output the element at all.
       */}
-      <p className="noMGN">Any auction with <strong>{code}</strong> won't generate MGN</p>
+      <p className="noMGN">Any auction with <strong>{symbol}</strong> won't generate MGN</p>
     </div>
   )
 }

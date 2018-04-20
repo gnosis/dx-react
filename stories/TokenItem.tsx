@@ -18,7 +18,7 @@ const CenterDecor = makeCenterDecorator({
 
 const constructKnobs = (name: TokenName, code: TokenCode, balance: Balance, mod?: TokenMod) => ({
   name: text('name', name),
-  code: text('code', code),
+  symbol: text('code', code),
   balance: number('balance', +balance, {
     range: true,
     min: 0,
