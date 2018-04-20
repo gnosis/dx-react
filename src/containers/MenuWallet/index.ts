@@ -8,7 +8,7 @@ const mapStateToProps = (state: State) => {
   // TODO: reselect
   const tokenList = state.tokenList.type === 'DEFAULT' ? state.tokenList.defaultTokenList : state.tokenList.combinedTokenList
   const mapTokenListToNames = tokenList.reduce((acc: {}, tok: any) => {
-    acc[tok.address] = tok.symbol || tok.name || tok.address | 'Unknown Token'
+    acc[tok.address] = tok.symbol || tok.name || tok.address || 'Unknown Token'
     return acc
   }, {})
   return {

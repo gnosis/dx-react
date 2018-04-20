@@ -108,7 +108,7 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
   account = await fillDefaultAccount(account)
 
   const balances = await Promise.all(tokenList.map(tok =>
-    getTokenBalance(tok.address, account).catch((e) => {
+    getTokenBalance(tok.address, account).catch(() => {
       console.warn('Could not grab balance of specified Token @ ', tok.address, ' defaulting to 0')
       return toBigNumber(0)
     })))
