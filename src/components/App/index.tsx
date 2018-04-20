@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Provider } from 'react-redux'
-import { hot } from 'react-hot-loader'
 import createHistory from 'history/createBrowserHistory'
 
 import 'styles/global.scss'
@@ -28,4 +27,4 @@ const App = (): any =>
     </ModalContainer>
   </Provider>
 
-export default hot(module)(App)
+export default App

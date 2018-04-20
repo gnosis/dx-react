@@ -2,6 +2,7 @@ import React from 'react'
 import { ConnectedRouter } from 'connected-react-router'
 import { Route } from 'react-router-dom'
 import { History } from 'history'
+import { hot } from 'react-hot-loader'
 
 import Header from 'components/Header'
 import Home from 'containers/Home'
@@ -30,4 +31,4 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history }) => (
 )
 
 
-export default AppRouter
+export default hot(module)(AppRouter)
