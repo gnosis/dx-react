@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import { createSelector } from 'reselect'
+
 import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
-import { code2tokenMap } from 'globals'
-import { TokenBalances, TokenMod, DefaultTokenObject } from 'types'
 import { TokenItemProps } from '../TokenItem'
-import { createSelector } from 'reselect'
+
+
+import { code2tokenMap } from 'globals'
+import { DefaultTokenObject, TokenBalances, TokenMod } from 'types'
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),

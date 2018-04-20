@@ -2,6 +2,8 @@ import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
 import { promisedContractsMap } from './contracts'
@@ -13,6 +15,12 @@ const promisedAPI = (window as any).AP = initAPI()
 WEB3 API
 ====================================================================
 ===================================================================*/
+
+export const toBN = async (x: string | number) => {
+  const { web3: { web3 } } = await promisedAPI
+
+  return web3.toBigNumber(x)
+}
 
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
@@ -46,6 +54,12 @@ export const getETHBalance = async (account?: Account, inETH?: boolean) => {
   account = await web3.getCurrentAccount()
 
   return web3.getETHBalance(account, inETH)
+}
+
+export const getTime = async () => {
+  const { web3 } = await promisedAPI
+
+  return web3.getTimestamp()
 }
 
 /* =================================================================
@@ -93,18 +107,21 @@ export const getTokenBalance = async (tokenAddress: Account, account?: Account) 
 export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?: Account) => {
   account = await fillDefaultAccount(account)
 
-  const balances = await Promise.all(tokenList.map(tok => getTokenBalance(tok.address, account)))
+  const balances = await Promise.all(tokenList.map(tok =>
+    getTokenBalance(tok.address, account).catch((e) => {
+      console.warn('Could not grab balance of specified Token @ ', tok.address, ' defaulting to 0')
+      return toBigNumber(0)
+    })))
 
   // [{ name: 'ETH': balance: Balance }, { ... }]
   return tokenList.map((token, i) => ({
-    name: token.symbol || token.name || 'Unknown Token',
+    name: token.symbol || token.name || token.address || 'Unknown Token',
     address: token.address,
     balance: balances[i] as BigNumber,
   }))
 }
 
-export const getEtherTokenBalance = async (token: TokenCode, account?: Account) => {
-  if (token !== 'ETH') return
+export const getEtherTokenBalance = async (account?: Account) => {
   const { web3: { getETHBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
@@ -157,7 +174,6 @@ export const getLatestAuctionIndex = async (pair: TokenPair) => {
  * @param aDiff - Number to offset auctionIndex by - if left blank defaults to lastAuction (-1)
  * @returns [BigNumber(num), BigNumber(den)]
  */
-// TODO: pass in the whole TokenPair from the action
 export const closingPrice = async (pair: TokenPair, aDiff: number = -1) => {
   const { DutchX } = await promisedAPI
 
@@ -192,12 +208,6 @@ export const getAuctionStart = async (pair: TokenPair) => {
   const { DutchX } = await promisedAPI
 
   return DutchX.getAuctionStart(pair)
-}
-
-export const getTime = async () => {
-  const { web3 } = await promisedAPI
-
-  return web3.getTimestamp()
 }
 
 export const approveAndPostSellOrder = async (
@@ -273,11 +283,11 @@ depositAndSell.call = async (
   return DutchX.depositAndSell.call(pair, amount, account)
 }
 
-export const getDXTokenBalance = async (token: TokenCode, account: Account) => {
+export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
-  account = await fillDefaultAccount(account)
+  userAccount = await fillDefaultAccount(userAccount)
 
-  return DutchX.getBalance(token, account)
+  return DutchX.getBalance(tokenAddress, userAccount)
 }
 
 /*

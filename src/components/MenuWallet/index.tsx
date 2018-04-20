@@ -5,11 +5,17 @@ import { Account, Balance, TokenBalances } from 'types'
 
 export interface WalletProps {
   account: Account,
+  addressToSymbol: {},
   balance: Balance,
   tokens: TokenBalances,
 }
 
-export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
+// TODO: use below to map addressToSymbolMap[token] = token name or symbol
+/* addressToSymbolMap: {
+  0x1234: 'ETH'
+} */
+
+export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbol, balance, tokens }) => (
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
@@ -26,7 +32,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
           <tbody>
             {Object.keys(tokens).map((token: any) =>
               <tr key={token}>
-                <td>{token}</td>
+                <td>{addressToSymbol[token] || 'Unknown'}</td>
                 <td>{Number(tokens[token]).toFixed(4)}</td>
               </tr>,
             )}
