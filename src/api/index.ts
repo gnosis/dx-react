@@ -8,6 +8,7 @@ import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
 import { promisedContractsMap } from './contracts'
 
+
 const promisedAPI = (window as any).AP = initAPI()
 
 /* =================================================================

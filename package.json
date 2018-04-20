@@ -36,7 +36,7 @@
       "git add"
     ],
     "src/**/*.ts?(x)": [
-      "tslint --project tsconfig.json --fix",
+      "tslint --project tsconfig.json --fix --force",
       "git add"
     ],
     "src/**/*.@(?(s)css|less)": [
