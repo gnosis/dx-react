@@ -3,8 +3,6 @@ import { createSelector } from 'reselect'
 
 import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
-import { TokenItemProps } from '../TokenItem'
-
 
 import { code2tokenMap } from 'globals'
 import { DefaultTokenObject, TokenBalances, TokenMod } from 'types'
@@ -24,7 +22,7 @@ const filterTokens = createSelector(
 export interface TokenOverlayProps {
   tokenList: DefaultTokenObject[],
   closeOverlay(): any,
-  selectTokenPairAndRatioPair(props: Partial<TokenItemProps>): any,
+  selectTokenPairAndRatioPair(props: any): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
@@ -44,9 +42,10 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
   })
 
   selectTokenAndCloseOverlay: TokenOverlayProps['selectTokenPairAndRatioPair'] = (tokenProps) => {
+    console.log('tokenProps: ', tokenProps)
     const { selectTokenPairAndRatioPair, mod } = this.props
 
-    selectTokenPairAndRatioPair({ ...tokenProps, mod })
+    selectTokenPairAndRatioPair({ token: tokenProps, mod })
   }
 
   closeOverlay = () => {
