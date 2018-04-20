@@ -8,13 +8,13 @@ const initialState: TokenPair = {
   sell: {
     name: 'ETHER',
     symbol: 'ETH',
-    address: '0xcfeb869f69431e42cdb54a4f4f105c19c080a601',
+    address: '0x254dffcd3277c0b1660f6d42efbb754edababc2b',
     decimals: 18,
   },
   buy: {
     name: 'GNOSIS',
     symbol: 'GNO',
-    address: '0x254dffcd3277c0b1660f6d42efbb754edababc2b',
+    address: '0xc89ce4735882c9f0f0fe26686c53074e09b0d550',
     decimals: 18,
   },
   sellAmount: '0',
