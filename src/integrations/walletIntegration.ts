@@ -3,13 +3,14 @@ import { Store } from 'redux'
 
 import initialize from './initialize'
 import { registerProvider, updateProvider, initDutchX, updateMainAppState } from 'actions/blockchain'
+import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath } from 'actions'
 
 import tokensMap from 'api/apiTesting'
-import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath } from 'actions'
-import { DefaultTokens } from 'api/types'
-
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
+import { getAllTokenDecimals } from 'api'
+
+import { DefaultTokens } from 'api/types'
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState } = store
@@ -39,7 +40,7 @@ export default async function walletIntegration(store: Store<any>) {
     // ELSE localForage.getItem('defaultTokens')
     if (!isDefaultTokensAvailable) {
       // grab tokens from API
-      // TODO: Reinstate line 32 when API is setup
+      // TODO: Reinstate line 44 when API is setup
       // const defaultTokens = await fetch('https://dx-services.staging.gnosisdev.com/api/v1/markets').then(res => res.json())
       defaultTokens = await tokensMap()
       // set tokens to localForage
@@ -50,14 +51,22 @@ export default async function walletIntegration(store: Store<any>) {
     if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
 
     if (customTokens) {
-      await dispatch(setCustomTokenList({ customTokenList: customTokens }))
+      const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
+
+      await dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+      // reset localForage customTokens w/decimals filled in
+      localForage.setItem('customTokens', customTokensWithDecimals)
     } else if (customListHash) {
       const { ipfsGetAndDecode } = await promisedIPFS
       const fileContent = await ipfsGetAndDecode(customListHash)
+
       const json = JSON.parse(fileContent)
       await checkTokenListJSON(json)
-      localForage.setItem('customTokens', json)
-      await dispatch(setCustomTokenList({ customTokenList: json }))
+
+      const customTokensWithDecimals = await getAllTokenDecimals(json)
+      localForage.setItem('customTokens', customTokensWithDecimals)
+
+      await dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
     }
     return dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
   }

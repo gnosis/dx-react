@@ -88,6 +88,25 @@ TOKENS API
   return Tokens.getTokenBalance(tokenName, account)
 } */
 
+export const getTokenDecimals = async (tokenAddress: Account) => {
+  const { Tokens } = await promisedAPI
+
+  try {
+    await Tokens.getTokenDecimals(tokenAddress)
+  } catch (e) {
+    console.warn(`Token @ address ${tokenAddress} has no Decimals value set - defaulting to 18`)
+    return 18
+  }
+}
+
+export const getAllTokenDecimals = async (tokenList: DefaultTokenObject[]) => {
+  const tokenDecimalsArr = await Promise.all(tokenList.map(tok => getTokenDecimals(tok.address)))
+  return tokenList.map((tok, index) => ({
+    ...tok,
+    decimals: tokenDecimalsArr[index],
+  }))
+}
+
 export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
 
