@@ -17,8 +17,16 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
   const { tokenPair } = getState()
   const { token, mod } = props
   console.log('props: ', props)
+
+  // user chose the same token for the same position
+  // don't do anything
+  if (tokenPair[mod].address === token.address) {
+    return dispatch(closeOverlay())
+  }
   const { sell, buy }: TokenPair = { ...tokenPair, [mod]: token }
 
+  // user chose buy token in place of sell token or the reverse
+  // just switch them
   if (sell.address === buy.address) {
     dispatch(swapTokensInAPair())
     return dispatch(closeOverlay())
