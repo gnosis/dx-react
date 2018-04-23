@@ -15,9 +15,9 @@ import {
   getTokenBalances,
   postSellOrder,
   tokenApproval,
-  toWei,
   getETHBalance,
   getTokenBalance,
+  toNative,
 } from 'api'
 
 import {
@@ -185,9 +185,9 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
     blockchain: { activeProvider, currentAccount },
   } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    weiSellAmt = await toWei(sellAmount),
+    nativeSellAmt = await toNative(sellAmount, sell.decimals),
   // promised Token Allowance to get back later
-    promisedTokenAllowance = checkTokenAllowance(sell.address, weiSellAmt, currentAccount)
+    promisedTokenAllowance = checkTokenAllowance(sell.address, nativeSellAmt, currentAccount)
 
   try {
     // change to modal with button, new modal
@@ -199,7 +199,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
       },
     }))
     // check ETHER deposit && start fetching allowance amount in ||
-    const wrappedETH = await checkEthTokenBalance(sell.address, weiSellAmt, currentAccount)
+    const wrappedETH = await checkEthTokenBalance(sell.address, nativeSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
     if (wrappedETH) {
       dispatch(openModal({
@@ -242,7 +242,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
     promisedAmtAndDXBalance = Promise.all([
-      toWei(sellAmount),
+      toNative(sellAmount, sell.decimals),
       getDXTokenBalance(sell.adddress, currentAccount),
     ])
 
@@ -261,15 +261,15 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
     // if user's sellAmt > DX.balance(token)
     // deposit(sellAmt) && postSellOrder(sellAmt)
     let receipt
-    const [weiSellAmt, userDXBalance] = await promisedAmtAndDXBalance
+    const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     console.log('userDXBalance = ', userDXBalance)
-    if (weiSellAmt.greaterThan(userDXBalance)) {
-      receipt = await depositAndSell(sell, buy, weiSellAmt.toString(), currentAccount)
+    if (nativeSellAmt.greaterThan(userDXBalance)) {
+      receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
       console.log('depositAndSell receipt', receipt)
 
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-      receipt = await postSellOrder(sell, buy, weiSellAmt.toString(), index, currentAccount)
+      receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index, currentAccount)
       console.log('postSellOrder receipt', receipt)
     }
     const { args: { auctionIndex } } = receipt.logs.find(log => log.event === 'NewSellOrder')
@@ -281,16 +281,10 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
 
     // dispatch Actions
     dispatch(batchActions([
-      setTokenBalance({ address: sell.address, balance: balance.div(10 ** 18).toString() }),
+      setTokenBalance({ address: sell.address, balance: balance.div(10 ** sell.decimals).toString() }),
       push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`),
       setSellTokenAmount({ sellAmount: 0 }),
     ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-    // new balance for the token just sold
-    /* dispatch(setTokenBalance({ tokenName: sellName, balance: balance.div(10 ** 18).toString() }))
-    // proceed to /auction/0x03494929349594
-    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
-    // reset sellAmount
-    dispatch(setSellTokenAmount({ sellAmount: 0 }))*/
 
     // indicate that submission worked
     return true
@@ -305,7 +299,7 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
     tokenPair: { sell, sellAmount },
     blockchain: { currentAccount },
   } = getState()
-  const weiSellAmt = await toWei(sellAmount)
+  const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
 
   try {
     // don't do anything when submitting a <= 0 amount
@@ -320,8 +314,8 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
           body: `You are approving the minimum amount necessary - DutchX will prompt you again the next time.`,
         },
       }))
-
-      const tokenApprovalReceipt = await tokenApproval(sell.address, weiSellAmt.toString())
+      const nativeSellAmt = await promisedNativeSellAmt
+      const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
       console.log('Approved token', tokenApprovalReceipt)
     } else {
       dispatch(openModal({
@@ -371,19 +365,19 @@ async function checkEthTokenBalance(
 /**
  * checkTokenAllowance > returns false or Token[name] Allowance
  * @param token
- * @param weiSellAmount
+ * @param nativeSellAmt
  * @param account
  * @returns boolean | BigNumber <false, amt>
  */
 async function checkTokenAllowance(
   tokenAddress: Account,
-  weiSellAmount: BigNumber,
+  nativeSellAmt: BigNumber,
   userAddress?: Account,
 ): Promise<boolean | BigNumber> {
   // perform checks
   const tokenAllowance = await getTokenAllowance(tokenAddress, userAddress)
   // return false if wrapped Eth is enough
-  if (tokenAllowance.gte(weiSellAmount)) return false
+  if (tokenAllowance.gte(nativeSellAmt)) return false
 
   return tokenAllowance
 }
@@ -429,7 +423,7 @@ async function calcAllTokenBalances(tokenList?: DefaultTokenObject[]) {
   const tokenBalances = (await getTokenBalances(tokenList))
   .map(token => ({
     ...token,
-    balance: token.balance.div(10 ** 18).toString(),
+    balance: token.balance.div(10 ** token.decimals).toString(),
   }))
 
   return tokenBalances

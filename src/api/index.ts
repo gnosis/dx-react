@@ -23,6 +23,12 @@ export const toBN = async (x: string | number) => {
   return web3.toBigNumber(x)
 }
 
+export const toNative = async (amt: string | number | BigNumber, decimal: number): Promise<BigNumber> => {
+  const { web3: { web3 } } = await promisedAPI
+
+  return web3.toBigNumber(amt).mul(10 ** decimal)
+}
+
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
 
@@ -136,6 +142,7 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
   // [{ name: 'ETH': balance: Balance }, { ... }]
   return tokenList.map((token, i) => ({
     name: token.symbol || token.name || token.address || 'Unknown Token',
+    decimals: token.decimals,
     address: token.address,
     balance: balances[i] as BigNumber,
   }))
@@ -483,6 +490,7 @@ export const getSellerOngoingAuctions = async (
       return {
         ...auction,
         indices,
+        // TODO: check each token involved in auction for correct division
         balancePerIndex: balancePerIndex.map(i => i.div(10 ** 18)),
         claim: indices.length >= 2,
       }
