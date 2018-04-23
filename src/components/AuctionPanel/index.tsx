@@ -41,8 +41,8 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
     />
     <AuctionProgress progress={getAuctionProgress(status)} />
     <AuctionFooter
-      sellToken={sell}
-      buyToken={buy}
+      sellTokenSymbol={sell.symbol || sell.name || sell.address}
+      buyTokenSymbol={buy.symbol || buy.name || buy.address}
       sellAmount={userSelling}
       buyAmount={userGetting}
       auctionEnded={completed}

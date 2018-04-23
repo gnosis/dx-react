@@ -1,9 +1,8 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { object, boolean, number } from '@storybook/addon-knobs'
+import { text, boolean, number } from '@storybook/addon-knobs'
 import { makeCenterDecorator } from './helpers'
-import { DefaultTokenObject } from 'types'
 
 import AuctionFooter, { AuctionFooterProps } from 'components/AuctionFooter'
 
@@ -28,8 +27,8 @@ const constructKnobs = (auctionEnded: boolean) => {
   }).toFixed(7)
 
   return ({
-    buyToken: object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject,
-    sellToken: object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject,
+    buyTokenSymbol: text('buyTokenSymbol', 'GNO'),
+    sellTokenSymbol: text('sellTokenSymbol', 'ETH'),
     sellAmount: range('sellAmount', 1),
     buyAmount: range('buyAmount', 2.5520300),
     auctionEnded: boolean('auctionEnded', auctionEnded),

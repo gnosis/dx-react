@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 
-import { Balance, DefaultTokenObject } from 'types'
+import { Balance } from 'types'
 
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
   sellTokenBalance: Balance,
-  buyToken: DefaultTokenObject,
-  sellToken: DefaultTokenObject,
+  buyTokenSymbol: string,
+  sellTokenSymbol: string,
   sellAmount: Balance,
   buyAmount: Balance,
   setSellTokenAmount(props: any): any,
@@ -27,7 +27,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
   }
 
   render() {
-    const { sellToken, buyToken, buyAmount, sellTokenBalance, sellAmount } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount, sellTokenBalance, sellAmount } = this.props
 
     return (
       <div className="auctionAmounts">
@@ -42,13 +42,13 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           min="0"
           max={sellTokenBalance}
         />
-        <small>{sellToken.symbol || sellToken.name || sellToken.address}</small>
+        <small>{sellTokenSymbol}</small>
 
         <label htmlFor="gettingAmount">Est. Amount Getting:</label>
         {/* CONSIDER ADDING GAS_COST TO RATIO */}
         {/* TODO: use BN.mult() */}
         <input type="number" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
-        <small>{buyToken.symbol || buyToken.name || buyToken.address}</small>
+        <small>{buyTokenSymbol}</small>
       </div>
     )
   }

@@ -46,17 +46,18 @@ export default async function walletIntegration(store: Store<any>) {
       await localForage.setItem('defaultTokens', defaultTokens)
     }
 
+    // IPFS hash for tokens exists in localForage
     if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
 
     if (customTokens) {
-      dispatch(setCustomTokenList({ customTokenList: customTokens }))
+      await dispatch(setCustomTokenList({ customTokenList: customTokens }))
     } else if (customListHash) {
       const { ipfsGetAndDecode } = await promisedIPFS
       const fileContent = await ipfsGetAndDecode(customListHash)
       const json = JSON.parse(fileContent)
       await checkTokenListJSON(json)
       localForage.setItem('customTokens', json)
-      dispatch(setCustomTokenList({ customTokenList: json }))
+      await dispatch(setCustomTokenList({ customTokenList: json }))
     }
     return dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
   }

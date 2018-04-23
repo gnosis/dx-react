@@ -3,8 +3,8 @@ import AuctionFooter from 'components/AuctionFooter'
 import { State } from 'types'
 
 const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
-  sellToken: sell,
-  buyToken: buy,
+  sellTokenSymbol: sell.symbol || sell.name || sell.address,
+  buyTokenSymbol: buy.symbol || buy.name || buy.address,
   // TODO: get from redux store
   sellAmount: 1,
   buyAmount: 2.5520300,

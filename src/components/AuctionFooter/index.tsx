@@ -1,23 +1,22 @@
 import React from 'react'
-import { DefaultTokenObject } from 'types'
 
 export interface AuctionFooterProps {
-  sellToken: DefaultTokenObject,
-  buyToken: DefaultTokenObject,
+  sellTokenSymbol: string,
+  buyTokenSymbol: string,
   sellAmount: number,
   buyAmount: number,
   auctionEnded?: boolean
 }
 
-const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellToken, buyToken, sellAmount, buyAmount }) => (
+const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellTokenSymbol, buyTokenSymbol, sellAmount, buyAmount }) => (
   <div className="auctionFooter">
     <span>
       <small>AMOUNT SELLING</small>
-      <big>{sellAmount} {sellToken.symbol || sellToken.name || sellToken.address}</big>
+      <big>{sellAmount} {sellTokenSymbol}</big>
     </span>
     <span>
       <small>{!auctionEnded && 'ESTIMATED'} GETTING TOTAL</small>
-      <big>{buyAmount} {buyToken.symbol || buyToken.name || buyToken.address}</big>
+      <big>{buyAmount} {buyTokenSymbol}</big>
     </span>
   </div>
 )

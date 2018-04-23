@@ -43,8 +43,8 @@ storiesOf('AuctionContainer', module)
           max: 5000,
           step: 0.1,
         }).toString()}
-        buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
-        sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
+        buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
         sellAmount={number('sellAmount', 0).toString()}
         buyAmount={number('buyAmount', 0).toString()}
         setSellTokenAmount={action('Set sellTokenAmount')}
@@ -99,8 +99,8 @@ storiesOf('AuctionContainer', module)
       />
       <AuctionProgress progress={4} />
       <AuctionFooter
-        buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
-        sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
+        buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
         sellAmount={number('sellAmt', 100)}
         buyAmount={number('buyAmt', 100)}
         auctionEnded={boolean('auctionEnded', false)}

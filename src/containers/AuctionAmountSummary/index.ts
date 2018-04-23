@@ -19,8 +19,8 @@ const mapState = (state: State) => {
   const { sellAmount } = state.tokenPair
   return ({
     // TODO: change prop to sellTokenBalance
-    sellToken: sell,
-    buyToken: buy,
+    sellTokenSymbol: sell.symbol || sell.name || sell.address,
+    buyTokenSymbol: buy.symbol || buy.name || buy.address,
     sellTokenAmount: sellAmount,
     // TODO: use BN.mult() inside component
     buyTokenAmount: (+price * +sellAmount).toString(),

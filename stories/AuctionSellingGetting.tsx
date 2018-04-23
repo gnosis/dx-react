@@ -30,8 +30,8 @@ storiesOf('Auction Sell & Get', module)
     return (
       <AuctionSellingGetting
         sellTokenBalance={text('balance', '20')}
-        buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
-        sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
+        buyTokenSymbol={object('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={object('sellTokenSymbol', 'ETH')}
         sellAmount={sellAmount}
         buyAmount={buyAmount}
         setSellTokenAmount={action('Set sellTokenAmount')}

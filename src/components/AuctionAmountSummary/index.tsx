@@ -1,27 +1,27 @@
 import React from 'react'
-import { DefaultTokenObject, Balance } from 'types'
+import { Balance } from 'types'
 
 export interface AuctionAmountSummaryProps {
-  sellToken: DefaultTokenObject,
-  buyToken: DefaultTokenObject,
+  sellTokenSymbol: string,
+  buyTokenSymbol: string,
   sellTokenAmount: Balance,
   buyTokenAmount: Balance,
 }
 
 const AuctionAmountSummary: React.SFC<AuctionAmountSummaryProps> = ({
-  sellToken, buyToken, sellTokenAmount, buyTokenAmount,
+  sellTokenSymbol, buyTokenSymbol, sellTokenAmount, buyTokenAmount,
 }) => (
     <div className="auctionAmountSummary">
       <span className="tokenItemSummary">
-        <i data-coin={sellToken.symbol}></i>
+        <i data-coin={sellTokenSymbol}></i>
         <big>SELLING</big>
-        <p>{sellTokenAmount} {sellToken.symbol || sellToken.name || sellToken.address}</p>
+        <p>{sellTokenAmount} {sellTokenSymbol}</p>
       </span>
 
       <span className="tokenItemSummary">
-        <i data-coin={buyToken.symbol}></i>
+        <i data-coin={buyTokenSymbol}></i>
         <big>RECEIVING</big>
-        <p>{buyTokenAmount} {buyToken.symbol || buyToken.name || buyToken.address}</p>
+        <p>{buyTokenAmount} {buyTokenSymbol}</p>
       </span>
     </div>
   )
