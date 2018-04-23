@@ -8,8 +8,8 @@ export default async () => {
     TokenGNO,
     TokenOWL,
     TokenMGN,
-    // TokenOMG,
-    // TokenRDN,
+    TokenOMG,
+    TokenRDN,
   } = await promisedContractsMap
 
   // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
@@ -39,18 +39,18 @@ export default async () => {
         address: TokenMGN.address,
         decimals: TokenMGN.decimals ? (await TokenMGN.decimals()).toNumber() : 18,
       },
-      // {
-      //   name: 'OMISEGO',
-      //   symbol: 'OMG',
-      //   address: TokenOMG.address,
-      // decimals: TokenOMG.decimals(),
-      // },
-      // {
-      //   name: 'RAIDEN',
-      //   symbol: 'RDN',
-      //   address: TokenRDN.address
-      //   decimals: TokenRDN.decimals(),
-      // },
+      {
+        name: 'OMISEGO',
+        symbol: 'OMG',
+        address: TokenOMG.address,
+        decimals: TokenOMG.decimals ? (await TokenOMG.decimals()).toNumber() : 12,
+      },
+      {
+        name: 'RAIDEN',
+        symbol: 'RDN',
+        address: TokenRDN.address,
+        decimals: TokenRDN.decimals ? (await TokenRDN.decimals()).toNumber() : 6,
+      },
     ],
     page: 1,
     hasMorePages: false,

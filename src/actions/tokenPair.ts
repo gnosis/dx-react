@@ -13,9 +13,8 @@ export const selectTokenPairAndSetClosingPrice = (tokenPair: TokenPair) => async
   try {
     const price = (await closingPrice({ sell, buy })).toString()
 
-    // TODO: remove await
-    await dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
-    await dispatch(selectTokenPair({ buy, sell } as TokenPair))
+    dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
+    return dispatch(selectTokenPair({ buy, sell } as TokenPair))
   } catch (e) {
     console.warn(e)
   }

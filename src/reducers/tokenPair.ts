@@ -3,24 +3,6 @@ import { handleActions } from 'redux-actions'
 import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair } from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
 
-// TODO: fill in state with dispatch in or around getDefaultTokens
-const initialState: TokenPair = {
-  sell: {
-    name: 'ETHER',
-    symbol: 'ETH',
-    address: '0x254dffcd3277c0b1660f6d42efbb754edababc2b',
-    decimals: 18,
-  },
-  buy: {
-    name: 'GNOSIS',
-    symbol: 'GNO',
-    address: '0xc89ce4735882c9f0f0fe26686c53074e09b0d550',
-    decimals: 18,
-  },
-  sellAmount: '0',
-  index: '0',
-}
-
 export default handleActions<
 TokenPair,
 TokenPair & { token: DefaultTokenObject, mod: TokenMod }
@@ -50,5 +32,20 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod }
       index: '0',
     }),
   },
-  initialState,
+  {
+    sell: {
+      name: 'ETHER',
+      symbol: 'ETH',
+      decimals: 18,
+      address: undefined,
+    },
+    buy: {
+      name: 'GNOSIS',
+      symbol: 'GNO',
+      decimals: 18,
+      address: undefined,
+    },
+    sellAmount: '0',
+    index: '0',
+  },
 )
