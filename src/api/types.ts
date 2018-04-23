@@ -40,6 +40,7 @@ export interface TransactionObject {
 }
 
 export interface TokensInterface {
+  getTokenDecimals(tokenAddress: Account): Promise<number>,
   getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
   getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
   transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
@@ -143,6 +144,9 @@ export interface OWLInterface extends ERC20Interface {
 export interface MGNInterface extends ERC20Interface {
   owner(): Promise<Account>,
   minter(): Promise<Account>,
+  symbol(): Promise<'MGN'>,
+  name(): Promise<'Magnolia Token'>,
+  decimals(): Promise<BigNumber>,
   /**
    * @returns Promise<[amountUnlocked, withdrawalTime]>
    */
