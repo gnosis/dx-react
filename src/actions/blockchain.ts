@@ -132,7 +132,6 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
     let account: Account
     let currentBalance: Balance | BigNumber
     let tokenBalances: { name: any, address: string, balance: Balance }[]
-
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
@@ -142,11 +141,10 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
           getETHBalance(account, true),
           calcAllTokenBalances(tokenAddresses),
         ]))
-
         return dispatch(getClosingPrice())
       } catch (e) {
         console.error(e)
-        throw new Error (e)
+        throw e
       }
 
     }

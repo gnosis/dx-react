@@ -1,6 +1,7 @@
+import { promisedWeb3 } from 'api/web3Provider'
+
 import { DefaultTokenList, ProviderInterface } from 'api/types'
 import { Account } from 'types'
-import { promisedWeb3 } from 'api/web3Provider'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
