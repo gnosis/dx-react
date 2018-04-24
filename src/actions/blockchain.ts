@@ -281,10 +281,10 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // dispatch Actions
     dispatch(batchActions([
       setTokenBalance({ address: sell.address, balance }),
-      push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`),
       setSellTokenAmount({ sellAmount: 0 }),
     ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-
+    // jump to Auction Page
+    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // indicate that submission worked
     return true
   } catch (error) {
@@ -381,7 +381,7 @@ async function checkTokenAllowance(
 
 function errorHandling(error: Error) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
-    let place = string.search(toFind)
+    const place = string.search(toFind)
     return string.slice(place + offset)
   }
   return async (dispatch: Function, getState: Function) => {
