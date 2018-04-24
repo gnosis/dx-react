@@ -33,6 +33,7 @@ blockIf()
 async function blockIf() {
   const blocked = await isGeoBlocked()
   if (blocked) {
+    window.history.replaceState(null, '', '/')
     rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled />)
   } else ReactDOM.render(<App />, rootElement, initializer)
 }
