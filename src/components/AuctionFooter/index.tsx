@@ -1,22 +1,25 @@
 import React from 'react'
+import { BigNumber } from 'types'
 
 export interface AuctionFooterProps {
   sellTokenSymbol: string,
   buyTokenSymbol: string,
-  sellAmount: number,
-  buyAmount: number,
+  sellAmount: BigNumber,
+  buyAmount: BigNumber,
+  sellDecimal: number,
+  buyDecimal: number,
   auctionEnded?: boolean
 }
 
-const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellTokenSymbol, buyTokenSymbol, sellAmount, buyAmount }) => (
+const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellTokenSymbol, buyTokenSymbol, sellAmount, buyAmount, sellDecimal, buyDecimal }) => (
   <div className="auctionFooter">
     <span>
       <small>AMOUNT SELLING</small>
-      <big>{sellAmount} {sellTokenSymbol}</big>
+      <big>{sellAmount.div(10 ** sellDecimal).toString()} {sellTokenSymbol}</big>
     </span>
     <span>
       <small>{!auctionEnded && 'ESTIMATED'} GETTING TOTAL</small>
-      <big>{buyAmount} {buyTokenSymbol}</big>
+      <big>{buyAmount.div(10 ** buyDecimal).toString()} {buyTokenSymbol}</big>
     </span>
   </div>
 )

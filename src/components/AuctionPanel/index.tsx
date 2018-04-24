@@ -32,21 +32,23 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
       {/* TODO: grab auction address for url */}
       Auction URL: <a href="#">https://www.dutchx.pm{url}/</a>
     </AuctionHeader>
-    <AuctionStatus
+    {sell && <AuctionStatus
       sellToken={sell}
       buyToken={buy}
       buyAmount={userCanClaim}
       timeLeft={timeToCompletion}
       status={status}
-    />
+    />}
     <AuctionProgress progress={getAuctionProgress(status)} />
-    <AuctionFooter
+    {sell && <AuctionFooter
       sellTokenSymbol={sell.symbol || sell.name || sell.address}
       buyTokenSymbol={buy.symbol || buy.name || buy.address}
       sellAmount={userSelling}
       buyAmount={userGetting}
+      sellDecimal={sell.decimals}
+      buyDecimal={buy.decimals}
       auctionEnded={completed}
-    />
+    />}
   </AuctionContainer>
 )
 
