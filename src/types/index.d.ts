@@ -35,7 +35,7 @@ export interface Blockchain {
   activeProvider?: keyof Providers,
   defaultAccount?: Account,
   currentAccount?: Account,
-  currentBalance?: Balance,
+  currentBalance?: BigNumber,
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: object,
@@ -87,7 +87,7 @@ export type AuctionObject = {
   balancePerIndex?: string[] | BigNumber[],
 }
 
-export type TokenBalances = { [P in Account]: Balance }
+export type TokenBalances = { [P in Account]: BigNumber }
 
 export interface TokenListType {
   CUSTOM: 'CUSTOM',
