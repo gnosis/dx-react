@@ -54,6 +54,7 @@ export interface TokensInterface {
   approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
   allowance(tokenAddress: Account, owner: Account, spender: Account): Promise<BigNumber>,
 
+  ethTokenBalance(account: Account): Promise<BigNumber>,
   depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
   withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
 }

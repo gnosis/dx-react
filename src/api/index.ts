@@ -149,10 +149,10 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
 }
 
 export const getEtherTokenBalance = async (account?: Account) => {
-  const { web3: { getETHBalance } } = await promisedAPI
+  const { Tokens: { ethTokenBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return getETHBalance(account)
+  return ethTokenBalance(account)
 }
 
 export const getTokenAllowance = async (tokenAddress: Account, userAddress?: Account) => {
@@ -491,7 +491,7 @@ export const getSellerOngoingAuctions = async (
         ...auction,
         indices,
         // TODO: check each token involved in auction for correct division
-        balancePerIndex: balancePerIndex.map(i => i.div(10 ** 18)),
+        balancePerIndex: balancePerIndex.map(i => i.toString()),
         claim: indices.length >= 2,
       }
     })
