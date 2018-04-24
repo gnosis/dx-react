@@ -20,10 +20,14 @@ store.dispatch({ type: 'INIT' })
 
 export const initializer = () => walletIntegrationCallback(store)
 
-const App = (): any =>
+interface AppProps {
+  disabled?: boolean;
+}
+
+const App = ({ disabled }: AppProps): any =>
   <Provider store={store}>
     <ModalContainer>
-      <AppRouter history={history} />
+      <AppRouter disabled={disabled} history={history} />
     </ModalContainer>
   </Provider>
 
