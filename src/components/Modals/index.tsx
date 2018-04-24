@@ -14,6 +14,10 @@ interface ApprovalModalProps extends TransactionModalProps {
   approveAndPostSellOrder: typeof approveAndPostSellOrder,
 }
 
+interface BlockModalProps extends TransactionModalProps {
+  disabledReason: string,
+}
+
 const tempParentDiv: CSSProperties = {
   display: 'flex',
   flexFlow: 'column nowrap',
@@ -105,4 +109,15 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
         </p>
       </div>  
     </div>
+  </div>
+
+const disabledReasons = {
+  geoblock: 'The Dutch Exchange is not available in your country',
+}
+
+export const BlockModal: React.SFC<BlockModalProps> = ({ 
+  disabledReason, 
+}) =>
+  <div style={tempDivStyle}>
+    <h1 className="modalH1">{disabledReasons[disabledReason]}</h1>
   </div>
