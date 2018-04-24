@@ -22,11 +22,12 @@ export const initializer = () => walletIntegrationCallback(store)
 
 interface AppProps {
   disabled?: boolean;
+  disabledReason?: string;
 }
 
-const App = ({ disabled }: AppProps): any =>
+const App = ({ disabled, disabledReason }: AppProps): any =>
   <Provider store={store}>
-    <ModalContainer>
+    <ModalContainer isOpen={disabled} modalName={disabled && 'BlockModal'} disabledReason={disabledReason}>
       <AppRouter disabled={disabled} history={history} />
     </ModalContainer>
   </Provider>
