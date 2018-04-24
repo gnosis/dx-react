@@ -5,8 +5,6 @@ import { number, text, object } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import { makeCenterDecorator/*, storeInit, bcMetamask, makeProviderDecorator */ } from './helpers'
 
-import { DefaultTokenObject } from 'types'
-
 const CenterDecorator = makeCenterDecorator({
   style: {
     display: 'flex',
