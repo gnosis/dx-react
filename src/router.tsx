@@ -26,7 +26,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
       <StaticRouter context={{}}>
         <div>
           <Header />
-          <Home />
+          <Home showPicker/>
         </div>
       </StaticRouter>
     )
