@@ -1,13 +1,13 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
-import { Balance, DefaultTokenObject } from 'types'
+import { BigNumber, DefaultTokenObject } from 'types'
 
 export interface TokenPairProps {
   sellToken: DefaultTokenObject,
   buyToken: DefaultTokenObject,
-  sellTokenBalance: Balance,
-  buyTokenBalance: Balance,
+  sellTokenBalance: BigNumber,
+  buyTokenBalance: BigNumber,
   needsTokens: boolean,
   openOverlay(): any
   swapTokensInAPair(): any

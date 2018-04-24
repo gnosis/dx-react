@@ -1,10 +1,10 @@
 import React from 'react'
-import { TokenMod, Balance, DefaultTokenObject } from 'types'
+import { TokenMod, BigNumber, DefaultTokenObject } from 'types'
 
 export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,
   mod?: TokenMod,
-  balance: Balance,
+  balance: BigNumber,
 }
 
 const mod2Title: {[P in TokenMod]: string} = {
@@ -13,14 +13,14 @@ const mod2Title: {[P in TokenMod]: string} = {
 }
 
 const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
-  const { mod, balance, name, symbol } = rest
+  const { mod, balance, name, symbol, decimals } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
       <i data-coin={symbol}></i>
       <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
-      <p className={balance ? undefined : 'noBalance'}>{Number(balance).toFixed(4)} {symbol}</p>
+      <p className={balance ? undefined : 'noBalance'}>{balance.div ? balance.div(10 ** decimals).toFixed(4) : balance} {symbol}</p>
 
       {/*
       MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
