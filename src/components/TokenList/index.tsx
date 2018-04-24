@@ -14,10 +14,9 @@ const TokenList: React.SFC<TokenListProps> = ({ tokens, balances, onTokenClick }
   <div className="tokenList">
     {tokens.map((token: DefaultTokenObject) =>
       <TokenItem
+        {...token}
         name={token.name || code2tokenMap[token.symbol]}
-        symbol={token.symbol}
         balance={balances[token.address]}
-        address={token.address}
         key={token.address}
         onClick={onTokenClick}
       />)}

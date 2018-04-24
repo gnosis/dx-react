@@ -1,13 +1,10 @@
 import React from 'react'
-import { TokenCode, TokenName, TokenMod, Balance, Account } from 'types'
+import { TokenMod, Balance, DefaultTokenObject } from 'types'
 
-export interface TokenItemProps {
+export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,
   mod?: TokenMod,
   balance: Balance,
-  name: TokenName,
-  symbol: TokenCode,
-  address: Account,
 }
 
 const mod2Title: {[P in TokenMod]: string} = {

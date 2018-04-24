@@ -25,8 +25,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
     // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
     <div className={needsTokens ? 'tokenPair' : 'tokenPair noTokenList'}>
       <TokenItem
-        symbol={sellToken.symbol}
-        address={sellToken.address}
+        {...sellToken}
         name={sellToken.name || code2tokenMap[sellToken.symbol]}
         balance={sellTokenBalance}
         mod="sell"
@@ -40,8 +39,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       }
 
       <TokenItem
-        symbol={buyToken.symbol}
-        address={buyToken.address}
+        {...buyToken}
         name={buyToken.name || code2tokenMap[buyToken.symbol]}
         balance={buyTokenBalance}
         mod="buy"
