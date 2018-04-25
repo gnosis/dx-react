@@ -17,6 +17,8 @@ async function init(): Promise<TokensInterface> {
     }
   }
 
+  const getTokenDecimals = (tokenAddress: Account) => getToken(tokenAddress).decimals.call()
+
   const getTokenBalance = (tokenAddress: Account, account: Account) => getToken(tokenAddress).balanceOf(account)
 
   const getTotalSupply = (tokenAddress: Account) => getToken(tokenAddress).totalSupply()
@@ -35,11 +37,14 @@ async function init(): Promise<TokensInterface> {
 
   const eth = contractsMap['TokenETH']
 
+  const ethTokenBalance = (owner: Account) => eth.balanceOf(owner)
+
   const depositETH = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
 
   const withdrawETH = (value: Balance, tx: TransactionObject) => eth.withdraw(value, tx)
 
   return {
+    getTokenDecimals,
     getTokenBalance,
     getTotalSupply,
     transfer,
@@ -47,6 +52,7 @@ async function init(): Promise<TokensInterface> {
     approve,
     allowance,
 
+    ethTokenBalance,
     depositETH,
     withdrawETH,
   }

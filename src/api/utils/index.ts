@@ -1,6 +1,7 @@
+import { promisedWeb3 } from 'api/web3Provider'
+
 import { DefaultTokenList, ProviderInterface } from 'api/types'
 import { Account } from 'types'
-import { promisedWeb3 } from 'api/web3Provider'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
@@ -48,6 +49,10 @@ const tokenFieldsChecks = {
   symbol: (symbol: string) => {
     if (typeof symbol !== 'string') return 'token symbol should be a string'
     if (symbol.length === 0) return 'token symbol should not be an empty string'
+  },
+  decimals: (decimals: number | string) => {
+    if (typeof decimals !== 'number' || typeof decimals !== 'string') return 'token symbol should be a number or a string'
+    if (decimals < 1) return 'token decimals should not be less than 1'
   },
 }
 export const checkTokenListJSON = async (json: DefaultTokenList) => {

@@ -1,12 +1,12 @@
 import React from 'react'
 import 'styles/components/navbar/_navbar.scss'
 
-import { Account, Balance, TokenBalances } from 'types'
+import { Account, BigNumber, TokenBalances } from 'types'
 
 export interface WalletProps {
   account: Account,
-  addressToSymbol: {},
-  balance: Balance,
+  addressToSymbolDecimal: {},
+  balance: BigNumber,
   tokens: TokenBalances,
 }
 
@@ -15,11 +15,11 @@ export interface WalletProps {
   0x1234: 'ETH'
 } */
 
-export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbol, balance, tokens }) => (
+export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens }) => (
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
-      <small>{balance != null ? Number(balance).toFixed(4) : 'loading...'} ETH</small>
+      <small>{balance != null ? balance.toNumber().toFixed(4) : 'loading...'} ETH</small>
     </span>
     <div>
         <table>
@@ -30,11 +30,15 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbol, b
             </tr>
           </thead>
           <tbody>
-            {Object.keys(tokens).map((token: any) =>
-              <tr key={token}>
-                <td>{addressToSymbol[token] || 'Unknown'}</td>
-                <td>{Number(tokens[token]).toFixed(4)}</td>
-              </tr>,
+            {Object.keys(addressToSymbolDecimal).length > 0 && Object.keys(tokens).map((addressKey: any) => {
+              const { name, decimals } = addressToSymbolDecimal[addressKey]
+              return (
+                <tr key={addressKey}>
+                  <td>{name || 'Unknown'}</td>
+                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(4)}</td>
+                </tr>
+              )
+            },
             )}
           </tbody>
         </table>

@@ -1,22 +1,29 @@
 import { connect } from 'react-redux'
+import { createSelector } from 'reselect'
 import { getCurrentBalance, getAccount } from 'selectors/blockchain'
-import { State } from 'types'
+import { State, DefaultTokenObject } from 'types'
 
 import { MenuWallet, WalletProps } from 'components/MenuWallet'
 
-const mapStateToProps = (state: State) => {
-  // TODO: reselect
-  const tokenList = state.tokenList.type === 'DEFAULT' ? state.tokenList.defaultTokenList : state.tokenList.combinedTokenList
-  const mapTokenListToNames = tokenList.reduce((acc: {}, tok: any) => {
-    acc[tok.address] = tok.symbol || tok.name || tok.address || 'Unknown Token'
+const getTokenList = (state: State) => state.tokenList.type === 'DEFAULT' ? state.tokenList.defaultTokenList : state.tokenList.combinedTokenList
+
+const tokenNamesAndDecimals = createSelector(
+  getTokenList,
+  tokenList => tokenList.reduce((acc: {}, tok: DefaultTokenObject) => {
+    acc[tok.address] = {
+      name: tok.symbol || tok.name || tok.address || 'Unknown Token',
+      decimals: tok.decimals,
+    }
+
     return acc
-  }, {})
-  return {
-    account: getAccount(state),
-    addressToSymbol: mapTokenListToNames,
-    balance: getCurrentBalance(state),
-    tokens: state.tokenBalances,
-  }
-}
+  }, {}),
+)
+
+const mapStateToProps = (state: State) => ({
+  account: getAccount(state),
+  addressToSymbolDecimal: tokenNamesAndDecimals(state),
+  balance: getCurrentBalance(state),
+  tokens: state.tokenBalances,
+})
 
 export default connect<WalletProps>(mapStateToProps)(MenuWallet)

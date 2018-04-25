@@ -3,6 +3,8 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
@@ -101,8 +103,10 @@ storiesOf('AuctionContainer', module)
       <AuctionFooter
         buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
         sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
-        sellAmount={number('sellAmt', 100)}
-        buyAmount={number('buyAmt', 100)}
+        sellAmount={toBigNumber(number('sellAmt', 100))}
+        sellDecimal={number('sellDecimal', 18)}
+        buyDecimal={number('buyDecimal', 18)}
+        buyAmount={toBigNumber(number('buyAmt', 100))}
         auctionEnded={boolean('auctionEnded', false)}
       />
     </AuctionContainer>,

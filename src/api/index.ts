@@ -23,6 +23,12 @@ export const toBN = async (x: string | number) => {
   return web3.toBigNumber(x)
 }
 
+export const toNative = async (amt: string | number | BigNumber, decimal: number): Promise<BigNumber> => {
+  const { web3: { web3 } } = await promisedAPI
+
+  return web3.toBigNumber(amt).mul(10 ** decimal)
+}
+
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
 
@@ -88,6 +94,25 @@ TOKENS API
   return Tokens.getTokenBalance(tokenName, account)
 } */
 
+export const getTokenDecimals = async (tokenAddress: Account) => {
+  const { Tokens } = await promisedAPI
+
+  try {
+    await Tokens.getTokenDecimals(tokenAddress)
+  } catch (e) {
+    console.warn(`Token @ address ${tokenAddress} has no Decimals value set - defaulting to 18`)
+    return 18
+  }
+}
+
+export const getAllTokenDecimals = async (tokenList: DefaultTokenObject[]) => {
+  const tokenDecimalsArr = await Promise.all(tokenList.map(tok => getTokenDecimals(tok.address)))
+  return tokenList.map((tok, index) => ({
+    ...tok,
+    decimals: tokenDecimalsArr[index],
+  }))
+}
+
 export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
 
@@ -117,16 +142,17 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
   // [{ name: 'ETH': balance: Balance }, { ... }]
   return tokenList.map((token, i) => ({
     name: token.symbol || token.name || token.address || 'Unknown Token',
+    decimals: token.decimals,
     address: token.address,
     balance: balances[i] as BigNumber,
   }))
 }
 
 export const getEtherTokenBalance = async (account?: Account) => {
-  const { web3: { getETHBalance } } = await promisedAPI
+  const { Tokens: { ethTokenBalance } } = await promisedAPI
   account = await fillDefaultAccount(account)
 
-  return getETHBalance(account)
+  return ethTokenBalance(account)
 }
 
 export const getTokenAllowance = async (tokenAddress: Account, userAddress?: Account) => {
@@ -430,7 +456,18 @@ export const getSellerOngoingAuctions = async (
     }, {}) as { [P in TokenCode]: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
 
-    const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
+    // const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
+
+    interface promisedClaimableTokensObjectInterface {
+      normal: Promise<[BigNumber[], BigNumber[]]>[];
+      inverse: Promise<[BigNumber[], BigNumber[]]>[];
+    }
+
+    const promisedClaimableTokensObject: promisedClaimableTokensObjectInterface = {
+      normal: [],
+      inverse: [],
+    }
+
     const ongoingAuctions: {
       sell: DefaultTokenObject,
       buy: DefaultTokenObject,
@@ -444,8 +481,11 @@ export const getSellerOngoingAuctions = async (
       const buy = addressesToTokenJSON[b]
       if (sell && buy) {
         accum.push({ sell, buy })
-        promisedClaimableTokens.push(
+        promisedClaimableTokensObject.normal.push(
           DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, account, 0),
+        )
+        promisedClaimableTokensObject.inverse.push(
+          DutchX.getIndicesWithClaimableTokensForSellers(buy.address, sell.address, account, 0),
         )
       }
 
@@ -457,15 +497,22 @@ export const getSellerOngoingAuctions = async (
     // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
     // Array indices are lined up
     // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
-    const claimableTokens = await Promise.all(promisedClaimableTokens)
+    const claimableTokens = await Promise.all(promisedClaimableTokensObject.normal)
+    const inverseClaimableTokens = await Promise.all(promisedClaimableTokensObject.inverse)
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
     const auctionsArray = ongoingAuctions.map((auction, index) => {
       const [indices, balancePerIndex] = claimableTokens[index]
+      const [indicesInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
+      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
       return {
         ...auction,
         indices,
-        balancePerIndex: balancePerIndex.map(i => i.div(10 ** 18)),
+        indicesInverse,
+        // TODO: check each token involved in auction for correct division
+        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
         claim: indices.length >= 2,
+        claimInverse: indicesInverse.length >= 2,
       }
     })
 

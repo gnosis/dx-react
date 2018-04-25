@@ -15,9 +15,9 @@ import {
   getTokenBalances,
   postSellOrder,
   tokenApproval,
-  toWei,
   getETHBalance,
   getTokenBalance,
+  toNative,
 } from 'api'
 
 import {
@@ -34,7 +34,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, Balance, State } from 'types'
+import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 
@@ -57,7 +57,7 @@ export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CO
 export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
-export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: Balance | BigNumber }>('SET_CURRENT_BALANCE')
+export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: BigNumber }>('SET_CURRENT_BALANCE')
 export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
@@ -103,7 +103,7 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions({ ongoingAuctions }),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
-    setTokenSupply({ mgnSupply: mgn.balance }),
+    setTokenSupply({ mgnSupply: mgn.balance.toString() }),
   ], 'HYDRATING_MAIN_STATE'))
 }
 
@@ -111,7 +111,7 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
 /**
  * (Re)-Initializes DutchX connection according to current providers settings
  */
-export const initDutchX = () => async (dispatch: Function, getState: any) => {
+export const initDutchX = () => async (dispatch: Function, getState: () => State) => {
   const state = getState()
   // initialize
   try {
@@ -130,9 +130,8 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
   // connect
   try {
     let account: Account
-    let currentBalance: Balance | BigNumber
-    let tokenBalances: { name: any, address: string, balance: Balance }[]
-
+    let currentBalance: BigNumber
+    let tokenBalances:  { address: string, balance: BigNumber }[]
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
@@ -142,21 +141,20 @@ export const initDutchX = () => async (dispatch: Function, getState: any) => {
           getETHBalance(account, true),
           calcAllTokenBalances(tokenAddresses),
         ]))
-
         return dispatch(getClosingPrice())
       } catch (e) {
         console.error(e)
-        throw new Error (e)
+        throw e
       }
 
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
     dispatch(setCurrentAccountAddress({ currentAccount: account }))
-    dispatch(setCurrentBalance({ currentBalance: currentBalance.toString() }))
+    dispatch(setCurrentBalance({ currentBalance }))
 
     // Grab each TokenBalance and dispatch
-    dispatch(batchActions(tokenBalances.map((token: { address: Account, balance: Balance }) =>
+    dispatch(batchActions(tokenBalances.map(token =>
       setTokenBalance({ address: token.address, balance: token.balance })), 'SET_ALL_TOKEN_BALANCES'))
 
     return dispatch(setConnectionStatus({ connected: true }))
@@ -181,15 +179,15 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
  *
 */
-export const checkUserStateAndSell = () => async (dispatch: Function, getState: Function) => {
+export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { activeProvider, currentAccount },
   } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    weiSellAmt = await toWei(sellAmount),
-  // promised Token Allowance to get back later
-    promisedTokenAllowance = checkTokenAllowance(sell.address, weiSellAmt, currentAccount)
+    nativeSellAmt = await toNative(sellAmount, sell.decimals),
+    // promised Token Allowance to get back later
+    promisedTokenAllowance = checkTokenAllowance(sell.address, nativeSellAmt, currentAccount)
 
   try {
     // change to modal with button, new modal
@@ -201,19 +199,20 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
       },
     }))
     // check ETHER deposit && start fetching allowance amount in ||
-    const wrappedETH = await checkEthTokenBalance(sell.address, weiSellAmt, currentAccount)
+    const wrappedETH = await checkEthTokenBalance(sell.address, nativeSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
     if (wrappedETH) {
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
-          header: `Wrapping ${sellName}`,
+          header: `Wrapping ${(wrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
         },
       }))
       // TODO only deposit difference
-      await depositETH(wrappedETH.toString(), currentAccount)
+      const depositReceipt = await depositETH(wrappedETH.toString(), currentAccount)
+      console.log('​EtherToken Deposit receipt: ', depositReceipt)
     }
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
@@ -236,46 +235,44 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
   }
 }
 
-export const submitSellOrder = () => async (dispatch: any, getState: any) => {
+export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
   const {
     tokenPair: { sell, buy, sellAmount, index = 0 },
     blockchain: { activeProvider, currentAccount },
-  } = getState(),
+  }: State = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
     promisedAmtAndDXBalance = Promise.all([
-      toWei(sellAmount),
-      getDXTokenBalance(sell.adddress, currentAccount),
+      toNative(sellAmount, sell.decimals),
+      getDXTokenBalance(sell.address, currentAccount),
     ])
 
   try {
     // don't do anything when submitting a <= 0 amount
     // indicate that nothing happened with false return
-    if (sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
+    if (+sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
 
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Confirm sell of ${sellName} tokens @ address ${sell.address}`,
+        header: `Confirm sell of ${sellAmount} ${sellName} tokens @ address ${sell.address}`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
       },
     }))
     // if user's sellAmt > DX.balance(token)
     // deposit(sellAmt) && postSellOrder(sellAmt)
     let receipt
-    const [weiSellAmt, userDXBalance] = await promisedAmtAndDXBalance
-    console.log('userDXBalance = ', userDXBalance)
-    if (weiSellAmt.greaterThan(userDXBalance)) {
-      receipt = await depositAndSell(sell, buy, weiSellAmt.toString(), currentAccount)
+    const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
+    if (nativeSellAmt.greaterThan(userDXBalance)) {
+      receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
       console.log('depositAndSell receipt', receipt)
-
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-      receipt = await postSellOrder(sell, buy, weiSellAmt.toString(), index, currentAccount)
+      receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
       console.log('postSellOrder receipt', receipt)
     }
-    const { args: { auctionIndex } } = receipt.logs.find(log => log.event === 'NewSellOrder')
-    console.log(`sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
+    const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
+    console.log(`Sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
     dispatch(closeModal())
 
     // grab balance of sold token after sale
@@ -283,17 +280,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
 
     // dispatch Actions
     dispatch(batchActions([
-      setTokenBalance({ address: sell.address, balance: balance.div(10 ** 18).toString() }),
-      push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`),
+      setTokenBalance({ address: sell.address, balance }),
       setSellTokenAmount({ sellAmount: 0 }),
     ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-    // new balance for the token just sold
-    /* dispatch(setTokenBalance({ tokenName: sellName, balance: balance.div(10 ** 18).toString() }))
-    // proceed to /auction/0x03494929349594
+    // jump to Auction Page
     dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
-    // reset sellAmount
-    dispatch(setSellTokenAmount({ sellAmount: 0 }))*/
-
     // indicate that submission worked
     return true
   } catch (error) {
@@ -302,17 +293,17 @@ export const submitSellOrder = () => async (dispatch: any, getState: any) => {
 }
 
 // TODO: if add index of current tokenPair to state
-export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: any) => {
+export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { currentAccount },
   } = getState()
-  const weiSellAmt = await toWei(sellAmount)
+  const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
 
   try {
     // don't do anything when submitting a <= 0 amount
     // indicate that nothing happened with false return
-    if (sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
+    if (+sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
     // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
     if (choice === 'MIN') {
       dispatch(openModal({
@@ -322,8 +313,8 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
           body: `You are approving the minimum amount necessary - DutchX will prompt you again the next time.`,
         },
       }))
-
-      const tokenApprovalReceipt = await tokenApproval(sell.address, weiSellAmt.toString())
+      const nativeSellAmt = await promisedNativeSellAmt
+      const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
       console.log('Approved token', tokenApprovalReceipt)
     } else {
       dispatch(openModal({
@@ -359,8 +350,6 @@ async function checkEthTokenBalance(
 ): Promise<boolean | BigNumber> {
   const { TokenETH } = await promisedContractsMap
   // BYPASS[return false] => if token is not ETHER
-  console.log('​TokenETH.address', TokenETH.address)
-  console.log('​tokenAddress', tokenAddress)
   if (tokenAddress !== TokenETH.address) return false
   // CONSIDER/TODO: wrappedETH in state or TokenBalance
   const wrappedETH = await getEtherTokenBalance(account)
@@ -373,57 +362,45 @@ async function checkEthTokenBalance(
 /**
  * checkTokenAllowance > returns false or Token[name] Allowance
  * @param token
- * @param weiSellAmount
+ * @param nativeSellAmt
  * @param account
  * @returns boolean | BigNumber <false, amt>
  */
 async function checkTokenAllowance(
   tokenAddress: Account,
-  weiSellAmount: BigNumber,
+  nativeSellAmt: BigNumber,
   userAddress?: Account,
 ): Promise<boolean | BigNumber> {
   // perform checks
   const tokenAllowance = await getTokenAllowance(tokenAddress, userAddress)
   // return false if wrapped Eth is enough
-  if (tokenAllowance.gte(weiSellAmount)) return false
+  if (tokenAllowance.gte(nativeSellAmt)) return false
 
   return tokenAllowance
 }
 
 function errorHandling(error: Error) {
+  const errorFind = (string: string, toFind = '}', offset = 1) => {
+    const place = string.search(toFind)
+    return string.slice(place + offset)
+  }
   return async (dispatch: Function, getState: Function) => {
     const { blockchain: { activeProvider } } = getState()
     const normError = error.message
-    console.error('An error has occurred: ', normError)
+    console.error(error.message)
     // close to unmount
     dispatch(closeModal())
-
     // go home stacy
     dispatch(push('/'))
-
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
         header: `TRANSACTION FAILED/CANCELLED`,
         body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
         button: true,
-        error: normError,
+        error: errorFind(normError),
       },
     }))
-  }
-}
-
-// @ts-ignore
-async function simulateTX(txFn: Function, txProps: Partial<State>[]) {
-  // Simulate Sell order before real transaction
-  try {
-    console.log(txFn)
-    const simResp = await txFn(...txProps)
-    console.log('simResp == ', simResp)
-  } catch (e) {
-    // TODO: fire action blocking button
-    console.error('TX Simulation failed => ', e)
-    return
   }
 }
 
@@ -431,7 +408,7 @@ async function calcAllTokenBalances(tokenList?: DefaultTokenObject[]) {
   const tokenBalances = (await getTokenBalances(tokenList))
   .map(token => ({
     ...token,
-    balance: token.balance.div(10 ** 18).toString(),
+    balance: token.balance,
   }))
 
   return tokenBalances
