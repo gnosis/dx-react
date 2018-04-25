@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { storiesOf } from '@storybook/react'
 import { text, boolean, number } from '@storybook/addon-knobs'
 import { makeCenterDecorator } from './helpers'
@@ -19,18 +19,13 @@ const CenterDecor = makeCenterDecorator({
 })
 
 const constructKnobs = (auctionEnded: boolean) => {
-  const range = (name: string, amount: number) => +number(name, amount, {
-    range: true,
-    min: 0.0000001,
-    max: 100,
-    step: 0.00000001,
-  }).toFixed(7)
-
   return ({
     buyTokenSymbol: text('buyTokenSymbol', 'GNO'),
     sellTokenSymbol: text('sellTokenSymbol', 'ETH'),
-    sellAmount: range('sellAmount', 1),
-    buyAmount: range('buyAmount', 2.5520300),
+    sellAmount: toBigNumber(number('sellAmt', 100)),
+    buyAmount: toBigNumber(number('buyAmt', 100)),
+    sellDecimal: number('sellDecimal', 18),
+    buyDecimal: number('buyDecimal', 18),
     auctionEnded: boolean('auctionEnded', auctionEnded),
   }) as AuctionFooterProps
 }
