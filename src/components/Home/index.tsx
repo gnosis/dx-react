@@ -16,7 +16,7 @@ const Home: React.SFC<HomeProps> = ({ activeProvider, showPicker }) =>
   <section className="home">
     <TextSquare />
     {(showPicker || activeProvider === 'METAMASK' || activeProvider === 'MIST') ?
-    <TokenPicker to="/order" /> : <NoWallet />}
+    <TokenPicker to="/order" showPair={showPicker} /> : <NoWallet />}
   </section>
 
 export default Home

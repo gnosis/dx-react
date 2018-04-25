@@ -18,5 +18,5 @@ const mapState = ({
   needsTokens: type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
 })
 
-export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to'>>
+export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to' | 'showPair'>>
   (mapState, { continueToOrder, setTokenListType })(TokenPicker)

@@ -11,14 +11,21 @@ export interface TokenPickerProps {
   setTokenListType({}): void;
   to: string;
   needsTokens: boolean;
+  showPair: boolean;
 }
 
-const TokenPicker: React.SFC<TokenPickerProps> = ({ continueToOrder, needsTokens, to, setTokenListType }) => (
+const TokenPicker: React.SFC<TokenPickerProps> = ({
+  continueToOrder,
+  needsTokens,
+  to,
+  setTokenListType,
+  showPair,
+}) => (
 
   <div className="tokenPicker">
     <TokenOverlay />
 
-    {needsTokens
+    {needsTokens && !showPair
       ?
       <TokenUpload />
       :
