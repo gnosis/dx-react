@@ -85,6 +85,9 @@ export type AuctionObject = {
   claim?: boolean,
   indices?: string[] | BigNumber[],
   balancePerIndex?: string[] | BigNumber[],
+  claimInverse?: boolean,
+  indicesInverse?: string[] | BigNumber[],
+  balancePerIndexInverse?: string[] | BigNumber[],
 }
 
 export type TokenBalances = { [P in Account]: BigNumber }
