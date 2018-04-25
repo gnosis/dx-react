@@ -6,6 +6,7 @@ import { readFileUpload, readFileAsText, checkTokenListJSON } from 'api/utils'
 import { DefaultTokenObject } from 'api/types'
 
 import localForage from 'localforage'
+import { getAllTokenDecimals } from 'api'
 
 export interface HOCState {
   customTokenList: DefaultTokenObject[] | any;
@@ -17,7 +18,7 @@ export interface HOCState {
   fileHash?: string;
   filePath?: string;
   oFile?: File;
-  json?: Object;
+  json?: DefaultTokenObject[];
 
   batchTokenListTypeAndFileParams({}, {}): void;
   getFileContentFromIPFS({}): void;
@@ -49,16 +50,14 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         // TODO: 39-44 optimize execution
         const text = await readFileAsText(oFile)
         const json = JSON.parse(text)
+
         await checkTokenListJSON(json)
-        // TODO try catch invalid JSONs
-        localForage.setItem('customTokens', json)
+
         // HTML5 API to read file and set state as contents
         const fileBuffer = await readFileUpload(oFile)
 
-
         // setState
         return setUploadFileParams({ oFile, fileBuffer, json })
-
       } catch (error) {
         console.error(error)
         return openModal({
@@ -81,14 +80,15 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
       const { ipfsAddFile } = await promisedIPFS
       const { fileBuffer, oFile, json, batchTokenListTypeAndFileParams, openModal } = this.props
       try {
-        const { fileHash, filePath } = await ipfsAddFile(fileBuffer, oFile)
+        const { fileHash, filePath } = await ipfsAddFile(fileBuffer, oFile),
+          customTokenListWithDecimals = await getAllTokenDecimals(json)
 
         localForage.setItem('customListHash', fileHash)
 
         // setState
         return batchTokenListTypeAndFileParams(
           {
-            customTokenList: json,
+            customTokenList: customTokenListWithDecimals,
           },
           {
             fileHash,

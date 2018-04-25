@@ -11,9 +11,9 @@ const mapState = (state: State) => {
   const { buy, sell, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
 
   return {
-    sellToken: sell,
+    sellTokenSymbol: sell.symbol || sell.name || sell.address,
     sellTokenPrice: price,
-    buyToken: buy,
+    buyTokenSymbol: buy.symbol || buy.name || buy.address,
   }
 }
 

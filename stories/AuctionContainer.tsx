@@ -3,6 +3,8 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
 import AuctionHeader from 'components/AuctionHeader'
@@ -17,9 +19,9 @@ import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 import TokenOverlay from 'containers/TokenOverlay'
 
 import { action } from '@storybook/addon-actions'
-import { boolean, number, text } from '@storybook/addon-knobs'
+import { boolean, number, object, text } from '@storybook/addon-knobs'
 
-import { TokenCode } from 'types'
+import { DefaultTokenObject } from 'types'
 import { AuctionStatus as Status } from 'globals'
 
 const Provider = makeProviderDecorator(storeInit())
@@ -43,8 +45,8 @@ storiesOf('AuctionContainer', module)
           max: 5000,
           step: 0.1,
         }).toString()}
-        buyToken={text('buyToken', 'GNO') as TokenCode}
-        sellToken={text('sellToken', 'ETH') as TokenCode}
+        buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
         sellAmount={number('sellAmount', 0).toString()}
         buyAmount={number('buyAmount', 0).toString()}
         setSellTokenAmount={action('Set sellTokenAmount')}
@@ -86,8 +88,8 @@ storiesOf('AuctionContainer', module)
         children={['Auction URL: ', <a href="#" key="0">https://www.dutchx.pm/auction/0x03494929349594/</a>]}
       />
       <AuctionStatus
-        sellToken={text('sellToken', 'ETH') as TokenCode}
-        buyToken={text('buyToken', 'GNO') as TokenCode}
+        buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
+        sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
         buyAmount={number('buyAmt', 100)}
         status={Status.ENDED}
         timeLeft={number('timeLeft', 5, {
@@ -99,10 +101,12 @@ storiesOf('AuctionContainer', module)
       />
       <AuctionProgress progress={4} />
       <AuctionFooter
-        sellToken={text('sellToken', 'ETH') as TokenCode}
-        buyToken={text('buyToken', 'GNO') as TokenCode}
-        sellAmount={number('sellAmt', 100)}
-        buyAmount={number('buyAmt', 100)}
+        buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
+        sellAmount={toBigNumber(number('sellAmt', 100))}
+        sellDecimal={number('sellDecimal', 18)}
+        buyDecimal={number('buyDecimal', 18)}
+        buyAmount={toBigNumber(number('buyAmt', 100))}
         auctionEnded={boolean('auctionEnded', false)}
       />
     </AuctionContainer>,

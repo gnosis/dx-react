@@ -1,24 +1,28 @@
 import React, { Component } from 'react'
+import { createSelector } from 'reselect'
+
 import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
+
 import { code2tokenMap } from 'globals'
-import { TokenCode, TokenBalances, TokenMod } from 'types'
-import { TokenItemProps } from '../TokenItem'
-import { createSelector } from 'reselect'
+import { DefaultTokenObject, TokenBalances, TokenMod } from 'types'
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
-  (_, props) => props.tokenCodeList,
-  (filter, codes) => (filter ?
-    codes.filter(code => code.includes(filter) || code2tokenMap[code].includes(filter)) :
-    codes
+  (_, props) => props.tokenList,
+  (filter, tokens) => (filter ?
+    tokens.filter(({
+      symbol = '',
+      name = code2tokenMap[symbol] || '',
+    }) => symbol.includes(filter) || name.includes(filter)) :
+    tokens
   ),
 )
 
 export interface TokenOverlayProps {
-  tokenCodeList: TokenCode[],
+  tokenList: DefaultTokenObject[],
   closeOverlay(): any,
-  selectTokenPairAndRatioPair(props: Partial<TokenItemProps>): any,
+  selectTokenPairAndRatioPair(props: any): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
@@ -33,18 +37,15 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     filter: '',
   }
 
-  static defaultProps: Partial<TokenOverlayProps> = {
-    tokenCodeList: [],
-  }
-
   changeFilter = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({
     filter: e.target.value,
   })
 
   selectTokenAndCloseOverlay: TokenOverlayProps['selectTokenPairAndRatioPair'] = (tokenProps) => {
+    console.log('tokenProps: ', tokenProps)
     const { selectTokenPairAndRatioPair, mod } = this.props
 
-    selectTokenPairAndRatioPair({ ...tokenProps, mod })
+    selectTokenPairAndRatioPair({ token: tokenProps, mod })
   }
 
   closeOverlay = () => {
@@ -63,8 +64,16 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
 
     return (
       <div className="tokenOverlay">
-        <TokenOverlayHeader onChange={this.changeFilter} closeOverlay={this.closeOverlay} value={filter} />
-        <TokenList tokens={filteredTokens} balances={tokenBalances} onTokenClick={this.selectTokenAndCloseOverlay} />
+        <TokenOverlayHeader
+          onChange={this.changeFilter}
+          closeOverlay={this.closeOverlay}
+          value={filter}
+        />
+        <TokenList
+          tokens={filteredTokens}
+          balances={tokenBalances}
+          onTokenClick={this.selectTokenAndCloseOverlay}
+        />
       </div>
     )
   }

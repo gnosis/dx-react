@@ -3,17 +3,12 @@ import TokenOverlay from 'components/TokenOverlay'
 import { closeOverlay, selectTokenPairAndRatioPair } from 'actions'
 import { State } from 'types'
 
-const defaultTokensSelector = (tokenList: State['tokenList']) => {
-  const tokens = tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList
-  // console.log('LOCALFORAGE SELECTOR == ', tokens.elements.map(tok => tok.symbol))
-  return tokens.map(tok => tok.symbol)
-}
-
-// TODO: consider grabbing tokenOverlay.mod from global state
 const mapStateToProps = ({ tokenList, tokenBalances, tokenOverlay }: State) => ({
-  tokenCodeList: defaultTokensSelector(tokenList),
+  tokenList: tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList,
   tokenBalances,
   ...tokenOverlay,
 })
 
-export default connect(mapStateToProps, { closeOverlay, selectTokenPairAndRatioPair })(TokenOverlay as any)
+export default connect(mapStateToProps, {
+  closeOverlay, selectTokenPairAndRatioPair
+})(TokenOverlay)

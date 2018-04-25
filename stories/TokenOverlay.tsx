@@ -7,7 +7,6 @@ import { action, decorateAction } from '@storybook/addon-actions'
 import TokenOverlay from 'components/TokenOverlay'
 import { TokenMod } from 'types'
 
-import { codeList } from 'globals'
 import { generateTokenBalances, CenterDecorator } from './helpers'
 
 const tokenBalances = generateTokenBalances()
@@ -21,7 +20,7 @@ storiesOf('TokenOverlay', module)
   .addWithJSX('open', () => <TokenOverlay
     closeOverlay={action('CLOSE OVERLAY')}
     selectTokenPairAndRatioPair={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
-    tokenCodeList={array('tokenCodeList', codeList)}
+    tokenList={array('tokenCodeList', [])}
     tokenBalances={object('tokenBalances', tokenBalances)}
     open={boolean('open', true)}
     mod={text('mod', 'sell') as TokenMod}

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { number, text } from '@storybook/addon-knobs'
+import { number, text, object } from '@storybook/addon-knobs'
 import { makeCenterDecorator } from './helpers'
 
 import AuctionStatus, { AuctionStatusProps } from 'components/AuctionStatus'
@@ -18,8 +18,8 @@ const CenterDecor = makeCenterDecorator({
 })
 
 const constructKnobs = (status: string) => ({
-  sellToken: text('sellToken', 'ETH'),
-  buyToken: text('sellToken', 'GNO'),
+  buyToken: object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }),
+  sellToken: object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }),
   buyAmount: number('buyAmount', 2.55203, {
     range: true,
     min: 0,

@@ -1,13 +1,13 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
-import { TokenCode, Balance } from 'types'
+import { BigNumber, DefaultTokenObject } from 'types'
 
 export interface TokenPairProps {
-  sellToken: TokenCode,
-  buyToken: TokenCode,
-  sellTokenBalance: Balance,
-  buyTokenBalance: Balance,
+  sellToken: DefaultTokenObject,
+  buyToken: DefaultTokenObject,
+  sellTokenBalance: BigNumber,
+  buyTokenBalance: BigNumber,
   needsTokens: boolean,
   openOverlay(): any
   swapTokensInAPair(): any
@@ -25,8 +25,8 @@ const TokenPair: React.SFC<TokenPairProps> = ({
     // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
     <div className={needsTokens ? 'tokenPair' : 'tokenPair noTokenList'}>
       <TokenItem
-        code={sellToken}
-        name={code2tokenMap[sellToken]}
+        {...sellToken}
+        name={sellToken.name || code2tokenMap[sellToken.symbol]}
         balance={sellTokenBalance}
         mod="sell"
         onClick={openOverlay}
@@ -39,8 +39,8 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       }
 
       <TokenItem
-        code={buyToken}
-        name={code2tokenMap[buyToken]}
+        {...buyToken}
+        name={buyToken.name || code2tokenMap[buyToken.symbol]}
         balance={buyTokenBalance}
         mod="buy"
         onClick={openOverlay}

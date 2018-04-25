@@ -8,19 +8,19 @@ import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 import TokenOverlay from 'containers/TokenOverlay'
 
-import { TokenCode, Balance } from 'types'
+import { Balance } from 'types'
 
 interface OrderPanelProps {
-  sellToken: TokenCode,
-  buyToken: TokenCode,
+  sellTokenSymbol: string,
+  buyTokenSymbol: string,
   sellAmount: Balance
 }
 
-const OrderPanel: React.SFC<OrderPanelProps> = ({ sellToken, buyToken, sellAmount }) => (
+const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, sellAmount }) => (
   <AuctionContainer auctionDataScreen="amount">
     <TokenOverlay />
     <AuctionHeader backTo="/">
-      Token Auction {sellToken}/{buyToken}
+      Token Auction {sellTokenSymbol}/{buyTokenSymbol}
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}

@@ -1,7 +1,7 @@
 import React from 'react'
-import { TokenCode } from 'types'
+import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
 import { BigNumber } from 'bignumber.js'
-import { code2tokenMap, AuctionStatus } from 'globals'
+import { AuctionStatus } from 'globals'
 // import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
@@ -19,22 +19,25 @@ export interface AuctionStateProps {
   match: {
     params: {
       index: string,
-      buy: TokenCode,
-      sell: TokenCode,
+      buy: TokenCode | TokenName | Account,
+      sell: TokenCode | TokenName | Account,
     },
     url: string,
-  }
+  },
+  tokenList: DefaultTokenObject[],
+  address2Token: { [P in Account]: DefaultTokenObject },
+  symbol2Token: { [P in TokenCode]: DefaultTokenObject },
 }
 
 export interface AuctionStateState {
   completed: boolean,
   status: AuctionStatus,
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   price: number[],
   timeToCompletion: number,
-  userSelling: number,
-  userGetting:  number,
+  userSelling: BigNumber,
+  userGetting:  BigNumber,
   userCanClaim: number,
   error: string,
 }
@@ -75,8 +78,13 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
     }
 
+    async componentWillReceiveProps(nextProps: any) {
+      if (nextProps.symbol2Token || nextProps.address2Token) return this.updateAuctionState()
+    }
+
     async updateAuctionState() {
-      const { sell, buy, index: indexParam } = this.props.match.params
+      const { match, address2Token, symbol2Token } = this.props
+      const { sell, buy, index: indexParam } = match.params
       const index = +indexParam
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
@@ -88,7 +96,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         return
       }
 
-      if (!code2tokenMap[sell] || !code2tokenMap[buy]) {
+      if (
+        !address2Token[sell] && !address2Token[buy] &&
+        !symbol2Token[sell] && !symbol2Token[buy]
+      ) {
         const error = `${sell}->${buy} auction isn't supported in Frontend UI`
         console.warn(error)
         this.setState({
@@ -97,7 +108,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         return
       }
 
-      const pair = { sell, buy }
+      const pair = {
+        sell: address2Token[sell] || symbol2Token[sell],
+        buy: address2Token[buy] || symbol2Token[buy],
+      }
 
       const currentAuctionIndex = await getLatestAuctionIndex(pair)
       console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
@@ -145,22 +159,22 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       // TODO: calculate differently for PLANNED auctions (currently is NaN)
       // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
       // as price calculation returns a slightly larger figure than buyerVolume even (price is too optimistic)
-      const userGetting = sellerBalance.mul(price[0]).div(price[1]).toNumber()
+      const userGetting = sellerBalance.mul(price[0]).div(price[1])
 
       const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
         (await getUnclaimedSellerFunds(pair, index, account)).toNumber() : 0
-      
+
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
-      
+
 
       this.setState({
         completed: status === AuctionStatus.ENDED,
         status,
-        sell,
-        buy,
+        sell: pair.sell,
+        buy: pair.buy,
         price: price.map(n => n.toNumber()),
         timeToCompletion,
-        userSelling: sellerBalance.toNumber(),
+        userSelling: sellerBalance,
         userGetting,
         userCanClaim,
         error: null,

@@ -36,7 +36,7 @@
       "git add"
     ],
     "src/**/*.ts?(x)": [
-      "tslint --project tsconfig.json --fix",
+      "tslint --project tsconfig.json --fix --force",
       "git add"
     ],
     "src/**/*.@(?(s)css|less)": [
@@ -70,6 +70,7 @@
     "@babel/polyfill": "^7.0.0-beta.44",
     "@digix/tempo": "^0.2.0",
     "@gnosis.pm/dutch-exchange-smartcontracts": "^0.4.5",
+    "@gnosis.pm/gnosis-core-contracts": "^1.0.3",
     "autobind-decorator": "^2.1.0",
     "await-delay": "^1.0.0",
     "bignumber.js": "^5.0.0",

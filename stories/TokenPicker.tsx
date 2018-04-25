@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions'
 import { boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-router'
 
+import { DefaultTokenObject } from 'types'
 import TokenPicker from 'components/TokenPicker'
 
 import {
@@ -22,8 +23,8 @@ const ratioPairs = generateRatioPairs()
 const store = storeInit({
   tokenBalances,
   tokenPair: {
-    sell: 'ETH',
-    buy: 'GNO',
+    sell: { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 } as DefaultTokenObject,
+    buy: { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 } as DefaultTokenObject,
     sellAmount: '0',
   },
   ratioPairs,
@@ -45,6 +46,7 @@ storiesOf('TokenPicker', module)
       continueToOrder={action('Continue to order details')}
       setTokenListType={() => {}}
       needsTokens={boolean('needsTokens', false)}
+      showPair={boolean('showPair', false)}
       to=""
     />
 ))

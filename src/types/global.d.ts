@@ -8,6 +8,7 @@ declare module 'ipfs'
 declare module 'storybook-router'
 declare module 'truffle-contract'
 declare module 'web3'
+declare module 'web3/lib/utils/utils.js'
 
 declare module '*.svg' {
   const content: any

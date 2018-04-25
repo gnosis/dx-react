@@ -1,19 +1,25 @@
 import React from 'react'
-import TokenItem, { TokenItemProps } from '../TokenItem'
+import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
-import { TokenCode, TokenBalances } from 'types'
+import { TokenBalances, DefaultTokenObject } from 'types'
 
 
 interface TokenListProps {
-  tokens: TokenCode[],
+  tokens: DefaultTokenObject[],
   balances: TokenBalances,
-  onTokenClick(props: TokenItemProps): any
+  onTokenClick(props: any): any
 }
 
 const TokenList: React.SFC<TokenListProps> = ({ tokens, balances, onTokenClick }) => (
   <div className="tokenList">
-    {tokens.map(code =>
-      <TokenItem name={code2tokenMap[code]} code={code} balance={balances[code]} key={code} onClick={onTokenClick} />)}
+    {tokens.map((token: DefaultTokenObject) =>
+      <TokenItem
+        {...token}
+        name={token.name || code2tokenMap[token.symbol]}
+        balance={balances[token.address]}
+        key={token.address}
+        onClick={onTokenClick}
+      />)}
   </div>
 )
 

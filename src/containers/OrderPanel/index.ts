@@ -3,8 +3,8 @@ import OrderPanel from 'components/OrderPanel'
 import { State } from 'types'
 
 const mapStateToProps = ({ tokenPair: { sell, buy, sellAmount } }: State) => ({
-  sellToken: sell,
-  buyToken: buy,
+  sellTokenSymbol: sell.symbol || sell.name || sell.address,
+  buyTokenSymbol: buy.symbol || buy.name || buy.address,
   sellAmount,
 })
 

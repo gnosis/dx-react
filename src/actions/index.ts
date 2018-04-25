@@ -1,5 +1,4 @@
 export * from './auctions'
-export * from './balance'
 export * from './blockchain'
 export * from './ipfs'
 export * from './modal'
