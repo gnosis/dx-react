@@ -50,6 +50,10 @@ const tokenFieldsChecks = {
     if (typeof symbol !== 'string') return 'token symbol should be a string'
     if (symbol.length === 0) return 'token symbol should not be an empty string'
   },
+  decimals: (decimals: number | string) => {
+    if (typeof decimals !== 'number' || typeof decimals !== 'string') return 'token symbol should be a number or a string'
+    if (decimals < 1) return 'token decimals should not be less than 1'
+  },
 }
 export const checkTokenListJSON = async (json: DefaultTokenList) => {
   if (!Array.isArray(json)) throw new Error('JSON should be an array of token objects')
