@@ -205,7 +205,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
-          header: `Wrapping ${sellName}`,
+          header: `Wrapping ${(wrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
         },
@@ -255,7 +255,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Confirm sell of ${sellName} tokens @ address ${sell.address}`,
+        header: `Confirm sell of ${sellAmount} ${sellName} tokens @ address ${sell.address}`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
       },
     }))
