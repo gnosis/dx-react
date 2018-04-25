@@ -10,7 +10,7 @@ import App, { initializer } from 'components/App'
 const rootElement = document.getElementById('root')
 
 // TODO: add list of blocked codes or fetch it
-const geoBlockedCountryCodes = new Set().add('BG')
+const geoBlockedCountryCodes = new Set()
 
 const isGeoBlocked = async () => {
   try {
