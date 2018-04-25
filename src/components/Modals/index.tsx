@@ -38,7 +38,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
       <ul>
         <li>{`Sell Amount:    ${txData.sellAmount}`}</li>
         {(txData.tokenA.symbol || txData.tokenA.symbol) &&
-          <li>{`Token:          ${txData.tokenA.symbol || txData.tokenA.name} [${txData.tokenA.name || txData.tokenA.symbol}]`}</li>
+          <li>{`Token Selling:          ${txData.tokenA.symbol || txData.tokenA.name} [${txData.tokenA.name || txData.tokenA.symbol}]`}</li>
         }
         <li>{`Token Address:  ${txData.tokenA.address}`}</li>
       </ul>
