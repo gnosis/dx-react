@@ -14,18 +14,14 @@ const makeSets = createSelector(
       const { address, symbol } = token
       if (address) address2Token[address] = token
       if (symbol) symbol2Token[symbol] = token
-
-      
-      
     }
-
     return { address2Token, symbol2Token }
-  }
+  },
 )
 
 const mapStateToProps = (state: State) => ({
   tokenList: state.tokenList.type !== 'DEFAULT' ? state.tokenList.combinedTokenList : state.tokenList.defaultTokenList,
-  ...makeSets(state)
+  ...makeSets(state),
 })
 
 

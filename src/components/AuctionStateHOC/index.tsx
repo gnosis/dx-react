@@ -36,8 +36,8 @@ export interface AuctionStateState {
   buy: DefaultTokenObject,
   price: number[],
   timeToCompletion: number,
-  userSelling: number,
-  userGetting:  number,
+  userSelling: BigNumber,
+  userGetting:  BigNumber,
   userCanClaim: number,
   error: string,
 }
@@ -78,11 +78,14 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
     }
 
+    async componentWillReceiveProps(nextProps: any) {
+      if (nextProps.symbol2Token || nextProps.address2Token) return this.updateAuctionState()
+    }
+
     async updateAuctionState() {
       const { match, address2Token, symbol2Token } = this.props
       const { sell, buy, index: indexParam } = match.params
       const index = +indexParam
-
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
         const error = `wrong index format: ${indexParam}`
@@ -94,8 +97,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       if (
-        !address2Token[sell] || !address2Token[buy] ||
-        !symbol2Token[sell] || !symbol2Token[buy]
+        !address2Token[sell] && !address2Token[buy] &&
+        !symbol2Token[sell] && !symbol2Token[buy]
       ) {
         const error = `${sell}->${buy} auction isn't supported in Frontend UI`
         console.warn(error)
@@ -156,13 +159,13 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       // TODO: calculate differently for PLANNED auctions (currently is NaN)
       // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
       // as price calculation returns a slightly larger figure than buyerVolume even (price is too optimistic)
-      const userGetting = sellerBalance.mul(price[0]).div(price[1]).toNumber()
+      const userGetting = sellerBalance.mul(price[0]).div(price[1])
 
       const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
         (await getUnclaimedSellerFunds(pair, index, account)).toNumber() : 0
-      
+
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
-      
+
 
       this.setState({
         completed: status === AuctionStatus.ENDED,
@@ -171,7 +174,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         buy: pair.buy,
         price: price.map(n => n.toNumber()),
         timeToCompletion,
-        userSelling: sellerBalance.toNumber(),
+        userSelling: sellerBalance,
         userGetting,
         userCanClaim,
         error: null,

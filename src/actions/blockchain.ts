@@ -205,7 +205,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
-          header: `Wrapping ${sellName}`,
+          header: `Wrapping ${(wrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
         },
@@ -255,7 +255,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Confirm sell of ${sellName} tokens @ address ${sell.address}`,
+        header: `Confirm sell of ${sellAmount} ${sellName} tokens @ address ${sell.address}`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
       },
     }))
@@ -281,10 +281,10 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // dispatch Actions
     dispatch(batchActions([
       setTokenBalance({ address: sell.address, balance }),
-      push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`),
       setSellTokenAmount({ sellAmount: 0 }),
     ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-
+    // jump to Auction Page
+    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // indicate that submission worked
     return true
   } catch (error) {
@@ -381,7 +381,7 @@ async function checkTokenAllowance(
 
 function errorHandling(error: Error) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
-    let place = string.search(toFind)
+    const place = string.search(toFind)
     return string.slice(place + offset)
   }
   return async (dispatch: Function, getState: Function) => {
