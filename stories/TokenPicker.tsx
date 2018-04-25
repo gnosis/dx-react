@@ -46,6 +46,7 @@ storiesOf('TokenPicker', module)
       continueToOrder={action('Continue to order details')}
       setTokenListType={() => {}}
       needsTokens={boolean('needsTokens', false)}
+      showPair={boolean('showPair', false)}
       to=""
     />
 ))
