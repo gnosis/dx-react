@@ -25,6 +25,10 @@ $defaultTokenSize_mobile: 65px;
   background: url('#{$images}tokens/GNT.svg') no-repeat center / $defaultTokenSize;
 }
 
+[data-coin="DEFAULT_TOKEN"] {
+  background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / 80px;
+}
+
 [data-coin] {
   border: 1px solid $greyBorder;
   will-change: border;
