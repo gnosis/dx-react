@@ -278,13 +278,14 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // grab balance of sold token after sale
     const balance = await getTokenBalance(sell.address, currentAccount)
 
+    // jump to Auction Page
+    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // dispatch Actions
     dispatch(batchActions([
       setTokenBalance({ address: sell.address, balance }),
-      setSellTokenAmount({ sellAmount: 0 }),
+      // set sellAmount back to 0
+      setSellTokenAmount({ sellAmount: '0' }),
     ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-    // jump to Auction Page
-    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // indicate that submission worked
     return true
   } catch (error) {
