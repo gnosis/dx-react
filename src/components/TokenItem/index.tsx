@@ -12,12 +12,21 @@ const mod2Title: {[P in TokenMod]: string} = {
   buy: 'RECEIVE',
 }
 
+const tokenSVG = new Set([
+  'REP',
+  'ETH',
+  'GNO',
+  'OMG',
+  '1ST',
+  'GNT',
+])
+
 const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
   const { mod, balance, name, symbol, decimals } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
-      <i data-coin={symbol}></i>
+      <i data-coin={tokenSVG.has(symbol) ? symbol : 'DEFAULT_TOKEN'}></i>
       <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{balance.div ? balance.div(10 ** decimals).toFixed(4) : balance} {symbol}</p>
