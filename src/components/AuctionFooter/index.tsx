@@ -17,10 +17,10 @@ const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellTokenS
       <small>AMOUNT SELLING</small>
       <big>{sellAmount.div(10 ** sellDecimal).toString()} {sellTokenSymbol}</big>
     </span>
-    <span>
+    {buyAmount.gt(0) && <span>
       <small>{!auctionEnded && 'ESTIMATED'} GETTING TOTAL</small>
       <big>{buyAmount.div(10 ** buyDecimal).toString()} {buyTokenSymbol}</big>
-    </span>
+    </span>}
   </div>
 )
 
