@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
-class Loader extends React.Component<any,any> {
+interface LoaderProps {
+  reSize?: number;
+  hasData: any;
+  render(): ReactElement<any>;
+}
+
+class Loader extends React.Component<LoaderProps> {
+  static defaultProps = {
+    reSize: 1,
+  }
+
   renderSVG = () =>
-    <svg width="420px" height="475px" viewBox="0 0 105 20.5" version="1.1">
+    <svg width={`${420 * this.props.reSize}px`} height={`${475 * this.props.reSize}px`} viewBox="0 0 105 20.5" version="1.1">
       <defs>
         <polygon id="path-1" points="0.0804697719 0.0481072691 18.8121496 0.0481072691 18.8121496 19.3882033 0.0804697719 19.3882033"></polygon>
         <polygon id="path-3" points="0 0.166758882 7.75290678 0.166758882 7.75290678 14.1836979 0 14.1836979"></polygon>
       </defs>
 
-      <g id="Page-1" className="svgGroup" fill-rule="evenodd">
+      <g id="Page-1" className="svgGroup" fillRule="evenodd">
         <g id="dutchx_logo" transform="translate(0.000000, -4.000000)">
           <g transform="translate(0.666667, 4.282353)" id="v2">
             <g>
@@ -35,8 +45,8 @@ class Loader extends React.Component<any,any> {
     </svg>
 
   render() {
-    const { data } = this.props
-    return data ? this.props.render() : this.renderSVG()
+    const { hasData } = this.props
+    return hasData ? this.props.render() : this.renderSVG()
   }
 }
 

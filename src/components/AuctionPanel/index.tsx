@@ -36,7 +36,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
       Auction URL: <a href="#">https://www.dutchx.pm{url}/</a>
     </AuctionHeader>
     <Loader
-      data={sell}
+      hasData={sell}
       render={() =>
         <Aux>
           <AuctionStatus
