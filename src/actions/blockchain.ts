@@ -255,8 +255,12 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Confirm sell of ${sellAmount} ${sellName} tokens @ address ${sell.address}`,
+        header: `Sell Confirmation`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
+        txData: {
+          tokenA: sell,
+          sellAmount,
+        },
       },
     }))
     // if user's sellAmt > DX.balance(token)
