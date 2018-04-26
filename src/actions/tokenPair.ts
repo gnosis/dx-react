@@ -1,11 +1,11 @@
 import { createAction } from 'redux-actions'
-import { TokenPair } from 'types'
+import { TokenPair, Balance } from 'types'
 
 import { closingPrice } from 'api/'
 import { setClosingPrice } from 'actions/ratioPairs'
 
 export const selectTokenPair = createAction<TokenPair>('SELECT_TOKEN_PAIR')
-export const setSellTokenAmount = createAction<{ sellAmount: number }>('SET_SELL_TOKEN_AMOUNT')
+export const setSellTokenAmount = createAction<{ sellAmount: Balance }>('SET_SELL_TOKEN_AMOUNT')
 export const swapTokensInAPair = createAction<void>('SWAP_TOKENS_IN_A_PAIR', () => {})
 
 export const selectTokenPairAndSetClosingPrice = (tokenPair: TokenPair) => async (dispatch: Function) => {

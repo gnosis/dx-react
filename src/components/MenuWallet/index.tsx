@@ -1,4 +1,7 @@
 import React from 'react'
+
+import Loader from 'components/Loader'
+
 import 'styles/components/navbar/_navbar.scss'
 
 import { Account, BigNumber, TokenBalances } from 'types'
@@ -22,6 +25,10 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
       <small>{balance != null ? balance.toNumber().toFixed(4) : 'loading...'} ETH</small>
     </span>
     <div>
+      <Loader
+      hasData={Object.keys(addressToSymbolDecimal).length > 0}
+      reSize={0.2}
+      render={() =>
         <table>
           <thead>
             <tr>
@@ -30,7 +37,8 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
             </tr>
           </thead>
           <tbody>
-            {Object.keys(addressToSymbolDecimal).length > 0 && Object.keys(tokens).map((addressKey: any) => {
+            {Object.keys(tokens).map((addressKey: any) => {
+              if (!addressToSymbolDecimal[addressKey]) return null
               const { name, decimals } = addressToSymbolDecimal[addressKey]
               return (
                 <tr key={addressKey}>
@@ -38,10 +46,10 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
                   <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(4)}</td>
                 </tr>
               )
-            },
-            )}
+            })}
           </tbody>
         </table>
+      }/>
     </div>
   </div>
 )
