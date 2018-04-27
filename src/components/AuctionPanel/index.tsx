@@ -37,6 +37,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
     </AuctionHeader>
     <Loader
       hasData={sell}
+      message="Auction has not started. Please try a lower auction index"
       render={() =>
         <Aux>
           <AuctionStatus
