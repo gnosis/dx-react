@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { setUploadFileParams, getFileContentFromIPFS, openModal, batchTokenListTypeAndFileParams, setTokenListType } from 'actions'
+import { setUploadFileParams, getFileContentFromIPFS, openModal, setNewIPFSCustomListAndUpdateBalances, setTokenListType } from 'actions'
 
 import IPFSHOC from 'components/IPFSHOC'
 import TokenUpload from 'components/TokenUpload'
@@ -34,7 +34,7 @@ export default connect(
   {
     getFileContentFromIPFS,
     openModal,
-    batchTokenListTypeAndFileParams,
+    setNewIPFSCustomListAndUpdateBalances,
     setTokenListType,
     setUploadFileParams,
   })(IPFSHOC(TokenUpload) as any)

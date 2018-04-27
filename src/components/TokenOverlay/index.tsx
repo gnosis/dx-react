@@ -6,6 +6,7 @@ import TokenList from '../TokenList'
 
 import { code2tokenMap } from 'globals'
 import { DefaultTokenObject, TokenBalances, TokenMod } from 'types'
+import Loader from '../Loader'
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
@@ -18,6 +19,13 @@ const filterTokens = createSelector(
     tokens
   ),
 )
+
+const dataLengthCheck = (o1: {} | any[], o2: {} | any[]) => {
+  const o1kl = Array.isArray(o1) ? o1.length : Object.keys(o1).length,
+		    o2kl = Array.isArray(o2) ? o2.length : Object.keys(o2).length
+
+	 return o1kl <= o2kl
+}
 
 export interface TokenOverlayProps {
   tokenList: DefaultTokenObject[],
@@ -69,11 +77,17 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
           closeOverlay={this.closeOverlay}
           value={filter}
         />
-        <TokenList
-          tokens={filteredTokens}
-          balances={tokenBalances}
-          onTokenClick={this.selectTokenAndCloseOverlay}
-        />
+        <Loader
+          hasData={dataLengthCheck(filteredTokens, tokenBalances)}
+          message="Loading token balances - please wait"
+          reSize={0.72}
+          render={() =>
+          <TokenList
+            tokens={filteredTokens}
+            balances={tokenBalances}
+            onTokenClick={this.selectTokenAndCloseOverlay}
+          />
+        } />
       </div>
     )
   }

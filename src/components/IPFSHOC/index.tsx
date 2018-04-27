@@ -20,7 +20,7 @@ export interface HOCState {
   oFile?: File;
   json?: DefaultTokenObject[];
 
-  batchTokenListTypeAndFileParams({}, {}): void;
+  setNewIPFSCustomListAndUpdateBalances({}, {}): void;
   getFileContentFromIPFS({}): void;
   openModal({}): void;
   setIPFSFileHashAndPath({}): void;
@@ -78,7 +78,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
 
     handleSendToIPFS = async () => {
       const { ipfsAddFile } = await promisedIPFS
-      const { fileBuffer, oFile, json, batchTokenListTypeAndFileParams, openModal } = this.props
+      const { fileBuffer, oFile, json, setNewIPFSCustomListAndUpdateBalances, openModal } = this.props
       try {
         const { fileHash, filePath } = await ipfsAddFile(fileBuffer, oFile),
           customTokenListWithDecimals = await getAllTokenDecimals(json)
@@ -86,7 +86,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         localForage.setItem('customListHash', fileHash)
 
         // setState
-        return batchTokenListTypeAndFileParams(
+        return setNewIPFSCustomListAndUpdateBalances(
           {
             customTokenList: customTokenListWithDecimals,
           },
