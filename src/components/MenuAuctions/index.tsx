@@ -26,7 +26,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
             <tbody>
               {ongoingAuctions.map(
                 (auction, i) =>
-                  <tr key={`${auction.sell.symbol}-${auction.buy.symbol}-${i}`}>
+                  <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
                     <td>{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
                     <td>{`${auction.indices[auction.indices.length - 1]}`}</td>
                     <td>

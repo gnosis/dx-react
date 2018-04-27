@@ -497,8 +497,10 @@ export const getSellerOngoingAuctions = async (
     // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
     // Array indices are lined up
     // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
-    const claimableTokens = await Promise.all(promisedClaimableTokensObject.normal)
-    const inverseClaimableTokens = await Promise.all(promisedClaimableTokensObject.inverse)
+    const [claimableTokens, inverseClaimableTokens] = await Promise.all([
+      Promise.all(promisedClaimableTokensObject.normal),
+      Promise.all(promisedClaimableTokensObject.inverse),
+    ])
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
     const auctionsArray = ongoingAuctions.map((auction, index) => {
       const [indices, balancePerIndex] = claimableTokens[index]
