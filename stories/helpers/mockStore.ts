@@ -2,6 +2,7 @@ import createStoreWithHistory from 'store'
 import createHistory from 'history/createBrowserHistory'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { State } from 'types'
+import { ProviderName } from 'globals'
 
 const history = createHistory()
 
@@ -17,13 +18,13 @@ export const bcMetamask: Partial<State> = {
     connectionTried: true,
     providers: {
       METAMASK: {
-        name: 'METAMASK',
+        name: ProviderName.METAMASK,
         loaded: true,
         available: true,
         priority: 90,
       },
     },
-    activeProvider: 'METAMASK',
+    activeProvider: ProviderName.METAMASK,
     currentAccount: '0x4d676f863980973338f8eefd1c8ec8b5b9bc6671',
     currentBalance: toBigNumber('99.5788472'),
     providersLoaded: true,
@@ -41,7 +42,7 @@ export const bcLocalHost: Partial<State> = {
     gasCosts: {},
     connectionTried: true,
     providers: {},
-    activeProvider: 'http://localhost:8458',
+    activeProvider: 'http://localhost:8458' as ProviderName,
     currentAccount: '0x4d676f863980973338f8eefd1c8ec8b5b9bc6671',
     currentBalance: toBigNumber('99.5788472'),
     providersLoaded: true,
