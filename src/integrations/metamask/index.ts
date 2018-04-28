@@ -8,7 +8,7 @@ const MetamaskProvider: WalletProvider = {
   checkAvailability() {
     if (this.web3) return this.walletAvailable = this.web3.isConnected()
     return this.walletAvailable = typeof window.web3 !== 'undefined'
-      && window.web3.currentProvider.constructor.name === 'MetamaskInpageProvider'
+      && (window.web3.currentProvider.constructor.name === 'MetamaskInpageProvider' || window.web3.currentProvider.isMetaMask)
   },
   initialize() {
     if (!this.checkAvailability()) return
