@@ -2,7 +2,13 @@ import localForage from 'localforage'
 import { Store } from 'redux'
 
 import initialize from './initialize'
-import { registerProvider, updateProvider, initDutchX, updateMainAppState } from 'actions/blockchain'
+import {
+  registerProvider,
+  updateProvider,
+  initDutchX,
+  updateMainAppState,
+  resetMainAppState,
+} from 'actions/blockchain'
 import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath, selectTokenPair } from 'actions'
 
 import tokensMap from 'api/apiTesting'
@@ -12,6 +18,7 @@ import { getAllTokenDecimals } from 'api'
 
 import { DefaultTokens } from 'api/types'
 import { TokenPair } from 'types'
+import { ConnectedInterface } from './types'
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState } = store
@@ -22,11 +29,12 @@ export default async function walletIntegration(store: Store<any>) {
       ...data,
     }))
 
-  const providerOptions = {
+  const providerOptions: ConnectedInterface = {
     getState,
     updateProvider: dispatchProviderAction(updateProvider),
     registerProvider: dispatchProviderAction(registerProvider),
     updateMainAppState: dispatchProviderAction(updateMainAppState),
+    resetMainAppState: () => dispatch(resetMainAppState()),
   }
 
   const getDefaultTokens = async () => {

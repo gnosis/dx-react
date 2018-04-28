@@ -37,8 +37,8 @@ const shallowDifferent = (obj1: object, obj2: object) => {
 }
 
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
-export default async ({ registerProvider, updateProvider, updateMainAppState }: ConnectedInterface | any) => {
-  let prevTime: any
+export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
+  let prevTime: number
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -73,9 +73,12 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
         balance = account && await getBalance(provider, account),
         available = !!(provider.walletAvailable && account),
         newState = { account, network, balance, available, timestamp }
-
-      // if data changed
+        
+        // if data changed
       if (shallowDifferent(provider.state, newState)) {
+        console.log('app state is different')
+        console.log('was: ', newState)
+        console.log('now: ', provider.state)
         // reset module timestamp with updated timestamp
         prevTime = timestamp
         // dispatch action with updated provider state
@@ -85,6 +88,10 @@ export default async ({ registerProvider, updateProvider, updateMainAppState }: 
     } catch (err) {
       console.warn(err)
       // if error
+      // connection lost or provider no longer returns data (locked/logged out)
+      // reset all data associated with account
+      resetMainAppState()
+
       if (provider.walletAvailable) {
         // disable internal provider
         provider.state.available = false
