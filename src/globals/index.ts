@@ -20,3 +20,6 @@ export enum AuctionStatus {
   ACTIVE = 'active',
   ENDED = 'ended',
 }
+
+export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
+export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
