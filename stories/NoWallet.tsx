@@ -19,7 +19,8 @@ storiesOf('NoWallet', module)
   .addWithJSX('NoWallet[Solo]', () =>
     <NoWallet
       handleClick={action('ButtonCTA clicked')}
-      hide={boolean('Hide/Show', false)}
+      walletUnavailable={boolean('walletUnavailable', false)}
+      walletLocked={boolean('walletLocked', false)}
     />,
 )
   .addWithJSX('Both', (): any =>
@@ -28,7 +29,8 @@ storiesOf('NoWallet', module)
       <NoWallet
         key="1"
         handleClick={action('ButtonCTA clicked')}
-        hide={boolean('Hide/Show', false)}
+        walletUnavailable={boolean('walletUnavailable', false)}
+        walletLocked={boolean('walletLocked', false)}
       />,
     ],
 )
