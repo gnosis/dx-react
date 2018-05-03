@@ -21,13 +21,15 @@ export interface WalletProps {
 export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens }) => (
   <div className="menuWallet">
     <span>
-      <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
-      <small>{balance != null ? balance.toNumber().toFixed(4) : 'loading...'} ETH</small>
+      <code>{`${account ? account.slice(0,10) : 'No Wallet Detected'}...`}</code>
+      <small>{balance != null ? balance.toNumber().toFixed(4) : '0'} ETH</small>
     </span>
-    <div>
+    {account && <div>
       <Loader
       hasData={Object.keys(addressToSymbolDecimal).length > 0}
-      reSize={0.2}
+      message="Enable wallet"
+      svgHeight={35}
+      reSize={0.25}
       render={() =>
         <table>
           <thead>
@@ -50,7 +52,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
           </tbody>
         </table>
       }/>
-    </div>
+    </div>}
   </div>
 )
 

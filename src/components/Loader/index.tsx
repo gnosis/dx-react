@@ -3,18 +3,20 @@ import React, { ReactElement } from 'react'
 interface LoaderProps {
   reSize?: number;
   hasData: any;
+  svgHeight?: number;
   message?: string;
   render(): ReactElement<any>;
 }
 
 class Loader extends React.Component<LoaderProps> {
   static defaultProps = {
+    svgHeight: 50,
     reSize: 1,
   }
 
   renderSVG = () =>
     <div className="svgContainer" style={{ width: `${420 * this.props.reSize}px`, height: `${475 * this.props.reSize}px` }}>
-      <svg width="100%" height="100%" viewBox="0 0 105 20.5" version="1.1">
+      <svg width="100%" height={`${this.props.svgHeight}%`} viewBox="0 0 105 20.5" version="1.1">
         <defs>
           <polygon id="path-1" points="0.0804697719 0.0481072691 18.8121496 0.0481072691 18.8121496 19.3882033 0.0804697719 19.3882033"></polygon>
           <polygon id="path-3" points="0 0.166758882 7.75290678 0.166758882 7.75290678 14.1836979 0 14.1836979"></polygon>
@@ -45,7 +47,7 @@ class Loader extends React.Component<LoaderProps> {
           </g>
         </g>
       </svg>
-      {!!(this.props.message) && <p>{this.props.message}</p>}
+      {!!(this.props.message) && <p style={{ margin: 0 }}>{this.props.message}</p>}
     </div>
 
   render() {
