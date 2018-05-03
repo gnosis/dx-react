@@ -37,6 +37,7 @@ import { timeoutCondition } from '../utils/helpers'
 import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
+import { Dispatch } from 'react-redux'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -54,7 +55,7 @@ export enum TypeKeys {
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
 export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
-export const setActiveProvider = createAction<{ provider?: string }>('SET_ACTIVE_PROVIDER')
+export const setActiveProvider = createAction<string>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
 export const setCurrentBalance = createAction<{ provider?: string, currentBalance?: BigNumber }>('SET_CURRENT_BALANCE')
@@ -65,9 +66,34 @@ export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKEN
 export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
 export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
 
+export const resetAppState = createAction('RESET_APP_STATE')
+
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
-export const updateMainAppState = () => async (dispatch: Function, getState: () => State) => {
+const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
+  try {
+    // determine new provider
+    const newProvider = findDefaultProvider(state)
+    if (newProvider) {
+      dispatch(batchActions([
+        setActiveProvider(newProvider.name),
+        setDutchXInitialized({ initialized: true }),
+      ], 'SET_ACTIVE_PROVIDER_AND_INIT_DX_FLAG'))
+    }
+  } catch (error) {
+    console.warn(`DutchX initialization Error: ${error}`)
+    return dispatch(setDutchXInitialized({ error, initialized: false }))
+  }
+}
+
+export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState: () => State) => {
+  dispatch(resetAppState())
+  const state = getState()
+  // provider may have changed between resets
+  setActiveProviderHelper(dispatch, state)
+}
+
+export const updateMainAppState = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
   const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
@@ -104,6 +130,7 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
     setOngoingAuctions({ ongoingAuctions }),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgn.balance.toString() }),
+    setCurrentAccountAddress({ currentAccount }),
   ], 'HYDRATING_MAIN_STATE'))
 }
 
@@ -111,21 +138,11 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
 /**
  * (Re)-Initializes DutchX connection according to current providers settings
  */
-export const initDutchX = () => async (dispatch: Function, getState: () => State) => {
+export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const state = getState()
   // initialize
-  try {
-
-    // determine new provider
-    const newProvider: any = findDefaultProvider(state)
-    if (newProvider) {
-      dispatch(setActiveProvider(newProvider.name))
-      dispatch(setDutchXInitialized({ initialized: true }))
-    }
-  } catch (error) {
-    console.warn(`DutchX initialization Error: ${error}`)
-    return dispatch(setDutchXInitialized({ error, initialized: false }))
-  }
+  // determine new provider
+  setActiveProviderHelper(dispatch, state)
 
   // connect
   try {
@@ -164,7 +181,7 @@ export const initDutchX = () => async (dispatch: Function, getState: () => State
   }
 }
 
-export const getClosingPrice = () => async (dispatch: Function, getState: any) => {
+export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
   const { tokenPair: { buy, sell } } = getState()
 
   try {
@@ -179,7 +196,7 @@ export const getClosingPrice = () => async (dispatch: Function, getState: any) =
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
  *
 */
-export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
+export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { activeProvider, currentAccount },
@@ -298,7 +315,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 }
 
 // TODO: if add index of current tokenPair to state
-export const approveAndPostSellOrder = (choice: string) => async (dispatch: Function, getState: () => State) => {
+export const approveAndPostSellOrder = (choice: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { currentAccount },
@@ -389,7 +406,7 @@ function errorHandling(error: Error) {
     const place = string.search(toFind)
     return string.slice(place + offset)
   }
-  return async (dispatch: Function, getState: Function) => {
+  return async (dispatch: Dispatch<any>, getState: Function) => {
     const { blockchain: { activeProvider } } = getState()
     const normError = error.message
     console.error(error.message)

@@ -3,39 +3,35 @@ import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
 
 interface NoWalletProps {
-  handleClick?(): void
-  hide?: boolean
+  handleClick?(): void,
+  walletUnavailable: boolean,
+  walletLocked: boolean,
 }
 
 export const NoWallet: React.SFC<NoWalletProps> = ({
-  handleClick,
-  hide = false,
-}) => (
-    <div className={`noWallet${hide ? ' hide' : ''}`}>
+  handleClick, walletUnavailable, walletLocked,
+}) => {
+  const showUnlock = !walletUnavailable && walletLocked
+  return (
+    <div className="noWallet">
 
-      {/*
-        Two states:
-        #1 - User has a wallet client (detected) but isn't unlocked
-        #2 - No wallet client detected > Ask to download MetaMask (later we change to download Gnosis Safe)
-      */}
+      {showUnlock &&
+        <h2><strong>Unlock your wallet client</strong> <br/>before continuing.</h2>
+      }
 
-      {/* If state #1 */}
-      <h2><strong>Unlock your wallet client</strong> <br/>before continuing.</h2>
-      {/* END */}
+      {walletUnavailable &&
+        <h2><strong>No wallet client detected.</strong> <br/>Enable or install your wallet.</h2>
+      }
 
-      {/* If state #2 */}
-      <h2><strong>No wallet client detected.</strong> <br/>Enable or install your wallet.</h2>
-      {/* END */}
+      {showUnlock && <span className="icon-walletUnlock"></span>}
 
-      <span className="icon-walletUnlock"></span>
-
-      {/* If state #2 */}
-      <ButtonCTA onClick={handleClick} className={null} to="https://metamask.io/" target="_blank">
-        Download MetaMask <i className="icon icon-arrowDown"></i>
-      </ButtonCTA >
-      {/* END */}
-
+      {walletUnavailable &&
+        <ButtonCTA onClick={handleClick} className={null} to="https://metamask.io/" target="_blank">
+          Download MetaMask <i className="icon icon-arrowDown"></i>
+        </ButtonCTA >
+      }
     </div >
   )
+}
 
 export default NoWallet
