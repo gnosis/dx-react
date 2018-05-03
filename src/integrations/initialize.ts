@@ -71,8 +71,9 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
           getTime(),
         ]),
         balance = account && await getBalance(provider, account),
-        available = !!(provider.walletAvailable && account),
-        newState = { account, network, balance, available, timestamp }
+        available = provider.walletAvailable,
+        unlocked = !!(available && account),
+        newState = { account, network, balance, available, unlocked, timestamp }
         
         // if data changed
       if (shallowDifferent(provider.state, newState)) {
@@ -94,7 +95,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
 
       if (provider.walletAvailable) {
         // disable internal provider
-        provider.state.available = false
+        provider.state.unlocked = false
         // and dispatch action with { available: false }
         updateProvider(provider.providerName, provider.state)
       }

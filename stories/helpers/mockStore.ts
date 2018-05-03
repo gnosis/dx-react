@@ -21,6 +21,7 @@ export const bcMetamask: Partial<State> = {
         name: ProviderName.METAMASK,
         loaded: true,
         available: true,
+        unlocked: true,
         priority: 90,
       },
     },

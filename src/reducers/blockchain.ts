@@ -19,7 +19,8 @@ import { Blockchain, Provider } from 'types'
 
 const INITIAL_PROVIDER_STATE: Provider = {
   loaded: false,
-  available: false,
+  available: true,
+  unlocked: false,
   network: undefined,
   account: undefined,
   balance: undefined,

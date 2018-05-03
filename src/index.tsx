@@ -6,11 +6,12 @@ import ReactDOMServer from 'react-dom/server'
 
 import App, { initializer } from 'components/App'
 
+import blocked_codes from './blocked_codes.json'
+
 /* global document */
 const rootElement = document.getElementById('root')
 
-// TODO: add list of blocked codes or fetch it
-const geoBlockedCountryCodes = new Set()
+const geoBlockedCountryCodes = new Set(blocked_codes)
 
 const isGeoBlocked = async () => {
   try {

@@ -6,6 +6,7 @@ export interface ProviderState {
   network: ETHEREUM_NETWORKS,
   balance: Balance,
   available: boolean,
+  unlocked: boolean,
   timestamp?: number,
 }
 
