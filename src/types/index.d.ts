@@ -27,6 +27,7 @@ export interface Provider {
   name?: ProviderName,
   loaded: boolean,
   available: boolean,
+  unlocked: boolean,
   network?: string,
   account?: Account,
   balance?: Balance,
