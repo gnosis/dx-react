@@ -443,9 +443,9 @@ export const getSellerOngoingAuctions = async (
     // get Array back of Auctions user is in
     // grab sellerBalance of USER for each current ongoing auction
     // @ts-ignore
-    const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
-      ...runningPairsArr, account)
-    ).map((res: any) => res.toNumber())
+    // const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
+    //   ...runningPairsArr, account)
+    // ).map((res: any) => res.toNumber())
     // we know user is participating in (runningPairsArr[0][0]-runningPairsArr[1][0] && runningPairsArr[0][3]-runningPairsArr[1][3])
 
     // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
@@ -471,21 +471,21 @@ export const getSellerOngoingAuctions = async (
     const ongoingAuctions: {
       sell: DefaultTokenObject,
       buy: DefaultTokenObject,
-    }[] = sellerOngoingAuctions.reduce((accum, bal, index) => {
-      if (!bal) return accum
+    }[] = runningPairsS.reduce((accum, sellAddress, index) => {
+      // if (!bal) return accum
 
-      const s = runningPairsS[index]
-      const b = runningPairsB[index]
+      // const s = runningPairsS[index]
+      const buyAddress = runningPairsB[index]
 
-      const sell = addressesToTokenJSON[s]
-      const buy = addressesToTokenJSON[b]
+      const sell = addressesToTokenJSON[sellAddress]
+      const buy = addressesToTokenJSON[buyAddress]
       if (sell && buy) {
         accum.push({ sell, buy })
         promisedClaimableTokensObject.normal.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, account, 0),
+          DutchX.getIndicesWithClaimableTokensForSellers(sellAddress, buyAddress, account, 0),
         )
         promisedClaimableTokensObject.inverse.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(buy.address, sell.address, account, 0),
+          DutchX.getIndicesWithClaimableTokensForSellers(buyAddress, sellAddress, account, 0),
         )
       }
 
@@ -502,10 +502,18 @@ export const getSellerOngoingAuctions = async (
       Promise.all(promisedClaimableTokensObject.inverse),
     ])
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
-    const auctionsArray = ongoingAuctions.map((auction, index) => {
+    const auctionsArray = ongoingAuctions.map(async (auction, index) => {
       const [indices, balancePerIndex] = claimableTokens[index]
+      console.log('indices: ', indices)
       const [indicesInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
+      console.log('indicesInverse: ', indicesInverse)
+
+      if (!(indices.length >= 1 || indicesInverse.length >= 1)) return null
+
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
+      const lastIndex = await DutchX.getLatestAuctionIndex(auction)
+      const closingPriceDir = await DutchX.getClosingPrice(auction, lastIndex)
+      const closingPriceOpp = await DutchX.getClosingPrice(auction, lastIndex)
       return {
         ...auction,
         indices,
@@ -513,12 +521,16 @@ export const getSellerOngoingAuctions = async (
         // TODO: check each token involved in auction for correct division
         balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
         balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-        claim: indices.length >= 2,
-        claimInverse: indicesInverse.length >= 2,
+        // claim: indices.length >= 2,
+        claim: indices.length >= 2 || !lastIndex.equals(indices[0]) || (lastIndex.equals(indices[0]) && closingPriceDir[1].gt(0)),
+        // claimInverse: indicesInverse.length >= 2,
+        claimInverse: indicesInverse.length >= 2 ||
+          (indicesInverse[0] && !lastIndex.equals(indicesInverse[0])) ||
+          (indicesInverse[0] && lastIndex.equals(indicesInverse[0]) && closingPriceOpp[1].gt(0)),
       }
     })
 
-    return auctionsArray
+    return Promise.all(auctionsArray)
   } catch (e) {
     console.warn(e)
   }
