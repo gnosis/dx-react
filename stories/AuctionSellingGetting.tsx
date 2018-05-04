@@ -27,7 +27,7 @@ storiesOf('Auction Sell & Get', module)
 
     return (
       <AuctionSellingGetting
-        sellTokenBalance={text('balance', '20')}
+        maxSellAmount={text('balance', '20')}
         buyTokenSymbol={object('buyTokenSymbol', 'GNO')}
         sellTokenSymbol={object('sellTokenSymbol', 'ETH')}
         sellAmount={sellAmount}
