@@ -276,6 +276,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
         txData: {
           tokenA: sell,
+          tokenB: buy,
           sellAmount,
         },
       },

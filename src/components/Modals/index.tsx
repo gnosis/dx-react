@@ -38,9 +38,15 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
       <ul>
         <li>{`Sell Amount:    ${txData.sellAmount}`}</li>
         {(txData.tokenA.symbol || txData.tokenA.name) &&
-        <li>{`Token Selling:  ${txData.tokenA.symbol || txData.tokenA.name} [${txData.tokenA.name || txData.tokenA.symbol}]`}</li>
+        <li>{`Token Selling:  ${txData.tokenA.symbol || txData.tokenA.name}${txData.tokenA.name && ' [' + txData.tokenA.name + ']'}`}</li>
         }
-        <li>{`Token Address:  ${txData.tokenA.address}`}</li>
+        <li>{`Sell Token Address:  ${txData.tokenA.address}`}</li>
+        <br />
+        {(txData.tokenB.symbol || txData.tokenB.name) &&
+        <li>{`Token Receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${txData.tokenB.name && ' [' + txData.tokenB.name + ']'}`}</li>
+        }
+        <li>{`Receiving Token Address:  ${txData.tokenB.address}`}</li>
+        <li>Verify receiving token validity via EtherScan: <a href={`https://etherscan.io/tokens/${txData.tokenB.address}`}>{`https://etherscan.io/tokens/${txData.tokenB.address}`}</a></li>
       </ul>
     </div>}
     {error &&
