@@ -14,8 +14,18 @@ export interface AuctionSellingGettingProps {
 
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
-  onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.setSellTokenAmount({ sellAmount: e.target.value })
+  onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
+    const input = e.target
+    const { value } = input
+    const { setSellTokenAmount, maxSellAmount } = this.props
+    setSellTokenAmount({ sellAmount: value })
+
+    if (+value > +maxSellAmount) {
+      input.setCustomValidity(`amount available for sale is ${maxSellAmount}`)
+      input.reportValidity()
+    } else {
+      input.setCustomValidity('')
+    }
   }
 
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
