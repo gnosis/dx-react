@@ -566,7 +566,6 @@ export const getSellerOngoingAuctions = async (
 
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
       if (!(indices.length >= 1 || indicesInverse.length >= 1)) {
-
         return accum
       } else {
         const { lastIndex, closingPriceDir, closingPriceOpp } = lastAuctionsData[index]
