@@ -365,6 +365,7 @@ export interface DXAuction {
     buyTokens: Account[],
     auctionIndices: number[],
     user: Account,
+    tx: TransactionObject,
   ): Promise<Receipt>,
   claimTokensFromSeveralAuctionsAsBuyer(
     sellTokens: Account[],
@@ -403,6 +404,12 @@ export interface DutchExchange {
     account: Account,
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,
+  claimTokensFromSeveralAuctionsAsSeller(
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
+    account: Account,
+  ): Promise<Receipt>,
   getFeeRatio(account: Account): Promise<[BigNumber, BigNumber]>,
 
   postSellOrder(

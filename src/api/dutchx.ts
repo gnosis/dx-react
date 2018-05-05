@@ -51,7 +51,7 @@ async function init(): Promise<DutchExchange> {
   const getClaimedAmounts = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
-    userAccount: Account
+    userAccount: Account,
   ) => dx.claimedAmounts.call(t1, t2, index, userAccount)
 
   const postSellOrder = (
@@ -92,19 +92,32 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-    ) => dx.claimSellerFunds.call(t1, t2, userAccount, index)
-
-  claimSellerFunds.call = (
-    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
-    index: Index,
-    userAccount: Account,
   ) => dx.claimSellerFunds.call(t1, t2, userAccount, index)
+
+  const claimTokensFromSeveralAuctionsAsSeller = (
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
+    account: Account,
+  ) => dx.claimTokensFromSeveralAuctionsAsSeller(
+    sellTokenAddresses,
+    buyTokenAddresses,
+    indices,
+    account,
+    { from: account },
+  )
 
   const claimBuyerFunds = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
   ) => dx.claimBuyerFunds(t1, t2, userAccount, index, { from: userAccount })
+
+  claimBuyerFunds.call = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimBuyerFunds.call(t1, t2, userAccount, index)
 
   const deposit = (tokenAddress: Account, amount: Balance, userAccount: Account) =>
     dx.deposit(tokenAddress, amount, { from: userAccount })
@@ -187,6 +200,7 @@ async function init(): Promise<DutchExchange> {
     getSellerBalancesOfCurrentAuctions,
     getIndicesWithClaimableTokensForSellers,
     getClaimedAmounts,
+    claimTokensFromSeveralAuctionsAsSeller,
     getFeeRatio,
     postSellOrder,
     postBuyOrder,
