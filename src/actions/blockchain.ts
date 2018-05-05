@@ -18,6 +18,7 @@ import {
   getETHBalance,
   getTokenBalance,
   toNative,
+  getUnclaimedSellerFundsFromSeveral,
 } from 'api'
 
 import {
@@ -37,6 +38,7 @@ import { timeoutCondition } from '../utils/helpers'
 import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
+import { Dispatch } from 'react-redux'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -337,6 +339,32 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
 
     dispatch(submitSellOrder())
   } catch (error) {
+    dispatch(errorHandling(error))
+  }
+}
+
+export const claimSellerFundsFromSeveral = (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  indices?: number,
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { blockchain: { activeProvider, currentAccount } } = getState(),
+    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Claiming Funds`,
+        body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+      },
+    }))
+    const claimReceipt = await getUnclaimedSellerFundsFromSeveral(sell, buy, currentAccount, indices)
+    console.log('​claimReceipt => ', claimReceipt)
+    return dispatch(closeModal())
+  } catch (error) {
+    console.error(error.message)
+
     dispatch(errorHandling(error))
   }
 }
