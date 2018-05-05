@@ -384,7 +384,7 @@ async function checkTokenAllowance(
   return tokenAllowance
 }
 
-function errorHandling(error: Error) {
+export function errorHandling(error: Error) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
     const place = string.search(toFind)
     return string.slice(place + offset)
