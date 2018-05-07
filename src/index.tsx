@@ -31,6 +31,31 @@ const isGeoBlocked = async () => {
   }
 }
 
+const isNetBlocked = async () => {
+  if (typeof window === 'undefined') return false
+  const { hostname } = window.location
+  // allow anything when run locally
+  if (hostname === 'localhost' || hostname === '0.0.0.0') return false
+
+  // no walletextension detected, different error - download wallet error
+  if (!window.web3) return false
+
+  try {
+    const id = await new Promise((res, rej) => {
+      window.web3.version.getNetwork((e: Error, r: string) => e ? rej(e) : res(r))
+    })
+    // allow Rinkeby and local testrpc (id = Date.now())
+    //                      Apr 29 2018
+    if (id === '4' || id > 1525000000000) return false
+  } catch (error) {
+    console.error(error)
+    // web3 didn't get network, disconnected?
+    return false
+  }
+
+  return true
+}
+
 blockIf()
 
 async function blockIf() {
