@@ -59,9 +59,20 @@ const isNetBlocked = async () => {
 blockIf()
 
 async function blockIf() {
-  const blocked = await isGeoBlocked()
+  let blocked = false, disabledReason
+  const netBlockedPromise = isNetBlocked()
+  // geoblock gets precedence, checked first
+  blocked = await isGeoBlocked()
+
+  if (blocked) {
+    disabledReason = 'geoblock'
+  } else {
+    blocked = await netBlockedPromise
+    if (blocked) disabledReason = 'networkblock'
+  }
+
   if (blocked) {
     window.history.replaceState(null, '', '/')
-    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason="geoblock" />)
+    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} />)
   } else ReactDOM.render(<App />, rootElement, initializer)
 }
