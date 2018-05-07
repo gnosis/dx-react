@@ -2,8 +2,6 @@ import React from 'react'
 
 import Loader from 'components/Loader'
 
-import 'styles/components/navbar/_navbar.scss'
-
 import { Account, BigNumber, TokenBalances } from 'types'
 
 export interface WalletProps {
