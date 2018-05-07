@@ -500,8 +500,6 @@ export const getSellerOngoingAuctions = async (
     }, {}) as { [P in TokenCode]: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
 
-    // const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
-
     interface promisedClaimableTokensObjectInterface {
       normal: Promise<[BigNumber[], BigNumber[]]>[];
       inverse: Promise<[BigNumber[], BigNumber[]]>[];
@@ -555,36 +553,44 @@ export const getSellerOngoingAuctions = async (
     ])
 
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
-    const auctionsArray = ongoingAuctions.reduce((accum, auction, index) => {
+    const auctionsArray: AuctionObject[] = ongoingAuctions.reduce((accum, auction, index) => {
       // indices of auctions for which there is sellerBalance > 0
       // that is past auctions with claimable tokens
       // or current auction with commited tokens
-      const [indices, balancePerIndex] = claimableTokens[index]
-      const [indicesInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
+      const [indicesWithSellerBalance, balancePerIndex] = claimableTokens[index]
+      const [indicesWithSellerBalanceInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
 
-      let ongoingAuction: any
+      let ongoingAuction: AuctionObject
 
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
-      if (!(indices.length >= 1 || indicesInverse.length >= 1)) {
-        return accum
-      } else {
+      if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
         const { lastIndex, closingPriceDir, closingPriceOpp } = lastAuctionsData[index]
 
         ongoingAuction = {
           ...auction,
-          indices,
-          indicesInverse,
-        // TODO: check each token involved in auction for correct division
+          indicesWithSellerBalance,
+          indicesWithSellerBalanceInverse,
           balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
           balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-        // claimable if
-        // either there are past auctions
-          claim: indices.length >= 2 ||
-        // or the only index is that of a current auction           or of a closed past auction
-          indices.length === 1 && (!lastIndex.equals(indices[0]) || closingPriceDir[1].gt(0)),
-          claimInverse: indicesInverse.length >= 2 ||
-          indicesInverse.length === 1 && (!lastIndex.equals(indicesInverse[0]) || closingPriceOpp[1].gt(0)),
+          // claimable if
+          // either there are past auctions
+          claim: indicesWithSellerBalance.length >= 2 ||
+          // or the only index is that of a current auction or of a closed past auction
+          indicesWithSellerBalance.length === 1 && (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0)),
+          claimInverse: indicesWithSellerBalanceInverse.length >= 2 ||
+          indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
         }
+      // for first time auctions, show auction even if it hasnt started yet
+      } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
+        ongoingAuction = {
+          ...auction,
+          indicesWithSellerBalance,
+          indicesWithSellerBalanceInverse,
+          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+        }
+      } else {
+        return accum
       }
 
       accum.push(ongoingAuction)

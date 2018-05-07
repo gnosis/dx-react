@@ -6,7 +6,7 @@ import { DefaultTokenObject } from 'api/types'
 export interface MenuAuctionProps {
   name?: string;
   ongoingAuctions: OngoingAuctions;
-  claimSellerFundsFromSeveral(sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indices?: number): any;
+  claimSellerFundsFromSeveral(sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number): any;
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
@@ -31,11 +31,11 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                 (auction, i) =>
                   <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
                     <td>
-                      <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indices[auction.indices.length - 1]}`}>
+                      <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}>
                         {`${auction.sell.symbol}/${auction.buy.symbol}`}
                       </ Link>
                     </td>
-                    {/* <td>{`${auction.indices[auction.indices.length - 1]}`}</td> */}
+                    {/* <td>{`${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}</td> */}
                     <td>
                       <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1] || 'N/A'} ${auction.sell.symbol}`}</p>
                       <p>{`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] || 0} ${auction.buy.symbol}`}</p>
