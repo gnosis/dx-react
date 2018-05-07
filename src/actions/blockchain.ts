@@ -359,8 +359,11 @@ export const claimSellerFundsFromSeveral = (
         body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
       },
     }))
-    const claimReceipt = await getUnclaimedSellerFundsFromSeveral(sell, buy, currentAccount, indices)
-    console.log('​claimReceipt => ', claimReceipt)
+    const [claimReceipt] = await Promise.all([
+      getUnclaimedSellerFundsFromSeveral(sell, buy, currentAccount, indices),
+      updateMainAppState(),
+    ])
+    console.log('​Claim receipt => ', claimReceipt)
     return dispatch(closeModal())
   } catch (error) {
     console.error(error.message)
