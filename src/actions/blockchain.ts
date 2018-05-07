@@ -19,6 +19,7 @@ import {
   getTokenBalance,
   toNative,
   claimSellerFundsFromSeveralAuctions,
+  getIndicesWithClaimableTokensForSellers,
 } from 'api'
 
 import {
@@ -69,13 +70,15 @@ export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('S
 
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
-export const updateMainAppState = () => async (dispatch: Function, getState: () => State) => {
+export const updateMainAppState = (condition?: any) => async (dispatch: Function, getState: () => State) => {
   const { tokenList } = getState()
   const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
     promisedContractsMap,
     getCurrentAccount(),
   ])
+
+  const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
   // Check state in parallel
   /*
@@ -107,6 +110,8 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgn.balance.toString() }),
   ], 'HYDRATING_MAIN_STATE'))
+
+  return status
 }
 
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
@@ -359,11 +364,16 @@ export const claimSellerFundsFromSeveral = (
         body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
       },
     }))
-    const [claimReceipt] = await Promise.all([
-      claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex),
-      updateMainAppState(),
-    ])
+    const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
     console.log('​Claim receipt => ', claimReceipt)
+
+    // refresh state ...
+    let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
+    // loop until sellBalance drops to 0
+    while (sellBalance.length && sellBalance[0].gt(0)) {
+      ([, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] })))
+    }
+
     return dispatch(closeModal())
   } catch (error) {
     console.error(error.message)
