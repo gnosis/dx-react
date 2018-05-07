@@ -363,7 +363,7 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
   }
 }
 
-export const getUnclaimedSellerFundsFromSeveral = async (
+export const claimSellerFundsFromSeveralAuctions = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   userAccount?: Account,
@@ -371,21 +371,16 @@ export const getUnclaimedSellerFundsFromSeveral = async (
 ) => {
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
-  const sellArr = [], buyArr = []
 
   const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
-  const claimableIndicesBalance = (await DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, userAccount, indices))[1].map((i: BigNumber) => i.toNumber())
+  if (claimableIndices.length === 0) return
 
-  const lastIndexCleared = ((await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])).map(i => i.toNumber()))[0] > 0
+  const lastIndexCleared = (await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1]))[0].gt(0)
 
-  console.log('claimableIndices => ', claimableIndices, 'claimableIndicesBalance => ', claimableIndicesBalance, 'lastIndexCleared? => ', lastIndexCleared)
+  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
+  const sellArr = Array.from({ length }, () => sell.address)
+  const buyArr = Array.from({ length }, () => buy.address)
 
-  for (let i = 1; i <= claimableIndices.length; ++i) {
-    if (!lastIndexCleared) continue
-
-    sellArr.push(sell.address)
-    buyArr.push(buy.address)
-  }
   console.log('Params = ', sellArr, buyArr, claimableIndices, userAccount)
   return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, claimableIndices, userAccount)
 }
