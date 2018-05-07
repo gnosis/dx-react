@@ -104,6 +104,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
 
 const disabledReasons = {
   geoblock: 'The Dutch Exchange is not available in your country',
+  networkblock: 'The Dutch Exchange is not available on the current network',
 }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({
