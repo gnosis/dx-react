@@ -399,8 +399,7 @@ export interface DutchExchange {
     account: Account,
   ): Promise<number[]>,
   getIndicesWithClaimableTokensForSellers(
-    sellToken: Account,
-    buyToken: Account,
+    pair: TokenPair,
     account: Account,
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,

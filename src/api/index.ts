@@ -372,7 +372,7 @@ export const claimSellerFundsFromSeveralAuctions = async (
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
+  const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
   if (claimableIndices.length === 0) return
 
   const lastIndexCleared = (await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1]))[0].gt(0)
@@ -456,6 +456,13 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair) => {
   }
 }
 
+export const getIndicesWithClaimableTokensForSellers = async (pair: TokenPair, userAccount?: Account, lastNAuctions: number = 0) => {
+  const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
+
+  return DutchX.getIndicesWithClaimableTokensForSellers(pair, userAccount, lastNAuctions)
+}
+
 /**
 * getSellerOngoingAuctions
 * Multi-Dimensional fn
@@ -520,13 +527,14 @@ export const getSellerOngoingAuctions = async (
       const sell = addressesToTokenJSON[sellAddress]
       const buy = addressesToTokenJSON[buyAddress]
       if (sell && buy) {
-        const pair: TokenPair = { sell, buy }
+        const pair: TokenPair = { sell, buy },
+          inversePair: TokenPair = { sell: buy, buy: sell }
         accum.push(pair)
         promisedClaimableTokensObject.normal.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(sellAddress, buyAddress, account, 0),
+          getIndicesWithClaimableTokensForSellers(pair, account, 0),
         )
         promisedClaimableTokensObject.inverse.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(buyAddress, sellAddress, account, 0),
+          getIndicesWithClaimableTokensForSellers(inversePair, account, 0),
         )
 
         lastAuctionPerPair.push(getLastAuctionStats(DutchX, pair))

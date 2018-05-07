@@ -157,8 +157,7 @@ async function init(): Promise<DutchExchange> {
   ) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, userAccount)
 
   const getIndicesWithClaimableTokensForSellers = (
-    sellToken: Account,
-    buyToken: Account,
+    { sell: { address: sellToken }, buy: { address: buyToken } }: TokenPair,
     userAccount: Account,
     lastNAuctions: number = 0,
   ) => dx.getIndicesWithClaimableTokensForSellers.call(sellToken, buyToken, userAccount, lastNAuctions)
