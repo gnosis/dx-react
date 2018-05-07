@@ -18,7 +18,7 @@ import {
   getETHBalance,
   getTokenBalance,
   toNative,
-  getUnclaimedSellerFundsFromSeveral,
+  claimSellerFundsFromSeveralAuctions,
 } from 'api'
 
 import {
@@ -346,7 +346,7 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
 export const claimSellerFundsFromSeveral = (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
-  indices?: number,
+  lastNIndex?: number,
 ) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
@@ -360,7 +360,7 @@ export const claimSellerFundsFromSeveral = (
       },
     }))
     const [claimReceipt] = await Promise.all([
-      getUnclaimedSellerFundsFromSeveral(sell, buy, currentAccount, indices),
+      claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex),
       updateMainAppState(),
     ])
     console.log('​Claim receipt => ', claimReceipt)
