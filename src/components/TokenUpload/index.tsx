@@ -5,50 +5,51 @@ import IPFSHOC from 'components/IPFSHOC'
 import { DefaultTokenObject } from 'api/types'
 
 interface TokenUploadProps {
-  handleSendToIPFS(): void;
-  handleFileUpload(): void;
+  handleFileHashInput(): void;
+  handleGrabFromIPFS(): void;
   setTokenListType({}): void;
   customTokenList: DefaultTokenObject[];
+
   // IPFS
-  fileContent?: string;
-  fileBuffer?: ArrayBuffer;
+  potentiallyValidHash?: boolean;
   fileHash?: string;
-  filePath?: string
+  filePath?: string;
   json?: Object;
   oFile?: File;
 }
 // TODO: add link URL in line 26
 const TokenUpload = ({
   customTokenList,
-  fileBuffer,
-  handleFileUpload,
-  handleSendToIPFS,
+  potentiallyValidHash,
+  handleFileHashInput,
+  handleGrabFromIPFS,
   setTokenListType,
 }: TokenUploadProps) => {
   return (
     <div className="tokenUpload">
       <span className="icon-tokenUpload" />
-      <h2>Upload Token List</h2>
+      <h2>Download Token List</h2>
 
       <p>
-        Upload a list of tokens to be added and start trading.
-        JSON formatted files are supported with a max. filesize of 1MB.
+        Download a list of tokens to be added and start trading.
+        JSON formatted files are supported with a max filesize of 1MB.
       <br />
         Read our <a href="#">FAQ</a> on how this works.
       </p>
 
       <form>
         <input
-          accept="application/json,.json"
-          name="tokenListFile"
-          onChange={handleFileUpload}
-          type="file"
+          className="inputText"
+          name="tokenListHash"
+          onChange={handleFileHashInput}
+          type="text"
         />
         <ButtonCTA
-          className={fileBuffer ? 'blue' : 'buttonCTA-disabled'}
-          onClick={handleSendToIPFS}
+          className={potentiallyValidHash ? 'blue' : 'buttonCTA-disabled'}
+          id="ipfsDownload"
+          onClick={handleGrabFromIPFS}
         >
-          {fileBuffer ? 'Upload' : 'Select file'}
+          {potentiallyValidHash ? 'Download' : 'Enter IPFS Hash'}
         </ ButtonCTA>
       </form>
 
