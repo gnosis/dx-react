@@ -51,7 +51,7 @@ const tokenFieldsChecks = {
     if (symbol.length === 0) return 'token symbol should not be an empty string'
   },
   decimals: (decimals: number | string) => {
-    if (typeof decimals !== 'number' || typeof decimals !== 'string') return 'token symbol should be a number or a string'
+    if (typeof decimals !== 'number' && typeof decimals !== 'string') return 'token decimals should be a number or a string'
     if (decimals < 1) return 'token decimals should not be less than 1'
   },
 }
