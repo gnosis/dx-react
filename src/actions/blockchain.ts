@@ -18,6 +18,8 @@ import {
   getETHBalance,
   getTokenBalance,
   toNative,
+  claimSellerFundsFromSeveralAuctions,
+  getIndicesWithClaimableTokensForSellers,
 } from 'api'
 
 import {
@@ -51,7 +53,6 @@ export enum TypeKeys {
   OTHER_ACTIONS = 'OTHER_ACTIONS',
 }
 
-
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
 export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
@@ -62,10 +63,8 @@ export const setCurrentBalance = createAction<{ provider?: string, currentBalanc
 export const setCurrentAccountAddress =
   createAction<{ provider?: string, currentAccount?: Object }>('SET_CURRENT_ACCOUNT_ADDRESS')
 export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKENS')
-
 export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
 export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
-
 export const resetAppState = createAction('RESET_APP_STATE')
 
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
@@ -93,13 +92,15 @@ export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState:
   setActiveProviderHelper(dispatch, state)
 }
 
-export const updateMainAppState = () => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
   const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
     promisedContractsMap,
     getCurrentAccount(),
   ])
+
+  const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
   // Check state in parallel
   /*
@@ -118,7 +119,8 @@ export const updateMainAppState = () => async (dispatch: Dispatch<any>, getState
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
   ])
-
+  
+  // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
 
   const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
@@ -132,6 +134,8 @@ export const updateMainAppState = () => async (dispatch: Dispatch<any>, getState
     setTokenSupply({ mgnSupply: mgn.balance.toString() }),
     setCurrentAccountAddress({ currentAccount }),
   ], 'HYDRATING_MAIN_STATE'))
+
+  return status
 }
 
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
@@ -359,6 +363,40 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Disp
   }
 }
 
+export const claimSellerFundsFromSeveral = (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  lastNIndex?: number,
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { blockchain: { activeProvider, currentAccount } } = getState(),
+    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Claiming Funds`,
+        body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+      },
+    }))
+    const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
+    console.log('​Claim receipt => ', claimReceipt)
+
+    // refresh state ...
+    let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
+    // loop until sellBalance drops to 0
+    while (sellBalance.length && sellBalance[0].gt(0)) {
+      ([, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] })))
+    }
+
+    return dispatch(closeModal())
+  } catch (error) {
+    console.error(error.message)
+
+    dispatch(errorHandling(error))
+  }
+}
+
 /**
  * checkEthTokenBalance > returns false or EtherToken Balance
  * @param token
@@ -402,7 +440,7 @@ async function checkTokenAllowance(
   return tokenAllowance
 }
 
-function errorHandling(error: Error) {
+export function errorHandling(error: Error) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
     const place = string.search(toFind)
     return string.slice(place + offset)

@@ -2,11 +2,11 @@ import { connect } from 'react-redux'
 
 import { State } from 'types'
 
-// import OngoingAuctionsHOC from 'components/OngoingAuctionsHOC'
 import MenuAuctions from 'components/MenuAuctions'
+import { claimSellerFundsFromSeveral } from 'actions'
 
 const mapStateToProps = (state: State) => ({
   ongoingAuctions: state.auctions.ongoingAuctions,
 })
 
-export default connect(mapStateToProps)(MenuAuctions)
+export default connect(mapStateToProps, { claimSellerFundsFromSeveral })(MenuAuctions)

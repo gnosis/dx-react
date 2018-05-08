@@ -188,9 +188,9 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const { error } = this.state
       return (
         <div>
-          <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
+          {/* <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
-          </pre>
+          </pre> */}
           <Component {...this.props} {...this.state}/> :
           {error && <h3> Invalid auction: {error}</h3>}
         </div>

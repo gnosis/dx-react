@@ -5,7 +5,7 @@ import { promisedDutchX } from './dutchx'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
-import { dxAPI, Index, DefaultTokenList, DefaultTokenObject } from './types'
+import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange } from './types'
 import { promisedContractsMap } from './contracts'
 
 
@@ -363,6 +363,29 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
   }
 }
 
+export const claimSellerFundsFromSeveralAuctions = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  userAccount?: Account,
+  indices: number = 0,
+) => {
+  const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
+
+  const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
+  if (claimableIndices.length === 0) return
+
+  const lastIndexCleared = (await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1]))[0].gt(0)
+
+  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
+  const sellArr = Array.from({ length }, () => sell.address)
+  const buyArr = Array.from({ length }, () => buy.address)
+
+  console.log('Params = ', sellArr, buyArr, claimableIndices, userAccount)
+  return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, claimableIndices, userAccount)
+}
+
+
 /*
  * get amount of funds already claimed for auction corresponding to a pair of tokens at an index
  * @param pair TokenPair
@@ -417,6 +440,29 @@ export const withdraw = async (code: TokenCode, amount: Balance, account?: Accou
   return DutchX.withdraw(code, amount, account)
 }
 
+// helper fro getting last index of a token pair and closing price
+// of it's direct and reciprocal auctions
+const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair) => {
+  const lastIndex = await DutchX.getLatestAuctionIndex(pair)
+  const [closingPriceDir, closingPriceOpp] = await Promise.all([
+    DutchX.getClosingPrice(pair, lastIndex),
+    DutchX.getClosingPrice(pair, lastIndex),
+  ])
+
+  return {
+    lastIndex,
+    closingPriceDir,
+    closingPriceOpp,
+  }
+}
+
+export const getIndicesWithClaimableTokensForSellers = async (pair: TokenPair, userAccount?: Account, lastNAuctions: number = 0) => {
+  const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
+
+  return DutchX.getIndicesWithClaimableTokensForSellers(pair, userAccount, lastNAuctions)
+}
+
 /**
 * getSellerOngoingAuctions
 * Multi-Dimensional fn
@@ -443,9 +489,9 @@ export const getSellerOngoingAuctions = async (
     // get Array back of Auctions user is in
     // grab sellerBalance of USER for each current ongoing auction
     // @ts-ignore
-    const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
-      ...runningPairsArr, account)
-    ).map((res: any) => res.toNumber())
+    // const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
+    //   ...runningPairsArr, account)
+    // ).map((res: any) => res.toNumber())
     // we know user is participating in (runningPairsArr[0][0]-runningPairsArr[1][0] && runningPairsArr[0][3]-runningPairsArr[1][3])
 
     // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
@@ -456,8 +502,6 @@ export const getSellerOngoingAuctions = async (
     }, {}) as { [P in TokenCode]: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
 
-    // const promisedClaimableTokens: Promise<[BigNumber[], BigNumber[]]>[] = []
-
     interface promisedClaimableTokensObjectInterface {
       normal: Promise<[BigNumber[], BigNumber[]]>[];
       inverse: Promise<[BigNumber[], BigNumber[]]>[];
@@ -467,58 +511,97 @@ export const getSellerOngoingAuctions = async (
       normal: [],
       inverse: [],
     }
+    const lastAuctionPerPair: Promise<{
+      lastIndex: BigNumber,
+      closingPriceDir: [BigNumber, BigNumber],
+      closingPriceOpp: [BigNumber, BigNumber],
+    }>[] = []
 
     const ongoingAuctions: {
       sell: DefaultTokenObject,
       buy: DefaultTokenObject,
-    }[] = sellerOngoingAuctions.reduce((accum, bal, index) => {
-      if (!bal) return accum
+    }[] = runningPairsS.reduce((accum, sellAddress, index) => {
 
-      const s = runningPairsS[index]
-      const b = runningPairsB[index]
+      const buyAddress = runningPairsB[index]
 
-      const sell = addressesToTokenJSON[s]
-      const buy = addressesToTokenJSON[b]
+      const sell = addressesToTokenJSON[sellAddress]
+      const buy = addressesToTokenJSON[buyAddress]
       if (sell && buy) {
-        accum.push({ sell, buy })
+        const pair: TokenPair = { sell, buy },
+          inversePair: TokenPair = { sell: buy, buy: sell }
+        accum.push(pair)
         promisedClaimableTokensObject.normal.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(sell.address, buy.address, account, 0),
+          getIndicesWithClaimableTokensForSellers(pair, account, 0),
         )
         promisedClaimableTokensObject.inverse.push(
-          DutchX.getIndicesWithClaimableTokensForSellers(buy.address, sell.address, account, 0),
+          getIndicesWithClaimableTokensForSellers(inversePair, account, 0),
         )
+
+        lastAuctionPerPair.push(getLastAuctionStats(DutchX, pair))
       }
 
       return accum
     }, [])
 
+    console.log('​ongoingAuctions', ongoingAuctions)
     if (ongoingAuctions.length === 0) return []
 
     // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
     // Array indices are lined up
     // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
-    const [claimableTokens, inverseClaimableTokens] = await Promise.all([
+    const [claimableTokens, inverseClaimableTokens, lastAuctionsData] = await Promise.all([
       Promise.all(promisedClaimableTokensObject.normal),
       Promise.all(promisedClaimableTokensObject.inverse),
+      Promise.all(lastAuctionPerPair),
     ])
-    // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
-    const auctionsArray = ongoingAuctions.map((auction, index) => {
-      const [indices, balancePerIndex] = claimableTokens[index]
-      const [indicesInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
-      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
-      return {
-        ...auction,
-        indices,
-        indicesInverse,
-        // TODO: check each token involved in auction for correct division
-        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-        claim: indices.length >= 2,
-        claimInverse: indicesInverse.length >= 2,
-      }
-    })
 
-    return auctionsArray
+    // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
+    const auctionsArray: AuctionObject[] = ongoingAuctions.reduce((accum, auction, index) => {
+      // indices of auctions for which there is sellerBalance > 0
+      // that is past auctions with claimable tokens
+      // or current auction with commited tokens
+      const [indicesWithSellerBalance, balancePerIndex] = claimableTokens[index]
+      const [indicesWithSellerBalanceInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
+
+      let ongoingAuction: AuctionObject
+
+      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
+      if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
+        const { lastIndex, closingPriceDir, closingPriceOpp } = lastAuctionsData[index]
+
+        ongoingAuction = {
+          ...auction,
+          indicesWithSellerBalance,
+          indicesWithSellerBalanceInverse,
+          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+          // claimable if
+          // either there are past auctions
+          claim: indicesWithSellerBalance.length >= 2 ||
+          // or the only index is that of a current auction or of a closed past auction
+          indicesWithSellerBalance.length === 1 && (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0)),
+          claimInverse: indicesWithSellerBalanceInverse.length >= 2 ||
+          indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
+        }
+      // for first time auctions, show auction even if it hasnt started yet
+      } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
+        ongoingAuction = {
+          ...auction,
+          indicesWithSellerBalance,
+          indicesWithSellerBalanceInverse,
+          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+        }
+      } else {
+        return accum
+      }
+
+      accum.push(ongoingAuction)
+      return accum
+    }, [])
+
+
+    return Promise.all(auctionsArray)
   } catch (e) {
     console.warn(e)
   }
