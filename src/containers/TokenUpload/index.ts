@@ -1,6 +1,11 @@
 import { connect } from 'react-redux'
 
-import { setUploadFileParams, getFileContentFromIPFS, openModal, setNewIPFSCustomListAndUpdateBalances, setTokenListType } from 'actions'
+import {
+  setIPFSFileHash,
+  setNewIPFSCustomListAndUpdateBalances,
+  setTokenListType,
+  openModal,
+} from 'actions'
 
 import IPFSHOC from 'components/IPFSHOC'
 import TokenUpload from 'components/TokenUpload'
@@ -9,32 +14,26 @@ import { State } from 'types'
 
 const mapState = ({
   ipfs: {
-    fileBuffer,
-    oFile,
     fileHash,
     filePath,
-    fileContent,
     json,
   },
   tokenList: {
     customTokenList,
   },
 }: Partial<State>) => ({
-  fileBuffer,
-  oFile,
   fileHash,
   filePath,
-  fileContent,
   json,
   customTokenList,
+  potentiallyValidHash: fileHash.length == 46,
 })
 
 export default connect(
   mapState,
   {
-    getFileContentFromIPFS,
-    openModal,
+    setIPFSFileHash,
     setNewIPFSCustomListAndUpdateBalances,
     setTokenListType,
-    setUploadFileParams,
+    openModal,
   })(IPFSHOC(TokenUpload) as any)
