@@ -88,10 +88,10 @@ export type AuctionObject = {
     address: Account,
   },
   claim?: boolean,
-  indices?: string[] | BigNumber[],
+  indicesWithSellerBalance?: string[] | BigNumber[],
   balancePerIndex?: string[] | BigNumber[],
   claimInverse?: boolean,
-  indicesInverse?: string[] | BigNumber[],
+  indicesWithSellerBalanceInverse?: string[] | BigNumber[],
   balancePerIndexInverse?: string[] | BigNumber[],
 }
 

@@ -18,6 +18,8 @@ import {
   getETHBalance,
   getTokenBalance,
   toNative,
+  claimSellerFundsFromSeveralAuctions,
+  getIndicesWithClaimableTokensForSellers,
 } from 'api'
 
 import {
@@ -37,6 +39,7 @@ import { timeoutCondition } from '../utils/helpers'
 import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
+import { Dispatch } from 'react-redux'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -67,13 +70,15 @@ export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('S
 
 const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
-export const updateMainAppState = () => async (dispatch: Function, getState: () => State) => {
+export const updateMainAppState = (condition?: any) => async (dispatch: Function, getState: () => State) => {
   const { tokenList } = getState()
   const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
     promisedContractsMap,
     getCurrentAccount(),
   ])
+
+  const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
   // Check state in parallel
   /*
@@ -105,6 +110,8 @@ export const updateMainAppState = () => async (dispatch: Function, getState: () 
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgn.balance.toString() }),
   ], 'HYDRATING_MAIN_STATE'))
+
+  return status
 }
 
 // CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
@@ -341,6 +348,40 @@ export const approveAndPostSellOrder = (choice: string) => async (dispatch: Func
   }
 }
 
+export const claimSellerFundsFromSeveral = (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  lastNIndex?: number,
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { blockchain: { activeProvider, currentAccount } } = getState(),
+    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Claiming Funds`,
+        body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+      },
+    }))
+    const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
+    console.log('​Claim receipt => ', claimReceipt)
+
+    // refresh state ...
+    let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
+    // loop until sellBalance drops to 0
+    while (sellBalance.length && sellBalance[0].gt(0)) {
+      ([, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] })))
+    }
+
+    return dispatch(closeModal())
+  } catch (error) {
+    console.error(error.message)
+
+    dispatch(errorHandling(error))
+  }
+}
+
 /**
  * checkEthTokenBalance > returns false or EtherToken Balance
  * @param token
@@ -384,7 +425,7 @@ async function checkTokenAllowance(
   return tokenAllowance
 }
 
-function errorHandling(error: Error) {
+export function errorHandling(error: Error) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
     const place = string.search(toFind)
     return string.slice(place + offset)
