@@ -40,7 +40,7 @@ export interface TransactionObject {
 }
 
 export interface TokensInterface {
-  getTokenDecimals(tokenAddress: Account): Promise<number>,
+  getTokenDecimals(tokenAddress: Account): Promise<BigNumber>,
   getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
   getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
   transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
