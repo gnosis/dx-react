@@ -1,0 +1,38 @@
+.inputText {
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  box-sizing: border-box;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-sizing: border-box;
+  vertical-align: middle;
+
+  background: #8fb7e78f;
+  border: 0;
+  border-radius: 2px;
+  color: #fff;
+  outline: 0;
+
+  margin: auto;
+  padding: 20px;
+  width: 100%;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1;
+  will-change: box-shadow;
+
+  -webkit-transition: all .25s ease-in-out;
+  transition: all .25s ease-in-out, -webkit-box-shadow .25s ease-in-out;
+
+  &:focus {
+    background-color: #f9b286d6;
+  }
+}
