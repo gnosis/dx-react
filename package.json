@@ -1,7 +1,7 @@
 {
-  "name": "@gnosis.pm/dutch-exchange",
+  "name": "@gnosis.pm/dx-react",
   "version": "0.1.0",
-  "description": "DutchX - Gnosis Dutch Auction Trading Platform",
+  "description": "DutchX - Dutch Auction Trading Platform",
   "main": "src/index.js",
   "scripts": {
     "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
@@ -51,10 +51,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gnosis/dutch-exchange.git"
+    "url": "https://github.com/gnosis/dx-react.git"
   },
-  "author": "Gnosis",
-  "license": "ISC",
+  "author": "DutchX",
+  "license": "MIT",
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
@@ -74,8 +74,8 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.44",
     "@digix/tempo": "^0.2.0",
-    "@gnosis.pm/dutch-exchange-smartcontracts": "^0.4.5",
-    "@gnosis.pm/gnosis-core-contracts": "^1.0.3",
+    "@gnosis.pm/dx-contracts": "^0.1.2",
+    "@gnosis.pm/pm-contracts": "^1.0.4",
     "autobind-decorator": "^2.1.0",
     "await-delay": "^1.0.0",
     "bignumber.js": "^5.0.0",
