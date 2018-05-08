@@ -98,7 +98,8 @@ export const getTokenDecimals = async (tokenAddress: Account) => {
   const { Tokens } = await promisedAPI
 
   try {
-    await Tokens.getTokenDecimals(tokenAddress)
+    const decimals = (await Tokens.getTokenDecimals(tokenAddress)).toNumber() || 18
+    return decimals
   } catch (e) {
     console.warn(`Token @ address ${tokenAddress} has no Decimals value set - defaulting to 18`)
     return 18
