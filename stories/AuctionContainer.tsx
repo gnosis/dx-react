@@ -39,12 +39,12 @@ storiesOf('AuctionContainer', module)
       <TokenPair />
       <AuctionPriceBar header="Closing Price" />
       <AuctionSellingGetting
-        maxSellAmount={number('balance', 0, {
+        maxSellAmount={toBigNumber(number('balance', 0, {
           range: true,
           min: 0,
           max: 5000,
           step: 0.1,
-        }).toString()}
+        }))}
         buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
         sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
         sellAmount={number('sellAmount', 0).toString()}
