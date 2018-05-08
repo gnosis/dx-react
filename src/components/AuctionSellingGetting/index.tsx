@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 
-import { Balance } from 'types'
+import { Balance, BigNumber } from 'types'
 
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
-  maxSellAmount: string,
+  maxSellAmount: BigNumber,
   buyTokenSymbol: string,
   sellTokenSymbol: string,
   sellAmount: Balance,
@@ -20,8 +20,8 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
     const { setSellTokenAmount, maxSellAmount } = this.props
     setSellTokenAmount({ sellAmount: value })
 
-    if (+value > +maxSellAmount) {
-      input.setCustomValidity(`amount available for sale is ${maxSellAmount}`)
+    if (maxSellAmount.lessThanOrEqualTo(value)) {
+      input.setCustomValidity(`amount available for sale is ${maxSellAmount.toString()}`)
       input.reportValidity()
     } else {
       input.setCustomValidity('')
@@ -50,7 +50,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           onChange={this.onChange}
           value={sellAmount}
           min="0"
-          max={maxSellAmount}
+          max={maxSellAmount.toString()}
         />
         <small>{sellTokenSymbol}</small>
 
