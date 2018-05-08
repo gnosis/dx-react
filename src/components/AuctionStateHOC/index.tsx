@@ -58,11 +58,17 @@ const getAuctionStatus = ({
   auctionStart,
   price,
 }: AuctionStatusArgs) => {
-  if (!closingPrice[1].equals(0)) return AuctionStatus.ENDED
+  console.log('closingPrice: ', closingPrice.map(n => n.toNumber()))
+  console.log('index: ', index)
+  console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
+  console.log('auctionStart: ', auctionStart.toNumber())
+  console.log('price: ', price.map(n => n.toNumber()))
+  if (closingPrice[1].gt(0) || currentAuctionIndex.greaterThan(index)) return AuctionStatus.ENDED
   // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
   if (currentAuctionIndex.lessThan(index)) return AuctionStatus.PLANNED
   if (auctionStart.equals(1)) return AuctionStatus.INIT
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
+  return AuctionStatus.INACTIVE
 }
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
@@ -152,6 +158,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         index,
         currentAuctionIndex,
       })
+      console.log('status: ', status)
 
       const account = await promisedAccount
       const sellerBalance = await getSellerBalance(pair, index, account)
