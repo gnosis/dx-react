@@ -36,9 +36,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
-
-import { BigNumber, TokenBalances, Account, State } from 'types'
+import { BigNumber, TokenBalances, Account, State, Provider } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 import { Dispatch } from 'react-redux'
@@ -115,17 +113,17 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     * localStorage changes
    */
 
-  //TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
+  // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
   const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
     getSellerOngoingAuctions(mainList, currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
   ])
-  
+
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
 
-  const mgn = tokenBalances.find(t => t.address === TokenMGN.address) || { name: 'Magnolia Token', symbol: 'MGN', decimals: 18, balance: toBigNumber(0) }
+  const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
 
   // dispatch Actions
   dispatch(batchActions([
