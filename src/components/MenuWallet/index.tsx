@@ -41,9 +41,10 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
               if (!addressToSymbolDecimal[addressKey]) return null
               const { name, decimals } = addressToSymbolDecimal[addressKey]
               return (
+                tokens[addressKey].gt(0) &&
                 <tr key={addressKey}>
                   <td>{name || 'Unknown'}</td>
-                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(4)}</td>
+                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(2)}</td>
                 </tr>
               )
             })}
