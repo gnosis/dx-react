@@ -10,7 +10,7 @@ const mapState = (state: State) => {
   const { sell, buy, price } = findRatioPair(state) || Object.assign({ price: 2 }, state.tokenPair)
   const { [sell.address]: sellTokenBalance } = state.tokenBalances
   const { sellAmount } = state.tokenPair
-  const maxSellAmount = sellTokenBalance.div(10 ** sell.decimals).toFixed(0)
+  const maxSellAmount = sellTokenBalance.div(10 ** sell.decimals)
 
   return ({
     // TODO: change prop to sellTokenBalance

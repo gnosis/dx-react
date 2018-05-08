@@ -1,9 +1,11 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { number, text, object } from '@storybook/addon-knobs'
+import { number, object } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import { makeCenterDecorator/*, storeInit, bcMetamask, makeProviderDecorator */ } from './helpers'
+
+import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 const CenterDecorator = makeCenterDecorator({
   style: {
@@ -27,7 +29,7 @@ storiesOf('Auction Sell & Get', module)
 
     return (
       <AuctionSellingGetting
-        maxSellAmount={text('balance', '20')}
+        maxSellAmount={toBigNumber(number('balance', 20))}
         buyTokenSymbol={object('buyTokenSymbol', 'GNO')}
         sellTokenSymbol={object('sellTokenSymbol', 'ETH')}
         sellAmount={sellAmount}
