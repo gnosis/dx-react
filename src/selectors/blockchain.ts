@@ -11,9 +11,9 @@ export const selector = (state: State) => state.blockchain
  */
 // TODO: consider changing activeProvider dynamically in store on UPDATE_PROVIDER action
 // that way we won't even need find/setActiveProvider in actions/blockchain
-export const findDefaultProvider = (state: State) => {
+export const findDefaultProvider = (state: State): Provider => {
   const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
-
+  // @ts-ignore
   return find(providers, {
     name: 'METAMASK',
     // loaded: true, available: true,

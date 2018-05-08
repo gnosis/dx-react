@@ -36,7 +36,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, State, Provider } from 'types'
+import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 import { Dispatch } from 'react-redux'
