@@ -44,12 +44,12 @@ interface ContractsMapWProxy extends ContractsMap {
 }
 
 const req = require.context(
-  '@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
+  '@gnosis.pm/dx-contracts/build/contracts/',
   false,
   /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN|TokenOMG|TokenRDN)\.json$/,
 )
 
-export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/gnosis-core-contracts/build/contracts/HumanFriendlyToken.json'))
+export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/pm-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
   './DutchExchange.json' |
@@ -96,7 +96,6 @@ async function init() {
     return acc
   }, {}) as ContractsMapWProxy
 
-  console.log('​deployedContracts', deployedContracts)
   const { address: proxyAddress } = deployedContracts.Proxy
   const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
 
