@@ -36,6 +36,8 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
@@ -123,7 +125,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
 
-  const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
+  const mgn = tokenBalances.find(t => t.address === TokenMGN.address) || { name: 'Magnolia Token', symbol: 'MGN', decimals: 18, balance: toBigNumber(0) }
 
   // dispatch Actions
   dispatch(batchActions([
