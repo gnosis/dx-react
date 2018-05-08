@@ -19,7 +19,8 @@ storiesOf('TextSquare', module)
   .addWithJSX('TextSquareRight[No Wallet]', () =>
     <NoWallet
       handleClick={action('ButtonCTA clicked')}
-      hide={boolean('Hide/Show', false)}
+      walletUnavailable={boolean('walletUnavailable', false)}
+      walletLocked={boolean('walletLocked', false)}
     />,
 )
   .addWithJSX('TextSquareBoth', (): any =>
@@ -28,7 +29,8 @@ storiesOf('TextSquare', module)
       <NoWallet
         key="1"
         handleClick={action('ButtonCTA clicked')}
-        hide={boolean('Hide/Show', false)}
+        walletUnavailable={boolean('walletUnavailable', false)}
+        walletLocked={boolean('walletLocked', false)}
       />,
     ],
 )

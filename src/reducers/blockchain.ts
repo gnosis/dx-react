@@ -11,26 +11,40 @@ import {
   fetchTokens,
   setFeeRatio,
   setTokenSupply,
+  resetAppState,
 } from 'actions/blockchain'
 
 import { GAS_COST } from 'utils/constants'
-import { State } from 'types'
+import { Blockchain, Provider } from 'types'
 
-const INITIAL_PROVIDER_STATE: any = {
+const INITIAL_PROVIDER_STATE: Provider = {
   loaded: false,
-  available: false,
+  available: true,
+  unlocked: false,
   network: undefined,
   account: undefined,
   balance: undefined,
   priority: 1,
 }
 
+const initialState: Blockchain = {
+  gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
+  gasPrice: undefined,
+  connectionTried: false,
+  providers: {},
+  activeProvider: null,
+  currentAccount: undefined,
+  currentBalance: undefined,
+  feeRatio: undefined,
+  mgnSupply: undefined,
+}
+
 const reducer = handleActions({
   [setConnectionStatus as any]: (state, action) => {
-    const { connection } = action.payload
+    const { connected } = action.payload
     return {
       ...state,
-      connection,
+      connected,
       connectionTried: true,
     }
   },
@@ -48,8 +62,8 @@ const reducer = handleActions({
       providers: {
         ...state.providers,
         [name]: {
-          name,
           ...INITIAL_PROVIDER_STATE,
+          name,
           ...provider,
         },
       },
@@ -83,33 +97,25 @@ const reducer = handleActions({
     ...state,
     currentBalance: action.payload.currentBalance,
   }),
-  [fetchTokens.toString()]: (state: State, action: any) => ({
+  [fetchTokens.toString()]: (state: Blockchain, action: any) => ({
     ...state,
     tokens: action.payload,
   }),
-  [setFeeRatio.toString()]: (state: State, action: any) => ({
+  [setFeeRatio.toString()]: (state: Blockchain, action: any) => ({
     ...state,
     feeRatio: action.payload.feeRatio,
   }),
-  [setTokenSupply.toString()]: (state: State, action: any) => ({
+  [setTokenSupply.toString()]: (state: Blockchain, action: any) => ({
     ...state,
     mgnSupply: action.payload.mgnSupply,
   }),
+  [resetAppState.toString()]: (state: Blockchain) => ({
+    ...state,
+    ...initialState,
+    providers: state.providers,
+  }),
 },
-  {
-    gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
-    gasPrice: undefined,
-    connection: undefined,
-    connectionTried: false,
-    providers: {},
-    activeProvider: null,
-    currentAccount: undefined,
-    currentBalance: undefined,
-    ongoingAuctions: [],
-    tokens: {},
-    feeRatio: undefined,
-    mgnSupply: undefined,
-  },
+  initialState,
 )
 
 export default reducer

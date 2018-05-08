@@ -6,11 +6,12 @@ import ReactDOMServer from 'react-dom/server'
 
 import App, { initializer } from 'components/App'
 
+import blocked_codes from './blocked_codes.json'
+
 /* global document */
 const rootElement = document.getElementById('root')
 
-// TODO: add list of blocked codes or fetch it
-const geoBlockedCountryCodes = new Set()
+const geoBlockedCountryCodes = new Set(blocked_codes)
 
 const isGeoBlocked = async () => {
   try {
@@ -30,12 +31,48 @@ const isGeoBlocked = async () => {
   }
 }
 
+const isNetBlocked = async () => {
+  if (typeof window === 'undefined') return false
+  const { hostname } = window.location
+  // allow anything when run locally
+  if (hostname === 'localhost' || hostname === '0.0.0.0') return false
+
+  // no walletextension detected, different error - download wallet error
+  if (!window.web3) return false
+
+  try {
+    const id = await new Promise((res, rej) => {
+      window.web3.version.getNetwork((e: Error, r: string) => e ? rej(e) : res(r))
+    })
+    // allow Rinkeby and local testrpc (id = Date.now())
+    //                      Apr 29 2018
+    if (id === '4' || id > 1525000000000) return false
+  } catch (error) {
+    console.error(error)
+    // web3 didn't get network, disconnected?
+    return false
+  }
+
+  return true
+}
+
 blockIf()
 
 async function blockIf() {
-  const blocked = await isGeoBlocked()
+  let blocked = false, disabledReason
+  const netBlockedPromise = isNetBlocked()
+  // geoblock gets precedence, checked first
+  blocked = await isGeoBlocked()
+
+  if (blocked) {
+    disabledReason = 'geoblock'
+  } else {
+    blocked = await netBlockedPromise
+    if (blocked) disabledReason = 'networkblock'
+  }
+
   if (blocked) {
     window.history.replaceState(null, '', '/')
-    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason="geoblock" />)
+    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} />)
   } else ReactDOM.render(<App />, rootElement, initializer)
 }

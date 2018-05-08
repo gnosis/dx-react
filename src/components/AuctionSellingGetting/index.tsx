@@ -4,7 +4,7 @@ import { Balance } from 'types'
 
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
-  sellTokenBalance: Balance,
+  maxSellAmount: string,
   buyTokenSymbol: string,
   sellTokenSymbol: string,
   sellAmount: Balance,
@@ -14,20 +14,30 @@ export interface AuctionSellingGettingProps {
 
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
-  onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.setSellTokenAmount({ sellAmount: e.target.value })
+  onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
+    const input = e.target
+    const { value } = input
+    const { setSellTokenAmount, maxSellAmount } = this.props
+    setSellTokenAmount({ sellAmount: value })
+
+    if (+value > +maxSellAmount) {
+      input.setCustomValidity(`amount available for sale is ${maxSellAmount}`)
+      input.reportValidity()
+    } else {
+      input.setCustomValidity('')
+    }
   }
 
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const { sellTokenBalance, setSellTokenAmount } = this.props
+    const { maxSellAmount, setSellTokenAmount } = this.props
 
     e.preventDefault()
 
-    setSellTokenAmount({ sellAmount: sellTokenBalance })
+    setSellTokenAmount({ sellAmount: maxSellAmount })
   }
 
   render() {
-    const { sellTokenSymbol, buyTokenSymbol, buyAmount, sellTokenBalance, sellAmount } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount, maxSellAmount, sellAmount } = this.props
 
     return (
       <div className="auctionAmounts">
@@ -40,7 +50,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           onChange={this.onChange}
           value={sellAmount}
           min="0"
-          max={sellTokenBalance}
+          max={maxSellAmount}
         />
         <small>{sellTokenSymbol}</small>
 

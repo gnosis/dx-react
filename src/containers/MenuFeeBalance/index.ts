@@ -4,9 +4,10 @@ import MenuFeeBalance from 'components/MenuFeeBalance'
 
 import { State } from 'types'
 
-const mapState = ({ blockchain: { feeRatio, mgnSupply } }: State) => ({
+const mapState = ({ blockchain: { currentAccount, feeRatio, mgnSupply } }: State) => ({
   feeRatio,
   mgnSupply,
+  noWallet: !currentAccount,
 })
 
 export default connect(mapState)(MenuFeeBalance)

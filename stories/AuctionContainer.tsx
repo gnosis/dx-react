@@ -39,7 +39,7 @@ storiesOf('AuctionContainer', module)
       <TokenPair />
       <AuctionPriceBar header="Closing Price" />
       <AuctionSellingGetting
-        sellTokenBalance={number('balance', 0, {
+        maxSellAmount={number('balance', 0, {
           range: true,
           min: 0,
           max: 5000,

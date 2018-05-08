@@ -2,10 +2,7 @@ import BigNumber from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
-export type Providers = {
-  METAMASK: 'METAMASK',
-  MIST: 'MIST',
-}
+import { ProviderName } from 'globals'
 
 export interface Code2Name {
   ETH: 'ETHER',
@@ -26,13 +23,25 @@ export type Balance = string
 export type Account = string
 export type BigNumber = BigNumber
 
-interface Providers {
-  [provider: string]: any,
+export interface Provider {
+  name?: ProviderName,
+  loaded: boolean,
+  available: boolean,
+  unlocked: boolean,
+  network?: string,
+  account?: Account,
+  balance?: Balance,
+  priority: number,
+  timestamp?: number
+}
+
+export type Providers = {
+  [P in ProviderName]?: Provider;
 }
 
 export interface Blockchain {
   providers?: Providers,
-  activeProvider?: keyof Providers,
+  activeProvider?: ProviderName,
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,
@@ -41,6 +50,7 @@ export interface Blockchain {
   gasCosts?: object,
   gasPrice?: Balance,
   ongoingAuctions?: OngoingAuctions,
+  connected?: boolean,
   connectionTried?: boolean,
   providersLoaded?: boolean,
   dutchXInitialized?: boolean,
@@ -177,4 +187,5 @@ export interface State {
   tokenList: TokenList,
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
+  ongoingAuctions: OngoingAuctions,
 }

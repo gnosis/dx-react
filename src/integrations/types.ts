@@ -1,11 +1,12 @@
 import { ETHEREUM_NETWORKS, WALLET_PROVIDER } from './constants'
-import { Account, Balance } from 'types'
+import { Account, Balance, State } from 'types'
 
 export interface ProviderState {
   account: Account,
   network: ETHEREUM_NETWORKS,
   balance: Balance,
   available: boolean,
+  unlocked: boolean,
   timestamp?: number,
 }
 
@@ -26,4 +27,7 @@ export interface WalletProvider {
 export interface ConnectedInterface {
   registerProvider: Function,
   updateProvider: Function,
+  updateMainAppState: Function,
+  resetMainAppState: Function,
+  getState(): State,
 }
