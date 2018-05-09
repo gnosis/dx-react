@@ -3,14 +3,18 @@ import React from 'react'
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
 import { DefaultTokenObject } from 'api/types'
+import { getAllTokenDecimals } from 'api'
 
 import localForage from 'localforage'
-import { getAllTokenDecimals } from 'api'
+import { timeoutCondition } from 'utils/helpers'
+
+const IPFS_TIMEOUT = 7000
 
 export interface HOCState {
   customTokenList: DefaultTokenObject[] | any;
   defaultTokenList: DefaultTokenObject[];
   needsTokens: boolean;
+
   // IPFS
   fileHash?: string;
   filePath?: string;
@@ -26,12 +30,23 @@ export interface HOCState {
 export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) => {
   return class extends React.Component<HOCState, any> {
 
+    state = {}
+
     handleFileHashInput = ({ target: { value } }: any) => this.props.setIPFSFileHash(value)
 
     handleGrabFromIPFS = async () => {
-      const { ipfsGetAndDecode } = await promisedIPFS, { fileHash, openModal, setNewIPFSCustomListAndUpdateBalances } = this.props
+      const { fileHash, openModal, setNewIPFSCustomListAndUpdateBalances } = this.props
+
       try {
-        const fileContent = await ipfsGetAndDecode(fileHash)
+        const { ipfsGetAndDecode } = await promisedIPFS
+
+        this.setState({ pullingData: true, error: null })
+
+        const fileContent: any = await Promise.race([
+          ipfsGetAndDecode(fileHash),
+          timeoutCondition(IPFS_TIMEOUT, 'IPFS timeout, please check hash and try again'),
+        ])
+
         const json = JSON.parse(fileContent)
 
         await checkTokenListJSON(json)
@@ -41,6 +56,8 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         localForage.setItem('customListHash', fileHash)
         localForage.setItem('customTokenList', customTokenListWithDecimals)
 
+        this.setState({ pullingData: false })
+
         // setState
         return setNewIPFSCustomListAndUpdateBalances({ customTokenList: customTokenListWithDecimals })
       } catch (error) {
@@ -49,8 +66,9 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
           modalName: 'TransactionModal',
           modalProps: {
             header: `IPFS Download Error`,
+            body: 'Please check error message below or open developer console for more details',
             button: true,
-            error: error.message || 'Unknown error occurred, please open your developer console',
+            error: error.message || error || 'Unknown error occurred, please open your developer console',
           },
         })
       }
@@ -62,6 +80,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
           handleFileHashInput = {this.handleFileHashInput}
           handleGrabFromIPFS = {this.handleGrabFromIPFS}
           {...this.props}
+          {...this.state}
         />
       )
     }
