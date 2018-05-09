@@ -33,6 +33,7 @@ const TokenUpload = ({
     <Loader
       hasData={!pullingData}
       message={`Checking IPFS for hash: ${fileHash}...`}
+      reSize={0.85}
       render={() =>
         <div className="tokenUpload">
           <span className="icon-tokenUpload" />
