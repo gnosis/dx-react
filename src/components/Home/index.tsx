@@ -13,7 +13,6 @@ export interface HomeProps {
 const Home: React.SFC<HomeProps> = ({ walletEnabled, showPicker }) =>
   <section className="home">
     <TextSquare />
-    <TokenPicker to="/order" showPair={showPicker} />
     {(showPicker || walletEnabled) ?
       <TokenPicker to="/order" showPair={showPicker} /> : <NoWallet />
     }

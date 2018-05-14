@@ -1,21 +1,26 @@
 // Modal
 .modalDivStyle {
   position: fixed;
-  display: flex; flex-flow: column; justify-content: center; align-items: center;
-
-  color: white;
-  height: 100vh; width: 100vw;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(26, 73, 119, 0.87);
+  color: $white;
+  height: 100vh;
+  width: 100vw;
   text-align: center;
 
   .modalParentDiv {
     display: flex;
     flex-flow: column nowrap;
-    align-items: center; justify-content: center;
+    align-items: center;
+    justify-content: center;
     width: 100%;
   }
 
   > h1 {
-    font-size: 3.5vw;
+    font-size: 2.5em;
   }
 
   > h1, .modalButtonDescription {
@@ -28,17 +33,18 @@
   }
 
   > .modalHeaderDescriptor {
-    font-size: 1.7vw;
-    line-height: normal;
+    font-size: 1.5em;
+    line-height: 1.5;
     margin: 0 30px;
     text-align: center;
-    width: 70%;
+    width: 100%;
+    max-width: 40em;
   }
 
   .modalError {
     background-color: #911919;
     color: white;
-    font-size: 0.9vw;
+    font-size: .9vw;
     line-height: normal;
     margin: 30px;
     padding: 15px;
@@ -50,14 +56,17 @@
   .modalButton {
     background-color: $orange;
     border: 0;
-    border-radius: 20px;
+    border-radius: 3px;
     color: white;
-    font-size: 1.15vw;
+    font-size: 1.5em;
     min-height: 50px;
-    width: 30vw;
+    width: 100%;
+    max-width: 14em;
+    font-family: inherit;
+    outline: 0;
 
     &:hover {
-      box-shadow: 0 0 14px 0.2px rgba(255, 255, 255, 0.671), 0 0 10px 0.4px rgba(255, 255, 255, 0.863);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.15);
       cursor: pointer;
     }
   }
@@ -72,7 +81,8 @@
   .modalButtonDiv {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center; align-items: center;
+    justify-content: center;
+    align-items: center;
     padding: 10px;
     width: 75%;
   }
@@ -80,10 +90,11 @@
   .modalTXDataDiv {
     background: #2fff8c6b;
     font-size: 1.4vw;
-    margin: 32px 0; padding: 20px;
+    margin: 32px 0;
+    padding: 20px;
 
     > ul {
-      color: #fff;
+      color: $white;
       font-family: monospace;
       line-height: initial;
       text-align: left;
