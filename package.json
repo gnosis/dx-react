@@ -192,7 +192,7 @@
     "minimist": "^1.2.0",
     "mocha": "^4.0.1",
     "name-all-modules-plugin": "^1.0.1",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.0",
     "postcss-loader": "^2.1.0",
     "resolve-url-loader": "^2.1.1",
     "rimraf": "^2.6.2",
