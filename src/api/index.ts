@@ -574,13 +574,15 @@ export const getSellerOngoingAuctions = async (
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
       if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
         const { lastIndex, closingPriceDir, closingPriceOpp, sellVolumeNext } = lastAuctionsData[index]
-        console.log('sellVolumeNext: ', sellVolumeNext, 'for', auction.sell.symbol, '->', auction.buy.symbol);
 
-        if (sellVolumeNext.normal.gt(0)) {
+        const commitedToNextNormal = sellVolumeNext.normal.gt(0)
+        const commitedToNextInverse = sellVolumeNext.inverse.gt(0)
+
+        if (commitedToNextNormal) {
           indicesWithSellerBalance.push(lastIndex.add(1))
           balancePerIndex.push(sellVolumeNext.normal)
         }
-        if (sellVolumeNext.inverse.gt(0)) {
+        if (commitedToNextInverse) {
           indicesWithSellerBalanceInverse.push(lastIndex.add(1))
           balancePerIndexInverse.push(sellVolumeNext.inverse)
         }
@@ -593,14 +595,17 @@ export const getSellerOngoingAuctions = async (
           balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
           // claimable if
           // either there are past auctions
-          // FIX: logic for when sellVolumeNext is added
-          claim: indicesWithSellerBalance.length >= 2 ||
-          // or the only index is that of a current auction or of a closed past auction
-          indicesWithSellerBalance.length === 1 &&
-          (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0)),
-          claimInverse: indicesWithSellerBalanceInverse.length >= 2 ||
-          indicesWithSellerBalanceInverse.length === 1 &&
-          (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
+          // more than 1 index with tokens               not including upcoming index
+          claim: indicesWithSellerBalance.length >= 2 && !commitedToNextNormal ||
+            // more than 2 index with tokens        including upcoming index
+            indicesWithSellerBalance.length >= 3 && commitedToNextNormal ||
+            // or the only index is that of a current auction or of a closed past auction
+            indicesWithSellerBalance.length === 1 &&
+            (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0)),
+          claimInverse: indicesWithSellerBalanceInverse.length >= 2 && !commitedToNextInverse ||
+            indicesWithSellerBalanceInverse.length >= 3 && commitedToNextInverse ||
+            indicesWithSellerBalanceInverse.length === 1 &&
+            (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
         }
       // for first time auctions, show auction even if it hasnt started yet
       } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
