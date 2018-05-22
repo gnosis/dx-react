@@ -8,7 +8,7 @@ import MetamaskProvider from './metamask'
 import ParityProvider from './parity'
 import RemoteProvider from './remote'
 
-const WATCHER_INTERVAL = 6000
+export const WATCHER_INTERVAL = 6000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,

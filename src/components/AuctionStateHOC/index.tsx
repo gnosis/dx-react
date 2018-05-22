@@ -14,6 +14,8 @@ import {
   getUnclaimedSellerFunds,
 } from 'api'
 
+import { WATCHER_INTERVAL } from 'integrations/initialize'
+
 // depends on router injecting match
 export interface AuctionStateProps {
   match: {
@@ -74,6 +76,7 @@ const getAuctionStatus = ({
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
   return class AuctionStateHOC extends React.Component<AuctionStateProps, AuctionStateState> {
     state = {} as AuctionStateState
+    interval: NodeJS.Timer = null
 
     async componentDidMount() {
       if (await this.updateAuctionState()) {
@@ -82,6 +85,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         console.warn('invalid auction')
       }
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
+
+      this.interval = setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
     }
 
     async componentWillReceiveProps(nextProps: any) {
@@ -188,6 +193,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       })
 
       return true
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.interval)
     }
 
     render() {
