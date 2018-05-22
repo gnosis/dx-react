@@ -76,7 +76,7 @@ const getAuctionStatus = ({
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
   return class AuctionStateHOC extends React.Component<AuctionStateProps, AuctionStateState> {
     state = {} as AuctionStateState
-    interval: NodeJS.Timer = null
+    interval: number = null
 
     async componentDidMount() {
       if (await this.updateAuctionState()) {
@@ -86,7 +86,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
 
-      this.interval = setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
+      this.interval = window.setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
     }
 
     async componentWillReceiveProps(nextProps: any) {
@@ -196,7 +196,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
     }
 
     componentWillUnmount() {
-      clearInterval(this.interval)
+      window.clearInterval(this.interval)
     }
 
     render() {
