@@ -1,0 +1,45 @@
+.pageNotFound {
+  width: 100%;
+  max-width: 500px;
+  margin: 100px auto 0;
+
+  > img {
+    width: 98px;
+    height: 74px;
+    border: 0;
+    margin: 0 auto 8px;
+    display: table;
+  }
+
+  > h1 {
+    font-size: 70px;
+    font-weight: bold;
+    color: $white;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1;
+  }
+
+  > h2 {
+    font-weight: bold;
+    font-size: 23px;
+    color: $white;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 2;
+  }
+
+  > p {
+    font-weight: $lighter;
+    font-size: 16px;
+    color: $white;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+}

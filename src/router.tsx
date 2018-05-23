@@ -6,6 +6,8 @@ import { hot } from 'react-hot-loader'
 
 import Header from 'components/Header'
 import Home from 'containers/Home'
+import PageNotFound from 'containers/PageNotFound'
+import Disclaimer from 'containers/Disclaimer'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
@@ -41,6 +43,8 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
         <Route path="/wallet" component={WalletPanel} />
         {/* TODO: check for valid params.addr and redirect if necessary */}
         <Route path="/auction/:sell-:buy-:index" component={AuctionPanel} />
+        <Route path="/404" component={PageNotFound} />
+        <Route path="/disclaimer" component={Disclaimer} />
       </div>
   </ConnectedRouter>
   )
