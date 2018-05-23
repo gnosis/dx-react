@@ -1,4 +1,5 @@
 import React from 'react'
+import disclaimerSVG from 'assets/404.svg'
 
 export interface PageNotFoundProps {
   walletEnabled: boolean,
@@ -8,7 +9,7 @@ export interface PageNotFoundProps {
 
 const PageNotFound: React.SFC<PageNotFoundProps> = () => (
   <section className="pageNotFound">
-    <img src={require('assets/404.svg')} />
+    <img src={disclaimerSVG} />
     <h1>Oops!</h1>
     <h2>404: Page Not Found</h2>
     <p>We couldn't find the page you were looking for or the page is currently not available. Please try again later.
