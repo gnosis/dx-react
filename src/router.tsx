@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { ConnectedRouter } from 'connected-react-router'
 import { Route } from 'react-router-dom'
 import { History } from 'history'
@@ -12,7 +12,7 @@ import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
 
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter, Switch } from 'react-router-dom'
 
 
 interface AppRouterProps {
@@ -21,6 +21,28 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
+
+// const WithHeader = () => (
+//   <Fragment>
+//     <Header />
+//     <Route exact path="/" component={Home} />
+//     <Route path="/order" component={OrderPanel} />
+//     <Route path="/wallet" component={WalletPanel} />
+//   </Fragment>
+// )
+
+const withHeader = (Component: React.ComponentClass) => (props: any) => (
+  <Fragment>
+    <Header/>
+    <Component {...props}/>
+  </Fragment>
+)
+
+const HomeWH = withHeader(Home)
+const OrderPanelWH = withHeader(OrderPanel)
+const WalletPanelWH = withHeader(WalletPanel)
+const AuctionPanelWH = withHeader(AuctionPanel)
+
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
@@ -37,14 +59,17 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   return (
     <ConnectedRouter history={history}>
       <div>
-        <Header />
-        <Route exact path="/" component={Home} />
-        <Route path="/order" component={OrderPanel} />
-        <Route path="/wallet" component={WalletPanel} />
-        {/* TODO: check for valid params.addr and redirect if necessary */}
-        <Route path="/auction/:sell-:buy-:index" component={AuctionPanel} />
-        <Route path="/404" component={PageNotFound} />
-        <Route path="/disclaimer" component={Disclaimer} />
+        {/* <Header /> */}
+        <Switch>
+          {/* <Route exact path="/" component={Home} /> */}
+          <Route exact path="/" component={HomeWH} />
+          <Route path="/order" component={OrderPanelWH} />
+          <Route path="/wallet" component={WalletPanelWH} />
+          {/* TODO: check for valid params.addr and redirect if necessary */}
+          <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
+          <Route path="/disclaimer" component={Disclaimer} />
+          <Route component={PageNotFound} />
+        </Switch>
       </div>
   </ConnectedRouter>
   )
