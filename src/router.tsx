@@ -22,15 +22,6 @@ interface AppRouterProps {
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
 
-// const WithHeader = () => (
-//   <Fragment>
-//     <Header />
-//     <Route exact path="/" component={Home} />
-//     <Route path="/order" component={OrderPanel} />
-//     <Route path="/wallet" component={WalletPanel} />
-//   </Fragment>
-// )
-
 const withHeader = (Component: React.ComponentClass) => (props: any) => (
   <Fragment>
     <Header/>
@@ -59,9 +50,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   return (
     <ConnectedRouter history={history}>
       <div>
-        {/* <Header /> */}
         <Switch>
-          {/* <Route exact path="/" component={Home} /> */}
           <Route exact path="/" component={HomeWH} />
           <Route path="/order" component={OrderPanelWH} />
           <Route path="/wallet" component={WalletPanelWH} />
