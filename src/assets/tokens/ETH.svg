@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46 (44423) - http://www.bohemiancoding.com/sketch -->
+    <title>ETH</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ETH" fill-rule="nonzero">
+            <g id="eth" transform="translate(9.615385, 0.000000)">
+                <polygon id="Shape" fill="#343434" points="15.3788972 0 15.042735 1.12789478 15.042735 33.8567893 15.3788972 34.1880342 30.7692308 25.2078547"></polygon>
+                <polygon id="Shape" fill="#8C8C8C" points="15.042735 0 0 25.2077671 15.042735 34.1880342 15.042735 18.3024631"></polygon>
+                <polygon id="Shape" fill="#3C3C3B" points="15.2338365 37.6047141 15.042735 37.8304098 15.042735 49.3736833 15.2338365 49.9145299 30.7692308 28.7179487"></polygon>
+                <polygon id="Shape" fill="#8C8C8C" points="15.042735 49.9145299 15.042735 37.6047141 0 28.7179487"></polygon>
+                <polygon id="Shape" fill="#141414" points="15.042735 34.8717949 30.0854701 25.5950248 15.042735 18.4615385"></polygon>
+                <polygon id="Shape" fill="#393939" points="0 25.5950248 15.042735 34.8717949 15.042735 18.4615385"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

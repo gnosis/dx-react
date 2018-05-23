@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46 (44423) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MVP-Minimal-version" transform="translate(-380.000000, -464.000000)" fill-rule="nonzero" fill="#4ADE70">
+            <g id="#3-Wallet-&amp;-Confirm" transform="translate(316.000000, 189.000000)">
+                <path d="M71,275 C72.8565154,275 74.6369928,275.737498 75.9497475,277.050253 C77.2625021,278.363007 78,280.143485 78,282 C78,285.865993 74.8659932,289 71,289 C69.1434846,289 67.3630072,288.262502 66.0502525,286.949747 C64.7374979,285.636993 64,283.856515 64,282 C64,280.143485 64.7374979,278.363007 66.0502525,277.050253 C67.3630072,275.737498 69.1434846,275 71,275 L71,275 Z M70.3,285.15 L75.2,280.25 L74.213,279.263 L70.3,283.169 L68.137,281.013 L67.15,282 L70.3,285.15 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

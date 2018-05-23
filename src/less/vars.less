@@ -1,0 +1,87 @@
+@font-color-light: #182a36;
+@font-color-dark: #87949c;
+@font-color-muted: lighten(@font-color-dark, 10%);
+@font-color-bright: #f0f1f1;
+
+@brand-primary: #00a6c4;
+
+@link-color: #00a6c4;
+@link-color-highlight: darken(@link-color, 10%);
+
+@highlight-dark: #284659;
+
+@active-highlight: #00a6c4;
+@active-highlight-success: #26cc1e;
+@active-highlight-error: #f44336;
+
+// default background color
+@bg-color: #fff;
+// alternative background color
+@bg-color-dark: #182a36;
+// background color for inset elements
+@bg-color-muted: #f0f1f1;
+
+// inset of white background overlay (basically border-size)
+@btn-border-width: 2px;
+
+// gradient for buttons and interactive elements
+@btn-gradient: linear-gradient(153deg, rgba(5,189,196,1) 0%, rgba(0,166,196,1) 100%);
+@btn-gradient-hover: linear-gradient(153deg, rgba(15,199,206,1) 0%, rgba(0,176,206,1) 100%);
+@btn-gradient-active: linear-gradient(153deg, rgba(0,179,186,1) 0%, rgba(0,156,186,1) 100%);
+
+// font color for buttons
+@btn-font-color: #fff;
+
+// font color for buttons with whitebackground (dark font)
+@btn-invert-font-color: #02b1c1;
+
+// Screen size variables
+@screen-sm: 768px;
+@screen-sm-min: @screen-sm;
+
+// margin for heading elements
+@page-heading-margins: 60px 0;
+
+@font-size-inputs: 16px;
+@letter-spacing-inputs: .5px;
+@font-weight-inputs: 400;
+@paddings-inputs: 5px 0;
+
+// styles for inputs
+.inputStyles() {
+  font-size: @font-size-inputs;
+  letter-spacing: @letter-spacing-inputs;
+  font-weight: @font-weight-inputs;
+  padding: @paddings-inputs;
+}
+
+.closeButton(@size, @stroke) {
+  position: absolute;
+  width: @size;
+  height: @size;
+  cursor: pointer;
+
+  &::after, &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: @stroke;
+    transition: background-color .4s ease-in;
+    background-color: black;
+    transform-origin: 50% 50%;
+  }
+
+  &::after {
+    transform: rotate(45deg);
+  }
+
+  &::before {
+    transform: rotate(-45deg);
+  }
+
+  &:hover {
+    &::after, &::before {
+      background-color: @active-highlight;
+    }
+  }
+}
