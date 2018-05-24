@@ -34,8 +34,11 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     const { formInvalid } = this.state
 
     let disclaimerConfirmClasses = 'buttonCTA'
+    const disclaimerErrorStyle: React.CSSProperties = {}
     if (formInvalid) {
       disclaimerConfirmClasses += ' buttonCTA-disabled'
+    } else {
+      disclaimerErrorStyle.visibility = 'hidden'
     }
 
     return (
@@ -169,7 +172,7 @@ or consequential damages you are prohibited to interact with the DutchX.<br />
             </div>
 
             {/* We could display this as a constant validation text */}
-            <p className="disclaimerError">
+            <p className="disclaimerError" style={disclaimerErrorStyle}>
               Please read and truly confirm all sections before you may continue
             </p>
           </form>
