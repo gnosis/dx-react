@@ -18,10 +18,14 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
 
   <div>
     <h2>Please confirm before continuing:</h2>
-    <form>
+    <form
+      id="disclaimer"
+      onSubmit={e => (e.preventDefault(), console.log('SUBMIT', e))}
+      onInvalid={e => console.warn('INVALID', e)}
+    >
 
       <div className="disclaimerBox md-checkbox">
-      <input id="disclaimer1" type="checkbox"/>
+      <input id="disclaimer1" type="checkbox" required/>
       <label htmlFor="disclaimer1">
         I am <strong>NOT</strong> a citizen or resident of
         and I am <strong>NOT</strong> currently in the People's Republic of China
@@ -30,7 +34,7 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
       </div>
 
       <div className="disclaimerBox md-checkbox">
-      <input id="disclaimer2" type="checkbox"/>
+      <input id="disclaimer2" type="checkbox" required/>
       <label htmlFor="disclaimer2">
         I certify that I am NOT (and NOT under the control of),
         a citizen or resident of or entity formed under the laws of any of the following countries
@@ -44,7 +48,7 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
       </div>
 
       <div className="disclaimerBox md-checkbox">
-      <input id="disclaimer3" type="checkbox"/>
+      <input id="disclaimer3" type="checkbox" required/>
       <label htmlFor="disclaimer3">
         I certify that
         (1) I am NOT a person on the U.S. Treasury Department's Specially Designated Nationals List
@@ -57,7 +61,7 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
       </div>
 
       <div className="disclaimerBox md-checkbox">
-      <input id="disclaimer4" type="checkbox"/>
+      <input id="disclaimer4" type="checkbox" required/>
       <label htmlFor="disclaimer4">
         By accepting this disclaimer, you understand, accept and agree that:
       </label>
@@ -120,7 +124,7 @@ or consequential damages you are prohibited to interact with the DutchX.<br/>
 
 
       <div className="disclaimerBox md-checkbox">
-      <input id="disclaimer5" type="checkbox"/>
+      <input id="disclaimer5" type="checkbox" required/>
       <label htmlFor="disclaimer5">
         <b>
           The above constitutes a summary of the critical points but is not limited to it.
@@ -135,7 +139,7 @@ or consequential damages you are prohibited to interact with the DutchX.<br/>
 
     <span className="disclaimerFooterActions">
       {/* Remove 'buttonCTA-disabled' class once form is validated successfully (all checkboxes = checked) */}
-      <ButtonCTA onClick={null} className="buttonCTA-disabled" to="#">Continue</ButtonCTA >
+      <button id="disclaimer-submit" form="disclaimer" type="confirm" className="buttonCTA">Continue</button>
     </span>
 
   </div>
