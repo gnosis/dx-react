@@ -6,7 +6,7 @@ import { hot } from 'react-hot-loader'
 
 import Header from 'components/Header'
 import Home from 'containers/Home'
-import PageNotFound from 'containers/PageNotFound'
+import PageNotFound from 'components/PageNotFound'
 import Disclaimer from 'containers/Disclaimer'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
