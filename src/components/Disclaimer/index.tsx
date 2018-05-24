@@ -173,14 +173,12 @@ or consequential damages you are prohibited to interact with the DutchX.<br />
               </label>
             </div>
 
-            {/* We could display this as a constant validation text */}
             <p className="disclaimerError" style={disclaimerErrorStyle}>
               Please read and truly confirm all sections before you may continue
             </p>
           </form>
 
           <span className="disclaimerFooterActions">
-            {/* Remove 'buttonCTA-disabled' class once form is validated successfully (all checkboxes = checked) */}
             <button
               id="disclaimer-submit"
               form="disclaimer"
