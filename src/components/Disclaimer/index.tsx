@@ -18,11 +18,13 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
 
   form: HTMLFormElement = null
 
-  onSubmit = () => {
+  onSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
     this.setState({
       formInvalid: !this.form.checkValidity()
     })
     console.log('SUBMITTING');
+    // redirect to /
   }
   onChange = () => {
     this.setState({
