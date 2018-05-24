@@ -122,6 +122,15 @@
     line-height: 1;
     padding: 18px;
     width: 100%;
+
+    &.buttonCTA-disabled {
+      background: $grey;
+      color: $white;
+      padding: 18px;
+      font-size: 20px;
+      text-align: center;
+      pointer-events: none;
+    }
   }
 }
 
