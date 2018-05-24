@@ -1,5 +1,6 @@
 import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
+import disclaimerSVG from 'assets/disclaimer.svg'
 
 export interface DisclaimerProps {
   walletEnabled: boolean,
@@ -11,7 +12,7 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
 <section className="disclaimer">
 
   <span>
-    <img src={require('assets/disclaimer.svg')} />
+    <img src={disclaimerSVG} />
     <h1>Verification and Disclaimer</h1>
   </span>
 
