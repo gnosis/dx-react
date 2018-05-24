@@ -63,7 +63,7 @@ const Disclaimer: React.SFC<DisclaimerProps> = () => (
       </label>
       </div>
 
-      <span className="disclaimerTextbox">
+      <div className="disclaimerTextbox">
         <p>
 - The DutchX is a decentralized medium for the exchange of ERC-20 tokens.<br/>
 
@@ -116,7 +116,7 @@ or consequential damages you are prohibited to interact with the DutchX.<br/>
 
 - You are legally allowed to buy/sell this kind of (new) asset class. <br/>
 </p>
-      </span>
+      </div>
 
 
       <div className="disclaimerBox md-checkbox">
