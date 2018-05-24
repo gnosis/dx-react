@@ -122,7 +122,10 @@ or consequential damages you are prohibited to interact with the DutchX.<br/>
       <div className="disclaimerBox md-checkbox">
       <input id="disclaimer5" type="checkbox"/>
       <label htmlFor="disclaimer5">
-        <b>The above constitutes a summary of the critical points but is not limited to it. You confirm that you have read the full disclaimer <a href="#">available here</a>.</b>
+        <b>
+          The above constitutes a summary of the critical points but is not limited to it.
+          You confirm that you have read the full disclaimer <a href="">available here</a>.
+        </b>
       </label>
       </div>
 
