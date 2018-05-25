@@ -68,7 +68,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
           >
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} />
+              <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
                 I am <strong>NOT</strong> a citizen or resident of
         and I am <strong>NOT</strong> currently in the People's Republic of China
@@ -77,7 +77,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             </div>
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} />
+              <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer2">
                 I certify that I am NOT (and NOT under the control of),
                 a citizen or resident of or entity formed under the laws of any of the following countries
@@ -91,7 +91,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             </div>
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer3" type="checkbox" required defaultChecked={accepted} />
+              <input id="disclaimer3" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer3">
                 I certify that
                 (1) I am NOT a person on the U.S. Treasury Department's Specially Designated Nationals List
@@ -104,7 +104,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             </div>
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} />
+              <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 By accepting this disclaimer, you understand, accept and agree that:
       </label>
@@ -170,7 +170,7 @@ or consequential damages you are prohibited to interact with the DutchX.<br />
 
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} />
+              <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
                   The above constitutes a summary of the critical points but is not limited to it.
