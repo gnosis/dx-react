@@ -4,12 +4,17 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 
-import App, { initializer } from 'components/App'
+import App, { initializer, loadSettings } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
 
 /* global document */
 const rootElement = document.getElementById('root')
+
+const renderApp = async () => {
+  await loadSettings()
+  ReactDOM.render(<App />, rootElement, initializer)
+}
 
 const geoBlockedCountryCodes = new Set(blocked_codes)
 
@@ -74,5 +79,7 @@ async function blockIf() {
   if (blocked) {
     window.history.replaceState(null, '', '/')
     rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} />)
-  } else ReactDOM.render(<App />, rootElement, initializer)
+  } else {
+    await renderApp()
+  }
 }
