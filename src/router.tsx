@@ -11,6 +11,7 @@ import Disclaimer from 'containers/Disclaimer'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
+import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 
 import { StaticRouter, Switch } from 'react-router-dom'
 
@@ -50,6 +51,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   return (
     <ConnectedRouter history={history}>
       <div>
+        <RedirectToDisclaimer/>
         <Switch>
           <Route exact path="/" component={HomeWH} />
           <Route path="/order" component={OrderPanelWH} />
