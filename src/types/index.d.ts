@@ -172,6 +172,10 @@ export interface IPFS {
   json?: Object
 }
 
+export interface Settings {
+  disclaimer_accepted: boolean,
+}
+
 /**
  * represents global State of redux store
  * @export
@@ -188,4 +192,5 @@ export interface State {
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
   ongoingAuctions: OngoingAuctions,
+  settings: Settings,
 }
