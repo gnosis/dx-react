@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, ownProps: RouteComponentPro
     
     
     console.log('ownProps: ', ownProps);
-    ownProps.history.replace('/')
+    ownProps.history.replace(ownProps.location.state.from || '/')
   }
 })
 
