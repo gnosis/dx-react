@@ -446,11 +446,12 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   const lastIndex = await DutchX.getLatestAuctionIndex(pair)
   console.log('lastIndex: ', lastIndex.toString());
   console.log('lastIndex + 1: ', lastIndex.add(1).toString());
+  const oppositePair = { sell: pair.buy, buy: pair.sell }
   const [closingPriceDir, closingPriceOpp, normal, inverse] = await Promise.all([
     DutchX.getClosingPrice(pair, lastIndex),
-    DutchX.getClosingPrice(pair, lastIndex),
+    DutchX.getClosingPrice(oppositePair, lastIndex),
     DutchX.getSellerBalances(pair, lastIndex.add(1), account),
-    DutchX.getSellerBalances({sell: pair.buy, buy: pair.sell}, lastIndex.add(1), account),
+    DutchX.getSellerBalances(oppositePair, lastIndex.add(1), account),
   ])
 
   return {
@@ -607,7 +608,7 @@ export const getSellerOngoingAuctions = async (
             indicesWithSellerBalanceInverse.length === 1 &&
             (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
         }
-      // for first time auctions, show auction even if it hasnt started yet
+        // for first time auctions, show auction even if it hasnt started yet
       } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
         ongoingAuction = {
           ...auction,
