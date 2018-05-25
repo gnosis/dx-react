@@ -35,7 +35,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
     handleFileHashInput = ({ target: { value } }: any) => this.props.setIPFSFileHash(value)
 
     handleGrabFromIPFS = async () => {
-      const { fileHash, openModal, setNewIPFSCustomListAndUpdateBalances } = this.props
+      const { fileHash, openModal, setIPFSFileHash, setNewIPFSCustomListAndUpdateBalances } = this.props
 
       try {
         const { ipfsGetAndDecode } = await promisedIPFS
@@ -62,6 +62,9 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         return setNewIPFSCustomListAndUpdateBalances({ customTokenList: customTokenListWithDecimals })
       } catch (error) {
         console.error(error)
+        // reset hash to empty string
+        setIPFSFileHash('')
+
         return openModal({
           modalName: 'TransactionModal',
           modalProps: {
