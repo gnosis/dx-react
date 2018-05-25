@@ -6,7 +6,9 @@ import { DefaultTokenObject } from 'api/types'
 export interface MenuAuctionProps {
   name?: string;
   ongoingAuctions: OngoingAuctions;
-  claimSellerFundsFromSeveral(sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number): any;
+  claimSellerFundsFromSeveral(
+    sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number
+  ): any;
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
