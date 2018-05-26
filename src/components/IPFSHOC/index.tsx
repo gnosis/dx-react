@@ -62,6 +62,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         return setNewIPFSCustomListAndUpdateBalances({ customTokenList: customTokenListWithDecimals })
       } catch (error) {
         console.error(error)
+        this.setState({ pullingData: false, error })
         // reset hash to empty string
         setIPFSFileHash('')
 

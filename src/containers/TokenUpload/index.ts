@@ -26,7 +26,7 @@ const mapState = ({
   filePath,
   json,
   customTokenList,
-  potentiallyValidHash: fileHash.length == 46,
+  potentiallyValidHash: fileHash.length === 46,
 })
 
 export default connect(

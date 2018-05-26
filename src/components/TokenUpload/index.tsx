@@ -2,7 +2,6 @@ import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
 import Loader from 'components/Loader'
 
-import IPFSHOC from 'components/IPFSHOC'
 import { DefaultTokenObject } from 'api/types'
 
 interface TokenUploadProps {
@@ -72,4 +71,4 @@ const TokenUpload = ({
   )
 }
 
-export default IPFSHOC(TokenUpload)
+export default TokenUpload
