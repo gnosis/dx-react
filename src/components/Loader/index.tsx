@@ -47,7 +47,7 @@ class Loader extends React.Component<LoaderProps> {
           </g>
         </g>
       </svg>
-      {!!(this.props.message) && <p style={{ margin: 0 }}>{this.props.message}</p>}
+      {!!(this.props.message) && <p style={{ fontWeight: 600, margin: 0 }}>{this.props.message}</p>}
     </div>
 
   render() {
