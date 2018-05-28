@@ -1,0 +1,142 @@
+.disclaimer {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  display: table;
+
+  a {
+    color: $blue;
+    text-decoration: underline;
+  }
+
+  > span {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    color: $white;
+    margin: 25px auto;
+    align-items: center;
+  }
+
+  > span > img {
+    margin: 0 15px 0 0;
+  }
+
+  > span > h1 {
+    font-weight: 500;
+    font-size: 23px;
+    color: $white;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  > div {
+    box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    border: 2px solid transparent;
+    background: $white;
+    min-height: 460px;
+    border-radius: 3px;
+    width: 100%;
+    margin: 25px auto;
+    display: table;
+    box-sizing: border-box;
+    padding: 0;
+  }
+
+  > div > h2 {
+    font-size: 20px;
+    color: #0070d2;
+    text-align: center;
+    line-height: 1;
+    margin: 25px auto;
+  }
+
+  > div > form {
+    padding: 0 50px 15px;
+  }
+
+  > div > form .disclaimerBox {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    margin: 0 0 25px;
+  }
+
+  > div > form label {
+    font-size: 12px;
+    color: #5c636e;
+    letter-spacing: 0;
+    line-height: 1.5;
+    flex: 1;
+    box-sizing: border-box;
+
+    > b {
+      font-weight: 500;
+    }
+  }
+
+  > div > form input {
+    flex: 0 1 auto;
+    margin: 4px 0 0;
+    box-sizing: border-box;
+  }
+
+  > div > form input:checked + label {
+    color: #024d90;
+  }
+}
+
+.disclaimerTextbox {
+  height: 200px;
+  width: 100%;
+  overflow: auto;
+  background: #f0f2f6;
+  border-radius: 2px;
+  overflow-y: scroll;
+  padding: 8px 15px 15px;
+  box-sizing: border-box;
+  color: #5c636e;
+  line-height: 1.5;
+  margin: -18px 0 18px;
+
+  > p {
+    color: inherit;
+    line-height: inherit;
+  }
+}
+
+.disclaimerFooterActions {
+  display: block;
+  width: 100%;
+  background: #f0f2f6;
+  padding: 10px;
+  box-sizing: border-box;
+
+  > .buttonCTA {
+    background: $blue;
+    color: $white;
+    max-width: 260px;
+    text-decoration: none;
+    font-size: 20px;
+    line-height: 1;
+    padding: 18px;
+    width: 100%;
+
+    &.buttonCTA-disabled {
+      background: $grey;
+      color: $white;
+      padding: 18px;
+      font-size: 20px;
+      text-align: center;
+      pointer-events: none;
+    }
+  }
+}
+
+.disclaimerError {
+  color: $red;
+  width: 100%;
+  text-align: center;
+  line-height: 1.5;
+}

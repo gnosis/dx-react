@@ -26,7 +26,10 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
+
+      {/* Token image / icon */}
       <i data-coin={tokenSVG.has(symbol) ? symbol : 'DEFAULT_TOKEN'}></i>
+
       <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{balance.div ? balance.div(10 ** decimals).toFixed(4) : balance} {symbol}</p>
@@ -36,6 +39,18 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       Currently this is handled by CSS but we should implement the logic here to not output the element at all.
       */}
       <p className="noMGN">Any auction with <strong>{symbol}</strong> won't generate MGN</p>
+
+      {/* =====================================================================
+        DEMO >>> NO PRESELECTED TOKEN for tokenItem in tokenPair
+        Adding this example to display when no token has been pre-selected.
+      */}
+        {mod && <strong>{mod2Title[mod] || mod}</strong>}
+        <i data-coin="TOKEN_LIST"></i>
+        <big>SELECT TOKEN &#9662;</big>
+      {/*
+        End example
+        =======================================================================
+      */}
     </div>
   )
 }
