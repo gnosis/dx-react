@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
@@ -7,7 +7,6 @@ import AuctionProgress from 'components/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
 
 import Loader from 'components/Loader'
-import Aux from 'components/AuxComponent'
 
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
@@ -40,7 +39,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
       hasData={sell}
       message={error || 'Auction has not started. Please try a lower auction index'}
       render={() =>
-        <Aux>
+        <Fragment>
           <AuctionStatus
             sellToken={sell}
             buyToken={buy}
@@ -58,7 +57,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             buyDecimal={buy.decimals}
             auctionEnded={completed}
           />
-        </ Aux>
+        </Fragment>
       } />
   </AuctionContainer>
 )
