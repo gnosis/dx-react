@@ -2,6 +2,7 @@ import React from 'react'
 import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
+import { claimSellerFunds } from 'api'
 // import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
@@ -42,6 +43,8 @@ export interface AuctionStateState {
   userGetting:  BigNumber,
   userCanClaim: number,
   progress: number,
+  index: number,
+  account: Account,
   error: string,
 }
 
@@ -182,6 +185,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       const account = await promisedAccount
       const sellerBalance = await getSellerBalance(pair, index, account)
+      console.log('sellerBalance: ', sellerBalance.toString());
 
       // TODO: calculate differently for PLANNED auctions (currently is NaN)
       // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
@@ -209,6 +213,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         userGetting,
         userCanClaim,
         progress,
+        index,
+        account,
         error: null,
       })
 
@@ -219,6 +225,16 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       window.clearInterval(this.interval)
     }
 
+    claimSellerFunds = () => {
+      const { sell, buy, index, account } = this.state
+      
+      console.log(
+        `claiming tokens for ${account} for
+        ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
+      )
+      return claimSellerFunds({ sell, buy }, index, account)
+    }
+
     render() {
       // TODO: redirect home on invalid auction or something
       const { error } = this.state
@@ -227,7 +243,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
           {/* <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
           </pre> */}
-          <Component {...this.props} {...this.state}/> :
+          <Component {...this.props} {...this.state} claimSellerFunds={this.claimSellerFunds}/> :
           {error && <h3> Invalid auction: {error}</h3>}
         </div>
       )
