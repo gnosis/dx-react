@@ -18,6 +18,7 @@ export enum AuctionStatus {
   INIT = 'initialising',
   PLANNED = 'planned',
   ACTIVE = 'active',
+  INACTIVE = 'inactive',
   ENDED = 'ended',
 }
 

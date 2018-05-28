@@ -5,7 +5,8 @@ a.buttonCTA {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 20px;
+  padding: 0 15px;
+  min-height: 56px;
   box-sizing: border-box;
   font-family: inherit;
   font-size: 15px;
@@ -27,8 +28,6 @@ a.buttonCTA {
   &.buttonCTA-disabled {
     background: $grey;
     color: $white;
-    padding: 18px;
-    font-size: 20px;
     text-align: center;
     pointer-events: none;
   }
@@ -36,8 +35,6 @@ a.buttonCTA {
   &.blue {
     background: $blue;
     color: $white;
-    padding: 18px;
-    font-size: 20px;
     text-align: center;
   }
 
@@ -97,4 +94,12 @@ a.buttonCTA {
     opacity: 1;
     transform: translateX(-1px);
   }
+}
+
+#ipfsDownload {
+  font-size: 14px;
+  margin: 0 0 0 10px;
+  width: 35%;
+  // min-height: 56px;
+  max-width: 112px;
 }

@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
 import { batchActions } from 'redux-batched-actions'
 
-import { setTokenBalance, setIPFSFileHashAndPath } from 'actions'
+import { setTokenBalance } from 'actions'
 import { getTokenBalances } from 'api'
 
 import { TokenListType, State } from 'types'
@@ -12,11 +12,8 @@ export const setCustomTokenList = createAction<{ customTokenList: DefaultTokenOb
 
 export const setTokenListType = createAction<{ type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'] }>('SET_TOKEN_LIST_TYPE')
 
-export const setNewIPFSCustomListAndUpdateBalances = (p1: { customTokenList: DefaultTokenObject[] }, p2: {}) => async (dispatch: Function, getState: () => State) => {
-  dispatch(batchActions([
-    setCustomTokenList(p1),
-    setIPFSFileHashAndPath(p2),
-  ], 'BATCH_SET_CUSTOM_LIST_AND_IPFS_HASH_PATH'))
+export const setNewIPFSCustomListAndUpdateBalances = (p1: { customTokenList: DefaultTokenObject[] }) => async (dispatch: Function, getState: () => State) => {
+  dispatch(setCustomTokenList(p1))
 
   // grab updated customTokenList from State
   const { tokenList: { customTokenList } } = getState()
