@@ -32,8 +32,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
-      {/* TODO: grab auction address for url */}
-      Auction URL: <a href="#">
+      Auction URL: <a href="">
         {typeof window !== 'undefined' ? window.location.toString() : `https://www.dutchx.pm${url}/`}
       </a>
     </AuctionHeader>
