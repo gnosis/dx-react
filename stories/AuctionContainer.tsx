@@ -98,6 +98,8 @@ storiesOf('AuctionContainer', module)
           max: (3600 * 6),
           step: 5,
         })}
+        completed={boolean('comleted', true)}
+        claimSellerFunds={() => {}}
       />
       <AuctionProgress progress={4} />
       <AuctionFooter
