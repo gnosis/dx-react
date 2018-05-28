@@ -10,9 +10,9 @@ import Loader from 'components/Loader'
 
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
-import { AuctionStatus as Status } from 'globals'
-
-type AuctionPanelProps = AuctionStateState & AuctionStateProps
+type AuctionPanelProps = AuctionStateState & AuctionStateProps & {
+  claimSellerFunds: () => any,
+}
 
 // const status2progress = {
 //   [Status.INIT]: 1,
@@ -30,6 +30,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   userSelling, userGetting, userCanClaim,
   progress,
   error,
+  claimSellerFunds,
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
@@ -48,6 +49,8 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             buyAmount={userCanClaim}
             timeLeft={timeToCompletion}
             status={status}
+            completed={completed}
+            claimSellerFunds={claimSellerFunds}
           />
           <AuctionProgress progress={progress} />
           <AuctionFooter

@@ -11,7 +11,9 @@ export interface AuctionStatusProps {
   buyToken: DefaultTokenObject,
   buyAmount: number,
   timeLeft: number,
-  status: Status
+  status: Status,
+  completed: boolean,
+  claimSellerFunds: () => any,
 }
 
 const getTimeStr = (timestamp: number) => {
