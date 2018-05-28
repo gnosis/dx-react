@@ -41,6 +41,7 @@ export interface AuctionStateState {
   userSelling: BigNumber,
   userGetting:  BigNumber,
   userCanClaim: number,
+  progress: number,
   error: string,
 }
 
@@ -71,6 +72,20 @@ const getAuctionStatus = ({
   if (auctionStart.equals(1)) return AuctionStatus.INIT
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
   return AuctionStatus.INACTIVE
+}
+
+interface ProgressStepArgs {
+  status: AuctionStatus,
+  sellerBalance: BigNumber,
+}
+const getProgressStep = ({ status, sellerBalance }: ProgressStepArgs) => {
+  if (!sellerBalance.gt(0) || status === AuctionStatus.INACTIVE) return 0
+
+  if (status === AuctionStatus.INIT || status === AuctionStatus.PLANNED) return 1
+
+  if (status === AuctionStatus.ACTIVE) return 2
+
+  if (status === AuctionStatus.ENDED) return 3
 }
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
@@ -178,6 +193,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
 
+      const progress = getProgressStep({
+        status,
+        sellerBalance,
+      })
 
       this.setState({
         completed: status === AuctionStatus.ENDED,
@@ -189,6 +208,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         userSelling: sellerBalance,
         userGetting,
         userCanClaim,
+        progress,
         error: null,
       })
 
