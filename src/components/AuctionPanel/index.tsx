@@ -14,20 +14,21 @@ import { AuctionStatus as Status } from 'globals'
 
 type AuctionPanelProps = AuctionStateState & AuctionStateProps
 
-const status2progress = {
-  [Status.INIT]: 1,
-  [Status.PLANNED]: 2,
-  [Status.ACTIVE]: 3,
-  [Status.ENDED]: 4,
-}
+// const status2progress = {
+//   [Status.INIT]: 1,
+//   [Status.PLANNED]: 2,
+//   [Status.ACTIVE]: 3,
+//   [Status.ENDED]: 4,
+// }
 
-const getAuctionProgress = (status: Status) => status2progress[status] || 0
+// const getAuctionProgress = (status: Status) => status2progress[status] || 0
 
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
   sell, buy,
   status, completed, timeToCompletion,
   userSelling, userGetting, userCanClaim,
+  progress,
   error,
 }) => (
   <AuctionContainer auctionDataScreen="status">
@@ -48,7 +49,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             timeLeft={timeToCompletion}
             status={status}
           />
-          <AuctionProgress progress={getAuctionProgress(status)} />
+          <AuctionProgress progress={progress} />
           <AuctionFooter
             sellTokenSymbol={sell.symbol || sell.name || sell.address}
             buyTokenSymbol={buy.symbol || buy.name || buy.address}
