@@ -11,7 +11,15 @@ export interface AuctionFooterProps {
   auctionEnded?: boolean
 }
 
-const AuctionFooter: React.SFC<AuctionFooterProps> = ({ auctionEnded, sellTokenSymbol, buyTokenSymbol, sellAmount, buyAmount, sellDecimal, buyDecimal }) => (
+const AuctionFooter: React.SFC<AuctionFooterProps> = ({
+  auctionEnded,
+  sellTokenSymbol,
+  buyTokenSymbol,
+  sellAmount,
+  buyAmount,
+  sellDecimal,
+  buyDecimal,
+}) => (
   <div className="auctionFooter">
     <span>
       <small>AMOUNT SELLING</small>

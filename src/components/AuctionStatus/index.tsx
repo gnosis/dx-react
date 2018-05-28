@@ -63,7 +63,10 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = (props) => {
     <div className="auctionStatus">
       <span>
         <small>AUCTION</small>
-        <big>{sellToken.symbol || sellToken.name || sellToken.address}/{buyToken.symbol || buyToken.name || buyToken.address}</big>
+        <big>
+          {sellToken.symbol || sellToken.name || sellToken.address}
+          /{buyToken.symbol || buyToken.name || buyToken.address}
+        </big>
       </span>
 
       <span>
