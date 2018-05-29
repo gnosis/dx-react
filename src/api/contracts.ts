@@ -15,7 +15,7 @@ const contractNames = [
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
-  'TokenMGN',
+  'TokenFRT',
   'TokenOMG',
   'TokenRDN',
   'Proxy',
@@ -46,7 +46,7 @@ interface ContractsMapWProxy extends ContractsMap {
 const req = require.context(
   '@gnosis.pm/dx-contracts/build/contracts/',
   false,
-  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN|TokenOMG|TokenRDN)\.json$/,
+  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenFRT|TokenOMG|TokenRDN)\.json$/,
 )
 
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/pm-contracts/build/contracts/HumanFriendlyToken.json'))
@@ -58,7 +58,7 @@ type TokenArtifact =
   './TokenGNO.json' |
   './TokenOWL.json' |
   './TokenOWLProxy.json' |
-  './TokenMGN.json' |
+  './TokenFRT.json' |
   './TokenOMG.json' |
   './TokenRDN.json'
 
@@ -92,7 +92,11 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   const deployedContracts = contractNames.reduce((acc, name, i) => {
-    acc[filename2ContractNameMap[name] || name] = instances[i]
+    if (name === 'TokenFRT') {
+      acc['TokenMGN'] = instances[i]
+    } else {
+      acc[filename2ContractNameMap[name] || name] = instances[i]
+    }
     return acc
   }, {}) as ContractsMapWProxy
 
