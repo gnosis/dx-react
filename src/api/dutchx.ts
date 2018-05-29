@@ -141,7 +141,7 @@ async function init(): Promise<DutchExchange> {
     index: Index,
     amount: Balance,
     userAccount: Account,
-    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount })
+    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount, gas: 4712388 })
 
   const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens(tokenAddress)
 
