@@ -86,7 +86,7 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount })
+  ) => (console.log(t1, t2, userAccount, index), dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount, gas: 4712388 }))
 
   claimSellerFunds.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
