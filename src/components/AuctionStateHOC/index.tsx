@@ -2,7 +2,7 @@ import React from 'react'
 import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
-import { claimSellerFunds } from 'api'
+import { claimSellerFundsAndWitchdraw } from 'api'
 // import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
@@ -226,13 +226,13 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
     }
 
     claimSellerFunds = () => {
-      const { sell, buy, index, account } = this.state
+      const { sell, buy, index, account, userCanClaim } = this.state
       
       console.log(
         `claiming tokens for ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
-      return claimSellerFunds({ sell, buy }, index, account)
+      return claimSellerFundsAndWitchdraw({ sell, buy }, index, userCanClaim, account)
     }
 
     render() {
