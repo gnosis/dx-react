@@ -346,6 +346,24 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
   return DutchX.claimSellerFunds(pair, index, account)
 }
 
+/*
+ * claim seller funds from auction corresponding to a pair of tokens at an index
+ * and withdraw an amount in one call
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const claimSellerFundsAndWitchdraw = async (
+  pair: TokenPair,
+  index?: Index,
+  amount?: Balance | number,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.claimAndWithdraw(pair, index, amount, account)
+}
+
 export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, account?: Account) => {
   const { DutchX, web3: { web3 } } = await promisedAPI;
 
