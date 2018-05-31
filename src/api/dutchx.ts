@@ -143,7 +143,9 @@ async function init(): Promise<DutchExchange> {
     userAccount: Account,
     ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount })
 
-  const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens(tokenAddress)
+  const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens.call(tokenAddress)
+
+  const getApprovedAddressesOfList = (tokenAddresses: Account[]) => dx.getApprovedAddressesOfList.call(tokenAddresses)
 
   const getBalance = (tokenAddress: Account, userAccount: Account) =>
     dx.balances.call(tokenAddress, userAccount)
@@ -184,6 +186,7 @@ async function init(): Promise<DutchExchange> {
       return dx.address
     },
     isTokenApproved,
+    getApprovedAddressesOfList,
     getBalance,
     getLatestAuctionIndex,
     getAuctionStart,

@@ -193,6 +193,7 @@ export interface DXAuction {
   frtToken(): Promise<Account>,
   owlToken(): Promise<Account>,
   approvedTokens(address: Account): Promise<boolean>,
+  getApprovedAddressesOfList(tokenAddresses: Account[]): Promise<boolean[]>,
   latestAuctionIndices(token1: Account, token2: Account): Promise<BigNumber>,
   auctionStarts(token1: Account, token2: Account): Promise<BigNumber>,
   closingPrices(token1: Account, token2: Account, index: Index): Promise<[BigNumber, BigNumber]>,
@@ -379,6 +380,7 @@ export interface DutchExchange {
   address: Account,
 
   isTokenApproved(tokenAddress: Account): Promise<boolean>,
+  getApprovedAddressesOfList(tokenAddresses: Account[]): Promise<boolean[]>,
 
   getBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
