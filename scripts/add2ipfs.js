@@ -1,6 +1,5 @@
 const ipfsAPI = require('ipfs-api')
 const fs = require('fs')
-const p = require('path')
 
 const filePath = process.argv[process.argv.length - 1]
 
@@ -30,8 +29,8 @@ const getContents = async () => {
 
 
 async function run() {
-  const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
   const { length, path, content } = await getContents()
+  const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
   console.log(`POSTING "${path}" to IPFS`)
 
