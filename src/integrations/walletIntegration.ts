@@ -94,12 +94,12 @@ export default async function walletIntegration(store: Store<any>) {
 
   
   try {
-    const { combinedTokenList } = await getTokenList()
+    const { defaultTokenList } = await getTokenList()
   
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
     // then only dispatch that list
-    const [ETH, GNO] = combinedTokenList
+    const [ETH, GNO] = defaultTokenList
     dispatch(setApprovedTokens([ETH.address, GNO.address]))
   
     await initialize(providerOptions)
