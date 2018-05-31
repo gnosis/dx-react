@@ -176,6 +176,8 @@ export interface Settings {
   disclaimer_accepted: boolean,
 }
 
+export type AccountsSet = Set<Account>
+
 /**
  * represents global State of redux store
  * @export
@@ -191,7 +193,7 @@ export interface State {
   tokenList: TokenList,
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
-  approvedTokens: Set<TokenCode>,
+  approvedTokens: AccountsSet,
   ongoingAuctions: OngoingAuctions,
   settings: Settings,
 }

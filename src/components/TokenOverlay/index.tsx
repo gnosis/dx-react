@@ -5,7 +5,7 @@ import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
 
 import { code2tokenMap } from 'globals'
-import { DefaultTokenObject, TokenBalances, TokenMod, State } from 'types'
+import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet } from 'types'
 import Loader from '../Loader'
 
 const filterTokens = createSelector(
@@ -34,7 +34,7 @@ export interface TokenOverlayProps {
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
-  approvedTokens: State['approvedTokens'],
+  approvedTokens: AccountsSet,
 }
 
 interface TokenOverlayState {

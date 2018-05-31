@@ -1,13 +1,13 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
-import { TokenBalances, DefaultTokenObject, State } from 'types'
+import { TokenBalances, DefaultTokenObject, AccountsSet } from 'types'
 
 
 interface TokenListProps {
   tokens: DefaultTokenObject[],
   balances: TokenBalances,
-  approvedTokens: State['approvedTokens'],
+  approvedTokens: AccountsSet,
   onTokenClick(props: any): any
 }
 
