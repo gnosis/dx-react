@@ -20,7 +20,7 @@ import {
 import tokensMap from 'api/apiTesting'
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
-import { getAllTokenDecimals } from 'api'
+import { getAllTokenDecimals, getApprovedTokensFromAllTokens } from 'api'
 
 import { DefaultTokens } from 'api/types'
 import { TokenPair, State } from 'types'
@@ -94,14 +94,18 @@ export default async function walletIntegration(store: Store<any>) {
 
   
   try {
-    const { defaultTokenList } = await getTokenList()
+    // const { defaultTokenList } = await getTokenList()
+    const { combinedTokenList } = await getTokenList()
   
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
     // then only dispatch that list
-    const [ETH, GNO] = defaultTokenList
-    dispatch(setApprovedTokens([ETH.address, GNO.address]))
-  
+    // const [ETH, GNO] = defaultTokenList
+    // dispatch(setApprovedTokens([ETH.address, GNO.address]))
+
+    const approvedTokenAddresses = await getApprovedTokensFromAllTokens(combinedTokenList)
+    dispatch(setApprovedTokens(approvedTokenAddresses))
+    
     await initialize(providerOptions)
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
