@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Provider } from 'react-redux'
-import { hot } from 'react-hot-loader'
 import createHistory from 'history/createBrowserHistory'
 
 import 'styles/global.scss'
@@ -13,19 +12,27 @@ import createStoreWithHistory from 'store'
 
 import ModalContainer from 'containers/Modals'
 
+import { asyncLoadSettings } from 'actions'
+
 export const history = createHistory()
 const store = createStoreWithHistory(history)
 
 // load data from localstorage
 store.dispatch({ type: 'INIT' })
 
+export const loadSettings = () => store.dispatch(asyncLoadSettings())
 export const initializer = () => walletIntegrationCallback(store)
 
-const App = (): any =>
+interface AppProps {
+  disabled?: boolean;
+  disabledReason?: string;
+}
+
+const App = ({ disabled, disabledReason }: AppProps): any =>
   <Provider store={store}>
-    <ModalContainer>
-      <AppRouter history={history} />
+    <ModalContainer isOpen={disabled} modalName={disabled && 'BlockModal'} disabledReason={disabledReason}>
+      <AppRouter disabled={disabled} history={history} />
     </ModalContainer>
   </Provider>
 
-export default hot(module)(App)
+export default App

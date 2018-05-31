@@ -1,4 +1,4 @@
-import { RatioPairs, TokenCode } from 'types'
+import { RatioPairs, DefaultTokenObject } from 'types'
 import { createSelector } from 'reselect'
 
 /**
@@ -20,6 +20,6 @@ export const findRatioPair = createSelector(
   ({ tokenPair }) => tokenPair.sell,
   ({ tokenPair }) => tokenPair.buy,
   ({ ratioPairs }) => ratioPairs,
-  (sell: TokenCode, buy: TokenCode, ratioPairs: RatioPairs) => ratioPairs.find(
-    pair => pair.sell === sell && pair.buy === buy),
+  (sell: DefaultTokenObject, buy: DefaultTokenObject, ratioPairs: RatioPairs) => ratioPairs.find(
+    pair => pair.sell.address === sell.address && pair.buy.address === buy.address),
 )

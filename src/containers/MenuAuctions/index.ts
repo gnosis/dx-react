@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 
-// import { State } from 'types'
+import { State } from 'types'
 
-import OngoingAuctionsHOC from 'components/OngoingAuctionsHOC'
-import MenuAuctions/*, { MenuAuctionProps }*/ from 'components/MenuAuctions'
+import MenuAuctions from 'components/MenuAuctions'
+import { claimSellerFundsFromSeveral } from 'actions'
 
-// const mapStateToProps = (state: State) => ({
-//   ongoingAuctions: state.blockchain.ongoingAuctions,
-// })
+const mapStateToProps = (state: State) => ({
+  ongoingAuctions: state.auctions.ongoingAuctions,
+})
 
-export default connect()(OngoingAuctionsHOC(MenuAuctions))
+export default connect(mapStateToProps, { claimSellerFundsFromSeveral })(MenuAuctions)

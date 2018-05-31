@@ -1,14 +1,20 @@
 import * as React from 'react'
 import { OngoingAuctions } from 'types'
+import { Link } from 'react-router-dom'
+import { DefaultTokenObject } from 'api/types'
 
 export interface MenuAuctionProps {
-  name?: string,
-  ongoingAuctions: OngoingAuctions
+  name?: string;
+  ongoingAuctions: OngoingAuctions;
+  claimSellerFundsFromSeveral(
+    sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
+  ): any;
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
   name = 'YOUR AUCTIONS',
   ongoingAuctions,
+  claimSellerFundsFromSeveral,
 }) => (
     <div className="menuAuctions"><img src={require('assets/auction.svg')} />
       {name}
@@ -18,19 +24,25 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
             <thead>
               <tr>
                 <th>Auction</th>
-                <th>Index</th>
                 <th>Committed</th>
-                <th>Claim Token</th>
+                <th>Claim Tokens</th>
               </tr>
             </thead>
             <tbody>
               {ongoingAuctions.map(
-                auction =>
-                  <tr key={`${auction.sell}-${auction.buy}-${auction.index}`}>
-                    <td>{`${auction.sell}/${auction.buy}`}</td>
-                    <td>{`${auction.index}`}</td>
-                    <td>{`${auction.price} ${auction.sell}`}</td>
-                    {auction.claim && <td><img src={require('assets/claim.svg')} /></td>}
+                (auction, i) =>
+                  <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
+                    <td>
+                      <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}>
+                        {`${auction.sell.symbol}/${auction.buy.symbol}`}
+                      </ Link>
+                    </td>
+                    {/* <td>{`${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}</td> */}
+                    <td>
+                      <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1] || 'N/A'} ${auction.sell.symbol}`}</p>
+                      <p>{`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] || 0} ${auction.buy.symbol}`}</p>
+                    </td>
+                    {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                   </tr>,
               )}
             </tbody>

@@ -3,6 +3,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { History } from 'history'
 import thunk from 'redux-thunk'
 
+import { enableBatching } from 'redux-batched-actions'
 import CrashReporter from 'middlewares/CrashReporter'
 import LocalStorageDump from 'middlewares/LocalStorageDump'
 import LocalStorageLoad from 'middlewares/LocalStorageLoad'
@@ -28,7 +29,7 @@ export default function (history: History, initialState?: Partial<State>) {
 
   const enhancer = composeEnhancers(applyMiddleware(...middlewares))
 
-  const store = createStore(connectRouter(history)(reducer), initialState, enhancer)
+  const store = createStore(connectRouter(history)(enableBatching(reducer)), initialState, enhancer)
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

@@ -93,4 +93,25 @@ const mapState = ({
   modalProps,
 })
 
-export default connect<ModalContainerProps>(mapState, { closeModal, approveAndPostSellOrder })(ModalContainer)
+interface OwnProps {
+  isOpen?: boolean;
+  modalName?: string;
+}
+
+interface DispatchProps {
+  closeModal: typeof closeModal;
+  approveAndPostSellOrder: typeof approveAndPostSellOrder;
+}
+
+const mergeProps = (stateProps: ModalContainerProps, dispatchProps: {}, ownProps: OwnProps) => ({
+  ...ownProps,
+  ...stateProps,
+  ...dispatchProps,
+  // let isOpen and modalName on ownProps overwrite the one from redux store
+  isOpen: ownProps.isOpen || stateProps.isOpen,
+  modalName: ownProps.modalName || stateProps.modalName,
+})
+
+export default connect<ModalContainerProps, DispatchProps, any>(
+  mapState, { closeModal, approveAndPostSellOrder }, mergeProps,
+)(ModalContainer)

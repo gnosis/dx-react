@@ -1,16 +1,18 @@
 import { handleActions } from 'redux-actions'
 
 import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair } from 'actions'
-import { TokenPair, Balance } from 'types'
-import { TokenItemProps } from 'components/TokenItem'
+import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
 
-export default handleActions<TokenPair & { sellAmount: Balance }, TokenItemProps & TokenPair>(
+export default handleActions<
+TokenPair,
+TokenPair & { token: DefaultTokenObject, mod: TokenMod }
+>(
   {
     [selectTokenAndCloseOverlay.toString()]: (state, action) => {
-      const { mod, code } = action.payload as TokenItemProps
+      const { mod, token } = action.payload
       return {
         ...state,
-        [mod]: code,
+        [mod]: token,
         sellAmount: '0',
       }
     },
@@ -31,8 +33,18 @@ export default handleActions<TokenPair & { sellAmount: Balance }, TokenItemProps
     }),
   },
   {
-    sell: 'ETH',
-    buy: 'GNO',
+    sell: {
+      name: 'ETHER',
+      symbol: 'ETH',
+      decimals: 18,
+      address: undefined,
+    },
+    buy: {
+      name: 'GNOSIS',
+      symbol: 'GNO',
+      decimals: 18,
+      address: undefined,
+    },
     sellAmount: '0',
     index: '0',
   },

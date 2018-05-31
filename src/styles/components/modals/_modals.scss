@@ -1,0 +1,103 @@
+// Modal
+.modalDivStyle {
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(26, 73, 119, 0.87);
+  color: $white;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+
+  .modalParentDiv {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  > h1 {
+    font-size: 2.5em;
+  }
+
+  > h1, .modalButtonDescription {
+    margin: 20px;
+  }
+
+  > h1, .modalButtonDescription, .modalPSmall {
+    color: white;
+    line-height: normal;
+  }
+
+  > .modalHeaderDescriptor {
+    font-size: 1.5em;
+    line-height: 1.5;
+    margin: 0 30px;
+    text-align: center;
+    width: 100%;
+    max-width: 40em;
+  }
+
+  .modalError {
+    background-color: #911919;
+    color: white;
+    font-size: .9vw;
+    line-height: normal;
+    margin: 30px;
+    padding: 15px;
+    max-width: 60%;
+    text-align: left;
+    word-wrap: break-word;
+  }
+
+  .modalButton {
+    background-color: $orange;
+    border: 0;
+    border-radius: 3px;
+    color: white;
+    font-size: 1.5em;
+    min-height: 50px;
+    width: 100%;
+    max-width: 14em;
+    font-family: inherit;
+    outline: 0;
+
+    &:hover {
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+    }
+  }
+
+  .modalButtonDescription {
+    font-size: 1.2vw;
+    padding: 0 10px;
+    text-align: left;
+    width: 70vw;
+  }
+
+  .modalButtonDiv {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 75%;
+  }
+
+  .modalTXDataDiv {
+    background: #2fff8c6b;
+    font-size: 1.4vw;
+    margin: 32px 0;
+    padding: 20px;
+
+    > ul {
+      color: $white;
+      font-family: monospace;
+      line-height: initial;
+      text-align: left;
+    }
+  }
+}

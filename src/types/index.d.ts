@@ -1,35 +1,61 @@
-interface Code2Name {
+import BigNumber from 'bignumber.js'
+import { DefaultTokens, DefaultTokenObject } from 'api/types'
+export { DefaultTokens, DefaultTokenObject }
+
+import { ProviderName } from 'globals'
+
+export interface Code2Name {
   ETH: 'ETHER',
   GNO: 'GNOSIS',
   REP: 'AUGUR',
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  MGN: 'MAGNOLIA',
+  OWL: 'OWL',
+  RDN: 'RAIDEN',
 }
 
 export type TokenCode = keyof Code2Name
 export type TokenName = Code2Name[TokenCode]
+export type TokenAddresses = Account[]
 export type Balance = string
 export type Account = string
+export type BigNumber = BigNumber
 
-interface Providers {
-  [provider: string]: any,
+export interface Provider {
+  name?: ProviderName,
+  loaded: boolean,
+  available: boolean,
+  unlocked: boolean,
+  network?: string,
+  account?: Account,
+  balance?: Balance,
+  priority: number,
+  timestamp?: number
+}
+
+export type Providers = {
+  [P in ProviderName]?: Provider;
 }
 
 export interface Blockchain {
   providers?: Providers,
-  activeProvider?: keyof Providers,
+  activeProvider?: ProviderName,
   defaultAccount?: Account,
   currentAccount?: Account,
-  currentBalance?: Balance,
+  currentBalance?: BigNumber,
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: object,
   gasPrice?: Balance,
   ongoingAuctions?: OngoingAuctions,
+  connected?: boolean,
   connectionTried?: boolean,
   providersLoaded?: boolean,
   dutchXInitialized?: boolean,
+  feeRatio?: number,
+  mgnSupply?: Balance,
 }
 
 export interface Modal {
@@ -37,6 +63,11 @@ export interface Modal {
   modalProps: {
     header: string,
     body: string,
+    txData?: {
+      tokenA: DefaultTokenObject,
+      tokenB?: DefaultTokenObject,
+      sellAmount: Balance | BigNumber,
+    },
     button?: boolean,
     error?: string,
   }
@@ -52,22 +83,42 @@ export type OngoingAuctions = AuctionObject[]
  * buyToken: token to buy
  * buyPrice: last closingPrice - from DutchExchange contract
  * claim: boolean yay or ney
- * 
- * 
+ *
+ *
  */
 export type AuctionObject = {
-  index?: number,
-  sell: TokenCode,
-  buy: TokenCode,
-  price: number,
-  balance?: Balance,
-  claim: boolean,
-  contractAddress?: Account,
-  timestamp?: string,
+  sell: {
+    name: TokenName,
+    symbol: TokenCode,
+    address: Account,
+  },
+  buy: {
+    name: TokenName,
+    symbol: TokenCode,
+    address: Account,
+  },
+  claim?: boolean,
+  indicesWithSellerBalance?: string[] | BigNumber[],
+  balancePerIndex?: string[] | BigNumber[],
+  claimInverse?: boolean,
+  indicesWithSellerBalanceInverse?: string[] | BigNumber[],
+  balancePerIndexInverse?: string[] | BigNumber[],
 }
 
-export type TokenBalances = {[code in TokenCode]?: Balance }
+export type TokenBalances = { [P in Account]: BigNumber }
 
+export interface TokenListType {
+  CUSTOM: 'CUSTOM',
+  DEFAULT: 'DEFAULT',
+  UPLOAD: 'UPLOAD',
+}
+
+export interface TokenList {
+  defaultTokenList: DefaultTokenObject[];
+  customTokenList: DefaultTokenObject[];
+  combinedTokenList: DefaultTokenObject[];
+  type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
+}
 
 /**
  * represents chosen TokenPair
@@ -77,8 +128,8 @@ export type TokenBalances = {[code in TokenCode]?: Balance }
  * @interface TokenPair
  */
 export interface TokenPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   sellAmount?: Balance,
   index?: string,
   allowanceLeft?: Balance,
@@ -89,8 +140,8 @@ export interface TokenPair {
  * used in TopAuctions
  */
 export interface RatioPair {
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   price: Balance,
 }
 
@@ -110,17 +161,37 @@ export interface TokenOverlay {
   mod: TokenMod
 }
 
+export type FileBuffer = ArrayBuffer
+
+export interface IPFS {
+  oFile?: File,
+  fileContent?: string;
+  fileBuffer?: FileBuffer,
+  fileHash?: string,
+  filePath?: string,
+  json?: Object
+}
+
+export interface Settings {
+  disclaimer_accepted: boolean,
+}
+
 /**
- * represents global State of redux store 
+ * represents global State of redux store
  * @export
  * @interface State
  */
 export interface State {
+  auctions: any,
   blockchain: Blockchain,
   modal: Modal,
-  tokenPair: TokenPair,
+  ipfs: IPFS,
+  ratioPairs: RatioPairs
   tokenBalances: TokenBalances,
+  tokenList: TokenList,
+  tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
-  ratioPairs: RatioPairs,
   approvedTokens: Set<TokenCode>,
+  ongoingAuctions: OngoingAuctions,
+  settings: Settings,
 }

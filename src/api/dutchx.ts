@@ -4,211 +4,165 @@ import { TokenPair, Account, Balance, TokenCode } from 'types'
 
 export const promisedDutchX = init()
 
-// TODO: get correct global addresses
-// or create a json during migration
-type T2A = Partial<{[P in TokenCode]: string}>
-
-
 async function init(): Promise<DutchExchange> {
-  const { DutchExchange: dx, ...tokens } = await promisedContractsMap
-  // const token2Address: T2A = {
-  //   ETH: '0x283hduie',
-  //   GNO: '0x3u4376',
-  // }
+  const { DutchExchange: dx } = await promisedContractsMap
 
-  const token2Address = Object.keys(tokens).reduce((acc, key) => {
+  /* const token2Address = Object.keys(tokens).reduce((acc, key) => {
     const contr = tokens[key]
     acc[key.replace('Token', '')] = contr.address
     return acc
-  }, {}) as T2A
-  
-  const getTokenAddress = (code: TokenCode) => {
-    const address = token2Address[code]
-  
-    if (!address) throw new Error(`No known address for ${code} token`)
-  
-    return address
-  }
-  
-  const getTokenPairAddresses = ({ sell, buy }: TokenPair): [Account, Account] => {
-    const sellAddress = getTokenAddress(sell)
-    const buyAddress = getTokenAddress(buy)
-  
-    return [sellAddress, buyAddress]
-  }
+  }, {}) as T2A */
 
-  const getLatestAuctionIndex = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-    return dx.getAuctionIndex.call(t1, t2)
-  }
+  const getLatestAuctionIndex = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.getAuctionIndex.call(t1, t2)
 
-  const getAuctionStart = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-    return dx.getAuctionStart.call(t1, t2)
-  }
+  const getAuctionStart = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.getAuctionStart.call(t1, t2)
 
-  const getClosingPrice = (pair: TokenPair, index: Index) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const getClosingPrice = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair, index: Index) =>
+    dx.closingPrices.call(t1, t2, index)
 
-    return dx.closingPrices.call(t1, t2, index)
-  }
+  const getPrice = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair, index: Index) =>
+    dx.getCurrentAuctionPrice.call(t1, t2, index)
 
-  const getPrice = (pair: TokenPair, index: Index) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const getSellVolumesCurrent = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.sellVolumesCurrent.call(t1, t2)
 
-    return dx.getCurrentAuctionPrice.call(t1, t2, index)
-  }
+  const getSellVolumesNext = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.sellVolumesNext.call(t1, t2)
 
-  const getSellVolumesCurrent = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const getBuyVolumes = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.buyVolumes.call(t1, t2)
 
-    return dx.sellVolumesCurrent.call(t1, t2)
-  }
+  const getExtraTokens = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair) =>
+    dx.extraTokens.call(t1, t2)
 
-  const getSellVolumesNext = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const getSellerBalances = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.sellerBalances.call(t1, t2, index, userAccount)
 
-    return dx.sellVolumesNext.call(t1, t2)
-  }
+  const getBuyerBalances = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account) => dx.buyerBalances.call(t1, t2, index, userAccount)
 
-  const getBuyVolumes = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.buyVolumes.call(t1, t2)
-  }
-
-  const getExtraTokens = (pair: TokenPair) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.extraTokens.call(t1, t2)
-  }
-
-  const getSellerBalances = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.sellerBalances.call(t1, t2, index, account)
-  }
-
-  const getBuyerBalances = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.buyerBalances.call(t1, t2, index, account)
-  }
-
-  const getClaimedAmounts = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.claimedAmounts.call(t1, t2, index, account)
-  }
+  const getClaimedAmounts = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimedAmounts.call(t1, t2, index, userAccount)
 
   const postSellOrder = (
-    pair: TokenPair,
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
-    account: Account,
-  ) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-    
-    return dx.postSellOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
-  }
+    userAccount: Account,
+  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
 
   postSellOrder.call = (
-    pair: TokenPair,
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
-    account: Account,
-  ) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.postSellOrder.call(t1, t2, index, amount, { from: account })
-  }
+    userAccount: Account,
+  ) => dx.postSellOrder.call(t1, t2, index, amount, { from: userAccount })
 
   const postBuyOrder = (
-    pair: TokenPair,
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
-    account: Account,
-  ) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.postBuyOrder(t1, t2, index, amount, { from: account, gas: 4712388 })
-  }
+    userAccount: Account,
+  ) => dx.postBuyOrder(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
 
   postBuyOrder.call = (
-    pair: TokenPair,
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
+    userAccount: Account,
+  ) => dx.postBuyOrder.call(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
+
+  const claimSellerFunds = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount })
+
+  claimSellerFunds.call = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimSellerFunds.call(t1, t2, userAccount, index)
+
+  const claimTokensFromSeveralAuctionsAsSeller = (
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
     account: Account,
-  ) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  ) => dx.claimTokensFromSeveralAuctionsAsSeller(
+    sellTokenAddresses,
+    buyTokenAddresses,
+    indices,
+    account,
+    { from: account },
+  )
 
-    return dx.postBuyOrder.call(t1, t2, index, amount, { from: account, gas: 4712388 })
-  }
+  const claimBuyerFunds = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimBuyerFunds(t1, t2, userAccount, index, { from: userAccount })
 
-  const claimSellerFunds = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  claimBuyerFunds.call = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    userAccount: Account,
+  ) => dx.claimBuyerFunds.call(t1, t2, userAccount, index)
 
-    return dx.claimSellerFunds(t1, t2, account, index, { from: account })
-  }
+  const deposit = (tokenAddress: Account, amount: Balance, userAccount: Account) =>
+    dx.deposit(tokenAddress, amount, { from: userAccount })
 
-  claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const withdraw = (tokenAddress: TokenCode, amount: Balance, userAccount: Account) =>
+    dx.withdraw(tokenAddress, amount, { from: userAccount })
 
-    return dx.claimSellerFunds.call(t1, t2, account, index)
-  }
-
-  claimSellerFunds.call = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.claimSellerFunds.call(t1, t2, account, index)
-  }
-
-  const claimBuyerFunds = (pair: TokenPair, index: Index, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.claimBuyerFunds(t1, t2, account, index, { from: account })
-  }
-
-  const deposit = (code: TokenCode, amount: Balance, account: Account) => {
-    const token = getTokenAddress(code)
-
-    return dx.deposit(token, amount, { from: account })
-  }
-
-  const withdraw = (code: TokenCode, amount: Balance, account: Account) => {
-    const token = getTokenAddress(code)
-
-    return dx.withdraw(token, amount, { from: account })
-  }
-
-  const depositAndSell = (pair: TokenPair, amount: Balance, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
-
-    return dx.depositAndSell(t1, t2, amount, { from: account })
-  }
+  const depositAndSell = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    amount: Balance,
+    userAccount: Account,
+  ) => dx.depositAndSell(t1, t2, amount, { from: userAccount })
 
   depositAndSell.call = (
-    pair: TokenPair,
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
-  ) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  ) => dx.depositAndSell.call(t1, t2, amount)
 
-    return dx.depositAndSell.call(t1, t2, amount)
-  }
+  const claimAndWithdraw = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    index: Index,
+    amount: Balance,
+    userAccount: Account,
+    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount })
 
-  const claimAndWithdraw = (pair: TokenPair, index: Index, amount: Balance, account: Account) => {
-    const [t1, t2] = getTokenPairAddresses(pair)
+  const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens(tokenAddress)
 
-    return dx.claimAndWithdraw(t1, t2, account, index, amount, { from: account })
-  }
+  const getBalance = (tokenAddress: Account, userAccount: Account) =>
+    dx.balances.call(tokenAddress, userAccount)
 
-  const isTokenApproved = (code: TokenCode) => dx.approvedTokens(getTokenAddress(code))
+  const getRunningTokenPairs = (tokenList: Account[]) => dx.getRunningTokenPairs.call(tokenList)
 
-  const getBalance = (code: TokenCode, account: Account) => {
-    const token = getTokenAddress(code)
+  const getSellerBalancesOfCurrentAuctions = (
+    sellTokenArr: Account[],
+    buyTokenArr: Account[],
+    userAccount: Account,
+  ) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, userAccount)
 
-    return dx.balances.call(token, account)
-  }
+  const getIndicesWithClaimableTokensForSellers = (
+    { sell: { address: sellToken }, buy: { address: buyToken } }: TokenPair,
+    userAccount: Account,
+    lastNAuctions: number = 0,
+  ) => dx.getIndicesWithClaimableTokensForSellers.call(sellToken, buyToken, userAccount, lastNAuctions)
+
+  const getFeeRatio = (userAccount: Account) => dx.getFeeRatio.call(userAccount)
 
   const event: DutchExchange['event'] = (
     eventName: DutchExchangeEvents,
@@ -241,7 +195,12 @@ async function init(): Promise<DutchExchange> {
     getExtraTokens,
     getSellerBalances,
     getBuyerBalances,
+    getRunningTokenPairs,
+    getSellerBalancesOfCurrentAuctions,
+    getIndicesWithClaimableTokensForSellers,
     getClaimedAmounts,
+    claimTokensFromSeveralAuctionsAsSeller,
+    getFeeRatio,
     postSellOrder,
     postBuyOrder,
     claimSellerFunds,

@@ -5,7 +5,7 @@ export const TextSquare: React.SFC = () => {
   return (
     <div className="intro">
       <h1>Decentralized Token Auction Exchange</h1>
-      <p>
+      <div className="textSquareInnerContainer">
         The DutchX is a decentralized exchange for ERC20 tokens and ETH,
         determining a fair value for tokens based on the Dutch auction principle.
 
@@ -30,7 +30,7 @@ export const TextSquare: React.SFC = () => {
         <br />
         { /*TODO: change this below - defaultProp is hurting this*/ }
         <ButtonCTA className="void" to="#">How the DutchX works</ButtonCTA>
-      </p>
+      </div>
     </div>
   )
 }

@@ -1,18 +1,18 @@
 import React from 'react'
 
-import { Balance, TokenCode } from 'types'
+import { Balance } from 'types'
 
 export interface AuctionPriceBarProps {
-  buyToken: TokenCode,
+  buyTokenSymbol: string,
   header: string,
-  sellToken: TokenCode,
+  sellTokenSymbol: string,
   sellTokenPrice: Balance,
 }
 
-const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellToken, sellTokenPrice, buyToken, header }) => 
+const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellTokenSymbol, sellTokenPrice, buyTokenSymbol, header }) => 
   <div className="auctionLastPrice">
     <small>{`${header} of last auction:`}</small>
-    <big>{`1 ${sellToken} = ${sellTokenPrice} ${buyToken}`}</big>
+    <big>{`1 ${sellTokenSymbol} = ${sellTokenPrice} ${buyTokenSymbol}`}</big>
   </div>
 
 export default AuctionPriceBar

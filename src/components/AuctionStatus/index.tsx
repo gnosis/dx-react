@@ -1,14 +1,14 @@
 import React from 'react'
 import TokenClaimingHOC, { TokenClaimingState } from 'components/TokenClaimingHOC'
 
-import { TokenCode } from 'types'
+import { DefaultTokenObject } from 'types'
 import { AuctionStatus as Status } from 'globals'
 
 import claim from 'assets/claim.svg'
 
 export interface AuctionStatusProps {
-  sellToken: TokenCode,
-  buyToken: TokenCode,
+  sellToken: DefaultTokenObject,
+  buyToken: DefaultTokenObject,
   buyAmount: number,
   timeLeft: number,
   status: Status
@@ -36,15 +36,15 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
   switch (status) {
     case Status.ACTIVE:
       return [
-          <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
-          <i key="1">{getTimeStr(timeLeft)}</i>
-        ] as any
+        <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
+        <i key="1">{getTimeStr(timeLeft)}</i>,
+      ] as any
     case Status.ENDED:
       return (
         <span>
           <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
             <i>CLAIM</i>
-            <strong>{buyAmount} {buyToken}</strong>
+            <strong>{buyAmount} {buyToken.symbol || buyToken.name || buyToken.address}</strong>
             <span><img src={claim} /></span>
           </button>
         </span>
@@ -63,7 +63,7 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = (props) => {
     <div className="auctionStatus">
       <span>
         <small>AUCTION</small>
-        <big>{sellToken}/{buyToken}</big>
+        <big>{sellToken.symbol || sellToken.name || sellToken.address}/{buyToken.symbol || buyToken.name || buyToken.address}</big>
       </span>
 
       <span>

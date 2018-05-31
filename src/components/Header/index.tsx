@@ -3,7 +3,7 @@ import * as React from 'react'
 import MenuWallet from 'containers/MenuWallet'
 import MenuAuctions from 'containers/MenuAuctions'
 import Hamburger from 'components/Hamburger'
-import MenuFeeBalance from 'components/MenuFeeBalance'
+import MenuFeeBalance from 'containers/MenuFeeBalance'
 import { Link } from 'react-router-dom'
 
 export const Header: React.SFC = () => (

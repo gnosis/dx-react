@@ -61,11 +61,13 @@ export const generateTokenBalances = (codes = codeList) => codes.reduce(
 * } from codeList
 */
 export const generateRatioPairs = (codes = codeList) => codes.reduce((acc, code) => {
-  if (code !== 'ETH') acc.push({
-    sell: 'ETH',
-    buy: code,
-    price: Math.random().toFixed(8),
-  })
+  if (code !== 'ETH') {
+    acc.push({
+      sell: 'ETH',
+      buy: code,
+      price: Math.random().toFixed(8),
+    })
+  }
 
   return acc
 }, []) as RatioPairs

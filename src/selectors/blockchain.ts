@@ -1,12 +1,7 @@
 // import { getCurrentAccount } from '../api/dutchx'
-import { State } from 'types'
+import { State, Provider } from 'types'
+import { ProviderName } from 'globals'
 import { /* get, */ find, orderBy } from 'lodash'
-
-export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
-
-type Providers = {
-  [P in ProviderName]: string
-}
 
 export const selector = (state: State) => state.blockchain
 
@@ -16,18 +11,18 @@ export const selector = (state: State) => state.blockchain
  */
 // TODO: consider changing activeProvider dynamically in store on UPDATE_PROVIDER action
 // that way we won't even need find/setActiveProvider in actions/blockchain
-export const findDefaultProvider = (state: State) => {
+export const findDefaultProvider = (state: State): Provider => {
   const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
-
+  // @ts-ignore
   return find(providers, {
     name: 'METAMASK',
     // loaded: true, available: true,
   })
 }
 
-export const getActiveProvider = (state: State): Providers['METAMASK' | 'MIST'] => selector(state).activeProvider
+export const getActiveProvider = (state: State): ProviderName => selector(state).activeProvider
 
-export const getSelectedProvider = (state: State): Providers | null => (
+export const getSelectedProvider = (state: State): Provider | null => (
   selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null
 )
 

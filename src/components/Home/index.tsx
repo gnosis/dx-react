@@ -4,16 +4,18 @@ import NoWallet from 'containers/NoWallet'
 import TextSquare from 'components/TextSquare'
 import TokenPicker from 'containers/TokenPicker'
 
-import { Providers } from 'types'
-
 export interface HomeProps {
-  activeProvider: Providers['METAMASK' | 'MIST']
+  walletEnabled: boolean,
+  showPicker?: boolean,
+  needsTokens?: boolean,
 }
 
-const Home: React.SFC<HomeProps> = ({ activeProvider }) =>
+const Home: React.SFC<HomeProps> = ({ walletEnabled, showPicker }) =>
   <section className="home">
     <TextSquare />
-    {(activeProvider === 'METAMASK' || activeProvider === 'MIST') ? <TokenPicker to="/order" /> : <NoWallet />}
+    {(showPicker || walletEnabled) ?
+      <TokenPicker to="/order" showPair={showPicker} /> : <NoWallet />
+    }
   </section>
 
 export default Home

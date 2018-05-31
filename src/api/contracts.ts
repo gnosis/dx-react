@@ -15,7 +15,9 @@ const contractNames = [
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
-  'TokenMGN',
+  'TokenFRT',
+  'TokenOMG',
+  'TokenRDN',
   'Proxy',
   'TokenOWLProxy',
 ]
@@ -27,38 +29,43 @@ const filename2ContractNameMap = {
 
 
 interface ContractsMap {
-  DutchExchange: DXAuction
-  TokenETH: ETHInterface,
-  TokenGNO: GNOInterface,
-  TokenOWL: OWLInterface,
-  TokenMGN: MGNInterface,
+  DutchExchange:  DXAuction,
+  TokenETH:       ETHInterface,
+  TokenGNO:       GNOInterface,
+  TokenOWL:       OWLInterface,
+  TokenMGN:       MGNInterface,
+  TokenOMG:       GNOInterface,
+  TokenRDN:       GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
   Proxy: DeployedContract,
-  TokenOWLProxy: DeployedContract,  
+  TokenOWLProxy: DeployedContract,
 }
 
 const req = require.context(
-  '../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/',
+  '@gnosis.pm/dx-contracts/build/contracts/',
   false,
-  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenMGN)\.json$/,
+  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenFRT|TokenOMG|TokenRDN)\.json$/,
 )
 
-type TokenArtifact = 
+export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/pm-contracts/build/contracts/HumanFriendlyToken.json'))
+
+type TokenArtifact =
   './DutchExchange.json' |
   './Proxy.json' |
   './EtherToken.json' |
   './TokenGNO.json' |
   './TokenOWL.json' |
   './TokenOWLProxy.json' |
-  './TokenMGN.json'
+  './TokenFRT.json' |
+  './TokenOMG.json' |
+  './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
 const Contracts: SimpleContract[] = contractNames.map(
   c => TruffleContract(req(reqKeys.find(key => key === `./${c}.json`))),
 )
-// const Contracts = contractNames.map(name => TruffleContract(require(`../../node_modules/@gnosis.pm/dutch-exchange-smartcontracts/build/contracts/${name}.json`)))
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
@@ -68,7 +75,7 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
 
 (window as any).m = contractsMap
 
-export const setProvider = (provider: any) => Contracts.forEach((contract) => {
+export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
 })
 
@@ -85,7 +92,11 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   const deployedContracts = contractNames.reduce((acc, name, i) => {
-    acc[filename2ContractNameMap[name] || name] = instances[i]
+    if (name === 'TokenFRT') {
+      acc['TokenMGN'] = instances[i]
+    } else {
+      acc[filename2ContractNameMap[name] || name] = instances[i]
+    }
     return acc
   }, {}) as ContractsMapWProxy
 
@@ -94,7 +105,7 @@ async function init() {
 
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
   deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
-  // console.log(await deployedContracts.DutchExchange.thresholdNewTokenPair())
+
   delete deployedContracts.Proxy
   delete deployedContracts.TokenOWLProxy
 

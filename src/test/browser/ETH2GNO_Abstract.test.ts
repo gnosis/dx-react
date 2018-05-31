@@ -60,7 +60,9 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   let claimBuyerFunds: DutchExchange['claimBuyerFunds']
   let postBuyOrder: DutchExchange['postBuyOrder']
 
-  const pair: TokenPair = { sell: 'ETH', buy: 'GNO' }
+  const pair: TokenPair = {
+    sell: { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 },
+    buy: { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 } }
 
   let accounts: any; let accs: any
 
@@ -165,7 +167,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
-    const initialClosingPrice = (await closingPrice('ETH', 'GNO', -1)).map(n => n.toNumber())
+    const initialClosingPrice = (await closingPrice(pair, -1)).map(n => n.toNumber())
 
     expect(initialClosingPrice).toEqual([2, 1])
 
@@ -214,7 +216,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
     const aucIdx = (await getLatestAuctionIndex(pair)).toNumber()
     // seller submits order and returns transaction object
     // that includes logs of events that fired during function execution
-    const { logs: [log] } = await postSellOrder('ETH', 'GNO', amount, aucIdx, seller)
+    const { logs: [log] } = await postSellOrder(pair.sell, pair.buy, amount, aucIdx, seller)
     const { _auctionIndex, _from, amount: submittedAmount } = log.args
 
     // submitter is indeed the seller
@@ -499,7 +501,8 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
   }
 
   function watchAllEventsFor(contract: any, name: string) {
-    const addr2acc = Object.entries(accs).reduce((accum, [name, addr]: [string, string]) => (accum[addr] = name, accum), {})
+    const addr2acc = Object.entries(accs)
+      .reduce((accum, [name, addr]: [string, string]) => (accum[addr] = name, accum), {})
     contract.allEvents((err: Error, log: any) => {
       if (err) {
         console.error(err, name)

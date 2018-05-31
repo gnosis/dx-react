@@ -4,6 +4,8 @@ import { storiesOf } from '@storybook/react'
 import { text, number } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import TokenItem, { TokenItemProps } from 'components/TokenItem'
 import { code2tokenMap, codeList } from 'globals'
 import { TokenMod, Balance, TokenCode, TokenName } from 'types'
@@ -18,13 +20,13 @@ const CenterDecor = makeCenterDecorator({
 
 const constructKnobs = (name: TokenName, code: TokenCode, balance: Balance, mod?: TokenMod) => ({
   name: text('name', name),
-  code: text('code', code),
-  balance: number('balance', +balance, {
+  symbol: text('code', code),
+  balance: toBigNumber(number('balance', +balance, {
     range: true,
     min: 0,
     max: 100,
     step: 0.00000001,
-  }).toString(),
+  })),
   mod: text('mod', mod),
 }) as TokenItemProps
 

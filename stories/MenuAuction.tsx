@@ -20,6 +20,7 @@ const constructKnobs = (
 ) => ({
   name: text('title', name),
   ongoingAuctions: auctionsArr.map((item: object, i: number) => object(`Ongoing Auctions ${i}`, item)),
+  claimSellerFundsFromSeveral: () => console.log('Claiming!')
 })
 
 storiesOf(`MenuAuctions`, module)

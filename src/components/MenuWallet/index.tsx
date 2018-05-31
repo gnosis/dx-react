@@ -1,22 +1,34 @@
 import React from 'react'
-import 'styles/components/navbar/_navbar.scss'
 
-import { Account, Balance, TokenBalances } from 'types'
+import Loader from 'components/Loader'
+
+import { Account, BigNumber, TokenBalances } from 'types'
 
 export interface WalletProps {
   account: Account,
-  balance: Balance,
+  addressToSymbolDecimal: {},
+  balance: BigNumber,
   tokens: TokenBalances,
 }
 
-export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens }) => (
+// TODO: use below to map addressToSymbolMap[token] = token name or symbol
+/* addressToSymbolMap: {
+  0x1234: 'ETH'
+} */
+
+export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens }) => (
   <div className="menuWallet">
     <span>
-      <code>{`${account ? account.slice(0,10) : 'loading...'}...`}</code>
-      <small>{balance != null ? balance : 'loading...'} ETH</small>
+      <code>{`${account ? account.slice(0,10) : 'No Wallet Detected'}...`}</code>
+      <small>{balance != null ? balance.toNumber().toFixed(4) : '0'} ETH</small>
     </span>
-
-    <div>
+    {account && <div>
+      <Loader
+      hasData={Object.keys(addressToSymbolDecimal).length > 0}
+      message="Enable wallet"
+      svgHeight={35}
+      reSize={0.25}
+      render={() =>
         <table>
           <thead>
             <tr>
@@ -25,15 +37,21 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, balance, tokens })
             </tr>
           </thead>
           <tbody>
-            {Object.keys(tokens).map((token: any) => 
-              <tr key={token}>
-                <td>{token}</td>
-                <td>{Number(tokens[token]).toFixed(4)}</td>
-              </tr>,
-            )}
+            {Object.keys(tokens).map((addressKey: any) => {
+              if (!addressToSymbolDecimal[addressKey]) return null
+              const { name, decimals } = addressToSymbolDecimal[addressKey]
+              return (
+                tokens[addressKey].gt(0) &&
+                <tr key={addressKey}>
+                  <td>{name || 'Unknown'}</td>
+                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(2)}</td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
-    </div>
+      }/>
+    </div>}
   </div>
 )
 

@@ -6,7 +6,8 @@ import AuctionHeader from 'components/AuctionHeader'
 import AuctionProgress from 'components/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
 
-import BuyButton from 'components/BuyButton'
+import Loader from 'components/Loader'
+import Aux from 'components/AuxComponent'
 
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
@@ -27,29 +28,38 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
   sell, buy,
   status, completed, timeToCompletion,
-  userSelling, userGetting, userCanClaim, 
+  userSelling, userGetting, userCanClaim,
+  error,
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
       {/* TODO: grab auction address for url */}
       Auction URL: <a href="#">https://www.dutchx.pm{url}/</a>
     </AuctionHeader>
-    <AuctionStatus
-      sellToken={sell}
-      buyToken={buy}
-      buyAmount={userCanClaim}
-      timeLeft={timeToCompletion}
-      status={status}
-    />
-    <BuyButton />
-    <AuctionProgress progress={getAuctionProgress(status)} />
-    <AuctionFooter
-      sellToken={sell}
-      buyToken={buy}
-      sellAmount={userSelling}
-      buyAmount={userGetting}
-      auctionEnded={completed}
-    />
+    <Loader
+      hasData={sell}
+      message={error || 'Auction has not started. Please try a lower auction index'}
+      render={() =>
+        <Aux>
+          <AuctionStatus
+            sellToken={sell}
+            buyToken={buy}
+            buyAmount={userCanClaim}
+            timeLeft={timeToCompletion}
+            status={status}
+          />
+          <AuctionProgress progress={getAuctionProgress(status)} />
+          <AuctionFooter
+            sellTokenSymbol={sell.symbol || sell.name || sell.address}
+            buyTokenSymbol={buy.symbol || buy.name || buy.address}
+            sellAmount={userSelling}
+            buyAmount={userGetting}
+            sellDecimal={sell.decimals}
+            buyDecimal={buy.decimals}
+            auctionEnded={completed}
+          />
+        </ Aux>
+      } />
   </AuctionContainer>
 )
 
