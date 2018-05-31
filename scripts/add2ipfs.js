@@ -42,7 +42,7 @@ async function run() {
     // as well as just ./filename
     // posts an empty folder
     // need to investigate
-    const [result] = await ipfs.files.add({ p: p.resolve(__dirname, filePath), content }, { progress })
+    const [result] = await ipfs.files.add({ content }, { progress })
 
     console.log('result: ', result)
     console.log(`\nhttps://gateway.ipfs.io/ipfs/${result.hash}\n\n`)
