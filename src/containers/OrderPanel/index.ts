@@ -3,7 +3,7 @@ import OrderPanel from 'components/OrderPanel'
 import { State, BigNumber } from 'types'
 
 const isTokenApproved = ({ approvedTokens, tokenPair: { sell, buy } }: State) =>
-  approvedTokens.has(sell) && approvedTokens.has(buy)
+  approvedTokens.has(sell.address) && approvedTokens.has(buy.address)
 
 const mapStateToProps = (state: State) => {
   const { tokenPair: { sell, buy, sellAmount } } = state

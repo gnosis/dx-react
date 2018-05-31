@@ -1,4 +1,4 @@
 import { createAction } from 'redux-actions'
-import { TokenCode } from 'types'
+import { Account } from 'types'
 
-export const setApprovedTokens = createAction<TokenCode[]>('SET_APPROVED_TOKENS')
+export const setApprovedTokens = createAction<Account[]>('SET_APPROVED_TOKENS')
