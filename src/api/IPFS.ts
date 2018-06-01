@@ -1,5 +1,6 @@
 import IPFS from 'ipfs'
 import { FileBuffer } from 'types'
+import { DefaultTokens } from './types'
 /**
  * @returns Promise<IPFS>
  */
@@ -38,13 +39,13 @@ async function init() {
   }
 
   /**
-   * ipfsGetAndDecode - grabs IPFS file via hash and decodes from uint8Array to string
+   * ipfsFetchFromHash - grabs IPFS file via hash and decodes from uint8Array to string
    * @param {string} fileHash - hash value stored in IPFS
    */
-  const ipfsFetchFromHash = async (fileHash: string): Promise<string> => {
+  const ipfsFetchFromHash = async (fileHash: string): Promise<DefaultTokens> => {
     const res = await fetch(`https://ipfs.infura.io/ipfs/${fileHash}`)
 
-    return res.text()
+    return res.json()
   }
 
   return {

@@ -94,11 +94,12 @@ export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState:
 
 export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
-  const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
+  const defaultList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
     promisedContractsMap,
     getCurrentAccount(),
   ])
+  const mainList = [...defaultList, { symbol: 'MGN', name: 'MAGNOLIA', decimals: 18, address: TokenMGN.address }]
 
   const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 

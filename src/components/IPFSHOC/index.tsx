@@ -47,7 +47,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
           timeoutCondition(IPFS_TIMEOUT, 'IPFS timeout, please check hash and try again'),
         ])
 
-        const json = JSON.parse(fileContent)
+        const json = fileContent
 
         await checkTokenListJSON(json)
 

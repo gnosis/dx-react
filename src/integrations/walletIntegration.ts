@@ -11,7 +11,6 @@ import {
 } from 'actions/blockchain'
 import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath, selectTokenPair } from 'actions'
 
-import tokensMap from 'api/apiTesting'
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals } from 'api'
@@ -43,6 +42,7 @@ export default async function walletIntegration(store: Store<any>) {
       localForage.getItem('customTokens'),
       localForage.getItem('customListHash'),
     ])
+    const { ipfsFetchFromHash } = await promisedIPFS
     const isDefaultTokensAvailable = !!(defaultTokens)
     // IF (!defJSONObj in localForage) return anxo/api/v1/defaultTokens.json
     // ELSE localForage.getItem('defaultTokens')
@@ -50,7 +50,7 @@ export default async function walletIntegration(store: Store<any>) {
       // grab tokens from API
       // TODO: Reinstate line 44 when API is setup
       // const defaultTokens = await fetch('https://dx-services.staging.gnosisdev.com/api/v1/markets').then(res => res.json())
-      defaultTokens = await tokensMap()
+      defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8')
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
     }
@@ -68,10 +68,9 @@ export default async function walletIntegration(store: Store<any>) {
       localForage.setItem('customTokens', customTokensWithDecimals)
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
     } else if (customListHash) {
-      const { ipfsFetchFromHash } = await promisedIPFS
       const fileContent = await ipfsFetchFromHash(customListHash)
 
-      const json = JSON.parse(fileContent)
+      const { elements: json } = fileContent
       await checkTokenListJSON(json)
 
       const customTokensWithDecimals = await getAllTokenDecimals(json)
