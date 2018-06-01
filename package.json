@@ -32,7 +32,8 @@
     "stats": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --profile --json > stats.json",
     "precommit": "lint-staged",
     "storybook": "start-storybook -s ./ -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "add2ipfs": "node ./scripts/add2ipfs.js"
   },
   "lint-staged": {
     "@(src|test)/**/*.js?(x)": [
@@ -83,7 +84,7 @@
     "connected-react-router": "^4.2.3",
     "es6-promise": "4.1.1",
     "history": "^4.7.2",
-    "ipfs": "^0.28.2",
+    "ipfs": "^0.29.1",
     "localforage": "^1.7.1",
     "lodash": "4.17.4",
     "moment": "^2.19.1",
