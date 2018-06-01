@@ -68,8 +68,8 @@ export default async function walletIntegration(store: Store<any>) {
       localForage.setItem('customTokens', customTokensWithDecimals)
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
     } else if (customListHash) {
-      const { ipfsGetAndDecode } = await promisedIPFS
-      const fileContent = await ipfsGetAndDecode(customListHash)
+      const { ipfsFetchFromHash } = await promisedIPFS
+      const fileContent = await ipfsFetchFromHash(customListHash)
 
       const json = JSON.parse(fileContent)
       await checkTokenListJSON(json)
