@@ -38,12 +38,12 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
       const { fileHash, openModal, setIPFSFileHash, setNewIPFSCustomListAndUpdateBalances } = this.props
 
       try {
-        const { ipfsGetAndDecode } = await promisedIPFS
+        const { ipfsFetchFromHash } = await promisedIPFS
 
         this.setState({ pullingData: true, error: null })
 
         const fileContent: any = await Promise.race([
-          ipfsGetAndDecode(fileHash),
+          ipfsFetchFromHash(fileHash),
           timeoutCondition(IPFS_TIMEOUT, 'IPFS timeout, please check hash and try again'),
         ])
 

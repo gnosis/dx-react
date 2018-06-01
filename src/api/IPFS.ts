@@ -15,7 +15,7 @@ const setupIPFS = async () => {
 export const promisedIPFS = init()
 
 async function init() {
-  const ipfs = await setupIPFS()  
+  const ipfs = await setupIPFS()
 
   /**
    * ipfsAddFile - takes uint8Array Buffer and sends to IPFS node
@@ -41,20 +41,15 @@ async function init() {
    * ipfsGetAndDecode - grabs IPFS file via hash and decodes from uint8Array to string
    * @param {string} fileHash - hash value stored in IPFS
    */
-  const ipfsGetAndDecode = async (fileHash: string): Promise<string> => {
-    const [file0] = await ipfs.files.get(fileHash)
-    const { content: contentArrayBuffer } = file0
+  const ipfsFetchFromHash = async (fileHash: string): Promise<string> => {
+    const res = await fetch(`https://ipfs.infura.io/ipfs/${fileHash}`)
 
-    console.warn('IPFS file grabbed receipt: ', contentArrayBuffer)
-
-    const fileContent = new window.TextDecoder('utf-8').decode(contentArrayBuffer)
-
-    return fileContent
+    return res.text()
   }
 
   return {
     ipfs,
-    ipfsGetAndDecode,
+    ipfsFetchFromHash,
     ipfsAddFile,
   }
 }
