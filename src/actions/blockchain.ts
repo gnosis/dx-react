@@ -116,7 +116,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 
   // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
   const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
-    getSellerOngoingAuctions(mainList, currentAccount),
+    getSellerOngoingAuctions(mainList as DefaultTokenObject[], currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
   ])

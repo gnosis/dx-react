@@ -50,7 +50,7 @@ export default async function walletIntegration(store: Store<any>) {
       // grab tokens from API
       // TODO: Reinstate line 44 when API is setup
       // const defaultTokens = await fetch('https://dx-services.staging.gnosisdev.com/api/v1/markets').then(res => res.json())
-      defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8')
+      defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
     }
