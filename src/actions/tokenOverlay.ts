@@ -20,14 +20,14 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
 
   // user chose the same token for the same position
   // don't do anything
-  if (tokenPair[mod].address === token.address) {
+  if (tokenPair[mod] && tokenPair[mod].address === token.address) {
     return dispatch(closeOverlay())
   }
   const { sell, buy }: TokenPair = { ...tokenPair, [mod]: token }
 
   // user chose buy token in place of sell token or the reverse
   // just switch them
-  if (sell.address === buy.address) {
+  if (sell && buy && sell.address === buy.address) {
     dispatch(swapTokensInAPair())
     return dispatch(closeOverlay())
   }
@@ -35,10 +35,12 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
   try {
     // TODO: dispatch getClosingPrice action
     // which would also add closingPrice to TokenPair state
-    const price = (await closingPrice({ sell, buy })).toString()
+    const promisedPrice = (closingPrice({ sell, buy }))
 
-    dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
     dispatch(selectTokenAndCloseOverlay({ mod, token }))
+
+    const price = (await promisedPrice).toString()
+    dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
   } catch (e) {
     console.error(e)
   }
