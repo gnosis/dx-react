@@ -55,8 +55,7 @@ export default async function walletIntegration(store: Store<any>) {
       await localForage.setItem('defaultTokens', defaultTokens)
     }
 
-    const defaultSell = defaultTokens.elements.find(tok => tok.symbol === 'ETH'),
-      defaultBuy = defaultTokens.elements.find(tok => tok.symbol === 'GNO')
+    const defaultSell = defaultTokens.elements.find(tok => tok.symbol === 'ETH')
 
     // IPFS hash for tokens exists in localForage
     if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
@@ -80,7 +79,7 @@ export default async function walletIntegration(store: Store<any>) {
     }
     // set defaulTokenList && setDefaulTokenPair visible when in App
     dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-    dispatch(selectTokenPair({ buy: defaultBuy, sell: defaultSell } as TokenPair))
+    dispatch(selectTokenPair({ buy: undefined, sell: defaultSell } as TokenPair))
   }
 
 
