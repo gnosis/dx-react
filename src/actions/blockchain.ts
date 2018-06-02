@@ -189,11 +189,13 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
   const { tokenPair: { buy, sell } } = getState()
 
+  if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
+
   try {
     const lastPrice = (await closingPrice({ sell, buy })).toString()
     return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: lastPrice }))
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 
