@@ -9,13 +9,13 @@ import {
   updateMainAppState,
   resetMainAppState,
 } from 'actions/blockchain'
-import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath, selectTokenPair } from 'actions'
+import { setDefaultTokenList, setCustomTokenList, setIPFSFileHashAndPath, selectTokenPair, setTokenListType } from 'actions'
 
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals } from 'api'
 
-import { DefaultTokens } from 'api/types'
+import { DefaultTokens, DefaultTokenObject } from 'api/types'
 import { TokenPair } from 'types'
 import { ConnectedInterface } from './types'
 
@@ -66,16 +66,18 @@ export default async function walletIntegration(store: Store<any>) {
       // reset localForage customTokens w/decimals filled in
       localForage.setItem('customTokens', customTokensWithDecimals)
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+      dispatch(setTokenListType({ type: 'CUSTOM' }))
     } else if (customListHash) {
       const fileContent = await ipfsFetchFromHash(customListHash)
 
-      const { elements: json } = fileContent
-      await checkTokenListJSON(json)
+      const json = fileContent
+      await checkTokenListJSON(json as DefaultTokenObject[])
 
-      const customTokensWithDecimals = await getAllTokenDecimals(json)
+      const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
       localForage.setItem('customTokens', customTokensWithDecimals)
 
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+      dispatch(setTokenListType({ type: 'CUSTOM' }))
     }
     // set defaulTokenList && setDefaulTokenPair visible when in App
     dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
