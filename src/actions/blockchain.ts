@@ -207,8 +207,12 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
   } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     nativeSellAmt = await toNative(sellAmount, sell.decimals),
+    { TokenOWL } = await promisedContractsMap,
     // promised Token Allowance to get back later
-    promisedTokenAllowance = checkTokenAllowance(sell.address, nativeSellAmt, currentAccount)
+    promisedTokensAndOWLAllowances = Promise.all([
+      checkTokenAllowance(sell.address, nativeSellAmt, currentAccount),
+      checkTokenAllowance(TokenOWL.address, nativeSellAmt, currentAccount),
+    ])
 
   try {
     // change to modal with button, new modal
@@ -237,22 +241,53 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     }
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
-    const tokenAllowance = await promisedTokenAllowance
-    if (tokenAllowance) {
-      dispatch(openModal({
-        modalName: 'ApprovalModal',
-        modalProps: {
-          header: `Confirm ${sellName} Token movement`,
-          // tslint:disable-next-line
-          body: `Confirmation: DutchX needs your permission to move your ${sellName} Tokens for this Auction - please check ${activeProvider}`,
-        },
-      }))
+    const [needSellTokenAllowance, needOWLTokenAllowance] = await promisedTokensAndOWLAllowances
+    if (needSellTokenAllowance) {
+      const promisedChoice: Promise<string> = new Promise((accept) => {
+        dispatch(openModal({
+          modalName: 'ApprovalModal',
+          modalProps: {
+            header: `Confirm ${sellName} Token movement`,
+            // tslint:disable-next-line
+            body: `Confirmation: DutchX needs your permission to move your ${sellName} Tokens for this Auction - please check ${activeProvider}`,
+            onClick: accept,
+          },
+        }))
+      })
+      const choice = await promisedChoice
+
+      await dispatch(approveTokens(choice, 'SELLTOKEN'))
     // Go straight to sell order if deposit && allowance both good
-    } else {
-      dispatch(submitSellOrder())
+    }
+    if (needOWLTokenAllowance) {
+      const promisedChoice: Promise<string> = new Promise((accept) => {
+        dispatch(openModal({
+          modalName: 'ApprovalModal',
+          modalProps: {
+            header: `Approving OWL use for fees`,
+            body: `You have OWL available in your linked wallet address. Would you like to use OWL to pay for half of the fees on the DutchX? Any fee reduction due to MGN is valid and applied before the fee calculation.`,
+            buttons: {
+              button1: {
+                buttonTitle1: 'Approve',
+                buttonDesc1: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
+              },
+              button2: {
+                buttonTitle2: 'Disallow',
+                buttonDesc2: 'Choose this option if you do not want to use OWL',
+              },
+            },
+            onClick: accept,
+          },
+        }))
+      })
+      const choice = await promisedChoice
+
+      await dispatch(approveTokens(choice, 'OWLTOKEN'))
     }
   } catch (e) {
     dispatch(errorHandling(e))
+  } finally {
+    dispatch(submitSellOrder())
   }
 }
 
@@ -320,44 +355,66 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 }
 
 // TODO: if add index of current tokenPair to state
-export const approveAndPostSellOrder = (choice: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN') => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { currentAccount },
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
+  const promisedContracts = promisedContractsMap
+  const sellName = sell.symbol || sell.name || sell.address
 
   try {
     // don't do anything when submitting a <= 0 amount
-    // indicate that nothing happened with false return
     if (+sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
-    // here check if users token Approval amount is high enough and APPROVE else => postSellOrder
-    if (choice === 'MIN') {
-      dispatch(openModal({
-        modalName: 'TransactionModal',
-        modalProps: {
-          header: `Approving minimum token movement: ${sellAmount}`,
-          body: `You are approving the minimum amount necessary - DutchX will prompt you again the next time.`,
-        },
-      }))
-      const nativeSellAmt = await promisedNativeSellAmt
-      const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
-      console.log('Approved token', tokenApprovalReceipt)
-    } else {
-      dispatch(openModal({
-        modalName: 'TransactionModal',
-        modalProps: {
-          header: `Approving maximum token movement`,
-          body: `You are approving the maximum amount - you will no longer need to sign 2 transactions.`,
-        },
-      }))
-      // CONSIDER/TODO: move allowanceLeft into state
-      const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
-      const tokenApprovalReceipt = await tokenApproval(sell.address, ((2 ** 255) - allowanceLeft).toString())
-      console.log('Approved token', tokenApprovalReceipt)
-    }
 
-    dispatch(submitSellOrder())
+    // SELLTOKEN APPROVAL
+    if (tokenType === 'SELLTOKEN') {
+      if (choice === 'MIN') {
+        dispatch(openModal({
+          modalName: 'TransactionModal',
+          modalProps: {
+            header: `Approving minimum token movement`,
+            body: `You are approving ${sellAmount} for this particular token [${sellName}]. For future transactions with this particular token, you will continue needing to sign two transactions.`,
+          },
+        }))
+        const nativeSellAmt = await promisedNativeSellAmt
+        const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
+        console.log('Approved token', tokenApprovalReceipt)
+      } else {
+        dispatch(openModal({
+          modalName: 'TransactionModal',
+          modalProps: {
+            header: `Approving maximum token movement`,
+            body: `You are approving the maximum amount for this particular token [${sellName}]. You will no longer need to sign two transactions for this token going forward.
+            `,
+          },
+        }))
+        // CONSIDER/TODO: move allowanceLeft into state
+        const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
+        const tokenApprovalReceipt = await tokenApproval(sell.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('Approved token', tokenApprovalReceipt)
+      }
+    // OWL APPROVAL
+    } else {
+      const { TokenOWL } = await promisedContracts
+      if (choice === 'MAX') {
+        dispatch(openModal({
+          modalName: 'TransactionModal',
+          modalProps: {
+            header: `Approving use of OWL`,
+            body: `You are approving the use of OWL tokens towards fee reduction - you will not see this message again.`,
+          },
+        }))
+        // CONSIDER/TODO: move allowanceLeft into state
+        const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
+        const tokenApprovalReceipt = await tokenApproval(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('Approved OWL', tokenApprovalReceipt)
+      } else {
+        console.log('Disallowing OWL')
+        dispatch(closeModal())
+      }
+    }
   } catch (error) {
     dispatch(errorHandling(error))
   }
