@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'types'
-import { closeModal, approveAndPostSellOrder } from 'actions'
+import { closeModal } from 'actions'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -11,7 +11,6 @@ interface TransactionModalProps {
 
 interface ApprovalModalProps extends TransactionModalProps {
   approvalButton: any,
-  approveAndPostSellOrder: typeof approveAndPostSellOrder,
 }
 
 interface BlockModalProps extends TransactionModalProps {
