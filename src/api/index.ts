@@ -223,6 +223,14 @@ export const getClosingPrice = async (pair: TokenPair, auctionIndex?: Index) => 
   return DutchX.getClosingPrice(pair, auctionIndex)
 }
 
+export const getLastAuctionPrice = async (pair: TokenPair, auctionIndex?: Index) => {
+  const { DutchX } = await promisedAPI
+
+  if (auctionIndex === undefined) auctionIndex = await DutchX.getLatestAuctionIndex(pair)
+
+  return DutchX.getLastAuctionPrice(pair, auctionIndex)
+}
+
 export const getPrice = async (pair: TokenPair, auctionIndex?: Index) => {
   const { DutchX } = await promisedAPI
 

@@ -386,6 +386,7 @@ export interface DutchExchange {
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
+  getLastAuctionPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
   getPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
   getSellVolumesCurrent(pair: TokenPair): Promise<BigNumber>,
   getSellVolumesNext(pair: TokenPair): Promise<BigNumber>,
