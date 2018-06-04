@@ -94,11 +94,12 @@ export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState:
 
 export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
-  const mainList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
+  const defaultList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
     promisedContractsMap,
     getCurrentAccount(),
   ])
+  const mainList = [...defaultList, { symbol: 'MGN', name: 'MAGNOLIA', decimals: 18, address: TokenMGN.address }]
 
   const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
@@ -115,7 +116,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 
   // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
   const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
-    getSellerOngoingAuctions(mainList, currentAccount),
+    getSellerOngoingAuctions(mainList as DefaultTokenObject[], currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
   ])
@@ -188,11 +189,16 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
   const { tokenPair: { buy, sell } } = getState()
 
+  if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
+
   try {
-    const lastPrice = (await closingPrice({ sell, buy })).toString()
-    return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: lastPrice }))
+    const [pNum, pDen] = await closingPrice({ sell, buy })
+    const price = (pNum.div(pDen)).toString()
+    console.log('lastClosingPrice -> ', price)
+
+    return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 

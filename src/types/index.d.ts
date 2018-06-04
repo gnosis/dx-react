@@ -143,6 +143,7 @@ export interface TokenPair {
   buy: DefaultTokenObject,
   sellAmount?: Balance,
   index?: string,
+  lastPrice?: Balance,
   allowanceLeft?: Balance,
 }
 

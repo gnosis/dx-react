@@ -1,11 +1,11 @@
 import { handleActions } from 'redux-actions'
 
-import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair } from 'actions'
+import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair, setClosingPrice } from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
 
 export default handleActions<
 TokenPair,
-TokenPair & { token: DefaultTokenObject, mod: TokenMod }
+TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
 >(
   {
     [selectTokenAndCloseOverlay.toString()]: (state, action) => {
@@ -16,7 +16,8 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod }
         sellAmount: '0',
       }
     },
-    [selectTokenPair.toString()]: (_, action) => ({
+    [selectTokenPair.toString()]: (state, action) => ({
+      ...state,
       ...action.payload,
       sellAmount: '0',
     }),
@@ -28,9 +29,11 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod }
     [swapTokensInAPair.toString()]: ({ sell, buy }) => ({
       sell: buy,
       buy: sell,
-      sellAmount: '0',
       index: '0',
+      lastPrice: '0',
+      sellAmount: '0',
     }),
+    [setClosingPrice.toString()]: (state, action) => ({ ...state, lastPrice: action.payload.price }),
   },
   {
     sell: {
@@ -47,5 +50,6 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod }
     },
     sellAmount: '0',
     index: '0',
+    lastPrice: '0',
   },
 )

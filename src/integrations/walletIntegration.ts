@@ -2,27 +2,26 @@ import localForage from 'localforage'
 import { Store, Dispatch } from 'redux'
 
 import initialize from './initialize'
+
 import {
   registerProvider,
   updateProvider,
   initDutchX,
   updateMainAppState,
   resetMainAppState,
-} from 'actions/blockchain'
-import {
   setDefaultTokenList,
   setCustomTokenList,
   setIPFSFileHashAndPath,
   selectTokenPair,
   setApprovedTokens,
+  setTokenListType,
 } from 'actions'
 
-import tokensMap from 'api/apiTesting'
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals, getApprovedTokensFromAllTokens } from 'api'
 
-import { DefaultTokens } from 'api/types'
+import { DefaultTokens, DefaultTokenObject } from 'api/types'
 import { TokenPair, State } from 'types'
 import { ConnectedInterface } from './types'
 
@@ -49,20 +48,17 @@ export default async function walletIntegration(store: Store<any>) {
       localForage.getItem('customTokens'),
       localForage.getItem('customListHash'),
     ])
+    const { ipfsFetchFromHash } = await promisedIPFS
     const isDefaultTokensAvailable = !!(defaultTokens)
-    // IF (!defJSONObj in localForage) return anxo/api/v1/defaultTokens.json
-    // ELSE localForage.getItem('defaultTokens')
+
     if (!isDefaultTokensAvailable) {
-      // grab tokens from API
-      // TODO: Reinstate line 44 when API is setup
-      // const defaultTokens = await fetch('https://dx-services.staging.gnosisdev.com/api/v1/markets').then(res => res.json())
-      defaultTokens = await tokensMap()
+      // grab tokens from IPFSHash
+      defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
     }
 
-    const defaultSell = defaultTokens.elements.find(tok => tok.symbol === 'ETH'),
-      defaultBuy = defaultTokens.elements.find(tok => tok.symbol === 'GNO')
+    const defaultSell = defaultTokens.elements.find(tok => tok.symbol === 'ETH')
 
     // IPFS hash for tokens exists in localForage
     if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
@@ -73,30 +69,29 @@ export default async function walletIntegration(store: Store<any>) {
       // reset localForage customTokens w/decimals filled in
       localForage.setItem('customTokens', customTokensWithDecimals)
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+      dispatch(setTokenListType({ type: 'CUSTOM' }))
     } else if (customListHash) {
-      const { ipfsFetchFromHash } = await promisedIPFS
       const fileContent = await ipfsFetchFromHash(customListHash)
 
-      const json = JSON.parse(fileContent)
-      await checkTokenListJSON(json)
+      const json = fileContent
+      await checkTokenListJSON(json as DefaultTokenObject[])
 
-      const customTokensWithDecimals = await getAllTokenDecimals(json)
+      const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
       localForage.setItem('customTokens', customTokensWithDecimals)
 
       dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+      dispatch(setTokenListType({ type: 'CUSTOM' }))
     }
     // set defaulTokenList && setDefaulTokenPair visible when in App
     dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-    dispatch(selectTokenPair({ buy: defaultBuy, sell: defaultSell } as TokenPair))
+    dispatch(selectTokenPair({ buy: undefined, sell: defaultSell } as TokenPair))
 
     return getState().tokenList
   }
 
-  
   try {
-    // const { defaultTokenList } = await getTokenList()
     const { combinedTokenList } = await getTokenList()
-  
+
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
     // then only dispatch that list
@@ -105,7 +100,7 @@ export default async function walletIntegration(store: Store<any>) {
 
     const approvedTokenAddresses = await getApprovedTokensFromAllTokens(combinedTokenList)
     dispatch(setApprovedTokens(approvedTokenAddresses))
-    
+
     await initialize(providerOptions)
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
