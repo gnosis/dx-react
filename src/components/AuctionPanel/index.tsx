@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'
@@ -7,48 +7,52 @@ import AuctionProgress from 'components/AuctionProgress'
 import AuctionStatus from 'components/AuctionStatus'
 
 import Loader from 'components/Loader'
-import Aux from 'components/AuxComponent'
 
 import { AuctionStateState, AuctionStateProps } from 'components/AuctionStateHOC'
 
-import { AuctionStatus as Status } from 'globals'
-
-type AuctionPanelProps = AuctionStateState & AuctionStateProps
-
-const status2progress = {
-  [Status.INIT]: 1,
-  [Status.PLANNED]: 2,
-  [Status.ACTIVE]: 3,
-  [Status.ENDED]: 4,
+type AuctionPanelProps = AuctionStateState & AuctionStateProps & {
+  claimSellerFunds: () => any,
 }
 
-const getAuctionProgress = (status: Status) => status2progress[status] || 0
+// const status2progress = {
+//   [Status.INIT]: 1,
+//   [Status.PLANNED]: 2,
+//   [Status.ACTIVE]: 3,
+//   [Status.ENDED]: 4,
+// }
+
+// const getAuctionProgress = (status: Status) => status2progress[status] || 0
 
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
   sell, buy,
   status, completed, timeToCompletion,
   userSelling, userGetting, userCanClaim,
+  progress,
   error,
+  claimSellerFunds,
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
-      {/* TODO: grab auction address for url */}
-      Auction URL: <a href="#">https://www.dutchx.pm{url}/</a>
+      Auction URL: <a href="">
+        {typeof window !== 'undefined' ? window.location.toString() : `https://www.dutchx.pm${url}/`}
+      </a>
     </AuctionHeader>
     <Loader
       hasData={sell}
       message={error || 'Auction has not started. Please try a lower auction index'}
       render={() =>
-        <Aux>
+        <Fragment>
           <AuctionStatus
             sellToken={sell}
             buyToken={buy}
             buyAmount={userCanClaim}
             timeLeft={timeToCompletion}
             status={status}
+            completed={completed}
+            claimSellerFunds={claimSellerFunds}
           />
-          <AuctionProgress progress={getAuctionProgress(status)} />
+          <AuctionProgress progress={progress} />
           <AuctionFooter
             sellTokenSymbol={sell.symbol || sell.name || sell.address}
             buyTokenSymbol={buy.symbol || buy.name || buy.address}
@@ -58,7 +62,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             buyDecimal={buy.decimals}
             auctionEnded={completed}
           />
-        </ Aux>
+        </Fragment>
       } />
   </AuctionContainer>
 )

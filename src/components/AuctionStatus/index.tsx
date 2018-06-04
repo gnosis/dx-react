@@ -11,7 +11,9 @@ export interface AuctionStatusProps {
   buyToken: DefaultTokenObject,
   buyAmount: number,
   timeLeft: number,
-  status: Status
+  status: Status,
+  completed: boolean,
+  claimSellerFunds: () => any,
 }
 
 const getTimeStr = (timestamp: number) => {
@@ -63,7 +65,10 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = (props) => {
     <div className="auctionStatus">
       <span>
         <small>AUCTION</small>
-        <big>{sellToken.symbol || sellToken.name || sellToken.address}/{buyToken.symbol || buyToken.name || buyToken.address}</big>
+        <big>
+          {sellToken.symbol || sellToken.name || sellToken.address}
+          /{buyToken.symbol || buyToken.name || buyToken.address}
+        </big>
       </span>
 
       <span>
