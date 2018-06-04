@@ -2,20 +2,19 @@ import localForage from 'localforage'
 import { Store, Dispatch } from 'redux'
 
 import initialize from './initialize'
+
 import {
   registerProvider,
   updateProvider,
   initDutchX,
   updateMainAppState,
   resetMainAppState,
-} from 'actions/blockchain'
-
-import {
   setDefaultTokenList,
   setCustomTokenList,
   setIPFSFileHashAndPath,
   selectTokenPair,
   setApprovedTokens,
+  setTokenListType,
 } from 'actions'
 
 import { promisedIPFS } from 'api/IPFS'
@@ -51,7 +50,7 @@ export default async function walletIntegration(store: Store<any>) {
     ])
     const { ipfsFetchFromHash } = await promisedIPFS
     const isDefaultTokensAvailable = !!(defaultTokens)
-    
+
     if (!isDefaultTokensAvailable) {
       // grab tokens from IPFSHash
       defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
@@ -86,13 +85,13 @@ export default async function walletIntegration(store: Store<any>) {
     // set defaulTokenList && setDefaulTokenPair visible when in App
     dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
     dispatch(selectTokenPair({ buy: undefined, sell: defaultSell } as TokenPair))
-  }
+
     return getState().tokenList
   }
 
   try {
     const { combinedTokenList } = await getTokenList()
-  
+
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
     // then only dispatch that list
@@ -101,7 +100,7 @@ export default async function walletIntegration(store: Store<any>) {
 
     const approvedTokenAddresses = await getApprovedTokensFromAllTokens(combinedTokenList)
     dispatch(setApprovedTokens(approvedTokenAddresses))
-    
+
     await initialize(providerOptions)
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
