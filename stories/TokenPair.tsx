@@ -35,7 +35,7 @@ const tokenPair = () => {
       buyToken={buy}
       sellTokenBalance={sellTokenBalance}
       buyTokenBalance={buyTokenBalance}
-      swapTokensInAPair={() => {}}
+      swapTokensInAPairAndReCalcClosingPrice={() => {}}
       needsTokens={boolean('needsTokens', false)}
     />
   )
