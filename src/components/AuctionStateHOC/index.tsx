@@ -12,6 +12,7 @@ import {
   getTime,
   getSellerBalance,
   getUnclaimedSellerFunds,
+  claimSellerFundsAndWithdraw,
 } from 'api'
 
 import { WATCHER_INTERVAL } from 'integrations/initialize'
@@ -41,6 +42,9 @@ export interface AuctionStateState {
   userSelling: BigNumber,
   userGetting:  BigNumber,
   userCanClaim: number,
+  progress: number,
+  index: number,
+  account: Account,
   error: string,
 }
 
@@ -71,6 +75,22 @@ const getAuctionStatus = ({
   if (auctionStart.equals(1)) return AuctionStatus.INIT
   if (!price[1].equals(0)) return AuctionStatus.ACTIVE
   return AuctionStatus.INACTIVE
+}
+
+interface ProgressStepArgs {
+  status: AuctionStatus,
+  sellerBalance: BigNumber,
+}
+const getProgressStep = ({ status, sellerBalance }: ProgressStepArgs) => {
+  if (sellerBalance.lte(0) || status === AuctionStatus.INACTIVE) return 0
+
+  if (status === AuctionStatus.INIT || status === AuctionStatus.PLANNED) return 1
+
+  if (status === AuctionStatus.ACTIVE) return 2
+
+  if (status === AuctionStatus.ENDED) return 3
+
+  return 0
 }
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
@@ -167,6 +187,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       const account = await promisedAccount
       const sellerBalance = await getSellerBalance(pair, index, account)
+      console.log('sellerBalance: ', sellerBalance.toString())
 
       // TODO: calculate differently for PLANNED auctions (currently is NaN)
       // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
@@ -178,6 +199,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
 
+      const progress = getProgressStep({
+        status,
+        sellerBalance,
+      })
 
       this.setState({
         completed: status === AuctionStatus.ENDED,
@@ -189,6 +214,9 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         userSelling: sellerBalance,
         userGetting,
         userCanClaim,
+        progress,
+        index,
+        account,
         error: null,
       })
 
@@ -199,6 +227,16 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       window.clearInterval(this.interval)
     }
 
+    claimSellerFunds = () => {
+      const { sell, buy, index, account, userCanClaim } = this.state
+      
+      console.log(
+        `claiming tokens for ${account} for
+        ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
+      )
+      return claimSellerFundsAndWithdraw({ sell, buy }, index, userCanClaim, account)
+    }
+
     render() {
       // TODO: redirect home on invalid auction or something
       const { error } = this.state
@@ -207,7 +245,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
           {/* <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
             {JSON.stringify(this.state, null, 2)}
           </pre> */}
-          <Component {...this.props} {...this.state}/> :
+          <Component {...this.props} {...this.state} claimSellerFunds={this.claimSellerFunds}/> :
           {error && <h3> Invalid auction: {error}</h3>}
         </div>
       )

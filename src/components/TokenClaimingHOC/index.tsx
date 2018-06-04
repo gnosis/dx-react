@@ -1,14 +1,9 @@
 import React from 'react'
-import { claimSellerFunds } from 'api'
-import { DefaultTokenObject } from 'types'
 
 export interface TokenClaimingProps {
   completed: boolean,
-  sellToken: DefaultTokenObject,
-  buyToken: DefaultTokenObject,
-  index: number,
   buyAmount: number,
-  account: string,
+  claimSellerFunds: () => any,
 }
 
 export interface TokenClaimingState {
@@ -25,7 +20,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
     state = { isClaiming: false }
 
     async claimTokens() {
-      const { completed, buyAmount, account, sellToken: sell, buyToken: buy, index } = this.props
+      const {
+        completed,
+        buyAmount,
+        claimSellerFunds,
+      } = this.props
       // don't claim anything if auction isn't completed or nothing to claim
       if (!completed || buyAmount <= 0) return
 
@@ -39,15 +38,12 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
 
       try {
         // start claimFunds request
-        console.log(
-          `claiming tokens for ${account} for
-          ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
-        )
-        await claimSellerFunds({ sell, buy }, index, account)
+        await claimSellerFunds()
         // if succeeds change isClaiming state
         this.setState({
           isClaiming: false,
-        })      
+        })
+        this.setProgressTo4()  
       } catch (error) {
         // if fails change isClaiming state and add error
         console.warn('Error claiming tokens', error)
@@ -57,6 +53,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
         })
       }
 
+    }
+
+    setProgressTo4() {
+      const progressBar: HTMLDivElement = document.querySelector('.progress-bar')
+      if (progressBar && progressBar.dataset.progress === '3') progressBar.dataset.progress = '4'
     }
 
     render() {

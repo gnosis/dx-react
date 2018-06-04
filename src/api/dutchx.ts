@@ -86,7 +86,7 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount })
+  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount, gas: 4712388 })
 
   claimSellerFunds.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -141,9 +141,11 @@ async function init(): Promise<DutchExchange> {
     index: Index,
     amount: Balance,
     userAccount: Account,
-    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount })
+    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount, gas: 4712388 })
 
-  const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens(tokenAddress)
+  const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens.call(tokenAddress)
+
+  const getApprovedAddressesOfList = (tokenAddresses: Account[]) => dx.getApprovedAddressesOfList.call(tokenAddresses)
 
   const getBalance = (tokenAddress: Account, userAccount: Account) =>
     dx.balances.call(tokenAddress, userAccount)
@@ -184,6 +186,7 @@ async function init(): Promise<DutchExchange> {
       return dx.address
     },
     isTokenApproved,
+    getApprovedAddressesOfList,
     getBalance,
     getLatestAuctionIndex,
     getAuctionStart,

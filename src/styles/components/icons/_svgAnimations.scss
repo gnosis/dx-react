@@ -6,9 +6,10 @@ $cB3: cubic-bezier(0.175, 0.885, 0.06, 1.165);
 $CB4: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 
 .svgContainer {
-  display: flex; flex-flow: column nowrap;
-  justify-content: center; align-items: center;
-
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
   margin: auto;
 }
 
@@ -22,7 +23,7 @@ $CB4: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
 @keyframes dutchXAnimation {
-  0% { stroke-dashoffset: 10 }
-  50% { stroke-dashoffset: 90 }
-  100% { stroke-dashoffset: 10 }
+  0% { stroke-dashoffset: 10; }
+  50% { stroke-dashoffset: 90; }
+  100% { stroke-dashoffset: 10; }
 }

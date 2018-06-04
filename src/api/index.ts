@@ -346,6 +346,24 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
   return DutchX.claimSellerFunds(pair, index, account)
 }
 
+/*
+ * claim seller funds from auction corresponding to a pair of tokens at an index
+ * and withdraw an amount in one call
+ * @param pair TokenPair
+ * @param index auctionIndex, current auction by default
+ * @param account userccount, current web3 account by default
+ */
+export const claimSellerFundsAndWithdraw = async (
+  pair: TokenPair,
+  index?: Index,
+  amount?: Balance | number,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.claimAndWithdraw(pair, index, amount, account)
+}
+
 export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, account?: Account) => {
   const { DutchX, web3: { web3 } } = await promisedAPI;
 
@@ -372,10 +390,15 @@ export const claimSellerFundsFromSeveralAuctions = async (
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
+  const claimableIndices = (
+    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
+  )[0].map((i: BigNumber) => i.toNumber())
+
   if (claimableIndices.length === 0) return
 
-  const lastIndexCleared = (await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1]))[0].gt(0)
+  const lastIndexCleared = (
+    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
+  )[0].gt(0)
 
   const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
   const sellArr = Array.from({ length }, () => sell.address)
@@ -444,8 +467,8 @@ export const withdraw = async (code: TokenCode, amount: Balance, account?: Accou
 // of it's direct and reciprocal auctions
 const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, account: Account) => {
   const lastIndex = await DutchX.getLatestAuctionIndex(pair)
-  console.log('lastIndex: ', lastIndex.toString());
-  console.log('lastIndex + 1: ', lastIndex.add(1).toString());
+  console.log('lastIndex: ', lastIndex.toString())
+  console.log('lastIndex + 1: ', lastIndex.add(1).toString())
   const oppositePair = { sell: pair.buy, buy: pair.sell }
   const [closingPriceDir, closingPriceOpp, normal, inverse] = await Promise.all([
     DutchX.getClosingPrice(pair, lastIndex),
@@ -462,7 +485,11 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   }
 }
 
-export const getIndicesWithClaimableTokensForSellers = async (pair: TokenPair, userAccount?: Account, lastNAuctions: number = 0) => {
+export const getIndicesWithClaimableTokensForSellers = async (
+  pair: TokenPair,
+  userAccount?: Account,
+  lastNAuctions: number = 0,
+) => {
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
@@ -630,6 +657,21 @@ export const getSellerOngoingAuctions = async (
   } catch (e) {
     console.warn(e)
   }
+}
+
+/**
+ * returns a list of approved token addresses
+ * @param tokensJSON - DefaultTokenList
+ * @return addresses - Account[] of approved tokens from the tokensJSON
+ */
+export const getApprovedTokensFromAllTokens = async (tokensJSON: DefaultTokenList): Promise<Account[]> => {
+  const tokenAddresses = tokensJSON.map(token => token.address)
+
+  const { DutchX } = await promisedAPI
+
+  const approvalMap = await DutchX.getApprovedAddressesOfList(tokenAddresses)
+
+  return tokenAddresses.filter((_, i) => approvalMap[i])
 }
 
 async function initAPI(): Promise<dxAPI> {

@@ -23,9 +23,9 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     e.preventDefault()
     const accepted = this.form.checkValidity()
     this.setState({
-      formInvalid: !accepted
+      formInvalid: !accepted,
     })
-    console.log('SUBMITTING');
+    console.log('SUBMITTING')
     // redirect to /
     if (accepted) {
       this.props.acceptDisclaimer()
@@ -33,7 +33,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
   }
   onChange = () => {
     this.setState({
-      formInvalid: !this.form.checkValidity()
+      formInvalid: !this.form.checkValidity(),
     })
   }
 

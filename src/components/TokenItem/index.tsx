@@ -1,9 +1,11 @@
 import React from 'react'
-import { TokenMod, BigNumber, DefaultTokenObject } from 'types'
+import { TokenMod, BigNumber, DefaultTokenObject, TokenName } from 'types'
 
 export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,
   mod?: TokenMod,
+  name: TokenName,
+  generatesMGN?: boolean,
   balance: BigNumber,
 }
 
@@ -32,8 +34,9 @@ export const NoTokenItem: React.SFC<{ onClick: (rest: any) => void, mod: string 
   )
 }
 
-const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
-  const { mod, balance, name, symbol, decimals } = rest
+const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ...rest }) => {
+  const { mod, balance, name, symbol, decimals, address } = rest
+
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
@@ -44,7 +47,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{balance.div ? balance.div(10 ** decimals).toFixed(4) : balance} {symbol}</p>
-
+      {!generatesMGN && <p className="noMGN">Any auction with <strong>{symbol || address}</strong> won't generate MGN</p>}
     </div>
   )
 }

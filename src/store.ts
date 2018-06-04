@@ -24,7 +24,8 @@ export default function (history: History, initialState?: Partial<State>) {
   ]
 
   const composeEnhancers = (process.env.NODE_ENV !== 'production' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ? 
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ serialize: true }) : compose
 
   const enhancer = composeEnhancers(applyMiddleware(...middlewares))
 

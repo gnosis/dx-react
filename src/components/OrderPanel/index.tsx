@@ -12,9 +12,10 @@ interface OrderPanelProps {
   sellTokenSymbol: string,
   buyTokenSymbol: string,
   validSellAmount: boolean,
+  generatesMGN: boolean,
 }
 
-const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount }) => (
+const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN }) => (
   <AuctionContainer auctionDataScreen="amount">
     <TokenOverlay />
     <AuctionHeader backTo="/">
@@ -22,7 +23,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
-    <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>
+    {!generatesMGN && <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>}
     {/* END */}
 
     <TokenPair />

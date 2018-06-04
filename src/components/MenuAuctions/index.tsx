@@ -7,7 +7,7 @@ export interface MenuAuctionProps {
   name?: string;
   ongoingAuctions: OngoingAuctions;
   claimSellerFundsFromSeveral(
-    sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number
+    sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
 }
 

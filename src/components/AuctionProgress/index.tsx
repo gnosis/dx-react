@@ -20,15 +20,15 @@ const AuctionProgress: React.SFC<AuctionProgressProps> = ({ progress }) => (
   <div className="auctionProgress">
     <div className="progress-bar" data-progress={progress}></div>
     <span>
-      <i className={progress >= 1 ? 'active' : null} data-icon={progress > 1 ? 'ok' : null}>
+      <i className={progress >= 1 ? 'active' : null} data-icon={progress >= 1 ? 'ok' : null}>
         <img src={arrowDownStep} />
         <small>DEPOSIT CONFIRMED</small>
       </i>
-      <i className={progress >= 2 ? 'active' : null} data-icon={progress > 2 ? 'ok' : null}>
+      <i className={progress >= 2 ? 'active' : null} data-icon={progress >= 2 ? 'ok' : null}>
         <img src={auctionStep} />
         <small>AUCTION STARTED</small>
       </i>
-      <i className={progress >= 3 ? 'active' : null} data-icon={progress > 3 ? 'ok' : null}>
+      <i className={progress >= 3 ? 'active' : null} data-icon={progress >= 3 ? 'ok' : null}>
         <img src={walletStep} />
         <small>CLAIM TOKENS TO YOUR WALLET</small>
       </i>
