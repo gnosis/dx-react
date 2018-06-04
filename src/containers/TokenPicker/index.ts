@@ -13,9 +13,14 @@ const mapState = ({
     defaultTokenList,
     type,
   },
+  tokenPair: {
+    sell,
+    buy,
+  },
 }: State) => ({
   fileBuffer,
   needsTokens: type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
+  tokensSelected: !!(sell && buy),
 })
 
 export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to' | 'showPair'>>

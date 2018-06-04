@@ -12,6 +12,7 @@ export interface TokenPickerProps {
   to: string;
   needsTokens: boolean;
   showPair: boolean;
+  tokensSelected: boolean;
 }
 
 const TokenPicker: React.SFC<TokenPickerProps> = ({
@@ -20,6 +21,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
   to,
   setTokenListType,
   showPair,
+  tokensSelected,
 }) => (
 
   <div className="tokenPicker">
@@ -32,7 +34,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
       <div className="tokenIntro">
         <h2>Pick Token Pair Auction</h2>
         <TokenPair />
-        <ButtonCTA onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
+        <ButtonCTA className={!tokensSelected ? 'buttonCTA-disabled' : 'blue'} onClick={continueToOrder} to={to}>Specify amount selling</ButtonCTA>
         <a className="showTokenUpload" onClick={(e) => (e.preventDefault(), setTokenListType({ type: 'UPLOAD' }))}>Upload Additional Token List</a>
       </div>
     }
