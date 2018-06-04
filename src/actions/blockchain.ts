@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 import { batchActions } from 'redux-batched-actions'
 
 import {
-  closingPrice,
+  getLastAuctionPrice,
   depositAndSell,
   depositETH,
   getCurrentAccount,
@@ -20,6 +20,7 @@ import {
   toNative,
   claimSellerFundsFromSeveralAuctions,
   getIndicesWithClaimableTokensForSellers,
+  getLatestAuctionIndex,
 } from 'api'
 
 import {
@@ -192,8 +193,13 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
 
   try {
-    const [pNum, pDen] = await closingPrice({ sell, buy })
-    const price = (pNum.div(pDen)).toString()
+    const currAucIdx = await getLatestAuctionIndex({ sell, buy })
+
+    // Non started auction - return 0
+    if (currAucIdx.lte(0)) return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: '0' }))
+
+    const [pNum, pDen] = await getLastAuctionPrice({ sell, buy }, currAucIdx)
+    const price = (pNum.div(pDen)).toFixed(4)
     console.log('lastClosingPrice -> ', price)
 
     return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
