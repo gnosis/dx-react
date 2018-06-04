@@ -9,6 +9,7 @@ import modal from './modal'
 import notifications from './notifications'
 import ratioPairs from './ratioPairs'
 import settings from './settings'
+import approvedTokens from './approvedTokens'
 import tokenBalances from './tokenBalances'
 import tokenList from './tokenList'
 import tokenOverlay from './tokenOverlay'
@@ -25,6 +26,7 @@ const reducers = combineReducers<State>({
   notifications,
   ratioPairs,
   settings,
+  approvedTokens,
   tokenBalances,
   tokenList,
   tokenOverlay,

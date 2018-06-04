@@ -390,10 +390,15 @@ export const claimSellerFundsFromSeveralAuctions = async (
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  const claimableIndices = (await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices))[0].map((i: BigNumber) => i.toNumber())
+  const claimableIndices = (
+    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
+  )[0].map((i: BigNumber) => i.toNumber())
+
   if (claimableIndices.length === 0) return
 
-  const lastIndexCleared = (await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1]))[0].gt(0)
+  const lastIndexCleared = (
+    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
+  )[0].gt(0)
 
   const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
   const sellArr = Array.from({ length }, () => sell.address)
@@ -480,7 +485,11 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   }
 }
 
-export const getIndicesWithClaimableTokensForSellers = async (pair: TokenPair, userAccount?: Account, lastNAuctions: number = 0) => {
+export const getIndicesWithClaimableTokensForSellers = async (
+  pair: TokenPair,
+  userAccount?: Account,
+  lastNAuctions: number = 0,
+) => {
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
@@ -648,6 +657,21 @@ export const getSellerOngoingAuctions = async (
   } catch (e) {
     console.warn(e)
   }
+}
+
+/**
+ * returns a list of approved token addresses
+ * @param tokensJSON - DefaultTokenList
+ * @return addresses - Account[] of approved tokens from the tokensJSON
+ */
+export const getApprovedTokensFromAllTokens = async (tokensJSON: DefaultTokenList): Promise<Account[]> => {
+  const tokenAddresses = tokensJSON.map(token => token.address)
+
+  const { DutchX } = await promisedAPI
+
+  const approvalMap = await DutchX.getApprovedAddressesOfList(tokenAddresses)
+
+  return tokenAddresses.filter((_, i) => approvalMap[i])
 }
 
 async function initAPI(): Promise<dxAPI> {

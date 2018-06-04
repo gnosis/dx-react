@@ -1,9 +1,11 @@
 import React from 'react'
-import { TokenMod, BigNumber, DefaultTokenObject } from 'types'
+import { TokenMod, BigNumber, DefaultTokenObject, TokenName } from 'types'
 
 export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,
   mod?: TokenMod,
+  name: TokenName,
+  generatesMGN?: boolean,
   balance: BigNumber,
 }
 
@@ -21,8 +23,8 @@ const tokenSVG = new Set([
   'GNT',
 ])
 
-const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
-  const { mod, balance, name, symbol, decimals } = rest
+const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ...rest }) => {
+  const { mod, balance, name, symbol, decimals, address } = rest
   return (
     <div className="tokenItem" onClick={onClick && (() => onClick(rest))}>
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
@@ -38,7 +40,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, ...rest }) => {
       MICHEL: We should ONLY show 'noMGN' when 'tokenItem' is displayed inside 'tokenList'.
       Currently this is handled by CSS but we should implement the logic here to not output the element at all.
       */}
-      <p className="noMGN">Any auction with <strong>{symbol}</strong> won't generate MGN</p>
+      {!generatesMGN && <p className="noMGN">Any auction with <strong>{symbol || address}</strong> won't generate MGN</p>}
 
       {/* =====================================================================
         DEMO >>> NO PRESELECTED TOKEN for tokenItem in tokenPair
