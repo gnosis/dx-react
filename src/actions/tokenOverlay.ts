@@ -1,9 +1,7 @@
 import { createAction } from 'redux-actions'
 import { TokenMod, TokenPair } from 'types'
 
-import { closingPrice } from 'api/'
-import { setClosingPrice } from 'actions/ratioPairs'
-import { swapTokensInAPair } from 'actions/tokenPair'
+import { swapTokensInAPair, getClosingPrice } from 'actions'
 import { DefaultTokenObject } from 'api/types'
 
 export const openOverlay = createAction<{ mod: TokenMod }>('OPEN_OVERLAY')
@@ -27,7 +25,7 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
 
   // user chose buy token in place of sell token or the reverse
   // just switch them
-  if (sell && buy && sell.address === buy.address) {
+  if ((sell && buy) && (sell.address === buy.address)) {
     dispatch(swapTokensInAPair())
     return dispatch(closeOverlay())
   }
@@ -36,9 +34,7 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
     // TODO: dispatch getClosingPrice action
     // which would also add closingPrice to TokenPair state
     dispatch(selectTokenAndCloseOverlay({ mod, token }))
-    const [pNum, pDen] = await closingPrice({ sell, buy }),
-      price = (pNum.div(pDen)).toString()
-    dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
+    return dispatch(getClosingPrice())
   } catch (e) {
     console.error(e)
   }

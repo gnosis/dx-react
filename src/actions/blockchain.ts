@@ -192,8 +192,11 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
 
   try {
-    const lastPrice = (await closingPrice({ sell, buy })).toString()
-    return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: lastPrice }))
+    const [pNum, pDen] = await closingPrice({ sell, buy })
+    const price = (pNum.div(pDen)).toString()
+    console.log('lastClosingPrice -> ', price)
+
+    return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
   } catch (e) {
     console.error(e)
   }
