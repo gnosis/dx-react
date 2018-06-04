@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'types'
-import { closeModal, approveAndPostSellOrder } from 'actions'
+import { closeModal } from 'actions'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -11,7 +11,6 @@ interface TransactionModalProps {
 
 interface ApprovalModalProps extends TransactionModalProps {
   approvalButton: any,
-  approveAndPostSellOrder: typeof approveAndPostSellOrder,
 }
 
 interface BlockModalProps extends TransactionModalProps {
@@ -67,9 +66,10 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
   modalProps: {
     header,
     body,
+    onClick,
+    buttons,
   },
   activeProvider,
-  approveAndPostSellOrder,
 }) =>
   <div className="modalDivStyle">
     <h1 className="modalH1">{header || 'Please choose Token Approval amount'}</h1>
@@ -80,23 +80,23 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
       <div className="modalButtonDiv">
         <button
           className="modalButton"
-          onClick={() => approveAndPostSellOrder('MAX')}
+          onClick={() => onClick('MAX')}
           >
-          Approve Max
+          {buttons && buttons.button1.buttonTitle1 || 'Approve Max'}
         </button>
         <p className="modalButtonDescription">
-          Choose this option to stop seeing this prompt and only sign 1 transaction per sell order
+          {buttons && buttons.button1.buttonDesc1 || 'Choose this option to stop seeing this prompt and only sign 1 transaction per sell order'}
         </p>
       </div>
       <div className="modalButtonDiv">
         <button
           className="modalButton"
-          onClick={() => approveAndPostSellOrder('MIN')}
+          onClick={() => onClick('MIN')}
           >
-          Approve Min
+          {buttons && buttons.button2.buttonTitle2 || 'Approve Min'}
         </button>
         <p className="modalButtonDescription">
-          Choose this option to require signing 2 transactions for each sell order
+          {buttons && buttons.button2.buttonDesc2 || 'Choose this option to require signing 2 transactions for each sell order'}
         </p>
       </div>
     </div>

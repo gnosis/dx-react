@@ -1,7 +1,7 @@
 import React, { Component, CSSProperties } from 'react'
 
 import { connect } from 'react-redux'
-import { closeModal, approveAndPostSellOrder } from 'actions'
+import { closeModal } from 'actions'
 
 import { history } from 'components/App'
 
@@ -14,7 +14,6 @@ export interface ModalContainerProps extends Modal {
   children?: any,
 
   closeModal?: typeof closeModal,
-  submitSellOrder?: typeof approveAndPostSellOrder,
 }
 
 const backdropActive: CSSProperties = {
@@ -100,7 +99,6 @@ interface OwnProps {
 
 interface DispatchProps {
   closeModal: typeof closeModal;
-  approveAndPostSellOrder: typeof approveAndPostSellOrder;
 }
 
 const mergeProps = (stateProps: ModalContainerProps, dispatchProps: {}, ownProps: OwnProps) => ({
@@ -113,5 +111,5 @@ const mergeProps = (stateProps: ModalContainerProps, dispatchProps: {}, ownProps
 })
 
 export default connect<ModalContainerProps, DispatchProps, any>(
-  mapState, { closeModal, approveAndPostSellOrder }, mergeProps,
+  mapState, { closeModal }, mergeProps,
 )(ModalContainer)

@@ -63,11 +63,22 @@ export interface Modal {
   modalProps: {
     header: string,
     body: string,
+    buttons?: {
+      button1: {
+        buttonTitle1: string,
+        buttonDesc1: string,
+      },
+      button2: {
+        buttonTitle2: string,
+        buttonDesc2: string,
+      },
+    },
     txData?: {
       tokenA: DefaultTokenObject,
       tokenB?: DefaultTokenObject,
       sellAmount: Balance | BigNumber,
     },
+    onClick?: (choice: string) => any,
     button?: boolean,
     error?: string,
   }
