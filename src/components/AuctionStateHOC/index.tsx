@@ -2,7 +2,6 @@ import React from 'react'
 import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
-import { claimSellerFundsAndWitchdraw } from 'api'
 // import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
@@ -13,6 +12,7 @@ import {
   getTime,
   getSellerBalance,
   getUnclaimedSellerFunds,
+  claimSellerFundsAndWithdraw,
 } from 'api'
 
 import { WATCHER_INTERVAL } from 'integrations/initialize'
@@ -82,13 +82,15 @@ interface ProgressStepArgs {
   sellerBalance: BigNumber,
 }
 const getProgressStep = ({ status, sellerBalance }: ProgressStepArgs) => {
-  if (!sellerBalance.gt(0) || status === AuctionStatus.INACTIVE) return 0
+  if (sellerBalance.lte(0) || status === AuctionStatus.INACTIVE) return 0
 
   if (status === AuctionStatus.INIT || status === AuctionStatus.PLANNED) return 1
 
   if (status === AuctionStatus.ACTIVE) return 2
 
   if (status === AuctionStatus.ENDED) return 3
+
+  return 0
 }
 
 export default (Component: React.ClassType<any, any, any>): React.ClassType<any, any, any> => {
@@ -185,7 +187,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       const account = await promisedAccount
       const sellerBalance = await getSellerBalance(pair, index, account)
-      console.log('sellerBalance: ', sellerBalance.toString());
+      console.log('sellerBalance: ', sellerBalance.toString())
 
       // TODO: calculate differently for PLANNED auctions (currently is NaN)
       // ALSO: consider calculating not using price but rather sellerBalance/totalSellVolume*totalBuyVolume,
@@ -232,7 +234,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         `claiming tokens for ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
-      return claimSellerFundsAndWitchdraw({ sell, buy }, index, userCanClaim, account)
+      return claimSellerFundsAndWithdraw({ sell, buy }, index, userCanClaim, account)
     }
 
     render() {

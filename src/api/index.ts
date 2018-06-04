@@ -353,7 +353,7 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
  * @param index auctionIndex, current auction by default
  * @param account userccount, current web3 account by default
  */
-export const claimSellerFundsAndWitchdraw = async (
+export const claimSellerFundsAndWithdraw = async (
   pair: TokenPair,
   index?: Index,
   amount?: Balance | number,
@@ -462,8 +462,8 @@ export const withdraw = async (code: TokenCode, amount: Balance, account?: Accou
 // of it's direct and reciprocal auctions
 const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, account: Account) => {
   const lastIndex = await DutchX.getLatestAuctionIndex(pair)
-  console.log('lastIndex: ', lastIndex.toString());
-  console.log('lastIndex + 1: ', lastIndex.add(1).toString());
+  console.log('lastIndex: ', lastIndex.toString())
+  console.log('lastIndex + 1: ', lastIndex.add(1).toString())
   const oppositePair = { sell: pair.buy, buy: pair.sell }
   const [closingPriceDir, closingPriceOpp, normal, inverse] = await Promise.all([
     DutchX.getClosingPrice(pair, lastIndex),
