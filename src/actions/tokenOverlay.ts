@@ -35,11 +35,9 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
   try {
     // TODO: dispatch getClosingPrice action
     // which would also add closingPrice to TokenPair state
-    const promisedPrice = (closingPrice({ sell, buy }))
-
     dispatch(selectTokenAndCloseOverlay({ mod, token }))
-
-    const price = (await promisedPrice).toString()
+    const [pNum, pDen] = await closingPrice({ sell, buy }),
+      price = (pNum.div(pDen)).toString()
     dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
   } catch (e) {
     console.error(e)
