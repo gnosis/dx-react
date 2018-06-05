@@ -4,10 +4,10 @@
   "description": "DutchX - Dutch Auction Trading Platform",
   "main": "src/index.js",
   "scripts": {
-    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
-    "build:prod": "cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
+    "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
+    "build:prod": "npm run clean && echo $NODE_ENV",
     "build": "if test \"$NODE_ENV\" = \"production\"; then npm run build:prod; else npm run build:dev; fi;",
-    "clean": "pwd && rm -rf dist",
+    "clean": "rimraf dist",
     "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --progress",
     "start:prod": "cross-env NODE_ENV=production webpack-dev-server --config webpack.prod.config.js --progress",
     "start": "npm run start:dev",
