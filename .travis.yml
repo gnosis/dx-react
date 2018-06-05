@@ -10,6 +10,9 @@ before_install:
   - npm install -g truffle ganache-cli
 install:
   - npm install
+  - npm ls webpack
+  - ls ./node_modules/.bin
+  - npx webpack -v
 matrix:
   include:
   - if: branch IN (master, release/0.2.0)
