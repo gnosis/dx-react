@@ -9,7 +9,7 @@ before_install:
   - rm -rf node_modules
   - npm install -g truffle ganache-cli
 install:
-  - npm install
+  - npm ci
   - npm ls webpack
   - ls ./node_modules/.bin
   - npx webpack -v
