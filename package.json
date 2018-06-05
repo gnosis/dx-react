@@ -6,7 +6,7 @@
   "scripts": {
     "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
     "build:prod": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
-    "build": "if [ '$NODE_ENV' == 'production' ]; then npm run build:prod; else npm run build:dev; fi",
+    "build": "if test \"$NODE_ENV\" = \"production\"; then npm run build:prod; else npm run build:dev; fi;",
     "clean": "rimraf dist",
     "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --progress",
     "start:prod": "cross-env NODE_ENV=production webpack-dev-server --config webpack.prod.config.js --progress",
