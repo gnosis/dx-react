@@ -10,9 +10,6 @@ before_install:
   - npm install -g truffle ganache-cli
 install:
   - npm install
-  - npm ls cross-env
-  - ls ./node_modules/.bin
-  - npx cross-env
 matrix:
   include:
   - if: branch IN (master, release/0.2.0)
