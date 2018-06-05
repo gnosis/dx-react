@@ -83,6 +83,39 @@ interface FilterObject {
 
 export type Filter = 'latest' | 'pending' | FilterObject | void
 
+export interface ContractArtifact {
+  contractName: string,
+  abi: {
+    anonymous?: boolean,
+    constant?: boolean,
+    inputs: {name: string, type: string}[],
+    name: string,
+    outputs?: {name: string, type: string}[],
+    payable?: boolean,
+    stateMutability?: string,
+    type: string,
+  },
+  bytecode: string,
+  deployedBytecode: string,
+  sourceMap: string,
+  deployedSourceMap: string,
+  source: string,
+  sourcePath: string,
+  ast: object,
+  legacyAst: object,
+  compiler: {
+    name: string,
+    version: string,
+  },
+  networks: {
+    [P: number]: {
+      events: object,
+      links: object,
+      address: Account,
+      transactionHash: string,
+    },
+  }
+}
 export interface SimpleContract {
   address: Account | void,
   contractName: string,
