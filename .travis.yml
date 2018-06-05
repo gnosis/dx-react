@@ -13,7 +13,7 @@ install:
 matrix:
   include:
   - if: branch IN (master, release/0.2.0)
-    env: NODE_ENV=production
+    env: NODE_ENV=development
     node_js: '9'
   - if: branch IN (master, release/0.2.0)
     env: NODE_ENV=production
