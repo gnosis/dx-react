@@ -8,10 +8,16 @@ node_js:
 before_install:
   - rm -rf node_modules
   - npm install -g truffle ganache-cli
-env:
-  - NODE_ENV=development
 install:
   - npm install
+matrix:
+  include:
+    - branch: master
+      env: NODE_ENV: production
+    - branch: development
+      env: NODE_ENV: development
+    - branch: release/0.2.0
+      env: NODE_ENV: production
 deploy:
   - provider: s3
     bucket: dx-development
