@@ -5,6 +5,7 @@ interface LoaderProps {
   hasData: any;
   svgHeight?: number;
   message?: string;
+  SVGChoice?: 'DutchXLogo' | 'ETHLogo'
   render(): ReactElement<any>;
 }
 
@@ -12,17 +13,18 @@ class Loader extends React.Component<LoaderProps> {
   static defaultProps = {
     svgHeight: 50,
     reSize: 1,
+    SVGChoice: 'DutchXLogo',
   }
 
-  renderSVG = () =>
-    <div className="svgContainer" style={{ width: `${420 * this.props.reSize}px`, height: `${475 * this.props.reSize}px` }}>
+  DutchXLogo = () =>
+    <div className="dutchxSVGContainer" style={{ width: `${420 * this.props.reSize}px`, height: `${475 * this.props.reSize}px` }}>
       <svg width="100%" height={`${this.props.svgHeight}%`} viewBox="0 0 105 20.5" version="1.1">
         <defs>
           <polygon id="path-1" points="0.0804697719 0.0481072691 18.8121496 0.0481072691 18.8121496 19.3882033 0.0804697719 19.3882033"></polygon>
           <polygon id="path-3" points="0 0.166758882 7.75290678 0.166758882 7.75290678 14.1836979 0 14.1836979"></polygon>
         </defs>
 
-        <g id="Page-1" className="svgGroup" fillRule="evenodd">
+        <g id="Page-1" className="dutchXSVGGroup" fillRule="evenodd">
           <g id="dutchx_logo" transform="translate(0.000000, -4.000000)">
             <g transform="translate(0.666667, 4.282353)" id="v2">
               <g>
@@ -50,10 +52,29 @@ class Loader extends React.Component<LoaderProps> {
       {!!(this.props.message) && <p style={{ fontWeight: 600, margin: 0 }}>{this.props.message}</p>}
     </div>
 
-  render() {
-    const { hasData } = this.props
+  ETHLogo = () =>
+    <div className="mmSVGContainer" style={{ width: `${250 * this.props.reSize}px` }}>
+      <svg version="1.1" id="Ebene_7" x="0px" y="0px" viewBox="0 0 50 50" >
+        <g id="ZWC4wa.tif" className="mmSVGGroup">
+          <g>
+            <g>
+              <path d="M13.5,26c3.7-6.1,7.2-12,11.1-18.4C28.3,14,31.9,19.9,35.6,26c-3.7,2.2-7.4,4.4-11.1,6.6C20.9,30.4,17.2,28.2,13.5,26z
+                M25.1,20.8c2.7,1.2,5.4,2.5,8.5,3.9c-2.9-4.8-5.6-9.3-8.5-14.1C25.1,14.2,25.1,17.4,25.1,20.8z M15.5,24.7
+                c3.1-1.4,5.8-2.7,8.4-3.8c0-3.4,0-6.6,0-10.2C21,15.4,18.4,19.9,15.5,24.7z M33.8,25.9c-3-1.4-5.8-2.6-8.7-3.9c0,3.1,0,6,0,9.1
+                C28,29.3,30.8,27.7,33.8,25.9z M23.9,22c-3,1.4-5.7,2.6-8.6,3.9c3,1.8,5.8,3.4,8.6,5.1C23.9,27.9,23.9,25,23.9,22z"/>
+              <path d="M24.5,33.3c3.5-2,6.9-4,12.1-7.1c-4.9,6.9-8.4,11.8-12.1,17.1C20.8,38,17.2,33,12.4,26.2C17.8,29.4,21.2,31.4,24.5,33.3z
+                M25.1,40.7c2.7-3.8,5.1-7.3,7.9-11.2c-3,1.8-5.5,3.3-7.9,4.7C25.1,36.4,25.1,38.4,25.1,40.7z M23.9,34.2
+                c-2.4-1.4-4.9-2.9-7.9-4.7c2.8,4,5.2,7.4,7.9,11.1C23.9,38.3,23.9,36.4,23.9,34.2z"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
 
-    return hasData ? this.props.render() : this.renderSVG()
+  render() {
+    const { hasData, render, SVGChoice } = this.props
+
+    return hasData ? render() : this[SVGChoice]()
   }
 }
 

@@ -227,14 +227,6 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     ])
 
   try {
-    // change to modal with button, new modal
-    dispatch(openModal({
-      modalName: 'TransactionModal',
-      modalProps: {
-        header: `Contacting Ethereum blockchain`,
-        body: `Please wait`,
-      },
-    }))
     // check ETHER deposit && start fetching allowance amount in ||
     const wrappedETH = await checkEthTokenBalance(sell.address, nativeSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
@@ -245,6 +237,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           header: `Wrapping ${(wrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
+          loader: true,
         },
       }))
       // TODO only deposit difference
@@ -296,10 +289,9 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
 
       await dispatch(approveTokens(choice, 'OWLTOKEN'))
     }
+    return dispatch(submitSellOrder())
   } catch (e) {
     dispatch(errorHandling(e))
-  } finally {
-    dispatch(submitSellOrder())
   }
 }
 
@@ -330,6 +322,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
           tokenB: buy,
           sellAmount,
         },
+        loader: true,
       },
     }))
     // if user's sellAmt > DX.balance(token)
@@ -388,6 +381,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalProps: {
             header: `Approving minimum token movement`,
             body: `You are approving ${sellAmount} for this particular token [${sellName}]. For future transactions with this particular token, you will continue needing to sign two transactions.`,
+            loader: true,
           },
         }))
         const nativeSellAmt = await promisedNativeSellAmt
@@ -398,8 +392,8 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: `Approving maximum token movement`,
-            body: `You are approving the maximum amount for this particular token [${sellName}]. You will no longer need to sign two transactions for this token going forward.
-            `,
+            body: `You are approving the maximum amount for this particular token [${sellName}]. You will no longer need to sign two transactions for this token going forward.`,
+            loader: true,
           },
         }))
         // CONSIDER/TODO: move allowanceLeft into state
@@ -416,6 +410,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalProps: {
             header: `Approving use of OWL`,
             body: `You are approving the use of OWL tokens towards fee reduction - you will not see this message again.`,
+            loader: true,
           },
         }))
         // CONSIDER/TODO: move allowanceLeft into state
@@ -428,7 +423,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
       }
     }
   } catch (error) {
-    dispatch(errorHandling(error))
+    throw error
   }
 }
 
@@ -446,6 +441,7 @@ export const claimSellerFundsFromSeveral = (
       modalProps: {
         header: `Claiming Funds`,
         body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        loader: true,
       },
     }))
     const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
