@@ -7,7 +7,10 @@ language: node_js
 #  - '8'
 before_install:
   - rm -rf node_modules
-  - npm install -g truffle ganache-cli
+  - npm install -g truffle ganache-cli npm@^6.0.0
+  cache:
+    directories:
+    - "$HOME/.npm"
 install:
   - npm ci
   - npm ls webpack
