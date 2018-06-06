@@ -8,6 +8,7 @@ import {
   MGNInterface,
   SimpleContract,
   DeployedContract,
+  ContractArtifact,
 } from './types'
 
 const contractNames = [
@@ -49,7 +50,7 @@ const req = require.context(
   /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenFRT|TokenOMG|TokenRDN)\.json$/,
 )
 
-export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/pm-contracts/build/contracts/HumanFriendlyToken.json'))
+export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
   './DutchExchange.json' |
@@ -63,8 +64,25 @@ type TokenArtifact =
   './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
-const Contracts: SimpleContract[] = contractNames.map(
-  c => TruffleContract(req(reqKeys.find(key => key === `./${c}.json`))),
+const ContractsArtifacts: ContractArtifact[] = contractNames.map(
+  c => req(reqKeys.find(key => key === `./${c}.json`)),
+)
+
+// in development use different contract addresses
+if (process.env.NODE_ENV === 'development') {
+  // from networks-%ENV%.json
+  const networks = require('@gnosis.pm/dx-contracts/networks-dev.json')
+
+  for (const contrArt of ContractsArtifacts) {
+    const { contractName } = contrArt
+    // assign networks from the file, overriding from /build/contracts with same network id
+    // but keeping local network ids
+    if (networks[contractName]) Object.assign(contrArt.networks, networks[contractName])
+  }
+}
+
+const Contracts: SimpleContract[] = ContractsArtifacts.map(
+  art => TruffleContract(art),
 )
 
 // name => contract mapping
