@@ -8,9 +8,9 @@ language: node_js
 before_install:
   - rm -rf node_modules
   - npm install -g truffle ganache-cli npm@^6.0.0
-  cache:
-    directories:
-    - "$HOME/.npm"
+cache:
+  directories:
+  - "$HOME/.npm"
 install:
   - npm ci
   - npm ls webpack
