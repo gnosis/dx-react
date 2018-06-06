@@ -18,6 +18,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
     const input = e.target
     const { value } = input
     const { setSellTokenAmount, maxSellAmount } = this.props
+    if (e.target.value.length < 1) return setSellTokenAmount({ sellAmount: '0' })
     setSellTokenAmount({ sellAmount: value })
 
     if (maxSellAmount.lessThanOrEqualTo(value)) {
