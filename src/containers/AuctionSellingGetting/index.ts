@@ -19,7 +19,7 @@ const mapState = (state: State) => {
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
     sellAmount,
     // TODO: use BN.mult()
-    buyAmount: (+sellAmount * +price).toString(),
+    buyAmount: (+sellAmount * +price).toFixed(4),
   }) as AuctionSellingGettingProps
 }
 
