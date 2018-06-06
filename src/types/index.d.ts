@@ -77,6 +77,7 @@ export interface Modal {
       tokenA: DefaultTokenObject,
       tokenB?: DefaultTokenObject,
       sellAmount: Balance | BigNumber,
+      network?: 'RINKEBY' | 'MAIN',
     },
     onClick?: (choice: string) => any,
     button?: boolean,

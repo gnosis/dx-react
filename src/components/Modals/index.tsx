@@ -47,7 +47,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
         <li>{`Token Receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${txData.tokenB.name && txData.tokenB.symbol && ' [' + txData.tokenB.name + ']'}`}</li>
         }
         <li>{`Receiving Token Address:  ${txData.tokenB.address}`}</li>
-        <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`https://etherscan.io/token/${txData.tokenB.address}`}>{`https://etherscan.io/token/${txData.tokenB.address}`}</a></li>
+        <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`https://${txData.network === 'RINKEBY' ? 'rinkeby.' : ''}etherscan.io/token/${txData.tokenB.address}`}>{`https://${txData.network === 'RINKEBY' ? 'rinkeby.' : ''}etherscan.io/token/${txData.tokenB.address}`}</a></li>
       </ul>
     </div>}
     {error &&
