@@ -2,16 +2,27 @@
 sudo: required
 dist: trusty
 language: node_js
-node_js:
-  - '9'
-  - '8'
 before_install:
-  - rm -rf node_modules
-  - npm install -g truffle ganache-cli
-env:
-  - NODE_ENV=development
+  - npm install -g truffle ganache-cli npm@^6.0.0
+cache:
+  directories:
+  - "$HOME/.npm"
 install:
-  - npm install
+  - npm ci --production=false
+matrix:
+  include:
+  - if: branch IN (master, release/0.2.0)
+    env: NODE_ENV=production
+    node_js: '9'
+  - if: branch IN (master, release/0.2.0)
+    env: NODE_ENV=production
+    node_js: '8'
+  - if: NOT (branch IN (master, release/0.2.0))
+    env: NODE_ENV=development
+    node_js: '9'
+  - if: NOT (branch IN (master, release/0.2.0))
+    env: NODE_ENV=development
+    node_js: '8'
 deploy:
   - provider: s3
     bucket: dx-development
@@ -23,6 +34,7 @@ deploy:
     local_dir: dist
     on:
       branch: develop
+      node: '9'
   - provider: s3
     bucket: dx-staging
     secret_access_key:
@@ -33,3 +45,4 @@ deploy:
     local_dir: dist
     on:
       branch: master
+      node: '9'
