@@ -26,11 +26,10 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
       // TODO: restrict payload.sellAmount to [0, tokenBalances[state.sell]]
       ...action.payload,
     }),
-    [swapTokensInAPair.toString()]: ({ sell, buy }) => ({
-      sell: buy,
-      buy: sell,
-      index: '0',
-      lastPrice: '0',
+    [swapTokensInAPair.toString()]: (state) => ({
+      ...state,
+      sell: state.buy,
+      buy: state.sell,
       sellAmount: '0',
     }),
     [setClosingPrice.toString()]: (state, action) => ({ ...state, lastPrice: action.payload.price }),

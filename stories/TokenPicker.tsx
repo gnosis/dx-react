@@ -47,6 +47,8 @@ storiesOf('TokenPicker', module)
       setTokenListType={() => {}}
       needsTokens={boolean('needsTokens', false)}
       showPair={boolean('showPair', false)}
+      tokensSelected={boolean('Tokens Selected', false)}
       to=""
+
     />
 ))

@@ -22,6 +22,9 @@ async function init(): Promise<DutchExchange> {
   const getClosingPrice = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair, index: Index) =>
     dx.closingPrices.call(t1, t2, index)
 
+  const getLastAuctionPrice = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair, index: Index) =>
+    dx.getPriceInPastAuction.call(t1, t2, index)
+
   const getPrice = ({ sell: { address: t1 }, buy: { address: t2 } }: TokenPair, index: Index) =>
     dx.getCurrentAuctionPrice.call(t1, t2, index)
 
@@ -191,6 +194,7 @@ async function init(): Promise<DutchExchange> {
     getLatestAuctionIndex,
     getAuctionStart,
     getClosingPrice,
+    getLastAuctionPrice,
     getPrice,
     getSellVolumesCurrent,
     getSellVolumesNext,
