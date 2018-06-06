@@ -54,7 +54,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         const customTokenListWithDecimals = await getAllTokenDecimals(json)
 
         localForage.setItem('customListHash', fileHash)
-        localForage.setItem('customTokenList', customTokenListWithDecimals)
+        localForage.setItem('customTokens', customTokenListWithDecimals)
 
         this.setState({ pullingData: false })
 
