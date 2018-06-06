@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal } from 'types'
 import { closeModal } from 'actions'
+import Loader from 'components/Loader'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -24,6 +25,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     txData,
     button,
     error,
+    loader,
   },
   activeProvider,
   closeModal,
@@ -59,6 +61,13 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     >
       CLOSE
     </button>
+    }
+    {loader &&
+      <Loader
+        hasData={false}
+        render={() => <div>Loading...</div>}
+        SVGChoice="ETHLogo"
+      />
     }
   </div>
 

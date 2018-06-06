@@ -81,6 +81,7 @@ export interface Modal {
     onClick?: (choice: string) => any,
     button?: boolean,
     error?: string,
+    loader?: boolean,
   }
   isOpen: boolean
 }
