@@ -2,9 +2,6 @@
 sudo: required
 dist: trusty
 language: node_js
-#node_js:
-#  - '9'
-#  - '8'
 before_install:
   - rm -rf node_modules
   - npm install -g truffle ganache-cli npm@^6.0.0
@@ -13,9 +10,6 @@ cache:
   - "$HOME/.npm"
 install:
   - npm ci
-  - npm ls webpack
-  - ls ./node_modules/.bin
-  - npx webpack -v
 matrix:
   include:
   - if: branch IN (master, release/0.2.0)
@@ -41,6 +35,7 @@ deploy:
     local_dir: dist
     on:
       branch: develop
+      node: '9'
   - provider: s3
     bucket: dx-staging
     secret_access_key:
@@ -51,3 +46,4 @@ deploy:
     local_dir: dist
     on:
       branch: master
+      node: '9'
