@@ -19,13 +19,17 @@ install:
 matrix:
   include:
   - if: branch IN (master, release/0.2.0)
-    env: NODE_ENV=development
+    env: NODE_ENV=production
     node_js: '9'
   - if: branch IN (master, release/0.2.0)
     env: NODE_ENV=production
     node_js: '8'
   - if: NOT (branch IN (master, release/0.2.0))
     env: NODE_ENV=development
+    node_js: '9'
+  - if: NOT (branch IN (master, release/0.2.0))
+    env: NODE_ENV=development
+    node_js: '8'
 deploy:
   - provider: s3
     bucket: dx-development
