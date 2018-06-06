@@ -392,20 +392,30 @@ export const claimSellerFundsFromSeveralAuctions = async (
 
   const claimableIndices = (
     await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
-  )[0].map((i: BigNumber) => i.toNumber())
+  )[0].map(i => i.toNumber())
 
   if (claimableIndices.length === 0) return
 
+  // getIndicesWithClaimableTokensForSellers returns auctions with sellBalance > 0
+  // this means currentAucIndx may have > 0 sellBalance BUT NOT HAVE CLEARED (only last Index though)
   const lastIndexCleared = (
     await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
   )[0].gt(0)
 
   const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
+
+  const finalIndices = claimableIndices.slice(0, length)
   const sellArr = Array.from({ length }, () => sell.address)
   const buyArr = Array.from({ length }, () => buy.address)
 
-  console.log('Params = ', sellArr, buyArr, claimableIndices, userAccount)
-  return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, claimableIndices, userAccount)
+  console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
+  await DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
+
+  const withdrawableBalance = await DutchX.getBalance(buy.address, userAccount)
+  console.log('​withdrawableBalance -> ', withdrawableBalance)
+  if (withdrawableBalance.lte(0)) throw new Error ('Withdraw balance cannot be 0')
+
+  return DutchX.withdraw(buy.address, withdrawableBalance, userAccount)
 }
 
 
