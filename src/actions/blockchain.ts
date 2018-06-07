@@ -221,9 +221,9 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     nativeSellAmt = await toNative(sellAmount, sell.decimals),
     { TokenOWL } = await promisedContractsMap,
     // promised Token Allowance to get back later
-    promisedTokensAndOWLAllowances = Promise.all([
+    promisedTokensAndOWLBalance = Promise.all<boolean|BigNumber, BigNumber>([
       checkTokenAllowance(sell.address, nativeSellAmt, currentAccount),
-      checkTokenAllowance(TokenOWL.address, nativeSellAmt, currentAccount),
+      getTokenBalance(TokenOWL.address, currentAccount),
     ])
 
   try {
@@ -246,7 +246,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     }
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
-    const [needSellTokenAllowance, needOWLTokenAllowance] = await promisedTokensAndOWLAllowances
+    const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
     if (needSellTokenAllowance) {
       const promisedChoice: Promise<string> = new Promise((accept) => {
         dispatch(openModal({
@@ -264,30 +264,35 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
       await dispatch(approveTokens(choice, 'SELLTOKEN'))
     // Go straight to sell order if deposit && allowance both good
     }
-    if (needOWLTokenAllowance) {
-      const promisedChoice: Promise<string> = new Promise((accept) => {
-        dispatch(openModal({
-          modalName: 'ApprovalModal',
-          modalProps: {
-            header: `Approving OWL use for fees`,
-            body: `You have OWL available in your linked wallet address. Would you like to use OWL to pay for half of the fees on the DutchX? Any fee reduction due to MGN is valid and applied before the fee calculation.`,
-            buttons: {
-              button1: {
-                buttonTitle1: 'Approve',
-                buttonDesc1: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
-              },
-              button2: {
-                buttonTitle2: 'Disallow',
-                buttonDesc2: 'Choose this option if you do not want to use OWL',
-              },
-            },
-            onClick: accept,
-          },
-        }))
-      })
-      const choice = await promisedChoice
 
-      await dispatch(approveTokens(choice, 'OWLTOKEN'))
+    console.log('​exportcheckUserStateAndSell -> OWLBalance ', OWLBalance)
+    if (OWLBalance.gt(0)) {
+      const needOWLAllowance = await checkTokenAllowance(TokenOWL.address, nativeSellAmt, currentAccount)
+      if (needOWLAllowance) {
+        const promisedChoice: Promise<string> = new Promise((accept) => {
+          dispatch(openModal({
+            modalName: 'ApprovalModal',
+            modalProps: {
+              header: `Approving OWL use for fees`,
+              body: `You have OWL available in your linked wallet address. Would you like to use OWL to pay for half of the fees on the DutchX? Any fee reduction due to MGN is valid and applied before the fee calculation.`,
+              buttons: {
+                button1: {
+                  buttonTitle1: 'Approve',
+                  buttonDesc1: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
+                },
+                button2: {
+                  buttonTitle2: 'Disallow',
+                  buttonDesc2: 'Choose this option if you do not want to use OWL',
+                },
+              },
+              onClick: accept,
+            },
+          }))
+        })
+        const choice = await promisedChoice
+
+        await dispatch(approveTokens(choice, 'OWLTOKEN'))
+      }
     }
     return dispatch(submitSellOrder())
   } catch (e) {
