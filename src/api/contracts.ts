@@ -69,7 +69,7 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
 )
 
 // in development use different contract addresses
-if (process.env.NODE_ENV === 'development') {
+/* if (process.env.NODE_ENV === 'development') {
   // from networks-%ENV%.json
   const networks = require('@gnosis.pm/dx-contracts/networks-dev.json')
 
@@ -79,7 +79,7 @@ if (process.env.NODE_ENV === 'development') {
     // but keeping local network ids
     if (networks[contractName]) Object.assign(contrArt.networks, networks[contractName])
   }
-}
+} */
 
 const Contracts: SimpleContract[] = ContractsArtifacts.map(
   art => TruffleContract(art),
