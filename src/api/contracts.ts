@@ -12,15 +12,17 @@ import {
 } from './types'
 
 const contractNames = [
-  'DutchExchange',
-  'EtherToken',
-  'TokenGNO',
-  'TokenOWL',
-  'TokenFRT',
-  'TokenOMG',
-  'TokenRDN',
-  'Proxy',
-  'TokenOWLProxy',
+  'DutchExchange',          // Stays in dx-contracts
+  'TokenFRT',               // Stays in dx-contracts
+  'Proxy',                  // Stays in dx-contracts - will be renamed DutchExchangeProxy
+
+  'EtherToken',             // will be @gnosis/util-contracts
+  'TokenGNO',               // will be @gnosis/token-gno
+  'TokenOWL',               // will be @gnosis/token-owl
+  'TokenOWLProxy',          // will be @gnosis/token-owl
+
+  'TokenOMG',               // will be deleted - use TokenERC20
+  'TokenRDN',               // will be deleted - use TokenERC20
 ]
 
 // fill contractsMap from here if available
@@ -53,15 +55,15 @@ const req = require.context(
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
-  './DutchExchange.json' |
-  './Proxy.json' |
-  './EtherToken.json' |
-  './TokenGNO.json' |
-  './TokenOWL.json' |
-  './TokenOWLProxy.json' |
-  './TokenFRT.json' |
-  './TokenOMG.json' |
-  './TokenRDN.json'
+  './DutchExchange.json'  |
+  './Proxy.json'          |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
+  './TokenFRT.json'       |
+  './TokenOWL.json'       |   // Moving to @gnosis.pm/owl-token
+  './TokenOWLProxy.json'  |   // Moving to @gnosis.pm/owl-token
+  './EtherToken.json'     |   // Moving to @gnosis.pm/util-contracts
+  './TokenGNO.json'       |   // Moving to @gnosis.pm/gno-token
+  './TokenOMG.json'       |   // deleted in dx-contracts@0.9.1+
+  './TokenRDN.json'           // deleted in dx-contracts@0.9.1+
 
 const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
