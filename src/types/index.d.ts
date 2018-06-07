@@ -23,6 +23,13 @@ export type Balance = string
 export type Account = string
 export type BigNumber = BigNumber
 
+export interface Network2URL {
+  RINKEBY: 'https://rinkeby.etherscan.io/',
+  KOVAN: 'https://kovan.etherscan.io/',
+  MAIN: 'https://etherscan.io/',
+  UNKNOWN: '//localhost:5000/',
+}
+
 export interface Provider {
   name?: ProviderName,
   loaded: boolean,
@@ -77,6 +84,7 @@ export interface Modal {
       tokenA: DefaultTokenObject,
       tokenB?: DefaultTokenObject,
       sellAmount: Balance | BigNumber,
+      network?: 'RINKEBY' | 'MAIN',
     },
     onClick?: (choice: string) => any,
     button?: boolean,

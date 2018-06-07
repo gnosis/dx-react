@@ -1,4 +1,4 @@
-import { Code2Name, TokenCode } from 'types'
+import { Code2Name, TokenCode, Network2URL } from 'types'
 
 export const code2tokenMap: Code2Name = {
   ETH: 'ETHER',
@@ -10,6 +10,13 @@ export const code2tokenMap: Code2Name = {
   OMG: 'OMISEGO',
   RDN: 'RAIDEN',
   REP: 'AUGUR',
+}
+
+export const network2URL: Network2URL = {
+  RINKEBY: 'https://rinkeby.etherscan.io/',
+  MAIN: 'https://etherscan.io/',
+  KOVAN: 'https://kovan.etherscan.io/',
+  UNKNOWN: '//localhost:5000/',
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]

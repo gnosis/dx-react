@@ -1,6 +1,8 @@
 import React from 'react'
 import { Modal } from 'types'
 import { closeModal } from 'actions'
+import { network2URL } from 'globals'
+
 import Loader from 'components/Loader'
 
 interface TransactionModalProps {
@@ -47,7 +49,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
         <li>{`Token Receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${txData.tokenB.name && txData.tokenB.symbol && ' [' + txData.tokenB.name + ']'}`}</li>
         }
         <li>{`Receiving Token Address:  ${txData.tokenB.address}`}</li>
-        <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`https://etherscan.io/token/${txData.tokenB.address}`}>{`https://etherscan.io/token/${txData.tokenB.address}`}</a></li>
+        <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></li>
       </ul>
     </div>}
     {error &&

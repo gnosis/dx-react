@@ -298,7 +298,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
 export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
   const {
     tokenPair: { sell, buy, sellAmount, index = 0 },
-    blockchain: { activeProvider, currentAccount },
+    blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { network } } },
   }: State = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
@@ -306,7 +306,6 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       toNative(sellAmount, sell.decimals),
       getDXTokenBalance(sell.address, currentAccount),
     ])
-
   try {
     // don't do anything when submitting a <= 0 amount
     // indicate that nothing happened with false return
@@ -321,6 +320,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
           tokenA: sell,
           tokenB: buy,
           sellAmount,
+          network,
         },
         loader: true,
       },
