@@ -27,7 +27,7 @@ export interface Network2URL {
   RINKEBY: 'https://rinkeby.etherscan.io/',
   KOVAN: 'https://kovan.etherscan.io/',
   MAIN: 'https://etherscan.io/',
-  UNKNOWN: 'localhost:5000/',
+  UNKNOWN: '//localhost:5000/',
 }
 
 export interface Provider {

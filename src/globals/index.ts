@@ -16,7 +16,7 @@ export const network2URL: Network2URL = {
   RINKEBY: 'https://rinkeby.etherscan.io/',
   MAIN: 'https://etherscan.io/',
   KOVAN: 'https://kovan.etherscan.io/',
-  UNKNOWN: 'localhost:5000/',
+  UNKNOWN: '//localhost:5000/',
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]
