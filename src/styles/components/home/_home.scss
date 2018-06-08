@@ -75,7 +75,7 @@
       flex: 0 0 550px;
       max-height: 550px;
       height: auto;
-      padding: 25px 0;
+      padding: 25px 15px;
       box-sizing: border-box;
       border-radius: 3px;
 
@@ -306,22 +306,21 @@
 
 .tokenPairSwitcher {
   display: block;
-  position: absolute;
-  margin: auto;
-  left: 0;
-  right: 0;
+  margin: auto 0;
+  // position: absolute;
+  // top: 100px;
+  // right: 0;
+  // left: 0;
   height: 70px;
   width: 70px;
   cursor: pointer;
-  top: 100px;
   border-radius: 60px;
   will-change: box-shadow, transform;
-  transition: box-shadow, transform .15s ease, -webkit-box-shadow, -webkit-transform .15s ease;
+  transition: box-shadow, transform .35s ease, -webkit-box-shadow, -webkit-transform .35s ease;
   background: url('#{$images}arrowSides.svg') no-repeat center / 49px;
 
   &:hover {
-    transform: translateY(-3px);
-    // box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    transform: rotateZ(180deg);
   }
 
   @media #{$mobile} {
@@ -353,7 +352,9 @@
 }
 
 .tokenItem {
+  flex: 0 0 33%;
   cursor: pointer;
+  margin: 8px 0;
   padding: 20px;
   border-radius: 2px;
   will-change: box-shadow, transform;
