@@ -138,6 +138,7 @@ export interface TokenList {
   customTokenList: DefaultTokenObject[];
   combinedTokenList: DefaultTokenObject[];
   type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
+  allowUpload: boolean;
 }
 
 /**

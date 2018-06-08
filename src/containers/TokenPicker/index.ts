@@ -12,14 +12,16 @@ const mapState = ({
     customTokenList,
     defaultTokenList,
     type,
+    allowUpload,        // TODO: centralized version - set to true in reducers/tokenLists.ts when decentralised
   },
   tokenPair: {
     sell,
     buy,
   },
 }: State) => ({
+  allowUpload,
   fileBuffer,
-  needsTokens: type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
+  needsTokens: allowUpload && (type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0)),
   tokensSelected: !!(sell && buy),
 })
 
