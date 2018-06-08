@@ -13,6 +13,7 @@ export interface TokenPickerProps {
   needsTokens: boolean;
   showPair: boolean;
   tokensSelected: boolean;
+  allowUpload: boolean;       // centralized version - set to true in reducers/tokenLists.ts when decentralised
 }
 
 const TokenPicker: React.SFC<TokenPickerProps> = ({
@@ -22,6 +23,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
   setTokenListType,
   showPair,
   tokensSelected,
+  allowUpload,    // TODO: centralized version - set to true in reducers/tokenLists.ts when decentralised
 }) => (
 
   <div className="tokenPicker">
@@ -35,7 +37,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
         <h2>Pick Token Pair Auction</h2>
         <TokenPair />
         <ButtonCTA className={!tokensSelected ? 'buttonCTA-disabled' : 'blue'} onClick={tokensSelected ? continueToOrder : (e) => e.preventDefault()} to={to}>Specify amount selling</ButtonCTA>
-        <a className="showTokenUpload" onClick={(e) => (e.preventDefault(), setTokenListType({ type: 'UPLOAD' }))}>Upload Additional Token List</a>
+        {allowUpload && <a className="showTokenUpload" onClick={(e) => (e.preventDefault(), setTokenListType({ type: 'UPLOAD' }))}>Upload Additional Token List</a>}
       </div>
     }
 
