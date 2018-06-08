@@ -49,6 +49,6 @@ storiesOf('TokenPicker', module)
       showPair={boolean('showPair', false)}
       tokensSelected={boolean('Tokens Selected', false)}
       to=""
-
+      allowUpload={false}
     />
 ))
