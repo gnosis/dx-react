@@ -52,6 +52,7 @@ export default handleActions(
     defaultTokenList:   [],
     customTokenList:    [],
     combinedTokenList:  [],
-    type: 'UPLOAD',
+    type: 'DEFAULT',
+    allowUpload: false,     // TODO: centralized version - set to true in reducers/tokenLists.ts when decentralised
   },
 )
