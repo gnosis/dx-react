@@ -379,21 +379,6 @@ header {
     margin: 0 10px;
   }
 
-  &[data-unclaimed="true"]::before {
-    content: " ";
-    background: $orange url('#{$images}claim.svg') no-repeat center / 12px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    border: 0;
-    position: absolute;
-    cursor: pointer;
-    left: 9px;
-    bottom: 0;
-    width: 16px;
-    height: 16px;
-    padding: 0;
-  }
-
   &::after {
     content: " ";
     display: inline-block;
@@ -413,7 +398,6 @@ header {
   }
 
   > strong {
-    // text-transform: uppercase;
     font-weight: $bold;
     width: auto;
     display: inline-block;
@@ -428,7 +412,7 @@ header {
       text-transform: inherit;
     }
 
-    &::after {
+    &::before {
       content: " ";
       width: 0;
       height: 0;
@@ -437,8 +421,28 @@ header {
       border-color: $white transparent transparent;
       position: absolute;
       right: 0;
-      bottom: 3px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
     }
+  }
+
+  &[data-unclaimed="true"] > strong::after {
+    content: "CLAIM";
+    background: $orange url('#{$images}claim.svg') no-repeat 51px / 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 0;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    height: 12px;
+    line-height: 12px;
+    font-size: 8px;
+    letter-spacing: 4px;
+    padding: 0 0 0 6px;
+    display: block;
+    margin: 2px 0 0;
   }
 
   > img {
