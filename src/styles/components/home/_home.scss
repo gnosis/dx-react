@@ -15,7 +15,7 @@
   h1 {
     font-family: inherit;
     font-weight: $bold;
-    font-size: 48px;
+    font-size: 38px;
     color: $white;
     line-height: 1.2;
     margin: 0 0 30px;
@@ -44,13 +44,52 @@
 
     &.intro {
       flex: 1;
-      margin-right: 140px;
+      margin-right: 120px;
       align-content: center;
       display: flex;
       flex-wrap: wrap;
 
-      ul {
-        list-style: inside;
+      ul, ol {
+        list-style: none;
+        position: relative;
+        padding: 0;
+
+        > li {
+          counter-increment: item;
+          position: relative;
+          padding: 0 0 0 3em;
+          margin: 0 0 1.5em;
+          display: flex;
+          font-weight: $bold;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          justify-content: flex-start;
+
+          &:last-of-type {
+            margin: 0;
+          }
+        }
+
+        > li::before {
+          content: counter(item);
+          color: $white;
+          background: $blue;
+          width: 35px;
+          height: 35px;
+          text-align: center;
+          display: block;
+          border-radius: 100%;
+          line-height: 35px;
+          font-size: 1em;
+          box-sizing: border-box;
+          padding: 0;
+          font-weight: $normal;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          margin: auto;
+        }
       }
 
       @media #{$tablet} {
@@ -101,6 +140,7 @@
       font-size: 16px;
       color: $white;
       line-height: 1.4;
+      font-weight: $lighter;
 
       @media #{$tablet} {
         text-align: center;
@@ -346,7 +386,7 @@
 
   > span > a {
     color: $darkRed;
-    font-weight: bold;
+    font-weight: $bold;
     text-decoration: underline;
   }
 }
@@ -372,8 +412,9 @@
   .tokenOverlay &,
   .auctionContainer & {
     box-sizing: border-box;
-    flex: 0 1 31%;
-    // flex-basis: 31%;
+    flex: 1 1 31%;
+    max-width: 33%;
+    max-height: 300px;
     margin: 5px;
     padding: 15px;
     align-self: stretch;
@@ -439,7 +480,7 @@
     font-size: 16px;
     color: $darkBlue;
     letter-spacing: 0;
-    line-height: 1;
+    line-height: 1.4;
     margin: 0 5px 0 0;
     vertical-align: middle;
 
@@ -582,6 +623,9 @@
       padding: 6px;
       margin: 10px auto 0;
       line-height: 1.4;
+      letter-spacing: 1px;
+      font-weight: $normal;
+      box-sizing: border-box;
     }
   }
 

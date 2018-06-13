@@ -12,12 +12,12 @@ export interface MenuAuctionProps {
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
-  name = 'YOUR AUCTIONS',
+  name = 'Your Auctions',
   ongoingAuctions,
   claimSellerFundsFromSeveral,
 }) => (
     <div className="menuAuctions"><img src={require('assets/auction.svg')} />
-      {name}
+      <strong>{name}</strong>
       <div>
         {ongoingAuctions.length ?
           <table>

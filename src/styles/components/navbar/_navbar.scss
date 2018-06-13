@@ -22,7 +22,6 @@ header {
 
   > div {
     width: 100%;
-    // max-width: $max-width;
     display: flex;
     align-items: flex-end;
     margin: 10px auto 0;
@@ -46,7 +45,7 @@ header {
     flex-flow: column wrap;
   }
 
-  > div > div > nav {
+  > div > .navParent > nav {
     transform: translate3d(240px, 0, 0);
     opacity: 0;
     visibility: hidden;
@@ -93,8 +92,9 @@ header {
     > a {
       display: block;
       width: 100%;
+      margin: 0;
       padding: 20px;
-      color: #f2f3f5;
+      color: $white;
       text-transform: uppercase;
       font-size: 18px;
       text-align: center;
@@ -102,27 +102,21 @@ header {
       transition: background .25s ease-in-out, color .25s ease-in-out;
       will-change: background, color;
 
+      &:link,
+      &:link,
+      &:visited,
+      &:active,
+      &:focus {
+        color: $white;
+      }
+
       &:hover {
         background: $white;
         color: #35373c;
+        text-decoration: none;
       }
     }
   }
-
-  // > div > span > h1 {
-  //   font-weight: bold;
-  //   font-size: 18px;
-  //   flex-basis: 100%;
-  //   flex: 0 1 auto;
-  // }
-
-  // > div > span > h2 {
-  //   font-weight: 500;
-  //   font-size: 13px;
-  //   flex: 0 1 auto;
-  //   color: #555;
-  //   letter-spacing: -0.5px;
-  // }
 }
 
 .logo {
@@ -138,17 +132,29 @@ header {
 }
 
 .hamburger {
-  background: transparent url('#{$images}berliner.svg') no-repeat center / contain;
+  background: transparent url('#{$images}berliner.svg') no-repeat center 0/ contain;
   width: 25px;
   height: 25px;
   border: 0;
   outline: 0;
   cursor: pointer;
+  position: relative;
+  display: block;
+  flex: 1;
+  max-width: 25px;
+  margin: 0;
 
-  @media #{$mobile} {
-    flex: 1;
-    max-width: 25px;
-    margin: 0 0 0 10px;
+  &::after {
+    content: "MENU";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    left: -1px;
+    font-size: 8px;
+    color: white;
+    font-weight: $bold;
+    letter-spacing: 1px;
+    font-family: $montserrat;
   }
 }
 
@@ -212,22 +218,6 @@ header {
       }
     }
   }
-
-  // > span > span {
-  //   background: $white;
-  //   display: inline-block;
-  //   margin: 0;
-  //   padding: 3px;
-  // }
-
-  // > span > span > img {
-  //   height: 16px;
-  //   width: 16px;
-  //   object-fit: contain;
-  //   border-radius: 16px;
-  //   margin: 0;
-  //   display: inline-block;
-  // }
 
   > span > small {
     display: inline-block;
@@ -338,7 +328,7 @@ header {
       tr {
         font-size: 10px;
         letter-spacing: 1px;
-        font-weight: bold;
+        font-weight: $bold;
         color: $darkBlue;
 
         > th {
@@ -364,6 +354,7 @@ header {
   &:hover {
     > div {
       height: auto;
+      min-height: 50px;
       opacity: 1;
 
       @media #{$mobile} {
@@ -382,6 +373,7 @@ header {
   position: relative;
   cursor: pointer;
   height: 24px;
+  font-weight: $bold;
 
   @media #{$mobile} {
     margin: 0 10px;
@@ -420,9 +412,9 @@ header {
     }
   }
 
-  > span {
-    text-transform: uppercase;
-    font-weight: normal;
+  > strong {
+    // text-transform: uppercase;
+    font-weight: $bold;
     width: auto;
     display: inline-block;
     vertical-align: middle;
@@ -430,12 +422,10 @@ header {
     position: relative;
     padding: 0 15px 0 0;
 
-    > strong {
-      @media #{$mobile} {
-        display: none;
-        font-weight: inherit;
-        text-transform: inherit;
-      }
+    @media #{$mobile} {
+      display: none;
+      font-weight: inherit;
+      text-transform: inherit;
     }
 
     &::after {
@@ -512,7 +502,7 @@ header {
       tr {
         font-size: 10px;
         letter-spacing: 1px;
-        font-weight: bold;
+        font-weight: $bold;
         color: $darkBlue;
 
         > th {

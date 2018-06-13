@@ -9,7 +9,7 @@ a.buttonCTA {
   min-height: 56px;
   box-sizing: border-box;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 18px;
   color: $darkBlue;
   letter-spacing: 0;
   line-height: 1;
@@ -20,16 +20,18 @@ a.buttonCTA {
   outline: 0;
   margin: auto;
   border: 0;
+  font-weight: $normal;
 
   &:hover {
     box-shadow: 0 6px 14px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.15);
   }
 
   &.buttonCTA-disabled {
-    background: $grey;
+    background: $greyText;
     color: $white;
     text-align: center;
     pointer-events: none;
+    opacity: .5;
   }
 
   &.blue {

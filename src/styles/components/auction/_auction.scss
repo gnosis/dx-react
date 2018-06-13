@@ -64,7 +64,7 @@ $headerHeight: 58px;
     vertical-align: middle;
     line-height: $headerHeight;
     font-family: inherit;
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 18px;
     color: #1a4977;
     letter-spacing: 0;
@@ -113,7 +113,7 @@ $headerHeight: 58px;
     font-size: 14px;
     color: $darkBlue;
     letter-spacing: 1px;
-    font-weight: bold;
+    font-weight: $bold;
     line-height: 1;
     text-transform: uppercase;
   }
@@ -153,8 +153,8 @@ $headerHeight: 58px;
     border-radius: 2px;
     border: 0;
     outline: 0;
-    font-size: 13px;
-    color: #444951;
+    font-size: 15px;
+    color: $darkBlue;
     letter-spacing: 0.5px;
     line-height: 1;
     text-align: right;
@@ -181,7 +181,7 @@ $headerHeight: 58px;
     letter-spacing: 1px;
     line-height: 1;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: $bold;
     white-space: nowrap;
 
     &:first-of-type {
@@ -195,12 +195,13 @@ $headerHeight: 58px;
 
   a {
     text-decoration: underline;
-    font-weight: $lighter;
+    font-weight: $bold;
     font-family: inherit;
     font-size: 10px;
     color: $blue;
     grid-area: max;
     text-align: right;
+    letter-spacing: 1px;
   }
 
   small {
@@ -209,7 +210,7 @@ $headerHeight: 58px;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
-    font-weight: bold;
+    font-weight: $bold;
 
     &:first-of-type {
       grid-area: token1;
@@ -252,7 +253,7 @@ $headerHeight: 58px;
 
   > span > big {
     font-size: 11px;
-    font-weight: bold;
+    font-weight: $bold;
     color: $darkBlue;
     letter-spacing: 2px;
     line-height: 1;
@@ -267,7 +268,7 @@ $headerHeight: 58px;
     margin: 0 auto 3px;
     letter-spacing: 0;
     line-height: 17px;
-    font-weight: bold;
+    font-weight: $bold;
     font-style: normal;
     display: block;
     width: 100%;
@@ -336,7 +337,7 @@ $headerHeight: 58px;
     width: 100%;
     margin: 0 auto 5px;
     text-align: center;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > p {
@@ -379,7 +380,7 @@ $headerHeight: 58px;
     line-height: 1.6;
     display: block;
     text-align: center;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > span > big {
@@ -412,7 +413,7 @@ $headerHeight: 58px;
     margin: 0 auto 8px;
     text-align: center;
     display: block;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > span > i {
@@ -460,7 +461,7 @@ $headerHeight: 58px;
   > i {
     font-style: normal;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: $bold;
     letter-spacing: 0;
     color: $orange;
     line-height: 1;
@@ -473,7 +474,7 @@ $headerHeight: 58px;
     font-family: inherit;
     color: $greyTextDark;
     font-size: 18px;
-    font-weight: 400;
+    font-weight: $normal;
     margin: 0;
     display: inline-block;
     flex: 0 1 auto;
@@ -553,7 +554,7 @@ $headerHeight: 58px;
     color: $greyTextDark;
     letter-spacing: 1px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: $normal;
     max-width: 105px;
     display: block;
     text-align: center;

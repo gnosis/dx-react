@@ -24,7 +24,7 @@
   }
 
   > span > h1 {
-    font-weight: 500;
+    font-weight: $bold;
     font-size: 23px;
     color: $white;
     letter-spacing: 0;
@@ -72,7 +72,7 @@
     box-sizing: border-box;
 
     > b {
-      font-weight: 500;
+      font-weight: $bold;
     }
   }
 

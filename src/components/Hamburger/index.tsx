@@ -31,8 +31,13 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             onClick={this.handleClick}>
           </button>
           <a href="#">How it works</a>
-          <a href="#">About</a>
-          <a href="#">Faq</a>
+          <a href="#">Screencast</a>
+          <a href="#">Tokens </a>
+          <a href="#">Fees</a>
+          <a href="#">FAQ</a>
+          <a href="#">Technical </a>
+          <a href="#">Downtime</a>
+          <a href="#">Help</a>
         </nav>
       </div>
     )
