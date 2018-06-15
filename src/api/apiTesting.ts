@@ -1,43 +1,30 @@
 import { promisedContractsMap } from 'api/contracts'
 
 import { DefaultTokens } from 'api/types'
+import { promisedWeb3 } from './web3Provider'
 
 export default async () => {
   const {
     TokenETH,
-    TokenGNO,
-    TokenOWL,
-    TokenMGN,
     TokenOMG,
     TokenRDN,
   } = await promisedContractsMap
+  const { getCurrentAccount } = await promisedWeb3
 
-  // TODO: grab from IPFS defaultObj or uploaded file, or localStorage?
+  // TODO: hard-code actual addresses here
   return {
     elements: [
       {
         name: 'ETHER',
         symbol: 'ETH',
+        address: await getCurrentAccount(),
+        decimals: 18,
+      },
+      {
+        name: 'WRAPPED ETHER',
+        symbol: 'WETH',
         address: TokenETH.address,
         decimals: (await TokenETH.decimals()).toNumber(),
-      },
-      {
-        name: 'GNOSIS',
-        symbol: 'GNO',
-        address: TokenGNO.address,
-        decimals: (await TokenGNO.decimals()).toNumber(),
-      },
-      {
-        name: 'OWL',
-        symbol: 'OWL',
-        address: TokenOWL.address,
-        decimals: (await TokenOWL.decimals()).toNumber(),
-      },
-      {
-        name: 'MAGNOLIA',
-        symbol: 'MGN',
-        address: TokenMGN.address,
-        decimals: TokenMGN.decimals ? (await TokenMGN.decimals()).toNumber() : 18,
       },
       {
         name: 'OMISEGO',
