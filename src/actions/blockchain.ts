@@ -537,10 +537,6 @@ export function errorHandling(error: Error) {
 
 async function calcAllTokenBalances(tokenList?: DefaultTokenObject[]) {
   const tokenBalances = (await getTokenBalances(tokenList))
-  .map(token => ({
-    ...token,
-    balance: token.balance,
-  }))
 
   return tokenBalances
 }
