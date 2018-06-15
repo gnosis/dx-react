@@ -29,21 +29,22 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
     }
   }
 
+  /* Removed as per DX-335 - unsafe UX - keeping commented for now
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const { maxSellAmount, setSellTokenAmount } = this.props
 
     e.preventDefault()
 
     setSellTokenAmount({ sellAmount: maxSellAmount })
-  }
+  } */
 
   render() {
-    const { sellTokenSymbol, buyTokenSymbol, buyAmount, maxSellAmount, sellAmount } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount } = this.props
 
     return (
       <div className="auctionAmounts">
         <label htmlFor="sellingAmount">Amount Selling:</label>
-        <a href="#max" onClick={this.onClick}>MAX</a>
+        {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
           type="number"
           name="sellingAmount"
@@ -51,14 +52,12 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           onChange={this.onChange}
           value={sellAmount}
           min="0"
-          max={maxSellAmount.toString()}
+          /* max={maxSellAmount.toString()} */
           step="0.0001"
         />
         <small>{sellTokenSymbol}</small>
 
         <label htmlFor="gettingAmount">Est. Amount Getting:</label>
-        {/* CONSIDER ADDING GAS_COST TO RATIO */}
-        {/* TODO: use BN.mult() */}
         <input type="number" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
         <small>{buyTokenSymbol}</small>
       </div>
