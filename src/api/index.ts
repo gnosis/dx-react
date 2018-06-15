@@ -8,7 +8,6 @@ import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange } from './types'
 import { promisedContractsMap } from './contracts'
 
-
 const promisedAPI = (window as any).AP = initAPI()
 
 /* =================================================================
@@ -417,13 +416,7 @@ export const claimSellerFundsFromSeveralAuctions = async (
   const buyArr = Array.from({ length }, () => buy.address)
 
   console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
-  await DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
-
-  const withdrawableBalance = await DutchX.getBalance(buy.address, userAccount)
-  console.log('​withdrawableBalance -> ', withdrawableBalance)
-  if (withdrawableBalance.lte(0)) throw new Error ('Withdraw balance cannot be 0')
-
-  return DutchX.withdraw(buy.address, withdrawableBalance, userAccount)
+  return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
 }
 
 
@@ -474,11 +467,17 @@ deposit.call = async (code: TokenCode, amount: Balance, account?: Account) => {
  * @param pair TokenPair
  * @param index auctionIndex, current auction by default
  * @param account userccount, current web3 account by default
+ * 
+ * If AMOUNT is left out, withdraws ALL funds
  */
-export const withdraw = async (code: TokenCode, amount: Balance, account?: Account) => {
+export const withdraw = async (tokenAddress: string, amount?: Balance, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
 
-  return DutchX.withdraw(code, amount, account)
+  const withdrawableBalance = await DutchX.getBalance(tokenAddress, userAccount)
+  if (withdrawableBalance.lte(0)) throw new Error ('Withdraw balance cannot be 0')
+
+  return amount ? DutchX.withdraw(tokenAddress, amount, userAccount) : DutchX.withdraw(tokenAddress, withdrawableBalance, userAccount)
 }
 
 // helper fro getting last index of a token pair and closing price
