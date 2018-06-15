@@ -8,6 +8,7 @@ html {
 body {
   height: 100vh;
   background: $darkBlue url('#{$images}bg.jpg') no-repeat center / cover;
+  background-attachment: fixed;
   color: $black;
   font-family: $montserrat;
   font-size: 12px;
@@ -83,4 +84,25 @@ section.home, section.auction {
 
 .noScroll {
   overflow: hidden;
+}
+
+footer {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  display: flex;
+  background: $greyLight;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  > p {
+    color: $grey;
+  }
+
+  p > a {
+    color: $blue;
+  }
 }

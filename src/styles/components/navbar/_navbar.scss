@@ -93,10 +93,10 @@ header {
       display: block;
       width: 100%;
       margin: 0;
-      padding: 20px;
+      padding: 18px;
       color: $white;
       text-transform: uppercase;
-      font-size: 18px;
+      font-size: 15px;
       text-align: center;
       box-sizing: border-box;
       transition: background .25s ease-in-out, color .25s ease-in-out;
@@ -572,7 +572,6 @@ header {
   height: 24px;
   display: flex;
   flex-wrap: nowrap;
-  min-width: 135px;
   justify-content: center;
   align-items: flex-start;
 
@@ -589,8 +588,9 @@ header {
   > p {
     flex: 1;
     margin: 0;
-    // max-width: 50%;
+    text-transform: capitalize;
     word-wrap: break-word;
+    min-width: 50px;
 
     &:first-child {
       margin: 0 12px 0 0;

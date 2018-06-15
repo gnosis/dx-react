@@ -1,0 +1,173 @@
+.contentPage {
+  width: 100%;
+  margin: 20px auto 0;
+  background: $white;
+  height: 100%;
+
+  > article {
+    max-width: 600px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 40px 0 80px;
+  }
+
+  > article > h1 {
+    font-size: 32px;
+    font-weight: $bold;
+    color: $darkBlue;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1;
+  }
+
+  > article > h2 {
+    font-weight: $bold;
+    font-size: 18px;
+    margin: 40px auto 10px;
+    color: $darkBlue;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    text-align: left;
+    line-height: 2;
+  }
+
+  table {
+    border: 0;
+    border-spacing: 0;
+    margin: 20px auto;
+    box-sizing: border-box;
+    padding: 0;
+  }
+
+  table > thead {
+    background: $blue;
+    color: $white;
+    line-height: 1.4;
+    padding: 0;
+    font-size: 15px;
+    box-sizing: border-box;
+  }
+
+  table > thead > tr > th {
+    padding: 10px;
+    box-sizing: border-box;
+    font-weight: $normal;
+  }
+
+  table > tbody > tr > td {
+    padding: 10px;
+    border: 1px solid $greyBorder;
+  }
+
+  table > tbody > tr:first-of-type > td {
+    border-top: 0;
+  }
+
+  h3 {
+    font-weight: $normal;
+    font-size: 18px;
+    color: $blue;
+    line-height: 1.5;
+    transition: all .2s ease-in-out;
+  }
+
+  section p {
+    font-weight: $normal;
+    font-size: 14px;
+    color: $white;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  section a {
+    color: $white;
+    text-decoration: underline;
+  }
+
+  section.drawer {
+    position: relative;
+    margin: 0 0 5px;
+    font-size: 18px;
+    line-height: 1;
+    text-align: left;
+    font-weight: $normal;
+    text-transform: none;
+    padding: 14px 0 0;
+    cursor: pointer;
+    border-bottom: 1px solid $greyLight;
+
+    &.active {
+      border-bottom: 4px solid rgba(0, 114, 207, 0.16);
+    }
+
+    > p {
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      transition: all .2s ease-in-out;
+      margin: 0;
+      color: $greyTextDark;
+      font-weight: $normal;
+      font-size: 14px;
+      line-height: 1.7;
+      width: 100%;
+      background: rgba(0, 114, 207, 0.07);
+      padding: 20px 20px 0;
+      box-sizing: border-box;
+    }
+
+    &.active > p {
+      visibility: visible;
+      height: auto;
+      margin: 15px auto 0;
+      padding: 20px;
+      opacity: 1;
+    }
+
+    h3::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 18px;
+      border: solid $blue;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      transform: rotate(45deg);
+      transition: all .2s ease-in-out;
+      opacity: .5;
+    }
+
+    &.active h3,
+    &:hover h3 {
+      color: $darkBlue;
+      font-weight: $bold;
+
+      &::after {
+        opacity: 1;
+        border: solid $darkBlue;
+        border-width: 0 3px 3px 0;
+        transform: rotate(-135deg);
+      }
+    }
+  } // end section.drawer
+
+  section.content {
+    position: relative;
+    margin: 0 0 5px;
+
+    h3 {
+      margin: 40px auto 10px;
+    }
+
+    p {
+      color: $greyTextDark;
+      font-weight: $normal;
+      font-size: 1.1em;
+      line-height: 1.5;
+      width: 100%;
+    }
+  }
+} // end .contentPage
