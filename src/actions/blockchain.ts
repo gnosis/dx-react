@@ -46,6 +46,7 @@ import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 import { Dispatch } from 'react-redux'
+import { ETH_ADDRESS } from 'globals'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -127,11 +128,10 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     getFeeRatio(currentAccount),
     getLockedMGNBalance(currentAccount),
   ])
+  const { balance } = tokenBalances.find(t => t.address === ETH_ADDRESS)
 
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
-
-  // const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
 
   // dispatch Actions
   dispatch(batchActions([
@@ -141,6 +141,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
     setCurrentAccountAddress({ currentAccount }),
+    setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
   ], 'HYDRATING_MAIN_STATE'))
 
   return status
@@ -244,22 +245,21 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
 
   try {
     // check ETHER deposit && start fetching allowance amount in ||
-    const needsWrappedETH = await checkEthTokenBalance(sell, nativeSellAmt, currentAccount)
+    const ETHToWrap = await checkEthTokenBalance(sell, nativeSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
-    if (needsWrappedETH) {
+    if (ETHToWrap) {
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
-          header: `Wrapping ${(needsWrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
+          header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
           loader: true,
         },
       }))
       // TODO only deposit difference
-      const depositReceipt = await depositETH(needsWrappedETH.toString(), currentAccount)
+      const depositReceipt = await depositETH(ETHToWrap.toString(), currentAccount)
       console.log('​EtherToken Deposit receipt: ', depositReceipt)
-      
     }
     //  if sell or buy is unwrapped ETH replace token with previously WETH
     changeETHforWETH(dispatch, getState, TokenETH.address)
