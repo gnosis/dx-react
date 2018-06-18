@@ -12,6 +12,7 @@ export interface DefaultTokenObject {
   symbol: TokenCode;
   address: Account;
   decimals: number;
+  isETH?: boolean;
 }
 export type DefaultTokenList = DefaultTokenObject[]
 

@@ -7,6 +7,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange } from './types'
 import { promisedContractsMap } from './contracts'
+import { ETH_ADDRESS } from 'globals'
 
 const promisedAPI = (window as any).AP = initAPI()
 
@@ -119,7 +120,7 @@ export const getTokenBalance = async (tokenAddress: Account, account?: Account) 
 
   // ETH (not wrapped ETH) is given user's account as it's `token address`
   // here, check if the ETH address (user's address) matches the default account above
-  if (tokenAddress === account) return getETHBalance(account, false)
+  if (tokenAddress === ETH_ADDRESS) return getETHBalance(account, false)
 
   return Tokens.getTokenBalance(tokenAddress, account)
 }

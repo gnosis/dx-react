@@ -2,6 +2,7 @@ import { HumanFriendlyToken, promisedContractsMap } from 'api/contracts'
 
 import { TokensInterface, TransactionObject } from './types'
 import { Account, Balance } from 'types'
+import { ETH_ADDRESS } from 'globals'
 
 export const promisedTokens = init()
 
@@ -10,6 +11,7 @@ async function init(): Promise<TokensInterface> {
   const contractsMap = await promisedContractsMap
 
   const getToken = (tokenAddress: Account) => {
+    if (tokenAddress === ETH_ADDRESS) tokenAddress = contractsMap.TokenETH.address
     try {
       return HumanFriendlyToken.at(tokenAddress)
     } catch (error) {
