@@ -115,10 +115,7 @@ export const getAllTokenDecimals = async (tokenList: DefaultTokenObject[]) => {
 export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
 
-  const [{ Tokens }] = await Promise.all([
-    promisedAPI,
-    promisedContractsMap,
-  ])
+  const { Tokens } = await promisedAPI
 
   // ETH (not wrapped ETH) is given user's account as it's `token address`
   // here, check if the ETH address (user's address) matches the default account above
@@ -144,6 +141,13 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
     address: token.address,
     balance: balances[i] as BigNumber,
   }))
+}
+
+export const getLockedMGNBalance = async (account?: Account) => {
+  const { TokenMGN } = await promisedContractsMap
+  account = await fillDefaultAccount(account)
+
+  return TokenMGN.lockedTokenBalances.call(account)
 }
 
 export const getEtherTokenBalance = async (account?: Account) => {
