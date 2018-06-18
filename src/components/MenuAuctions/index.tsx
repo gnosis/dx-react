@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { OngoingAuctions } from 'types'
+import { OngoingAuctions, AuctionObject } from 'types'
 import { Link } from 'react-router-dom'
 import { DefaultTokenObject } from 'api/types'
 
@@ -9,6 +9,14 @@ export interface MenuAuctionProps {
   claimSellerFundsFromSeveral(
     sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
+}
+
+const calculateAuctionLink = ({ sell, buy, indicesWithSellerBalance, indicesWithSellerBalanceInverse }: AuctionObject) => {
+  if (!indicesWithSellerBalance.length && indicesWithSellerBalanceInverse.length) {
+    return `/auction/${buy.symbol}-${sell.symbol}-${indicesWithSellerBalanceInverse[indicesWithSellerBalanceInverse.length - 1]}`
+  } else {
+    return `/auction/${sell.symbol}-${buy.symbol}-${indicesWithSellerBalance[indicesWithSellerBalance.length - 1]}`
+  }
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
@@ -33,14 +41,13 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                 (auction, i) =>
                   <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
                     <td>
-                      <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}>
+                      <Link to={calculateAuctionLink(auction)}>
                         {`${auction.sell.symbol}/${auction.buy.symbol}`}
                       </ Link>
                     </td>
-                    {/* <td>{`${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}</td> */}
                     <td>
-                      <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1] || 'N/A'} ${auction.sell.symbol}`}</p>
-                      <p>{`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] || 0} ${auction.buy.symbol}`}</p>
+                      {auction.balancePerIndex[auction.balancePerIndex.length - 1] && <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1]} ${auction.sell.symbol}`}</p>}
+                      {auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] && <p>{`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1]} ${auction.buy.symbol}`}</p>}
                     </td>
                     {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                   </tr>,
