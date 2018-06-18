@@ -22,6 +22,7 @@ import {
   getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
   withdraw,
+  getLockedMGNBalance,
 } from 'api'
 
 import {
@@ -117,16 +118,17 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
    */
 
   // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
-  const [ongoingAuctions, tokenBalances, feeRatio] = await Promise.all([
+  const [ongoingAuctions, tokenBalances, feeRatio, mgnLockedBalance] = await Promise.all([
     getSellerOngoingAuctions(mainList as DefaultTokenObject[], currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
+    getLockedMGNBalance(currentAccount),
   ])
 
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
 
-  const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
+  // const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
 
   // dispatch Actions
   dispatch(batchActions([
@@ -134,7 +136,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions({ ongoingAuctions }),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
-    setTokenSupply({ mgnSupply: mgn.balance.toString() }),
+    setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
     setCurrentAccountAddress({ currentAccount }),
   ], 'HYDRATING_MAIN_STATE'))
 
