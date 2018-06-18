@@ -23,16 +23,18 @@ const isGeoBlocked = async () => {
     // TODO: when production service is live do
     // const res = process.env.NODE_ENV === 'production' ? prodURL : devURL
     const res = await fetch('https://geoip.staging.gnosisdev.com/json/')
-    // this blocks even if the URL above starts returning 404
-    if (!res.ok) return true
+    
+    // this DOES NOT block even if the URL above starts returning 404
+    if (!res.ok) return false
 
     const { country_code } = await res.json()
 
     return geoBlockedCountryCodes.has(country_code)
   } catch (error) {
     console.error(error)
-    // this blocks if there is a network error, e.g. URL is blocked
-    return true
+    
+    // this does NOT block if there is a network error, e.g. URL is blocked
+    return false
   }
 }
 
