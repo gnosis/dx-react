@@ -6,8 +6,10 @@ import { promisedWeb3 } from './web3Provider'
 export default async () => {
   const {
     TokenETH,
+    TokenGNO,
     TokenOMG,
     TokenRDN,
+    TokenMGN,
   } = await promisedContractsMap
   const { getCurrentAccount } = await promisedWeb3
 
@@ -27,6 +29,12 @@ export default async () => {
         decimals: (await TokenETH.decimals()).toNumber(),
       },
       {
+        name: 'GNOSIS TOKEN',
+        symbol: 'GNO',
+        address: TokenGNO.address,
+        decimals: (await TokenGNO.decimals()).toNumber(),
+      },
+      {
         name: 'OMISEGO',
         symbol: 'OMG',
         address: TokenOMG.address,
@@ -37,6 +45,12 @@ export default async () => {
         symbol: 'RDN',
         address: TokenRDN.address,
         decimals: TokenRDN.decimals ? (await TokenRDN.decimals()).toNumber() : 6,
+      },
+      {
+        name: 'MAGNOLIA',
+        symbol: 'MGN',
+        address: TokenMGN.address,
+        decimals: 18,
       },
     ],
     page: 1,
