@@ -21,6 +21,7 @@ import {
   claimSellerFundsFromSeveralAuctions,
   getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
+  withdraw,
 } from 'api'
 
 import {
@@ -451,7 +452,16 @@ export const claimSellerFundsFromSeveral = (
     }))
     const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
     console.log('​Claim receipt => ', claimReceipt)
-
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Withdrawing Claimed Funds`,
+        body: `Withdrawing ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        loader: true,
+      },
+    }))
+    const withdrawReceipt = await withdraw(buy.address)
+    console.log('​withdrawReceipt => ', withdrawReceipt)
     // refresh state ...
     let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
     // loop until sellBalance drops to 0
