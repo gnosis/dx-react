@@ -135,7 +135,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 
   // dispatch Actions
   dispatch(batchActions([
-    ...tokenBalances.map(token =>
+    ...tokenBalances.map((token: typeof tokenBalances[0]) =>
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions({ ongoingAuctions }),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
@@ -214,6 +214,16 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   }
 }
 
+const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenETHAddress: Account) => {
+  let { tokenPair: { sell, buy, sellAmount }, tokenList: { defaultTokenList } } = getState()
+  if (sell.isETH || buy.isETH) {
+    if (sell.isETH) sell = defaultTokenList.find(token => token.address === TokenETHAddress)
+    if (buy.isETH) buy = defaultTokenList.find(token => token.address === TokenETHAddress)
+
+    dispatch(selectTokenPair({ sell, buy, sellAmount }))
+  }
+} 
+
 /**
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
  *
@@ -249,13 +259,15 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
       // TODO only deposit difference
       const depositReceipt = await depositETH(needsWrappedETH.toString(), currentAccount)
       console.log('​EtherToken Deposit receipt: ', depositReceipt)
-      sell = { ...sell,  address: TokenETH.address }
-      dispatch(selectTokenPair({ sell, sellAmount }))
+      
     }
+    //  if sell or buy is unwrapped ETH replace token with previously WETH
+    changeETHforWETH(dispatch, getState, TokenETH.address)
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
     const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
     if (needSellTokenAllowance) {
+      sellName = getTokenName(sell)
       const promisedChoice: Promise<string> = new Promise((accept) => {
         dispatch(openModal({
           modalName: 'ApprovalModal',
@@ -313,8 +325,8 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     tokenPair: { sell, buy, sellAmount, index = 0 },
     blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { network } } },
   }: State = getState(),
-    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
+    sellName = getTokenName(sell),
+    buyName = getTokenName(buy),
     promisedAmtAndDXBalance = Promise.all([
       toNative(sellAmount, sell.decimals),
       getDXTokenBalance(sell.address, currentAccount),
@@ -330,8 +342,8 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
         header: `Sell Confirmation`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
         txData: {
-          tokenA: sell,
-          tokenB: buy,
+          tokenA: { ...sell, name: sellName } as DefaultTokenObject,
+          tokenB: { ...buy, name: buyName } as DefaultTokenObject,
           sellAmount,
           network,
         },
@@ -380,7 +392,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
   const promisedContracts = promisedContractsMap
-  const sellName = sell.symbol || sell.name || sell.address
+  const sellName = getTokenName(sell)
 
   try {
     // don't do anything when submitting a <= 0 amount
