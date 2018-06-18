@@ -27,6 +27,7 @@ export const selectTokenPairAndRatioPair = (props: PropsType) => async (dispatch
   // just switch them
   if ((sell && buy) && (sell.address === buy.address)) {
     dispatch(swapTokensInAPair())
+    await dispatch(getClosingPrice())
     return dispatch(closeOverlay())
   }
 
