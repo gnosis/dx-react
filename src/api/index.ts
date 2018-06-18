@@ -535,14 +535,6 @@ export const getSellerOngoingAuctions = async (
   try {
     const runningPairsArr = await DutchX.getRunningTokenPairs(tokensJSONAddresses)
 
-    // get Array back of Auctions user is in
-    // grab sellerBalance of USER for each current ongoing auction
-    // @ts-ignore
-    // const sellerOngoingAuctions: number[] = (await DutchX.getSellerBalancesOfCurrentAuctions(
-    //   ...runningPairsArr, account)
-    // ).map((res: any) => res.toNumber())
-    // we know user is participating in (runningPairsArr[0][0]-runningPairsArr[1][0] && runningPairsArr[0][3]-runningPairsArr[1][3])
-
     // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
     // or at least memoize calculation with reselect
     const addressesToTokenJSON = tokensJSON.reduce((acc, tk) => {
