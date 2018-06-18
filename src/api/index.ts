@@ -116,15 +116,14 @@ export const getAllTokenDecimals = async (tokenList: DefaultTokenObject[]) => {
 export const getTokenBalance = async (tokenAddress: Account, account?: Account) => {
   account = await fillDefaultAccount(account)
 
-  const [{ Tokens }, { TokenETH }] = await Promise.all([
+  const [{ Tokens }] = await Promise.all([
     promisedAPI,
     promisedContractsMap,
   ])
 
-  if (tokenAddress === TokenETH.address) return getETHBalance(account, false)
-
-  // account would normally be taken from redux state and passed inside an action
-  // but just in case
+  // ETH (not wrapped ETH) is given user's account as it's `token address`
+  // here, check if the ETH address (user's address) matches the default account above
+  if (tokenAddress === account) return getETHBalance(account, false)
 
   return Tokens.getTokenBalance(tokenAddress, account)
 }

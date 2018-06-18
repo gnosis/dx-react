@@ -22,6 +22,8 @@ import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals, getApprovedTokensFromAllTokens } from 'api'
 
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
+import tokensMap from 'api/apiTesting'
+
 import { TokenPair, State } from 'types'
 import { ConnectedInterface } from './types'
 
@@ -52,8 +54,14 @@ export default async function walletIntegration(store: Store<any>) {
     const isDefaultTokensAvailable = !!(defaultTokens)
 
     if (!isDefaultTokensAvailable) {
-      // grab tokens from IPFSHash
-      defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
+      // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
+      if (process.env.NODE_ENV === 'development') {
+        defaultTokens = await tokensMap()
+      } else {
+        defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
+      }
+      
+      console.log('​getTokenList -> ', defaultTokens)
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)
     }
