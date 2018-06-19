@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import { setSellTokenAmount } from 'actions'
+import { getSellTokenBalance } from 'selectors'
 
 import { State } from 'types'
 import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/AuctionSellingGetting'
 
 const mapState = (state: State) => {
   // TODO: always have some price for every pair in RatioPairs
-  const { sell, buy, lastPrice: price } = state.tokenPair
-  const { [sell.address]: sellTokenBalance } = state.tokenBalances
+  const sellTokenBalance = getSellTokenBalance(state)
   const { sellAmount } = state.tokenPair
   const maxSellAmount = sellTokenBalance.div(10 ** sell.decimals)
 
