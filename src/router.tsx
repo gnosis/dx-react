@@ -23,7 +23,6 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-
 const withHeader = (Component: React.ComponentClass | React.SFC) => (props: any) => (
   <Fragment>
     <Header/>
@@ -36,7 +35,6 @@ const OrderPanelWH = withHeader(OrderPanel)
 const WalletPanelWH = withHeader(WalletPanel)
 const AuctionPanelWH = withHeader(AuctionPanel)
 const ContentPageWH = withHeader(ContentPage)
-
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
