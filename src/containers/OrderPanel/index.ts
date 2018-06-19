@@ -4,7 +4,7 @@ import { State, BigNumber } from 'types'
 import { getSellTokenBalance } from 'selectors'
 import { EMPTY_TOKEN } from 'globals';
 
-const isTokenApproved = ({ approvedTokens, tokenPair: { sell, buy } }: State) =>
+const isTokenApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
   approvedTokens.has(sell.address) && approvedTokens.has(buy.address)
 
 const mapStateToProps = (state: State) => {
