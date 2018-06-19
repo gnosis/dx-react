@@ -24,7 +24,7 @@ interface AppRouterProps {
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
 
-const withHeader = (Component: React.ComponentClass) => (props: any) => (
+const withHeader = (Component: React.ComponentClass | React.SFC) => (props: any) => (
   <Fragment>
     <Header/>
     <Component {...props}/>
