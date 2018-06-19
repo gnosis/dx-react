@@ -1,15 +1,18 @@
 import { connect } from 'react-redux'
 import OrderPanel from 'components/OrderPanel'
 import { State, BigNumber } from 'types'
+import { getSellTokenBalance } from 'selectors'
 
 const isTokenApproved = ({ approvedTokens, tokenPair: { sell, buy } }: State) =>
   approvedTokens.has(sell.address) && approvedTokens.has(buy.address)
 
 const mapStateToProps = (state: State) => {
-  const { tokenPair: { sell, buy, sellAmount } } = state
-  const { [sell.address]: sellTokenBalance } = state.tokenBalances
+  console.log('sell: ', sell);
+  const sellTokenBalance = getSellTokenBalance(state)
+  console.log('sellTokenBalance: ', sellTokenBalance);
   // const { sellAmount } = state.tokenPair
   const maxSellAmount: BigNumber = sellTokenBalance.div(10 ** sell.decimals)
+  console.log('maxSellAmount: ', maxSellAmount);
 
   return {
     sellTokenSymbol: sell.symbol || sell.name || sell.address,
