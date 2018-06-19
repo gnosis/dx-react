@@ -2,6 +2,7 @@ import { Code2Name, TokenCode, Network2URL } from 'types'
 
 export const code2tokenMap: Code2Name = {
   ETH: 'ETHER',
+  WETH: 'WRAPPED ETHER',
   GNO: 'GNOSIS',
   OWL: 'OWL',
   MGN: 'MAGNOLIA',

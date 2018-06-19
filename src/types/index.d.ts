@@ -6,6 +6,7 @@ import { ProviderName } from 'globals'
 
 export interface Code2Name {
   ETH: 'ETHER',
+  WETH: 'WRAPPED ETHER',
   GNO: 'GNOSIS',
   REP: 'AUGUR',
   '1ST': 'FIRST BLOOD',
