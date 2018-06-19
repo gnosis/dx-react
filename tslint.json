@@ -26,7 +26,7 @@
     "ter-max-len": [
       true,
       {
-        "code": 120,
+        "code": 200,
         "tabWidth": 2,
         "ignoreUrls": true,
         "ignoreComments": true,

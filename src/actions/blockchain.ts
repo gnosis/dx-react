@@ -230,12 +230,12 @@ const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenE
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-  let {
+  const {
     tokenPair: { sell, sellAmount },
     blockchain: { activeProvider, currentAccount },
-  } = getState(),
-    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    nativeSellAmt = await toNative(sellAmount, sell.decimals),
+  } = getState()
+  let sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address
+  const nativeSellAmt = await toNative(sellAmount, sell.decimals),
     { TokenOWL, TokenETH } = await promisedContractsMap,
     // promised Token Allowance to get back later
     promisedTokensAndOWLBalance = Promise.all<boolean|BigNumber, BigNumber>([
