@@ -18,8 +18,8 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
     },
     [selectTokenPair.toString()]: (state, action) => ({
       ...state,
-      ...action.payload,
       sellAmount: '0',
+      ...action.payload,
     }),
     [setSellTokenAmount.toString()]: (state, action) => ({
       ...state,

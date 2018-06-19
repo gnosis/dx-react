@@ -31,3 +31,5 @@ export enum AuctionStatus {
 
 export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
+
+export const ETH_ADDRESS = '0x0'

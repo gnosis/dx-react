@@ -2,6 +2,8 @@ import { push } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import { batchActions } from 'redux-batched-actions'
 
+import { getTokenName } from 'selectors/tokens'
+
 import {
   getLastAuctionPrice,
   depositAndSell,
@@ -32,6 +34,7 @@ import {
   setSellTokenAmount,
   setClosingPrice,
   setOngoingAuctions,
+  selectTokenPair,
 } from 'actions'
 
 
@@ -43,6 +46,7 @@ import { BigNumber, TokenBalances, Account, State } from 'types'
 import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokenObject } from 'api/types'
 import { Dispatch } from 'react-redux'
+import { ETH_ADDRESS } from 'globals'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -124,20 +128,20 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     getFeeRatio(currentAccount),
     getLockedMGNBalance(currentAccount),
   ])
+  const { balance } = tokenBalances.find((t: typeof tokenBalances[0]) => t.address === ETH_ADDRESS)
 
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
 
-  // const mgn = tokenBalances.find(t => t.address === TokenMGN.address)
-
   // dispatch Actions
   dispatch(batchActions([
-    ...tokenBalances.map(token =>
+    ...tokenBalances.map((token: typeof tokenBalances[0]) =>
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions({ ongoingAuctions }),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
     setCurrentAccountAddress({ currentAccount }),
+    setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
   ], 'HYDRATING_MAIN_STATE'))
 
   return status
@@ -211,46 +215,59 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   }
 }
 
+const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenETHAddress: Account) => {
+  let { tokenPair: { sell, buy, sellAmount }, tokenList: { defaultTokenList } } = getState()
+  if (sell.isETH || buy.isETH) {
+    if (sell.isETH) sell = defaultTokenList.find(token => token.address === TokenETHAddress)
+    if (buy.isETH) buy = defaultTokenList.find(token => token.address === TokenETHAddress)
+
+    dispatch(selectTokenPair({ sell, buy, sellAmount }))
+  }
+} 
+
 /**
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const {
+  let {
     tokenPair: { sell, sellAmount },
     blockchain: { activeProvider, currentAccount },
   } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     nativeSellAmt = await toNative(sellAmount, sell.decimals),
-    { TokenOWL } = await promisedContractsMap,
+    { TokenOWL, TokenETH } = await promisedContractsMap,
     // promised Token Allowance to get back later
     promisedTokensAndOWLBalance = Promise.all<boolean|BigNumber, BigNumber>([
-      checkTokenAllowance(sell.address, nativeSellAmt, currentAccount),
+      checkTokenAllowance(sell.isETH ? TokenETH.address : sell.address, nativeSellAmt, currentAccount),
       getTokenBalance(TokenOWL.address, currentAccount),
     ])
 
   try {
     // check ETHER deposit && start fetching allowance amount in ||
-    const wrappedETH = await checkEthTokenBalance(sell.address, nativeSellAmt, currentAccount)
+    const ETHToWrap = await checkEthTokenBalance(sell, nativeSellAmt, currentAccount)
     // if SELLTOKEN !== ETH, returns undefined and skips
-    if (wrappedETH) {
+    if (ETHToWrap) {
       dispatch(openModal({
         modalName: 'TransactionModal',
         modalProps: {
-          header: `Wrapping ${(wrappedETH as BigNumber).div(10 ** 18)} ${sellName}`,
+          header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
           body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
           loader: true,
         },
       }))
       // TODO only deposit difference
-      const depositReceipt = await depositETH(wrappedETH.toString(), currentAccount)
+      const depositReceipt = await depositETH(ETHToWrap.toString(), currentAccount)
       console.log('​EtherToken Deposit receipt: ', depositReceipt)
     }
+    //  if sell or buy is unwrapped ETH replace token with previously WETH
+    changeETHforWETH(dispatch, getState, TokenETH.address)
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
     const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
     if (needSellTokenAllowance) {
+      sellName = getTokenName(sell)
       const promisedChoice: Promise<string> = new Promise((accept) => {
         dispatch(openModal({
           modalName: 'ApprovalModal',
@@ -308,8 +325,8 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     tokenPair: { sell, buy, sellAmount, index = 0 },
     blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { network } } },
   }: State = getState(),
-    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
+    sellName = getTokenName(sell),
+    buyName = getTokenName(buy),
     promisedAmtAndDXBalance = Promise.all([
       toNative(sellAmount, sell.decimals),
       getDXTokenBalance(sell.address, currentAccount),
@@ -325,8 +342,8 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
         header: `Sell Confirmation`,
         body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
         txData: {
-          tokenA: sell,
-          tokenB: buy,
+          tokenA: { ...sell, name: sellName } as DefaultTokenObject,
+          tokenB: { ...buy, name: buyName } as DefaultTokenObject,
           sellAmount,
           network,
         },
@@ -375,7 +392,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
   const promisedContracts = promisedContractsMap
-  const sellName = sell.symbol || sell.name || sell.address
+  const sellName = getTokenName(sell)
 
   try {
     // don't do anything when submitting a <= 0 amount
@@ -487,15 +504,17 @@ export const claimSellerFundsFromSeveral = (
  * @returns boolean | BigNumber <false, amt>
  */
 async function checkEthTokenBalance(
-  tokenAddress: Account,
+  { address, isETH }: DefaultTokenObject,
   weiSellAmount: BigNumber,
   account?: Account,
 ): Promise<boolean | BigNumber> {
-  const { TokenETH } = await promisedContractsMap
   // BYPASS[return false] => if token is not ETHER
-  if (tokenAddress !== TokenETH.address) return false
+  console.log('address: ', address)
+  console.log('isETH: ', isETH)
+  if (!isETH) return false
   // CONSIDER/TODO: wrappedETH in state or TokenBalance
   const wrappedETH = await getEtherTokenBalance(account)
+  console.log('wrappedETH: ', wrappedETH)
   // BYPASS[return false] => if wrapped Eth is enough
   if (wrappedETH.gte(weiSellAmount)) return false
 

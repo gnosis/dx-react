@@ -1,7 +1,7 @@
 import { promisedContractsMap } from 'api/contracts'
 
 import { DefaultTokens } from 'api/types'
-import { promisedWeb3 } from './web3Provider'
+import { ETH_ADDRESS } from 'globals'
 
 export default async () => {
   const {
@@ -11,7 +11,6 @@ export default async () => {
     TokenRDN,
     TokenMGN,
   } = await promisedContractsMap
-  const { getCurrentAccount } = await promisedWeb3
 
   // TODO: hard-code actual addresses here
   return {
@@ -19,7 +18,8 @@ export default async () => {
       {
         name: 'ETHER',
         symbol: 'ETH',
-        address: await getCurrentAccount(),
+        address: ETH_ADDRESS,
+        isETH: true,
         decimals: 18,
       },
       {
