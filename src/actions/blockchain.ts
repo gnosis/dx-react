@@ -128,7 +128,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     getFeeRatio(currentAccount),
     getLockedMGNBalance(currentAccount),
   ])
-  const { balance } = tokenBalances.find(t => t.address === ETH_ADDRESS)
+  const { balance } = tokenBalances.find((t: typeof tokenBalances[0]) => t.address === ETH_ADDRESS)
 
   // TODO: remove
   console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
