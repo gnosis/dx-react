@@ -13,10 +13,12 @@ const mapStateToProps = (state: State) => {
   // const { sellAmount } = state.tokenPair
   const maxSellAmount: BigNumber = sellTokenBalance.div(10 ** sell.decimals)
 
+  const validTokens = sell !== EMPTY_TOKEN && buy !== EMPTY_TOKEN
+
   return {
     sellTokenSymbol: sell.symbol || sell.name || sell.address,
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
-    validSellAmount: +sellAmount > 0 && maxSellAmount.greaterThanOrEqualTo(sellAmount),
+    validSellAmount: validTokens && +sellAmount > 0 && maxSellAmount.greaterThanOrEqualTo(sellAmount),
     generatesMGN: isTokenApproved(state),
   }
 }
