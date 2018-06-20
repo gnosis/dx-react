@@ -113,6 +113,6 @@ export default async function walletIntegration(store: Store<any>) {
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
   } finally {
-    dispatch(initDutchX())
+    return dispatch(initDutchX())
   }
 }
