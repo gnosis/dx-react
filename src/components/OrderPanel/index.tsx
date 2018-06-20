@@ -23,7 +23,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
-    {!generatesMGN && <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>}
+    {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>}
     {/* END */}
 
     <TokenPair />

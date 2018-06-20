@@ -1,7 +1,8 @@
-import { Code2Name, TokenCode, Network2URL } from 'types'
+import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
 
 export const code2tokenMap: Code2Name = {
   ETH: 'ETHER',
+  WETH: 'WRAPPED ETHER',
   GNO: 'GNOSIS',
   OWL: 'OWL',
   MGN: 'MAGNOLIA',
@@ -33,3 +34,10 @@ export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
 
 export const ETH_ADDRESS = '0x0'
+
+export const EMPTY_TOKEN: DefaultTokenObject = {
+  name: '' as TokenName,
+  symbol: '' as TokenCode,
+  decimals: 18,
+  address: '',
+}

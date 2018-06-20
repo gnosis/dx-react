@@ -54,6 +54,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           min="0"
           /* max={maxSellAmount.toString()} */
           step="0.0001"
+          disabled={!sellTokenSymbol}
         />
         <small>{sellTokenSymbol}</small>
 

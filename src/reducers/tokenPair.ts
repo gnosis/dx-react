@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions'
 
 import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair, setClosingPrice } from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
+import { ETH_ADDRESS } from 'globals'
 
 export default handleActions<
 TokenPair,
@@ -39,7 +40,8 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
       name: 'ETHER',
       symbol: 'ETH',
       decimals: 18,
-      address: undefined,
+      address: ETH_ADDRESS,
+      isETH: true,
     },
     buy: {
       name: 'GNOSIS',

@@ -9,10 +9,16 @@ export interface AuctionPriceBarProps {
   sellTokenPrice: Balance,
 }
 
-const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellTokenSymbol, sellTokenPrice, buyTokenSymbol, header }) => 
-  <div className="auctionLastPrice">
-    <small>{`${header} of last auction:`}</small>
-    <big>{`1 ${sellTokenSymbol} = ${sellTokenPrice} ${buyTokenSymbol}`}</big>
-  </div>
+const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellTokenSymbol, sellTokenPrice, buyTokenSymbol, header }) => {
+  if (!sellTokenSymbol || !buyTokenSymbol) return null
+
+  return (
+    <div className="auctionLastPrice">
+      <small>{`${header} of last auction:`}</small>
+      {sellTokenSymbol && buyTokenSymbol && <big>{`1 ${sellTokenSymbol} = ${sellTokenPrice} ${buyTokenSymbol}`}</big>}
+    </div>
+  )
+}
+
 
 export default AuctionPriceBar
