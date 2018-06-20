@@ -32,10 +32,10 @@ export const RedirectHomeHOC = RedirectIfFactory({
 // })()
 
 
-export interface RedirectToDosclaimerProps extends RouteComponentProps<any> {
+export interface RedirectToDisclaimerProps extends RouteComponentProps<any> {
   disclaimer_accepted: boolean,
 }
-const ToDosclaimer: React.SFC<RedirectToDosclaimerProps> = ({ disclaimer_accepted, location }) =>
+const ToDosclaimer: React.SFC<RedirectToDisclaimerProps> = ({ disclaimer_accepted, location }) =>
   disclaimer_accepted ? null :
   <Redirect to={{ pathname: '/disclaimer', state: { from: location } }}/>
 
