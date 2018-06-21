@@ -6,7 +6,7 @@ import { AuctionsState } from 'types'
 export const reducer = handleActions(
   {
     [setOngoingAuctions.toString()]: (state: AuctionsState, action: any) => {
-      const { ongoingAuctions } = action.payload
+      const ongoingAuctions = action.payload
       console.log('ongoingAuctions: ', ongoingAuctions);
       return {
         ...state,
