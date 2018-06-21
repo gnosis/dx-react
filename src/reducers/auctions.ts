@@ -1,24 +1,31 @@
-import { handleActions } from 'redux-actions'
+import { handleActions, Action } from 'redux-actions'
 
-import { setOngoingAuctions, resetAppState } from 'actions'
-import { State } from 'types'
+import { setOngoingAuctions, setAvailableAuctions, resetAppState } from 'actions'
+import { AuctionsState } from 'types'
 
 export const reducer = handleActions(
   {
-    [setOngoingAuctions.toString()]: (state: Pick<State, 'ongoingAuctions'>, action: any) => {
+    [setOngoingAuctions.toString()]: (state: AuctionsState, action: any) => {
       const { ongoingAuctions } = action.payload
+      console.log('ongoingAuctions: ', ongoingAuctions);
       return {
         ...state,
         ongoingAuctions,
       }
     },
-    [resetAppState.toString()]: (state: Pick<State, 'ongoingAuctions'>) => ({
+    [setAvailableAuctions.toString()]: (state: AuctionsState, action: Action<string[]>) => ({
+      ...state,
+      availableAuctions: new Set(action.payload),
+    }),
+    [resetAppState.toString()]: (state: AuctionsState) => ({
       ...state,
       ongoingAuctions: [],
+      availableAuctions: new Set(),
     }),
   },
   {
     ongoingAuctions: [],
+    availableAuctions: new Set(),
   },
 )
 
