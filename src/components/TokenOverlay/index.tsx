@@ -5,7 +5,7 @@ import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
 
 import { code2tokenMap } from 'globals'
-import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet } from 'types'
+import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair } from 'types'
 import Loader from '../Loader'
 
 const filterTokens = createSelector(
@@ -29,12 +29,14 @@ const dataLengthCheck = (o1: {} | any[], o2: {} | any[]) => {
 
 export interface TokenOverlayProps {
   tokenList: DefaultTokenObject[],
+  tokenPair: TokenPair,
   closeOverlay(): any,
   selectTokenPairAndRatioPair(props: any): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
   approvedTokens: AccountsSet,
+  availableAuctions: AvailableAuctions,
 }
 
 interface TokenOverlayState {
