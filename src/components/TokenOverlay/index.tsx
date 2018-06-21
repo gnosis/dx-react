@@ -11,13 +11,27 @@ import Loader from '../Loader'
 const getTokenModAndAddress = createSelector(
   (_: TokenOverlayState, { mod }: TokenOverlayProps) => mod,
   (_, { tokenPair }) => tokenPair,
-  (mod, tokenPair) => ({
-    mod,
-    // token we clicked on
-    oldAddress: tokenPair[mod] && tokenPair[mod].address,
-    // opposite in a pair
-    oppositeAddress: tokenPair[mod === 'sell' ? 'buy' : 'sell'] && tokenPair[mod === 'sell' ? 'buy' : 'sell'].address,
-  })
+  (_, { WETHAddress }) => WETHAddress,
+  (mod, tokenPair, WETHAddress) => {
+    const oldToken = tokenPair[mod]
+    
+    const oldAddress = oldToken &&
+      (oldToken.isETH ? WETHAddress : oldToken.address)
+
+    const oppositeToken = tokenPair[mod === 'sell' ? 'buy' : 'sell']
+    
+    const oppositeAddress = oppositeToken &&
+      (oppositeToken.isETH ? WETHAddress : oppositeToken.address)
+
+
+    return {
+      mod,
+      // token we clicked on
+      oldAddress,
+      // opposite in a pair
+      oppositeAddress,
+    }
+  }
 )
 
 const prefilterByAvailableAuctions = createSelector(
