@@ -5,7 +5,7 @@ import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
 
 import { code2tokenMap } from 'globals'
-import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair } from 'types'
+import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair, Account } from 'types'
 import Loader from '../Loader'
 
 const getTokenModAndAddress = createSelector(
@@ -14,7 +14,7 @@ const getTokenModAndAddress = createSelector(
   (_, { WETHAddress }) => WETHAddress,
   (mod, tokenPair, WETHAddress) => {
     const oldToken = tokenPair[mod]
-    
+
     const oldAddress = oldToken &&
       (oldToken.isETH ? WETHAddress : oldToken.address)
 
