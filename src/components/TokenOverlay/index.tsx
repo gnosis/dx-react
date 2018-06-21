@@ -73,6 +73,7 @@ export interface TokenOverlayProps {
   mod: TokenMod,
   approvedTokens: AccountsSet,
   availableAuctions: AvailableAuctions,
+  WETHAddress: Account,
 }
 
 interface TokenOverlayState {
