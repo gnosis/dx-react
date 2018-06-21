@@ -201,11 +201,11 @@ export interface Settings {
 
 export type AccountsSet = Set<Account>
 
-export type AvailableTokenPairs = Set<string>
+export type AvailableAuctions = Set<string>
 
 export interface AuctionsState {
   ongoingAuctions: OngoingAuctions,
-  availableAuctions: AvailableTokenPairs,
+  availableAuctions: AvailableAuctions,
 }
 
 /**
