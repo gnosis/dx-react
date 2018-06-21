@@ -19,7 +19,7 @@ import {
 
 import { promisedIPFS } from 'api/IPFS'
 import { checkTokenListJSON } from 'api/utils'
-import { getAllTokenDecimals, getApprovedTokensFromAllTokens } from 'api'
+import { getAllTokenDecimals, getApprovedTokensFromAllTokens, getAvailableAuctionsFromAllTokens } from 'api'
 
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 import tokensMap from 'api/apiTesting'
@@ -107,6 +107,9 @@ export default async function walletIntegration(store: Store<any>) {
     // dispatch(setApprovedTokens([ETH.address, GNO.address]))
 
     const approvedTokenAddresses = await getApprovedTokensFromAllTokens(combinedTokenList)
+
+    const availableAuctions  = await getAvailableAuctionsFromAllTokens(combinedTokenList)
+    console.log('availableAuctions: ', availableAuctions)
     dispatch(setApprovedTokens(approvedTokenAddresses))
 
     await initialize(providerOptions)
