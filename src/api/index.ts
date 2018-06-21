@@ -687,6 +687,40 @@ export const getApprovedTokensFromAllTokens = async (tokensJSON: DefaultTokenLis
   return tokenAddresses.filter((_, i) => approvalMap[i])
 }
 
+/**
+ * returns a list of tradable token pairs ["address1-address2"]
+ * @param tokensJSON - DefaultTokenList
+ * @return address1-address2 - Account[] of approved tokens from the tokensJSON
+ */
+export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultTokenList): Promise<Account[]> => {
+  // const tokenAddresses = tokensJSON.map(token => token.address)
+
+  const { DutchX } = await promisedAPI
+  const auctionPairs = []
+
+  for (let i = 0, len = tokensJSON.length; i < len; ++i) {
+    const sell = tokensJSON[i]
+
+    for (let j = i + 1, len = tokensJSON.length; j < len; ++j) {
+      const buy = tokensJSON[j]
+
+      const latestAuctionIndexDirect = await DutchX.getLatestAuctionIndex({ sell, buy })
+      const latestAuctionIndexInverse = await DutchX.getLatestAuctionIndex({ sell: buy, buy: sell })
+
+      if (latestAuctionIndexDirect.gt(0)) {
+        console.log(`${sell.symbol}-${buy.symbol} auction is available, latestIndex = ${latestAuctionIndexDirect}`)
+        auctionPairs.push(`${sell.address}-${buy.address}`)
+      }
+      if (latestAuctionIndexInverse.gt(0)) {
+        console.log(`${buy.symbol}-${sell.symbol} auction is available, latestIndex = ${latestAuctionIndexInverse}`)
+        auctionPairs.push(`${buy.address}-${sell.address}`)
+      }
+    }
+  }
+
+  return auctionPairs
+}
+
 async function initAPI(): Promise<dxAPI> {
   const [web3, Tokens, DutchX] = await Promise.all([
     promisedWeb3,
