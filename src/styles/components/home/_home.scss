@@ -9,6 +9,7 @@
     justify-content: center;
     align-items: flex-start;
     max-width: 100%;
+    padding: 25px 0 0;
     height: auto;
   }
 
@@ -22,7 +23,7 @@
     display: block;
 
     @media #{$tablet} {
-      text-align: center;
+      // text-align: center;
     }
 
     @media #{$tablet-portrait} {
@@ -35,7 +36,7 @@
       font-size: 23px;
       width: 100%;
       text-align: center;
-      margin: 0 auto;
+      margin: 0 auto 15px;
     }
   }
 
@@ -64,6 +65,10 @@
           flex-wrap: wrap;
           align-items: flex-start;
           justify-content: flex-start;
+
+          @media #{$mobile} {
+            text-align: left;
+          }
 
           &:last-of-type {
             margin: 0;
@@ -104,8 +109,9 @@
       }
 
       @media #{$mobile} {
-        margin: 0 auto 15px;
+        margin: 0 auto 80px;
         flex-basis: 100%;
+        order: 2;
       }
     }
 
@@ -128,10 +134,18 @@
       }
 
       @media #{$mobile} {
-        max-width: 95%;
-        margin: 0 auto;
+        max-width: 85%;
+        margin: 0 auto 40px;
         height: auto;
-        flex: 1 1 95%;
+        flex: 1;
+        min-height: initial;
+        order: 1;
+      }
+    }
+
+    &.noWallet {
+      @media #{$mobile} {
+        margin: 25px auto 40px;
       }
     }
 
@@ -143,7 +157,7 @@
       font-weight: $lighter;
 
       @media #{$tablet} {
-        text-align: center;
+        // text-align: center;
         font-size: 16px;
         width: 100%;
       }
@@ -187,14 +201,28 @@
     color: $white;
     line-height: 1.2;
     margin: 0 auto 30px;
+
+    @media #{$mobile} {
+      font-size: 18px;
+
+      > strong {
+        display: block;
+      }
+    }
   }
 
   .buttonCTA {
     margin: 40px auto 0;
+
+    @media #{$mobile} {
+      margin: 0;
+      font-size: 16px;
+    }
   }
 }
 
-.tokenPicker {
+.tokenPicker,
+.home > div.tokenPicker {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -204,6 +232,17 @@
   border: 2px solid transparent;
   background: $white;
   min-height: 460px;
+
+  @media #{$mobile} {
+    max-width: 100%;
+    border-radius: 0;
+    margin: 0 auto 40px;
+    padding: 0 10px;
+
+    .tokenItem {
+      padding: 10px;
+    }
+  }
 }
 
 .tokenIntro,
@@ -321,6 +360,7 @@
   .auctionContainer & {
     margin-bottom: 10px;
     padding: 15px;
+    box-sizing: border-box;
   }
 
   // &::before {
@@ -426,6 +466,7 @@
     @media #{$mobile} {
       max-width: calc(50% - 10px);
       flex-basis: calc(50% - 10px);
+      padding: 0;
     }
   }
 
@@ -436,6 +477,10 @@
   &:not(.disabled):hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+
+    @media #{$mobile} {
+      box-shadow: none;
+    }
 
     .tokenOverlay & {
       border: 1px solid $blue;
@@ -658,6 +703,19 @@
   align-items: center;
   padding: 0 0 0 10px;
   box-sizing: border-box;
+
+  @media #{$mobile} {
+    .buttonExit {
+      flex: 0;
+      position: relative;
+      top: initial;
+      right: initial;
+      line-height: 1;
+      height: auto;
+      margin: 0 10px;
+      width: auto;
+    }
+  }
 }
 
 .tokenSearch {
@@ -672,6 +730,11 @@
   border-radius: 2px;
   outline: 0;
   box-sizing: border-box;
+
+  @media #{$mobile} {
+    width: auto;
+    flex: 1 1 auto;
+  }
 
   &::placeholder {
     will-change: color;

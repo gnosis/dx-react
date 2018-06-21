@@ -3,12 +3,22 @@
   margin: 20px auto 0;
   background: $white;
   height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+
+  @media #{$mobile} {
+    margin: -1px 0 0;
+  }
+
+  a:link, a:visited, a:active, a:focus {
+    color: $blue;
+  }
 
   > article {
     max-width: 600px;
     height: 100%;
     margin: 0 auto;
-    padding: 40px 0 80px;
+    padding: 40px 20px 80px;
   }
 
   > article > h1 {
@@ -18,6 +28,7 @@
     letter-spacing: 0;
     text-align: center;
     line-height: 1;
+    padding: 0 0 25px;
   }
 
   > article > h2 {
@@ -66,9 +77,15 @@
   h3 {
     font-weight: $normal;
     font-size: 18px;
+    padding: 0 40px 0 0;
     color: $blue;
     line-height: 1.5;
     transition: all .2s ease-in-out;
+
+    @media #{$mobile} {
+      font-size: 16px;
+      line-height: 1.2;
+    }
   }
 
   section p {
@@ -130,7 +147,7 @@
       content: '';
       position: absolute;
       right: 12px;
-      top: 18px;
+      top: 20px;
       border: solid $blue;
       border-width: 0 3px 3px 0;
       display: inline-block;
@@ -157,6 +174,7 @@
   section.content {
     position: relative;
     margin: 0 0 5px;
+    padding: 25px 0 0;
 
     h3 {
       margin: 40px auto 10px;
@@ -168,6 +186,7 @@
       font-size: 1.1em;
       line-height: 1.5;
       width: 100%;
+      text-align: left;
     }
   }
 } // end .contentPage
