@@ -14,6 +14,7 @@ import {
   setIPFSFileHashAndPath,
   selectTokenPair,
   setApprovedTokens,
+  setAvailableAuctions,
   setTokenListType,
 } from 'actions'
 
@@ -106,11 +107,13 @@ export default async function walletIntegration(store: Store<any>) {
     // const [ETH, GNO] = defaultTokenList
     // dispatch(setApprovedTokens([ETH.address, GNO.address]))
 
-    const approvedTokenAddresses = await getApprovedTokensFromAllTokens(combinedTokenList)
-
-    const availableAuctions  = await getAvailableAuctionsFromAllTokens(combinedTokenList)
+    const [approvedTokenAddresses, availableAuctions] = await Promise.all([
+      getApprovedTokensFromAllTokens(combinedTokenList),
+      getAvailableAuctionsFromAllTokens(combinedTokenList),
+    ])
     console.log('availableAuctions: ', availableAuctions)
     dispatch(setApprovedTokens(approvedTokenAddresses))
+    dispatch(setAvailableAuctions(availableAuctions))
 
     await initialize(providerOptions)
   } catch (error) {
