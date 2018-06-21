@@ -23,6 +23,23 @@ header {
     border: 0;
   }
 
+  &.solid-background {
+    margin: 0 auto;
+    background: $darkBlue;
+    max-width: initial;
+    padding: 0 0 20px;
+    width: 100%;
+
+    @media #{$mobile} {
+      padding: 20px;
+      margin: 0 auto 74px;
+    }
+
+    > div {
+      max-width: $max-width;
+    }
+  }
+
   > div {
     width: 100%;
     display: flex;
