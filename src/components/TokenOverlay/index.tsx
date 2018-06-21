@@ -8,9 +8,45 @@ import { code2tokenMap } from 'globals'
 import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair } from 'types'
 import Loader from '../Loader'
 
+const getTokenModAndAddress = createSelector(
+  (_: TokenOverlayState, { mod }: TokenOverlayProps) => mod,
+  (_, { tokenPair }) => tokenPair,
+  (mod, tokenPair) => ({
+    mod,
+    // token we clicked on
+    oldAddress: tokenPair[mod] && tokenPair[mod].address,
+    // opposite in a pair
+    oppositeAddress: tokenPair[mod === 'sell' ? 'buy' : 'sell'] && tokenPair[mod === 'sell' ? 'buy' : 'sell'].address,
+  })
+)
+
+const prefilterByAvailableAuctions = createSelector(
+  (_: TokenOverlayState, props: TokenOverlayProps) => props.tokenList,
+  (_, props) => props.availableAuctions,
+  getTokenModAndAddress,
+  (tokenList, availableAuctions, { mod, oldAddress, oppositeAddress }) => {
+    console.log('{ mod, selectingAddress, oppositeAddress }: ', { mod, oldAddress, oppositeAddress });
+    // if opposite token is an empty placeholder, show every token
+    if (!oppositeAddress) return tokenList
+    return tokenList.filter(token => {
+      // don't show opposite token as it's already selected for the other position
+      if (token.address === oppositeAddress) return false
+      let pairStr
+      // if selecting for sell position, check direct pairs with opposite token
+      if (mod === 'sell') pairStr = `${oppositeAddress}-${token.address}`
+      // otherwise opposite pairs
+      else if (mod === 'buy') pairStr = `${token.address}-${oppositeAddress}`
+      else throw new Error(`tokenPair.mod isn't set, ${mod}`)
+      
+      // show only token pairs that would actually allow a sell order
+      return availableAuctions.has(pairStr)
+    })
+  }
+)
+
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
-  (_, props) => props.tokenList,
+  prefilterByAvailableAuctions,
   (filter, tokens) => (filter ?
     tokens.filter(({
       symbol = '',
