@@ -201,13 +201,20 @@ export interface Settings {
 
 export type AccountsSet = Set<Account>
 
+export type AvailableTokenPairs = Set<string>
+
+export interface AuctionsState {
+  ongoingAuctions: OngoingAuctions,
+  availableAuctions: AvailableTokenPairs,
+}
+
 /**
  * represents global State of redux store
  * @export
  * @interface State
  */
 export interface State {
-  auctions: any,
+  auctions: AuctionsState,
   blockchain: Blockchain,
   modal: Modal,
   ipfs: IPFS,
@@ -217,6 +224,5 @@ export interface State {
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
   approvedTokens: AccountsSet,
-  ongoingAuctions: OngoingAuctions,
   settings: Settings,
 }
