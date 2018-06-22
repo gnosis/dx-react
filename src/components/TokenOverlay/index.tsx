@@ -39,7 +39,7 @@ const prefilterByAvailableAuctions = createSelector(
   (_: TokenOverlayState, props: TokenOverlayProps) => props.tokenList,
   (_, props) => props.availableAuctions,
   getTokenModAndAddress,
-  (tokenList, availableAuctions, { mod, oldAddress, oppositeAddress, WETHAddress }) => {
+  (tokenList, availableAuctions, { mod, oppositeAddress, WETHAddress }) => {
     // if opposite token is an empty placeholder, show every token
     if (!oppositeAddress) return tokenList
     return tokenList.filter(token => {

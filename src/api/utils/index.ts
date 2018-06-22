@@ -55,7 +55,7 @@ const tokenFieldsChecks = {
     if (typeof decimals !== 'number' && typeof decimals !== 'string') return 'token decimals should be a number or a string'
     if (decimals < 1) return 'token decimals should not be less than 1'
   },
-  isETH: (isETH: boolean, _, token: DefaultTokenObject) => {
+  isETH: (isETH: boolean, _: ProviderInterface, token: DefaultTokenObject) => {
     // no more checks for not-ETHER tokens
     if (!isETH) return
 
