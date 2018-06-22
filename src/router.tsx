@@ -1,21 +1,20 @@
 import React, { Fragment } from 'react'
 import { ConnectedRouter } from 'connected-react-router'
-import { Route } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { History } from 'history'
 import { hot } from 'react-hot-loader'
 
 import Header from 'components/Header'
 import Home from 'containers/Home'
 import PageNotFound from 'components/PageNotFound'
-import ContentPage from 'components/ContentPage'
 import Disclaimer from 'containers/Disclaimer'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
+import ContentPageContainer from 'containers/ContentPages'
 
 import { StaticRouter, Switch } from 'react-router-dom'
-
 
 interface AppRouterProps {
   history: History;
@@ -23,9 +22,9 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-const withHeader = (Component: React.ComponentClass | React.SFC) => (props: any) => (
+const withHeader = (Component: React.ComponentClass | React.SFC, content?: boolean) => (props: any) => (
   <Fragment>
-    <Header/>
+    <Header content={content}/>
     <Component {...props}/>
   </Fragment>
 )
@@ -34,7 +33,8 @@ const HomeWH = withHeader(Home)
 const OrderPanelWH = withHeader(OrderPanel)
 const WalletPanelWH = withHeader(WalletPanel)
 const AuctionPanelWH = withHeader(AuctionPanel)
-const ContentPageWH = withHeader(ContentPage)
+// true passed in to show different, solidBackgorund Header
+const ContentPageContainerWH = withHeader(ContentPageContainer, true)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
@@ -60,10 +60,11 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
           <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
           <Route path="/disclaimer" component={Disclaimer} />
 
-          {/* EXAMPLE FOR CONTENT PAGE */}
-          <Route path="/fees" component={ContentPageWH} />
+          <Route path="/content/:contentPage" component={ContentPageContainerWH} />
+          <Redirect from="/content" to="/content/HowItWorks" />
 
-          <Route component={PageNotFound} />
+          <Route path="/404" component={PageNotFound} />
+          <Redirect to="/404" />
         </Switch>
       </div>
   </ConnectedRouter>
