@@ -1,10 +1,10 @@
 import React from 'react'
 
-const ContentPage: React.SFC = () => (
-  <div className="contentPage">
-
+const ContentPage: React.SFC = (props) => (
+  <div className="contentPage">{props.children}</div>
 
 {/* HOW THE DX WORKS - page */}
+export const HowItWorks: React.SFC = () =>
 <article>
   <h1>How the DX works</h1>
   <section className="drawer active">
@@ -118,6 +118,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* SCREENCAST - page */}
+export const Screencast: React.SFC = () =>
 <article>
   <h1>Screencast</h1>
   <section className="content">
@@ -128,6 +129,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* TOKENS - page */}
+export const Tokens: React.SFC = () =>
 <article>
   <h1>Tokens</h1>
   <section className="drawer active">
@@ -173,6 +175,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* FEES FAQ page */}
+export const Fees: React.SFC = () =>
 <article>
   <h1>Fees</h1>
   <h2>[Section subtitle]</h2>
@@ -289,6 +292,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* AUCTION MECHANISMS - page */}
+export const AuctionMechanisms: React.SFC = () =>
 <article>
   <h1>Auction Mechanisms</h1>
   <section className="drawer active">
@@ -336,6 +340,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* Market Maker on the DX - page */}
+export const MarketMarker: React.SFC = () =>
 <article>
   <h1>Market Maker on the DX</h1>
 
@@ -346,6 +351,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* Listing a Token on the DX - page */}
+export const ListingToken: React.SFC = () =>
 <article>
   <h1>Listing a Token on the DX</h1>
 
@@ -356,6 +362,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* DX as an Open Platform - page */}
+export const OpenPlatform: React.SFC = () =>
 <article>
   <h1>DX as an Open Platform</h1>
 
@@ -366,6 +373,7 @@ const ContentPage: React.SFC = () => (
 
 
 {/* FAQ - page */}
+export const FAQ: React.SFC = () =>
 <article>
   <h1>FAQ</h1>
 
@@ -592,6 +600,7 @@ Why do we do this? This has mainly a couple of reason: one, the duration of the 
 
 
 {/* API and Technical Links - page */}
+export const Technical: React.SFC = () =>
 <article>
   <h1>API and Technical Links</h1>
   <section className="content">
@@ -609,6 +618,7 @@ Why do we do this? This has mainly a couple of reason: one, the duration of the 
 
 
 {/* Downtime and Maintenance - page */}
+export const Downtime: React.SFC = () =>
 <article>
   <h1>Downtime and Maintenance</h1>
   <section className="content">
@@ -620,6 +630,7 @@ It’s important to note that funds can always be claimed: interactions with the
 
 
 {/* Help - page */}
+export const Help: React.SFC = () =>
 <article>
   <h1>Help</h1>
   <section className="content">
@@ -633,6 +644,7 @@ You may also reach us at <a href="#">support.dx@gnosis.pm</a><br/>
 
 
 {/* Imprint page */}
+export const Imprint: React.SFC = () =>
 <article>
 <h1>Imprint</h1>
 <section className="content">
@@ -650,14 +662,15 @@ You may also reach us at <a href="#">support.dx@gnosis.pm</a><br/>
 {/* END Imprint page */}
 
 
+
+
+
 {/* FOOTER - would be sitewide */}
 <footer>
   <p>Trading on DutchX carries a risk to your capital. Please read our full <a href="#">Risk Disclaimer</a>, <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> before trading. – <a href="#">Imprint</a></p>
 </footer>
 {/* END FOOTER */}
 
-  </div>
-)
 
 
 
