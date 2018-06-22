@@ -12,8 +12,12 @@ import blocked_codes from './blocked_codes.json'
 const rootElement = document.getElementById('root')
 
 const renderApp = async () => {
-  await loadSettings()
-  ReactDOM.render(<App />, rootElement, initializer)
+  await Promise.all([
+    loadSettings(),
+    initializer(),
+  ])
+
+  ReactDOM.render(<App />, rootElement)
 }
 
 const geoBlockedCountryCodes = new Set(blocked_codes)

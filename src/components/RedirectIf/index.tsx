@@ -26,16 +26,16 @@ export const RedirectHomeHOC = RedirectIfFactory({
   condition: ({ sellAmount }) => !sellAmount || sellAmount !== '0',
 })
 
-// export const RedirectToDisclaimer = RedirectIfFactory({
-//   to: {pathname: '/disclaimer', state},
-//   condition: ({ disclaimer_accepted }) => disclaimer_accepted,
-// })()
+export const RedirectHomeIfNoAccountHOC = RedirectIfFactory({
+  to: '/',
+  condition: ({ currentAccount }) => currentAccount !== undefined,
+})
 
 
-export interface RedirectToDosclaimerProps extends RouteComponentProps<any> {
+export interface RedirectToDisclaimerProps extends RouteComponentProps<any> {
   disclaimer_accepted: boolean,
 }
-const ToDosclaimer: React.SFC<RedirectToDosclaimerProps> = ({ disclaimer_accepted, location }) =>
+const ToDosclaimer: React.SFC<RedirectToDisclaimerProps> = ({ disclaimer_accepted, location }) =>
   disclaimer_accepted ? null :
   <Redirect to={{ pathname: '/disclaimer', state: { from: location } }}/>
 
