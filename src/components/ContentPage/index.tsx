@@ -631,11 +631,6 @@ export const Imprint = () =>
         <strong>Directors:</strong> <br />Stefan George, Martin Köppelmann, Joseph Lubin, Jeremy Millar<br /><br />
         Company registered in Gibraltar<br />
         Company Nr. 116678
-  </p>
+      </p>
     </section>
   </article>
-
-{/* FOOTER - would be sitewide */}
-<footer>
-  <p>Trading on DutchX carries a risk to your capital. Please read our full <a href="#">Risk Disclaimer</a>, <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> before trading. – <a href="#">Imprint</a></p>
-</footer>

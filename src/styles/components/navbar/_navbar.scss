@@ -45,7 +45,7 @@ header {
     display: flex;
     align-items: flex-end;
     margin: 10px auto 0;
-    padding: 0;
+    padding: 0 30px;
 
     @media #{$tablet} {
       padding: 0 35px;
