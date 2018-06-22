@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { handleKeyDown } from 'utils/helpers'
+import { Link } from 'react-router-dom'
 
 interface HamburgerProps {}
 
@@ -30,14 +31,14 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          <a href="#">How it works</a>
-          <a href="#">Screencast</a>
-          <a href="#">Tokens </a>
-          <a href="#">Fees</a>
-          <a href="#">FAQ</a>
-          <a href="#">Technical </a>
-          <a href="#">Downtime</a>
-          <a href="#">Help</a>
+          <Link replace to="/content/HowItWorks"> How It Works </Link>
+          <Link replace to="/content/Screencast">Screencast</Link>
+          <Link replace to="/content/Tokens">Tokens </Link>
+          <Link replace to="/content/Fees">Fees</Link>
+          <Link replace to="/content/FAQ">FAQ</Link>
+          <Link replace to="/content/Technical">Technical </Link>
+          <Link replace to="/content/Downtime">Downtime</Link>
+          <Link replace to="/content/Help">Help</Link>
         </nav>
       </div>
     )
