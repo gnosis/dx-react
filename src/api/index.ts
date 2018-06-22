@@ -696,7 +696,8 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
   // const tokenAddresses = tokensJSON.map(token => token.address)
 
   const { DutchX } = await promisedAPI
-  const auctionPairs = []
+  const auctionPairs: string[] = []
+  const auctionPairsPromises = []
 
   for (let i = 0, len = tokensJSON.length; i < len; ++i) {
     const sell = tokensJSON[i]
@@ -704,19 +705,26 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
     for (let j = i + 1, len = tokensJSON.length; j < len; ++j) {
       const buy = tokensJSON[j]
 
-      const latestAuctionIndexDirect = await DutchX.getLatestAuctionIndex({ sell, buy })
-      const latestAuctionIndexInverse = await DutchX.getLatestAuctionIndex({ sell: buy, buy: sell })
-
-      if (latestAuctionIndexDirect.gt(0)) {
-        console.log(`${sell.symbol}-${buy.symbol} auction is available, latestIndex = ${latestAuctionIndexDirect}`)
-        auctionPairs.push(`${sell.address}-${buy.address}`)
-      }
-      if (latestAuctionIndexInverse.gt(0)) {
-        console.log(`${buy.symbol}-${sell.symbol} auction is available, latestIndex = ${latestAuctionIndexInverse}`)
-        auctionPairs.push(`${buy.address}-${sell.address}`)
-      }
+      const directPromise =  DutchX.getLatestAuctionIndex({ sell, buy })
+        .then((latestAuctionIndexDirect) => {
+          if (latestAuctionIndexDirect.gt(0)) {
+            console.log(`${sell.symbol}-${buy.symbol} auction is available, latestIndex = ${latestAuctionIndexDirect}`)
+            auctionPairs.push(`${sell.address}-${buy.address}`)
+          }
+        })
+      const inversePromise = DutchX.getLatestAuctionIndex({ sell: buy, buy: sell })
+        .then((latestAuctionIndexInverse) => {
+          if (latestAuctionIndexInverse.gt(0)) {
+            console.log(`${buy.symbol}-${sell.symbol} auction is available, latestIndex = ${latestAuctionIndexInverse}`)
+            auctionPairs.push(`${buy.address}-${sell.address}`)
+          }
+        })
+      
+      auctionPairsPromises.push(directPromise, inversePromise)
     }
   }
+
+  await Promise.all(auctionPairsPromises)
 
   return auctionPairs
 }
