@@ -30,6 +30,7 @@ const getTokenModAndAddress = createSelector(
       oldAddress,
       // opposite in a pair
       oppositeAddress,
+      WETHAddress,
     }
   }
 )
@@ -38,18 +39,19 @@ const prefilterByAvailableAuctions = createSelector(
   (_: TokenOverlayState, props: TokenOverlayProps) => props.tokenList,
   (_, props) => props.availableAuctions,
   getTokenModAndAddress,
-  (tokenList, availableAuctions, { mod, oldAddress, oppositeAddress }) => {
+  (tokenList, availableAuctions, { mod, oldAddress, oppositeAddress, WETHAddress }) => {
     console.log('{ mod, selectingAddress, oppositeAddress }: ', { mod, oldAddress, oppositeAddress });
     // if opposite token is an empty placeholder, show every token
     if (!oppositeAddress) return tokenList
     return tokenList.filter(token => {
       // don't show opposite token as it's already selected for the other position
       if (token.address === oppositeAddress) return false
+      const tokenAddress = token.isETH ? WETHAddress : token.address
       let pairStr
       // if selecting for sell position, check direct pairs with opposite token
-      if (mod === 'sell') pairStr = `${oppositeAddress}-${token.address}`
+      if (mod === 'sell') pairStr = `${oppositeAddress}-${tokenAddress}`
       // otherwise opposite pairs
-      else if (mod === 'buy') pairStr = `${token.address}-${oppositeAddress}`
+      else if (mod === 'buy') pairStr = `${tokenAddress}-${oppositeAddress}`
       else throw new Error(`tokenPair.mod isn't set, ${mod}`)
       
       // show only token pairs that would actually allow a sell order
