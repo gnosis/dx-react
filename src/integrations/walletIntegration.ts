@@ -111,7 +111,6 @@ export default async function walletIntegration(store: Store<any>) {
       getApprovedTokensFromAllTokens(combinedTokenList),
       getAvailableAuctionsFromAllTokens(combinedTokenList),
     ])
-    console.log('availableAuctions: ', availableAuctions)
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
 
