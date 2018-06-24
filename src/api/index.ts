@@ -367,7 +367,7 @@ export const claimSellerFunds = async (pair: TokenPair, index?: Index, account?:
 export const claimSellerFundsAndWithdraw = async (
   pair: TokenPair,
   index?: Index,
-  amount?: Balance | number,
+  amount?: BigNumber,
   account?: Account,
 ) => {
   const { DutchX } = await promisedAPI
@@ -638,22 +638,7 @@ export const getSellerOngoingAuctions = async (
           indicesWithSellerBalanceInverse.push(lastIndex.add(1))
           balancePerIndexInverse.push(sellVolumeNext.inverse)
         }
-        console.log(`
-          indicesWithSellerBalance:         ${indicesWithSellerBalance}
-          indicesWithSellerBalanceInverse:  ${indicesWithSellerBalanceInverse}
-          lastIndex:                        ${lastIndex}
-          lastIndex === lastClaimable?     
-        `)
-        /* const checkClaimableStatus = (type: 'normal' | 'inverse', { indicesWithSellerBalance, indicesWithSellerBalanceReverse }) => {
-          if (type === 'normal') {
-
-          } else {
-            if (indicesWithSellerBalance.length !== indicesWithSellerBalanceReverse.length) return false
-            return indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
-            indicesWithSellerBalanceInverse.length >= 3 && committedToNextInverse ||
-            indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0))
-          }
-        } */
+        
         ongoingAuction = {
           ...auction,
           indicesWithSellerBalance,
@@ -663,16 +648,14 @@ export const getSellerOngoingAuctions = async (
           // claimable if
           // either there are past auctions
           // more than 1 index with tokens               not including upcoming index
-          claim: indicesWithSellerBalance.length && 
-            (lastIndex.eq(indicesWithSellerBalance[indicesWithSellerBalance.length - 1]) && indicesWithSellerBalance.length >= 2 && !committedToNextNormal ||
+          claim: indicesWithSellerBalance.length >= 2 && !committedToNextNormal ||
             // more than 2 index with tokens        including upcoming index
             indicesWithSellerBalance.length >= 3 && committedToNextNormal ||
             // or the only index is that of a current auction or of a closed past auction
-            indicesWithSellerBalance.length === 1 && (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0))),
-          claimInverse: indicesWithSellerBalanceInverse.length && 
-            (lastIndex.eq(indicesWithSellerBalanceInverse[indicesWithSellerBalanceInverse.length - 1]) && indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
+            indicesWithSellerBalance.length === 1 && (!lastIndex.equals(indicesWithSellerBalance[0]) || (closingPriceDir[1].gt(0) && closingPriceOpp[1].gt(0))),
+          claimInverse: indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
             indicesWithSellerBalanceInverse.length >= 3 && committedToNextInverse ||
-            indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0))),
+            indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || (closingPriceDir[1].gt(0) && closingPriceOpp[1].gt(0))),
         }
         // for first time auctions, show auction even if it hasnt started yet
       } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
@@ -683,10 +666,9 @@ export const getSellerOngoingAuctions = async (
           balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
           balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
         }
-      } /* else {
+      } else {
         return accum
-      } */
-      console.log('ongoingAuction2 ', ongoingAuction)
+      }
       accum.push(ongoingAuction)
       return accum
     }, [])
