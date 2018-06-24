@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { OngoingAuctions/* , AuctionObject */ } from 'types'
+import React, { Fragment } from 'react'
+import { OngoingAuctions } from 'types'
 import { Link } from 'react-router-dom'
 import { DefaultTokenObject } from 'api/types'
 
@@ -40,62 +40,64 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                 (auction, i) => {
                   if (auction.balancePerIndex.length && auction.balancePerIndexInverse.length) {
                     return (
-                      <>
-                        <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
+                      <Fragment key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
+                        <tr>
                           <td>
-                            <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}>
+                            <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`}>
                               {`${auction.sell.symbol}/${auction.buy.symbol}`}
                             </ Link>
                           </td>
                           <td>
-                            {auction.balancePerIndex[auction.balancePerIndex.length - 1] && <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1]} ${auction.sell.symbol}`}</p>}
+                            {auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}
                           </td>
                           {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                         </tr>
-                        <tr key={`${auction.buy.address}-${auction.sell.address}-${i}`}>
+                        <tr>
                           <td>
-                            <Link to={`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse[auction.indicesWithSellerBalanceInverse.length - 1]}`}>
+                            <Link to={`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`}>
                               {`${auction.buy.symbol}/${auction.sell.symbol}`}
                             </ Link>
                           </td>
                           <td>
-                            {auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] && 
+                            {auction.balancePerIndexInverse.last() && 
                               <p>
-                                {`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1]} ${auction.buy.symbol}`}
+                                {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
                               </p>}
                           </td>
                           {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
                         </tr>
-                      </>
+                      </ Fragment>
                     )
                   } 
+                  // IF NORMAL === FALSE but INVERSE === TRUE
                   if (!auction.balancePerIndex.length && auction.balancePerIndexInverse.length) {
                     return (
                       <tr key={`${auction.buy.address}-${auction.sell.address}-${i}`}>
                         <td>
-                          <Link to={`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse[auction.indicesWithSellerBalanceInverse.length - 1]}`}>
+                          <Link to={`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`}>
                             {`${auction.buy.symbol}/${auction.sell.symbol}`}
                           </ Link>
                         </td>
                         <td>
-                          {auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1] && 
+                          {auction.balancePerIndexInverse.last() && 
                             <p>
-                              {`${auction.balancePerIndexInverse[auction.balancePerIndexInverse.length - 1]} ${auction.sell.symbol}`}
+                              {`${auction.balancePerIndexInverse.last()} ${auction.sell.symbol}`}
                             </p>}
                         </td>
                         {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
                       </tr>
                     )
                   }
+                  // IF NORMAL === TRUE but INVERSE === FALSE
                   return (
                     <tr key={`${auction.sell.address}-${auction.buy.address}-${i}`}>
                       <td>
-                        <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance[auction.indicesWithSellerBalance.length - 1]}`}>
+                        <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`}>
                           {`${auction.sell.symbol}/${auction.buy.symbol}`}
                         </ Link>
                       </td>
                       <td>
-                        {auction.balancePerIndex[auction.balancePerIndex.length - 1] && <p>{`${auction.balancePerIndex[auction.balancePerIndex.length - 1]} ${auction.sell.symbol}`}</p>}
+                        {auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}
                       </td>
                       {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                     </tr>

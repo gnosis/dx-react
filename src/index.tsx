@@ -8,6 +8,11 @@ import App, { initializer, loadSettings } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
 
+// set last () => any on Array prototype
+Array.prototype.last = function getLast() {
+  return this[this.length - 1]
+}
+
 /* global document */
 const rootElement = document.getElementById('root')
 
