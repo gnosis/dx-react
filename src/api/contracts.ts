@@ -15,30 +15,32 @@ const contractNames = [
   'DutchExchange',          // Stays in dx-contracts
   'TokenFRT',               // Stays in dx-contracts
   'Proxy',                  // Stays in dx-contracts - will be renamed DutchExchangeProxy
-
-  'EtherToken',             // will be @gnosis/util-contracts
-  'TokenGNO',               // will be @gnosis/token-gno
-  'TokenOWL',               // will be @gnosis/token-owl
-  'TokenOWLProxy',          // will be @gnosis/token-owl
-
-  'TokenOMG',               // will be deleted - use TokenERC20
-  'TokenRDN',               // will be deleted - use TokenERC20
+  'EtherToken',             // TODO: > 0.9.0 will be @gnosis/util-contracts
+  'TokenGNO',               // TODO: > 0.9.0 will be @gnosis/token-gno
+  'TokenOWL',               // TODO: > 0.9.0 will be @gnosis/token-owl
+  'TokenOWLProxy',          // TODO: > 0.9.0 will be @gnosis/token-owl
 ]
+
+if (process.env.NODE_ENV === 'development') { 
+  contractNames.push(
+    'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
+    'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
+  )
+}
 
 // fill contractsMap from here if available
 const filename2ContractNameMap = {
   EtherToken: 'TokenETH',
 }
 
-
 interface ContractsMap {
   DutchExchange:  DXAuction,
-  TokenETH:       ETHInterface,
-  TokenGNO:       GNOInterface,
-  TokenOWL:       OWLInterface,
   TokenMGN:       MGNInterface,
-  TokenOMG:       GNOInterface,
-  TokenRDN:       GNOInterface,
+  TokenETH?:       ETHInterface,
+  TokenGNO?:       GNOInterface,
+  TokenOWL?:       OWLInterface,
+  TokenOMG?:       GNOInterface,
+  TokenRDN?:       GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
@@ -46,11 +48,20 @@ interface ContractsMapWProxy extends ContractsMap {
   TokenOWLProxy: DeployedContract,
 }
 
-const req = require.context(
-  '@gnosis.pm/dx-contracts/build/contracts/',
-  false,
-  /(DutchExchange|Proxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenFRT|TokenOMG|TokenRDN)\.json$/,
-)
+let req: any
+if (process.env.NODE_ENV !== 'production') {
+  req = require.context(
+    '@gnosis.pm/dx-contracts/build/contracts/',
+    false,
+    /(DutchExchange|Proxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenOMG|TokenRDN)\.json$/,
+  )
+} else {
+  req = require.context(
+    '@gnosis.pm/dx-contracts/build/contracts/',
+    false,
+    /(DutchExchange|Proxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
+  )
+}
 
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
@@ -93,7 +104,6 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
   return acc
 }, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
 
-(window as any).m = contractsMap
 
 export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
@@ -106,9 +116,9 @@ export const promisedContractsMap = init()
 async function init() {
   const { currentProvider } = await promisedWeb3
   setProvider(currentProvider)
-
+  
   const instances = await getPromisedIntances()
-
+  
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   const deployedContracts = contractNames.reduce((acc, name, i) => {
@@ -119,16 +129,17 @@ async function init() {
     }
     return acc
   }, {}) as ContractsMapWProxy
-
+  
   const { address: proxyAddress } = deployedContracts.Proxy
-  const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
-
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
+  
+  const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
   deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
-
   delete deployedContracts.Proxy
   delete deployedContracts.TokenOWLProxy
-
-  console.log(deployedContracts)
-  return (window as any).Dd = deployedContracts as ContractsMap
+  
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(deployedContracts)
+  }
+  return deployedContracts as ContractsMap
 }
