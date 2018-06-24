@@ -90,7 +90,7 @@ storiesOf('AuctionContainer', module)
       <AuctionStatus
         buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
         sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
-        buyAmount={number('buyAmt', 100)}
+        buyAmount={toBigNumber(number('buyAmt', 100))}
         status={Status.ENDED}
         timeLeft={number('timeLeft', 5, {
           range: true,

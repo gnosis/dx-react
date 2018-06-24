@@ -15,6 +15,8 @@ import {
   claimSellerFundsAndWithdraw,
 } from 'api'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import { WATCHER_INTERVAL } from 'integrations/initialize'
 
 // depends on router injecting match
@@ -41,7 +43,7 @@ export interface AuctionStateState {
   timeToCompletion: number,
   userSelling: BigNumber,
   userGetting:  BigNumber,
-  userCanClaim: number,
+  userCanClaim: BigNumber,
   progress: number,
   index: number,
   account: Account,
@@ -195,7 +197,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const userGetting = sellerBalance.mul(price[0]).div(price[1])
 
       const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
-        (await getUnclaimedSellerFunds(pair, index, account)).toNumber() : 0
+        (await getUnclaimedSellerFunds(pair, index, account)) : toBigNumber(0)
 
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
 
