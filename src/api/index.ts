@@ -498,6 +498,17 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
     DutchX.getSellerBalances(oppositePair, lastIndex.add(1), account),
   ])
 
+  console.log(`
+    == LAST AUCTION STATS ==
+    lastIndex:        ${lastIndex},
+    closingPriceDir:  ${closingPriceDir},
+    closingPriceOpp:  ${closingPriceOpp},
+    sellVolumeNext: { 
+      normal:         ${normal}, 
+      inverse:        ${inverse} 
+    },
+  `)
+
   return {
     lastIndex,
     closingPriceDir,
@@ -609,16 +620,16 @@ export const getSellerOngoingAuctions = async (
       // or current auction with committed tokens
       const [indicesWithSellerBalance, balancePerIndex] = claimableTokens[index]
       const [indicesWithSellerBalanceInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
-
       let ongoingAuction: AuctionObject
-
+      
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
       if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
+        console.log('IF 1')
         const { lastIndex, closingPriceDir, closingPriceOpp, sellVolumeNext } = lastAuctionsData[index]
-
+        
         const committedToNextNormal = sellVolumeNext.normal.gt(0)
         const committedToNextInverse = sellVolumeNext.inverse.gt(0)
-
+        
         if (committedToNextNormal) {
           indicesWithSellerBalance.push(lastIndex.add(1))
           balancePerIndex.push(sellVolumeNext.normal)
@@ -627,7 +638,22 @@ export const getSellerOngoingAuctions = async (
           indicesWithSellerBalanceInverse.push(lastIndex.add(1))
           balancePerIndexInverse.push(sellVolumeNext.inverse)
         }
+        console.log(`
+          indicesWithSellerBalance:         ${indicesWithSellerBalance}
+          indicesWithSellerBalanceInverse:  ${indicesWithSellerBalanceInverse}
+          lastIndex:                        ${lastIndex}
+          lastIndex === lastClaimable?     
+        `)
+        /* const checkClaimableStatus = (type: 'normal' | 'inverse', { indicesWithSellerBalance, indicesWithSellerBalanceReverse }) => {
+          if (type === 'normal') {
 
+          } else {
+            if (indicesWithSellerBalance.length !== indicesWithSellerBalanceReverse.length) return false
+            return indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
+            indicesWithSellerBalanceInverse.length >= 3 && committedToNextInverse ||
+            indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0))
+          }
+        } */
         ongoingAuction = {
           ...auction,
           indicesWithSellerBalance,
@@ -637,16 +663,16 @@ export const getSellerOngoingAuctions = async (
           // claimable if
           // either there are past auctions
           // more than 1 index with tokens               not including upcoming index
-          claim: indicesWithSellerBalance.length >= 2 && !committedToNextNormal ||
+          claim: indicesWithSellerBalance.length && 
+            (lastIndex.eq(indicesWithSellerBalance[indicesWithSellerBalance.length - 1]) && indicesWithSellerBalance.length >= 2 && !committedToNextNormal ||
             // more than 2 index with tokens        including upcoming index
             indicesWithSellerBalance.length >= 3 && committedToNextNormal ||
             // or the only index is that of a current auction or of a closed past auction
-            indicesWithSellerBalance.length === 1 &&
-            (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0)),
-          claimInverse: indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
+            indicesWithSellerBalance.length === 1 && (!lastIndex.equals(indicesWithSellerBalance[0]) || closingPriceDir[1].gt(0))),
+          claimInverse: indicesWithSellerBalanceInverse.length && 
+            (lastIndex.eq(indicesWithSellerBalanceInverse[indicesWithSellerBalanceInverse.length - 1]) && indicesWithSellerBalanceInverse.length >= 2 && !committedToNextInverse ||
             indicesWithSellerBalanceInverse.length >= 3 && committedToNextInverse ||
-            indicesWithSellerBalanceInverse.length === 1 &&
-            (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0)),
+            indicesWithSellerBalanceInverse.length === 1 && (!lastIndex.equals(indicesWithSellerBalanceInverse[0]) || closingPriceOpp[1].gt(0))),
         }
         // for first time auctions, show auction even if it hasnt started yet
       } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
@@ -657,10 +683,10 @@ export const getSellerOngoingAuctions = async (
           balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
           balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
         }
-      } else {
+      } /* else {
         return accum
-      }
-
+      } */
+      console.log('ongoingAuction2 ', ongoingAuction)
       accum.push(ongoingAuction)
       return accum
     }, [])
