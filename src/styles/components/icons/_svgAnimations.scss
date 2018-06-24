@@ -1,0 +1,41 @@
+$cB1: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+$cB2: cubic-bezier(1, 0.005, 0.53, 1.49);
+// good
+$cB3: cubic-bezier(0.175, 0.885, 0.06, 1.165);
+// best
+$CB4: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+
+.dutchxSVGContainer, .mmSVGContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.dutchxSVGContainer {
+  margin: auto;
+}
+
+.dutchXSVGGroup {
+  animation: dutchXAnimation 3s $CB4 infinite;
+  fill: none;
+  stroke: #1c5683;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 97.8;
+  stroke-width: 0.65;
+}
+
+.mmSVGGroup {
+  animation: dutchXAnimation 4.2s $CB4 infinite;
+  fill: none;
+  stroke: #fff;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 97.8;
+  stroke-width: 0.19;
+}
+
+@keyframes dutchXAnimation {
+  0% { stroke-dashoffset: 10; }
+  50% { stroke-dashoffset: 90; }
+  100% { stroke-dashoffset: 10; }
+}

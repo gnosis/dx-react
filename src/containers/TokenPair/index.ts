@@ -1,0 +1,19 @@
+import { connect } from 'react-redux'
+import TokenPair from 'components/TokenPair'
+import { openOverlay, swapTokensInAPairAndReCalcClosingPrice } from 'actions'
+import { State } from 'types'
+
+const mapStateToProps = ({
+  tokenList: { defaultTokenList, customTokenList, type },
+  tokenPair: { sell, buy },
+  tokenBalances: { [sell && sell.address]: sellTokenBalance = 0, [buy && buy.address]: buyTokenBalance = 0 },
+  }: State) => ({
+    sellToken: sell,
+    buyToken: buy,
+    sellTokenBalance,
+    buyTokenBalance,
+    needsTokens: type !== 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
+  })
+
+
+export default connect(mapStateToProps, { openOverlay, swapTokensInAPairAndReCalcClosingPrice })(TokenPair)

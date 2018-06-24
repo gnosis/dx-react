@@ -1,0 +1,77 @@
+.svgIcon(@iconName) {
+  @iconClass: ~"icon--@{iconName}";
+
+  .icon.@{iconClass} {
+    @url: "../assets/img/icons/icon_@{iconName}.svg";
+
+    background-image: url("@{url}");
+    mask-image: url("@{url}");
+  }
+}
+
+// Icon Definition
+.icon {
+  display: inline-block;
+  position: relative;
+
+  height: 16px;
+  width: 16px;
+
+  content: '\00a0';
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  font-style: normal;
+
+  // Right/Left Arrow
+  &.arrow {
+    display: inline;
+    font-style: normal;
+    padding: 0 10px;
+    position: relative;
+
+    &::before {
+      content: '\279C';
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &--right {
+      &::before {
+        transform-origin: 50% 50%;
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+// Add Icons here from /assets/img/icons/icon_<name>.svg
+.svgIcon("countdown");
+.svgIcon("enddate");
+.svgIcon("oracle");
+.svgIcon("currency");
+.svgIcon("checkmark");
+.svgIcon("market");
+.svgIcon("market--countdown");
+.svgIcon("new");
+.svgIcon("etherTokens");
+.svgIcon("achievementBadge");
+.svgIcon("incomeForecast");
+.svgIcon("earnedTokens");
+.svgIcon("cross");
+.svgIcon("user");
+.svgIcon("gear");
+
+.icon--checkbox {
+  background: @active-highlight-success;
+}
+
+.icon--error {
+  @url: "../assets/img/icons/icon_cross.svg";
+
+  background-image: url("@{url}");
+  mask-image: url("@{url}");
+
+  background-color: @active-highlight-error;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="49px" height="38px" viewBox="0 0 49 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46 (44423) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MVP-Minimal-version" transform="translate(-870.000000, -383.000000)" fill-rule="nonzero" fill="#CED3DB">
+            <g id="#1---Home" transform="translate(83.000000, 189.000000)">
+                <g id="#-2---Pick-module" transform="translate(537.000000, 0.000000)">
+                    <g id="#-Pick-Token" transform="translate(0.000000, 28.000000)">
+                        <path d="M266.357143,160.5 L255.5,171.361667 L263.642857,171.361667 L263.642857,190.444444 L269.071429,190.444444 L269.071429,171.361667 L277.214286,171.361667 L266.357143,160.5 Z M285.357143,198.638333 L285.357143,179.555556 L279.928571,179.555556 L279.928571,198.638333 L271.785714,198.638333 L282.642857,209.5 L293.5,198.638333 L285.357143,198.638333 Z" id="Shape" transform="translate(274.500000, 185.000000) rotate(90.000000) translate(-274.500000, -185.000000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

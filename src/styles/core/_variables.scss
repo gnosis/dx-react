@@ -1,0 +1,66 @@
+// File paths
+$images: '../../src/assets/';
+$fonts: '../../src/styles/fonts/';
+
+// Media Query Ranges
+$tiny-screen: 340px !default;
+// --------------------------
+$small-screen: 736px !default;
+$small-screen-up: 737px !default;
+$medium-end: 1024px !default;
+// --------------------------
+$desktop-screen: 1025px !default;
+// --------------------------
+// --------------------------
+$tiny-and-down: "only screen and (max-width : #{$tiny-screen})" !default;
+$mobile: "only screen and (max-width : #{$small-screen})" !default;
+$medium-and-up: "only screen and (min-width : #{$small-screen-up})" !default;
+$desktop: "only screen and (min-width : #{$desktop-screen})" !default;
+$medium-and-down: "only screen and (max-width : #{$medium-end})" !default;
+$medium-only: "only screen and (min-width : #{$small-screen-up}) and (max-width : #{$medium-end})" !default;
+$medium-smallresolutions: 850px !default;
+
+// Tablet orientations
+$tablet-portrait: "(min-device-width: #{$small-screen-up}) and (max-device-width: #{$medium-end}) and (orientation: portrait)" !default;
+$tablet-landscape: "(min-device-width: #{$small-screen-up}) and (max-device-width: #{$medium-end}) and (orientation: landscape)" !default;
+$tablet: "(min-width: #{$small-screen-up}) and (max-width: #{$medium-end}), #{$tablet-portrait}, #{$tablet-landscape}";
+$tablet-no-portrait: "(min-width: #{$small-screen-up}) and (max-width: #{$medium-end}), #{$tablet-landscape}";
+$tablet-small: "(min-width: #{$small-screen-up}) and (max-width: #{$medium-smallresolutions})";
+// $ipad-pro-portrait-breakpoint: "(min-device-width: 1024px) and (max-device-height: 1366px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio: 2)";
+// $ipad-pro-landscape-breakpoint: "(min-device-width: 1024px) and (max-device-height: 1366px) and (orientation:landscape) and (-webkit-min-device-pixel-ratio: 2)";
+
+// Global HEX Colors
+$green: #008f41;
+$white: #fff;
+$black: #333;
+$grey: #7c7c8c;
+$greyLight: #f0f2f6;
+$greyText: #79828f;
+$greyTextDark: #5c636e;
+$greyBorder: #ced3db;
+$blue: #0072cf;
+$darkBlue: #1a4977;
+$red: #bf1600;
+$darkRed: #a94442;
+$orange: #ed5a00;
+$lila: #735ab7;
+$colorGNO: #00a6c4;
+$yellow: #fcf8e3;
+
+$max-width: 1090px;
+
+// Fonts
+$helvetica: "Helvetica Neue", Helvetica, sans-serif;
+$montserrat: 'Montserrat', sans-serif;
+$mono: "Courier New", Courier, monospace;
+$lucida: 'Lucida Sans', sans-serif;
+$arial: Arial, sans-serif;
+$verdana: Verdana, Geneva, sans-serif;
+
+// Font weights
+$lighter: 300;
+$normal: 400;
+$bold: 500;
+
+// HTML Entity characters (e.g. for use with pseudo-elements)
+$x: "\2715"; // $x: "✕";
