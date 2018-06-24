@@ -55,10 +55,11 @@ export default async function walletIntegration(store: Store<any>) {
 
     if (!isDefaultTokensAvailable) {
       // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV !== 'production') {
         defaultTokens = await tokensMap()
       } else {
-        defaultTokens = await ipfsFetchFromHash('QmVLmtt3obCz17BDiDsGAn9gWVF1Cyxv3KyvqHrSYfFsG8') as DefaultTokens
+        // TODO: change for prod
+        defaultTokens = await ipfsFetchFromHash('QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM') as DefaultTokens
       }
       
       console.log('​getTokenList -> ', defaultTokens)
