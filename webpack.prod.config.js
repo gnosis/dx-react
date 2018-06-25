@@ -28,6 +28,7 @@ module.exports = {
   context: path.join(__dirname, 'src'),
   entry: 'index.tsx',
   output: {
+    publicPath: '/',
     path: `${__dirname}/dist`,
     chunkFilename: '[name].[chunkhash].js',
     filename: '[name].[chunkhash].js',
