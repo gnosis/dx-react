@@ -1,4 +1,5 @@
 import React from 'react'
+import { handleKeyDown } from 'utils/helpers'
 
 interface TokenOverlayHeaderProps {
   onChange(e: React.ChangeEvent<HTMLInputElement>): void,
@@ -7,7 +8,7 @@ interface TokenOverlayHeaderProps {
 }
 
 const TokenOverlayHeader: React.SFC<TokenOverlayHeaderProps> = ({ value, onChange, closeOverlay }) => (
-  <span className="tokenOverlayHeader">
+  <span className="tokenOverlayHeader" onKeyDown={(e) => handleKeyDown(e, closeOverlay, 27)}>
     <input
       className="tokenSearch"
       type="text"
