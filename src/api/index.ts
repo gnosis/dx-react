@@ -512,14 +512,8 @@ const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: any) 
   if (claimableIndices.length >= 2) return true
 
   if (claimableIndices.length === 1) {
-    if (idx.gte(claimableIndices.last())) {
-      // check if equal and then check if cllosingPrice > index w/sellBalance
-      if (idx.eq(claimableIndices.last())) {
-        return closingPricePair[1].gt(0) ? true : false
-      }
-      // else it is > idx and therefore true
-      return true
-    }
+    if (idx.eq(claimableIndices.last())) return closingPricePair[1].gt(0)
+    if (idx.gt(claimableIndices.last())) return true
   }
   return false
 }
