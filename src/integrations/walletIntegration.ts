@@ -12,7 +12,6 @@ import {
   setDefaultTokenList,
   setCustomTokenList,
   setIPFSFileHashAndPath,
-  selectTokenPair,
   setApprovedTokens,
   setAvailableAuctions,
   setTokenListType,
@@ -25,7 +24,7 @@ import { getAllTokenDecimals, getApprovedTokensFromAllTokens, getAvailableAuctio
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 import tokensMap from 'api/apiTesting'
 
-import { TokenPair, State } from 'types'
+import { State } from 'types'
 import { ConnectedInterface } from './types'
 
 export default async function walletIntegration(store: Store<any>) {
@@ -67,8 +66,6 @@ export default async function walletIntegration(store: Store<any>) {
       await localForage.setItem('defaultTokens', defaultTokens)
     }
 
-    const defaultSell = defaultTokens.elements.find(tok => tok.symbol === 'ETH')
-
     // IPFS hash for tokens exists in localForage
     if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
 
@@ -93,7 +90,6 @@ export default async function walletIntegration(store: Store<any>) {
     }
     // set defaulTokenList && setDefaulTokenPair visible when in App
     dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-    dispatch(selectTokenPair({ buy: undefined, sell: defaultSell } as TokenPair))
 
     return getState().tokenList
   }

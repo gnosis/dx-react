@@ -181,7 +181,7 @@ export type TokenMod = 'sell' | 'buy'
  */
 export interface TokenOverlay {
   open: boolean,
-  mod: TokenMod
+  mod: TokenMod | null,
 }
 
 export type FileBuffer = ArrayBuffer
