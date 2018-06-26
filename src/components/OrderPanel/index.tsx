@@ -13,11 +13,12 @@ interface OrderPanelProps {
   buyTokenSymbol: string,
   validSellAmount: boolean,
   generatesMGN: boolean,
+  overlayOpen: boolean,
 }
 
-const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN }) => (
+const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN, overlayOpen }) => (
   <AuctionContainer auctionDataScreen="amount">
-    <TokenOverlay />
+    {overlayOpen && <TokenOverlay />}
     <AuctionHeader backTo="/">
       Token Auction {sellTokenSymbol || '?'} / {buyTokenSymbol || '?'}
     </AuctionHeader>
