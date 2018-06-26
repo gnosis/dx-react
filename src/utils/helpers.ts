@@ -26,3 +26,8 @@ export const timeoutCondition = (timeout: any, rejectReason: any) => new Promise
     reject(rejectReason)
   }, timeout)
 })
+
+export const handleKeyDown = ({ key }: { key: string }, fn: Function, codeCheck: string = 'Escape') => {
+  if (key === codeCheck) return fn()
+  return
+}

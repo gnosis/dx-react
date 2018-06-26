@@ -18,11 +18,13 @@ const mapState = ({
     sell,
     buy,
   },
+  tokenOverlay: { open },
 }: State) => ({
   allowUpload,
   fileBuffer,
   needsTokens: allowUpload && (type === 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0)),
   tokensSelected: !!(sell && buy),
+  overlayOpen: open,
 })
 
 export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to' | 'showPair'>>
