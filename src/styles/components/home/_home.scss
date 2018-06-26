@@ -704,8 +704,13 @@
   padding: 0 0 0 10px;
   box-sizing: border-box;
 
-  @media #{$mobile} {
-    .buttonExit {
+  .buttonExit {
+    position: relative;
+    flex: 0 1 auto;
+    line-height: 1;
+    margin: 0 10px;
+
+    @media #{$mobile} {
       flex: 0;
       position: relative;
       top: initial;
@@ -720,7 +725,9 @@
 
 .tokenSearch {
   height: 44px;
-  width: 340px;
+  // width: 340px;
+  width: auto;
+  flex: 1 1 auto;
   border: 1px solid $greyBorder;
   font-family: inherit;
   font-size: 16px;

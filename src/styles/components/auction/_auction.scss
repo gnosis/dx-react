@@ -48,6 +48,10 @@ $headerHeight: 58px;
     margin: 0 auto 35px;
     text-align: center;
     width: 100%;
+
+    @media #{$mobile} {
+      padding: 0 20px;
+    }
   }
 
   .buttonCTA {
@@ -171,7 +175,7 @@ $headerHeight: 58px;
     background: $white;
     border-radius: 2px;
     border: 0;
-    outline: 0;
+    // outline: 0;
     font-size: 15px;
     color: $darkBlue;
     letter-spacing: 0.5px;
@@ -179,7 +183,7 @@ $headerHeight: 58px;
     text-align: right;
 
     @media #{$mobile} {
-      margin: 0 10px;
+      margin: 0 10px 0 0;
     }
 
     &:first-of-type {
@@ -191,7 +195,9 @@ $headerHeight: 58px;
     }
 
     &[readonly] {
-      background: #f2f3f5;
+      // background: #f2f3f5;
+      background: transparent;
+      border: 1px solid #a5b1c1;
     }
   }
 
@@ -275,11 +281,21 @@ $headerHeight: 58px;
     width: 32%;
     border-right: 1px solid $greyBorder;
     flex-basis: 32%;
+
+    @media #{$mobile} {
+      width: 50%;
+      flex-basis: 50%;
+    }
   }
 
   > span:last-child {
     width: 68%;
     flex-basis: 68%;
+
+    @media #{$mobile} {
+      width: 50%;
+      flex-basis: 50%;
+    }
   }
 
   > span > big {
@@ -291,6 +307,11 @@ $headerHeight: 58px;
     text-transform: uppercase;
     width: 100%;
     margin: 0 auto 10px;
+
+    @media #{$mobile} {
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
   }
 
   > span > i {
@@ -312,13 +333,18 @@ $headerHeight: 58px;
 
   > span > code {
     background: #f2f3f5;
-    color: #e00000;
+    color: $red;
     padding: 4px 8px;
     box-sizing: border-box;
     border-radius: 2px;
     letter-spacing: 0.5px;
     display: table;
     font-family: monospace;
+    word-break: break-all;
+
+    @media #{$mobile} {
+      margin: 0 15px;
+    }
   }
 }
 

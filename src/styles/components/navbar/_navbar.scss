@@ -66,6 +66,16 @@ header {
     flex-flow: column wrap;
   }
 
+  > div > .navParent {
+    .buttonExit {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      height: 40px;
+      width: 40px;
+    }
+  }
+
   > div > .navParent > nav {
     transform: translate3d(100%, 0, 0);
     opacity: 0;
@@ -73,7 +83,7 @@ header {
     width: 240px;
     position: fixed;
     top: 0;
-    height: 100vh;
+    height: 100%;
     right: 0;
     background: #35373c;
     box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
@@ -195,7 +205,7 @@ header {
     position: absolute;
     top: 59px;
     width: 100%;
-    background: $greyLight;
+    background: #205790;
     right: 0;
     flex: none;
     max-width: initial;
@@ -218,12 +228,14 @@ header {
     vertical-align: middle;
 
     @media #{$mobile} {
-      position: absolute;
-      top: -6px;
-      height: 58px;
-      right: -10px;
-      display: block;
-      margin: 0;
+      display: none;
+      content: none;
+      // position: absolute;
+      // top: -6px;
+      // height: 58px;
+      // right: -10px;
+      // display: block;
+      // margin: 0;
     }
   }
 
@@ -270,7 +282,6 @@ header {
         position: absolute;
         right: 0;
         bottom: 0;
-        border-color: $darkBlue transparent transparent;
         top: 0;
         margin: auto;
         // position: absolute;
@@ -292,6 +303,7 @@ header {
     @media #{$mobile} {
       // width: 100%;
       box-sizing: border-box;
+      color: $white;
       // border-radius: 0 0 3px;
       border-radius: 0;
       width: auto;
@@ -314,8 +326,10 @@ header {
       text-overflow: ellipsis;
       overflow: hidden;
       border-radius: 0;
-      color: $darkRed;
+      color: $white;
       padding: 0;
+      font-family: $mono;
+      font-size: 13px;
     }
   }
 
@@ -605,6 +619,13 @@ header {
       cursor: pointer;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
+    }
+
+    td > p {
+      padding: 0;
+      margin: 0;
+      text-align: right;
+      line-height: 1.5;
     }
 
     thead {

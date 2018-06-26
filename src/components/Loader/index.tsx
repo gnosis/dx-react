@@ -53,7 +53,7 @@ class Loader extends React.Component<LoaderProps> {
     </div>
 
   ETHLogo = () =>
-    <div className="mmSVGContainer" style={{ width: `${250 * this.props.reSize}px` }}>
+    <div className="mmSVGContainer" style={{ width: `${150 * this.props.reSize}px` }}>
       <svg version="1.1" id="Ebene_7" x="0px" y="0px" viewBox="0 0 50 50" >
         <g id="ZWC4wa.tif" className="mmSVGGroup">
           <g>
