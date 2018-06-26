@@ -23,6 +23,8 @@ storiesOf('TokenOverlay', module)
       <TokenOverlay
         closeOverlay={action('CLOSE OVERLAY')}
         selectTokenPairAndRatioPair={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
+        resetTokenPairAndCloseOverlay={() => {}}
+        resettable={boolean('resettable', true)}
         tokenList={array('tokenCodeList', [])}
         tokenBalances={object('tokenBalances', tokenBalances)}
         open={boolean('open', true)}
