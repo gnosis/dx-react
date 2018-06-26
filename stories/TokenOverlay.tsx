@@ -5,7 +5,7 @@ import { array, object, boolean, text } from '@storybook/addon-knobs'
 import { action, decorateAction } from '@storybook/addon-actions'
 
 import TokenOverlay from 'components/TokenOverlay'
-import { TokenMod, TokenCode } from 'types'
+import { TokenMod, TokenCode, TokenPair } from 'types'
 
 import { generateTokenBalances, CenterDecorator } from './helpers'
 
@@ -23,11 +23,16 @@ storiesOf('TokenOverlay', module)
       <TokenOverlay
         closeOverlay={action('CLOSE OVERLAY')}
         selectTokenPairAndRatioPair={getCodeFromArgs('CLOSE OVERLAY AND SELECT')}
+        resetTokenPairAndCloseOverlay={() => {}}
+        resettable={boolean('resettable', true)}
         tokenList={array('tokenCodeList', [])}
         tokenBalances={object('tokenBalances', tokenBalances)}
         open={boolean('open', true)}
         mod={text('mod', 'sell') as TokenMod}
         approvedTokens={approvedTokens}
+        availableAuctions={new Set()}
+        WETHAddress=""
+        tokenPair={{} as TokenPair}
      />
     )
   })

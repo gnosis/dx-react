@@ -5,12 +5,63 @@ import TokenOverlayHeader from '../TokenOverlayHeader'
 import TokenList from '../TokenList'
 
 import { code2tokenMap } from 'globals'
-import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet } from 'types'
+import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair, Account } from 'types'
 import Loader from '../Loader'
+
+const getTokenModAndAddress = createSelector(
+  (_: TokenOverlayState, { mod }: TokenOverlayProps) => mod,
+  (_, { tokenPair }) => tokenPair,
+  (_, { WETHAddress }) => WETHAddress,
+  (mod, tokenPair, WETHAddress) => {
+    const oldToken = tokenPair[mod]
+
+    const oldAddress = oldToken &&
+      (oldToken.isETH ? WETHAddress : oldToken.address)
+
+    const oppositeToken = tokenPair[mod === 'sell' ? 'buy' : 'sell']
+    
+    const oppositeAddress = oppositeToken &&
+      (oppositeToken.isETH ? WETHAddress : oppositeToken.address)
+
+
+    return {
+      mod,
+      // token we clicked on
+      oldAddress,
+      // opposite in a pair
+      oppositeAddress,
+      WETHAddress,
+    }
+  },
+)
+
+const prefilterByAvailableAuctions = createSelector(
+  (_: TokenOverlayState, props: TokenOverlayProps) => props.tokenList,
+  (_, props) => props.availableAuctions,
+  getTokenModAndAddress,
+  (tokenList, availableAuctions, { mod, oppositeAddress, WETHAddress }) => {
+    // if opposite token is an empty placeholder, show every token
+    if (!oppositeAddress) return tokenList
+    return tokenList.filter(token => {
+      // don't show opposite token as it's already selected for the other position
+      if (token.address === oppositeAddress) return false
+      const tokenAddress = token.isETH ? WETHAddress : token.address
+      let pairStr
+      // if selecting for sell position, check direct pairs with opposite token
+      if (mod === 'sell') pairStr = `${oppositeAddress}-${tokenAddress}`
+      // otherwise opposite pairs
+      else if (mod === 'buy') pairStr = `${tokenAddress}-${oppositeAddress}`
+      else throw new Error(`tokenPair.mod isn't set, ${mod}`)
+      
+      // show only token pairs that would actually allow a sell order
+      return availableAuctions.has(pairStr)
+    })
+  },
+)
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
-  (_, props) => props.tokenList,
+  prefilterByAvailableAuctions,
   (filter, tokens) => (filter ?
     tokens.filter(({
       symbol = '',
@@ -29,12 +80,17 @@ const dataLengthCheck = (o1: {} | any[], o2: {} | any[]) => {
 
 export interface TokenOverlayProps {
   tokenList: DefaultTokenObject[],
+  tokenPair: TokenPair,
   closeOverlay(): any,
   selectTokenPairAndRatioPair(props: any): any,
+  resetTokenPairAndCloseOverlay(): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
   approvedTokens: AccountsSet,
+  availableAuctions: AvailableAuctions,
+  WETHAddress: Account,
+  resettable: boolean,
 }
 
 interface TokenOverlayState {
@@ -66,7 +122,7 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
   render() {
     if (!this.props.open) return null
 
-    const { tokenBalances, approvedTokens } = this.props
+    const { tokenBalances, approvedTokens, resettable, resetTokenPairAndCloseOverlay } = this.props
     const { filter } = this.state
 
     const filteredTokens = filterTokens(this.state, this.props)
@@ -77,6 +133,8 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
           onChange={this.changeFilter}
           closeOverlay={this.closeOverlay}
           value={filter}
+          resettable={resettable}
+          reset={resetTokenPairAndCloseOverlay}
         />
         <Loader
           hasData={dataLengthCheck(filteredTokens, tokenBalances)}
