@@ -73,6 +73,29 @@ a.buttonCTA {
   }
 }
 
+.buttonReset {
+  margin: 0 4rem 0 auto;
+  font-size: 1.2em;
+  font-family: inherit;
+  text-transform: uppercase;
+  color: $greyBorder;
+  background: 0;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color: $greyText;
+    text-decoration: underline;
+  }
+
+  .tokenPair & {
+    position: absolute;
+    color: $lightBlue;
+  }
+}
+
 .buttonPrev {
   display: block;
   position: absolute;
