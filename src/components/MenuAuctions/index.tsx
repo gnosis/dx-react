@@ -11,13 +11,6 @@ export interface MenuAuctionProps {
   ): any;
 }
 
-/* const calculateAuctionLink = ({ sell, buy, indicesWithSellerBalance, indicesWithSellerBalanceInverse }: AuctionObject) => {
-  if (!indicesWithSellerBalance.length && indicesWithSellerBalanceInverse.length) {
-    return `/auction/${buy.symbol}-${sell.symbol}-${indicesWithSellerBalanceInverse[indicesWithSellerBalanceInverse.length - 1]}`
-  }
-  return `/auction/${sell.symbol}-${buy.symbol}-${indicesWithSellerBalance[indicesWithSellerBalance.length - 1]}`
-} */
-
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
   name = 'YOUR AUCTIONS',
   ongoingAuctions,
@@ -59,7 +52,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                             </ Link>
                           </td>
                           <td>
-                            {auction.balancePerIndexInverse.last() && 
+                            {auction.balancePerIndexInverse.last() &&
                               <p>
                                 {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
                               </p>}
@@ -68,7 +61,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                         </tr>
                       </ Fragment>
                     )
-                  } 
+                  }
                   // IF NORMAL === FALSE but INVERSE === TRUE
                   if (!auction.balancePerIndex.length && auction.balancePerIndexInverse.length) {
                     return (
@@ -79,7 +72,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           </ Link>
                         </td>
                         <td>
-                          {auction.balancePerIndexInverse.last() && 
+                          {auction.balancePerIndexInverse.last() &&
                             <p>
                               {`${auction.balancePerIndexInverse.last()} ${auction.sell.symbol}`}
                             </p>}

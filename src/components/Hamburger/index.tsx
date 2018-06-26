@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { handleKeyDown } from 'utils/helpers'
 
 interface HamburgerProps {}
 
@@ -7,7 +8,7 @@ interface HamburgerState {
 }
 
 export default class Hamburger extends Component<HamburgerProps, HamburgerState> {
-  
+
   state = {
     isOpen: false,
   }
@@ -20,12 +21,12 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
     const { isOpen } = this.state
 
     return (
-      <div>
-        <button 
+      <div tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, this.handleClick, 'Escape')}>
+        <button
           className="hamburger"
           onClick={this.handleClick}></button>
         <nav className={isOpen ? 'show' : null}>
-          <button 
+          <button
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
@@ -34,6 +35,6 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           <a href="#">Faq</a>
         </nav>
       </div>
-    )  
+    )
   }
 }

@@ -137,7 +137,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   dispatch(batchActions([
     ...tokenBalances.map((token: typeof tokenBalances[0]) =>
     setTokenBalance({ address: token.address, balance: token.balance })),
-    setOngoingAuctions({ ongoingAuctions }),
+    setOngoingAuctions(ongoingAuctions),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
     setCurrentAccountAddress({ currentAccount }),

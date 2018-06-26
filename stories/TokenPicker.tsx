@@ -49,6 +49,7 @@ storiesOf('TokenPicker', module)
       showPair={boolean('showPair', false)}
       tokensSelected={boolean('Tokens Selected', false)}
       to=""
-      allowUpload={false}
+      allowUpload={boolean('allowUpload', false)}
+      overlayOpen={boolean('overlayOpen', false)}
     />
 ))

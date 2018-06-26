@@ -9,8 +9,10 @@ export interface TokenPairProps {
   sellTokenBalance: BigNumber,
   buyTokenBalance: BigNumber,
   needsTokens: boolean,
+  resettable: boolean,
   openOverlay(): any
-  swapTokensInAPairAndReCalcClosingPrice(): any
+  swapTokensInAPairAndReCalcClosingPrice(): any,
+  resetTokenPair(): any,
 }
 
 const TokenPair: React.SFC<TokenPairProps> = ({
@@ -21,6 +23,8 @@ const TokenPair: React.SFC<TokenPairProps> = ({
   openOverlay,
   swapTokensInAPairAndReCalcClosingPrice,
   needsTokens,
+  resetTokenPair,
+  resettable,
 }) =>
     // If no tokenlist with actual tokens has been uploaded yet, we add the class 'noTokenList' here. Regard this as the init. state
     <div className={needsTokens ? 'tokenPair' : 'tokenPair noTokenList'}>
@@ -59,6 +63,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
           onClick={openOverlay}
         />
       }
+      {resettable && <button className="buttonReset" onClick={resetTokenPair}>reset selection</button>}
     </div>
 
 export default TokenPair
