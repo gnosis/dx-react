@@ -37,7 +37,7 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
       :
       <div className="tokenIntro">
         <h2>Pick Token Pair Auction</h2>
-        <TokenPair />
+        <TokenPair inHomePage/>
         <ButtonCTA className={!tokensSelected ? 'buttonCTA-disabled' : 'blue'} onClick={tokensSelected ? continueToOrder : (e) => e.preventDefault()} to={to}>Specify amount selling</ButtonCTA>
         {allowUpload && <a className="showTokenUpload" onClick={(e) => (e.preventDefault(), setTokenListType({ type: 'UPLOAD' }))}>Upload Additional Token List</a>}
       </div>

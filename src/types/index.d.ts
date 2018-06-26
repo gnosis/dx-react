@@ -181,7 +181,7 @@ export type TokenMod = 'sell' | 'buy'
  */
 export interface TokenOverlay {
   open: boolean,
-  mod: TokenMod
+  mod: TokenMod | null,
 }
 
 export type FileBuffer = ArrayBuffer
@@ -201,13 +201,20 @@ export interface Settings {
 
 export type AccountsSet = Set<Account>
 
+export type AvailableAuctions = Set<string>
+
+export interface AuctionsState {
+  ongoingAuctions: OngoingAuctions,
+  availableAuctions: AvailableAuctions,
+}
+
 /**
  * represents global State of redux store
  * @export
  * @interface State
  */
 export interface State {
-  auctions: any,
+  auctions: AuctionsState,
   blockchain: Blockchain,
   modal: Modal,
   ipfs: IPFS,
@@ -217,6 +224,5 @@ export interface State {
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
   approvedTokens: AccountsSet,
-  ongoingAuctions: OngoingAuctions,
   settings: Settings,
 }

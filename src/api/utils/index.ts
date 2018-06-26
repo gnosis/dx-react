@@ -1,7 +1,8 @@
 import { promisedWeb3 } from 'api/web3Provider'
 
-import { DefaultTokenList, ProviderInterface } from 'api/types'
+import { DefaultTokenList, ProviderInterface, DefaultTokenObject } from 'api/types'
 import { Account } from 'types'
+import { ETH_ADDRESS } from 'globals'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
@@ -54,6 +55,15 @@ const tokenFieldsChecks = {
     if (typeof decimals !== 'number' && typeof decimals !== 'string') return 'token decimals should be a number or a string'
     if (decimals < 1) return 'token decimals should not be less than 1'
   },
+  isETH: (isETH: boolean, _: ProviderInterface, token: DefaultTokenObject) => {
+    // no more checks for not-ETHER tokens
+    if (!isETH) return
+
+    const { symbol, address, name, decimals } = token
+    if (symbol !== 'ETH' || name !== 'ETHER' || address !== ETH_ADDRESS || decimals !== 18) {
+      return 'only one token can represent ETHER'
+    }
+  }
 }
 export const checkTokenListJSON = async (json: DefaultTokenList) => {
   if (!Array.isArray(json)) throw new Error('JSON should be an array of token objects')
@@ -62,7 +72,7 @@ export const checkTokenListJSON = async (json: DefaultTokenList) => {
 
   let errMessage
   for (const token of json) {
-    Object.keys(token).some(key => errMessage = tokenFieldsChecks[key](token[key], web3))
+    Object.keys(token).some(key => errMessage = tokenFieldsChecks[key](token[key], web3, token))
     if (errMessage) throw new Error(`Token ${JSON.stringify(token)} is invalid format: ${errMessage}`)
   }
 }
