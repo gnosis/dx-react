@@ -1,8 +1,30 @@
 import { handleActions } from 'redux-actions'
 
-import { selectTokenAndCloseOverlay, selectTokenPair, setSellTokenAmount, swapTokensInAPair, setClosingPrice } from 'actions'
+import {
+  selectTokenAndCloseOverlay,
+  selectTokenPair,
+  setSellTokenAmount,
+  swapTokensInAPair,
+  setClosingPrice,
+  resetTokenPair,
+  resetTokenPairAndCloseOverlay,
+} from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
 import { ETH_ADDRESS } from 'globals'
+
+const initialState: TokenPair = {
+  sell: {
+    name: 'ETHER',
+    symbol: 'ETH',
+    decimals: 18,
+    address: ETH_ADDRESS,
+    isETH: true,
+  },
+  buy: undefined,
+  sellAmount: '0',
+  index: '0',
+  lastPrice: '0',
+}
 
 export default handleActions<
 TokenPair,
@@ -34,23 +56,8 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
       sellAmount: '0',
     }),
     [setClosingPrice.toString()]: (state, action) => ({ ...state, lastPrice: action.payload.price }),
+    [resetTokenPair.toString()]: () => initialState,
+    [resetTokenPairAndCloseOverlay.toString()]: () => initialState,
   },
-  {
-    sell: {
-      name: 'ETHER',
-      symbol: 'ETH',
-      decimals: 18,
-      address: ETH_ADDRESS,
-      isETH: true,
-    },
-    buy: {
-      name: 'GNOSIS',
-      symbol: 'GNO',
-      decimals: 18,
-      address: undefined,
-    },
-    sellAmount: '0',
-    index: '0',
-    lastPrice: '0',
-  },
+  initialState,
 )

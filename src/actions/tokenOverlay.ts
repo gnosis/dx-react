@@ -8,6 +8,8 @@ export const openOverlay = createAction<{ mod: TokenMod }>('OPEN_OVERLAY')
 export const closeOverlay = createAction<void>('CLOSE_OVERLAY', () => { })
 export const selectTokenAndCloseOverlay = createAction<{ mod: TokenMod, token: DefaultTokenObject }>(
   'SELECT_TOKEN_AND_CLOSE_OVERLAY')
+export const resetTokenPairAndCloseOverlay = createAction<void>(
+  'RESET_TOKEN_AND_CLOSE_OVERLAY', () => {})
 
 type PropsType = { mod: TokenMod, token: DefaultTokenObject }
 

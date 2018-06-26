@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import TokenPair from 'components/TokenPair'
-import { openOverlay, swapTokensInAPairAndReCalcClosingPrice } from 'actions'
+import TokenPair, { TokenPairProps } from 'components/TokenPair'
+import { openOverlay, swapTokensInAPairAndReCalcClosingPrice, resetTokenPair } from 'actions'
 import { State } from 'types'
 
 const mapStateToProps = ({
@@ -15,5 +15,30 @@ const mapStateToProps = ({
     needsTokens: type !== 'UPLOAD' || !(defaultTokenList.length > 0 || customTokenList.length > 0),
   })
 
+interface ConnetedTokenPairProps {
+  inHomePage?: boolean,
+}
 
-export default connect(mapStateToProps, { openOverlay, swapTokensInAPairAndReCalcClosingPrice })(TokenPair)
+const mergeProps = (
+  stateProps: Partial<TokenPairProps>,
+  dispatchProps: Partial<TokenPairProps>,
+  ownProps: ConnetedTokenPairProps,
+) => {
+  const { sellToken, buyToken } = stateProps
+  const hasPlaceholderToken = sellToken === undefined || buyToken === undefined
+
+  return {
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    resettable: ownProps.inHomePage && !hasPlaceholderToken,
+  }
+}
+
+type DispatchProps = Pick<TokenPairProps, 'openOverlay' | 'swapTokensInAPairAndReCalcClosingPrice' | 'resetTokenPair'>
+
+export default connect(
+  mapStateToProps,
+  { openOverlay, swapTokensInAPairAndReCalcClosingPrice, resetTokenPair } as DispatchProps,
+  mergeProps,
+)(TokenPair)

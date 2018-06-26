@@ -9,6 +9,7 @@ import { TokenPair, Balance } from 'types'
 export const selectTokenPair = createAction<Partial<TokenPair>>('SELECT_TOKEN_PAIR')
 export const setSellTokenAmount = createAction<{ sellAmount: Balance }>('SET_SELL_TOKEN_AMOUNT')
 export const swapTokensInAPair = createAction<void>('SWAP_TOKENS_IN_A_PAIR', () => {})
+export const resetTokenPair = createAction<void>('RESET_TOKEN_PAIR', () => {})
 
 export const swapTokensInAPairAndReCalcClosingPrice = () => async (dispatch: Dispatch<any>) => {
   dispatch(swapTokensInAPair())

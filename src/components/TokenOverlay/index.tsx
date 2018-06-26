@@ -32,7 +32,7 @@ const getTokenModAndAddress = createSelector(
       oppositeAddress,
       WETHAddress,
     }
-  }
+  },
 )
 
 const prefilterByAvailableAuctions = createSelector(
@@ -56,7 +56,7 @@ const prefilterByAvailableAuctions = createSelector(
       // show only token pairs that would actually allow a sell order
       return availableAuctions.has(pairStr)
     })
-  }
+  },
 )
 
 const filterTokens = createSelector(
@@ -83,12 +83,14 @@ export interface TokenOverlayProps {
   tokenPair: TokenPair,
   closeOverlay(): any,
   selectTokenPairAndRatioPair(props: any): any,
+  resetTokenPairAndCloseOverlay(): any,
   tokenBalances: TokenBalances,
   open: boolean,
   mod: TokenMod,
   approvedTokens: AccountsSet,
   availableAuctions: AvailableAuctions,
   WETHAddress: Account,
+  resettable: boolean,
 }
 
 interface TokenOverlayState {
@@ -120,7 +122,7 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
   render() {
     if (!this.props.open) return null
 
-    const { tokenBalances, approvedTokens } = this.props
+    const { tokenBalances, approvedTokens, resettable, resetTokenPairAndCloseOverlay } = this.props
     const { filter } = this.state
 
     const filteredTokens = filterTokens(this.state, this.props)
@@ -131,6 +133,8 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
           onChange={this.changeFilter}
           closeOverlay={this.closeOverlay}
           value={filter}
+          resettable={resettable}
+          reset={resetTokenPairAndCloseOverlay}
         />
         <Loader
           hasData={dataLengthCheck(filteredTokens, tokenBalances)}
