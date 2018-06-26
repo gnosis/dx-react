@@ -275,6 +275,7 @@ header {
       border-width: 5px 5px 0;
       border-color: $white transparent transparent;
       position: absolute;
+      transition: all .3s ease-in-out;
       right: -16px;
       bottom: 8px;
 
@@ -284,11 +285,12 @@ header {
         bottom: 0;
         top: 0;
         margin: auto;
-        // position: absolute;
-        // right: -16px;
-        // bottom: 16px;
       }
     }
+  }
+
+  .menuWallet.active > span::after {
+    transform: rotate(180deg);
   }
 
   > span > small {
@@ -356,7 +358,8 @@ header {
     @media #{$mobile} {
       position: fixed;
       width: 100%;
-      top: 59px;
+      // top: 59px;
+      top: 105px;
       box-sizing: border-box;
       border-radius: 0;
     }
@@ -473,6 +476,10 @@ header {
       top: 0;
       bottom: 0;
       margin: auto;
+
+      .active & {
+        transform: rotate(180deg);
+      }
     }
 
     &[data-unclaimed="true"]::after {
