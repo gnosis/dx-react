@@ -14,6 +14,7 @@ export interface TokenPickerProps {
   showPair: boolean;
   tokensSelected: boolean;
   allowUpload: boolean;       // centralized version - set to true in reducers/tokenLists.ts when decentralised
+  overlayOpen: boolean;
 }
 
 const TokenPicker: React.SFC<TokenPickerProps> = ({
@@ -24,10 +25,11 @@ const TokenPicker: React.SFC<TokenPickerProps> = ({
   showPair,
   tokensSelected,
   allowUpload,    // TODO: centralized version - set to true in reducers/tokenLists.ts when decentralised
+  overlayOpen,
 }) => (
 
   <div className="tokenPicker">
-    <TokenOverlay />
+    {overlayOpen && <TokenOverlay />}
 
     {needsTokens && !showPair
       ?

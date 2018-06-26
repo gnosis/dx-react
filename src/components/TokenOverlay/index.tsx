@@ -7,6 +7,7 @@ import TokenList from '../TokenList'
 import { code2tokenMap } from 'globals'
 import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet } from 'types'
 import Loader from '../Loader'
+import { handleKeyDown } from 'utils/helpers'
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
@@ -46,6 +47,8 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     filter: '',
   }
 
+  outerDiv: HTMLDivElement
+
   changeFilter = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({
     filter: e.target.value,
   })
@@ -62,17 +65,19 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     this.setState({ filter: '' })
   }
 
+  componentDidMount() {
+    this.outerDiv && this.outerDiv.focus()
+  }
+
 
   render() {
-    if (!this.props.open) return null
-
-    const { tokenBalances, approvedTokens } = this.props
+    const { tokenBalances, approvedTokens, closeOverlay } = this.props
     const { filter } = this.state
 
     const filteredTokens = filterTokens(this.state, this.props)
 
     return (
-      <div className="tokenOverlay">
+      <div className="tokenOverlay" ref={c => this.outerDiv = c} tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, closeOverlay, 27)}>
         <TokenOverlayHeader
           onChange={this.changeFilter}
           closeOverlay={this.closeOverlay}

@@ -21,7 +21,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
     const { isOpen } = this.state
 
     return (
-      <div onKeyDown={(e) => handleKeyDown(e, this.handleClick, 27)}>
+      <div tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, this.handleClick, 27)}>
         <button
           className="hamburger"
           onClick={this.handleClick}></button>
