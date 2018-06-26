@@ -77,7 +77,7 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
     const filteredTokens = filterTokens(this.state, this.props)
 
     return (
-      <div className="tokenOverlay" ref={c => this.outerDiv = c} tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, closeOverlay, 27)}>
+      <div className="tokenOverlay" ref={c => this.outerDiv = c} tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, closeOverlay, 'Escape')}>
         <TokenOverlayHeader
           onChange={this.changeFilter}
           closeOverlay={this.closeOverlay}
