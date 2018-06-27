@@ -464,6 +464,11 @@ header {
   @media #{$mobile} {
     margin: 0;
 
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
     &::before {
       content: " ";
       width: 0;
@@ -479,6 +484,10 @@ header {
 
       .active & {
         transform: rotate(180deg);
+      }
+
+      @media #{$mobile} {
+        right: -15px;
       }
     }
 
@@ -525,7 +534,7 @@ header {
     width: auto;
     display: inline-block;
     vertical-align: middle;
-    margin: 1px auto 0;
+    margin: auto 0;
     position: relative;
     padding: 0 15px 0 0;
 
@@ -550,6 +559,14 @@ header {
     }
   }
 
+  > strong.claimable {
+    margin: -13px auto 0;
+
+    &::before {
+      top: 16px;
+    }
+  }
+
   &[data-unclaimed="true"] > strong::after {
     content: "CLAIM";
     background: $orange url('#{$images}claim.svg') no-repeat 51px / 12px;
@@ -566,6 +583,47 @@ header {
     padding: 0 0 0 6px;
     display: block;
     margin: 2px 0 0;
+  }
+
+  > span {
+    position: absolute;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 11px;
+    margin: -11px 0 0 26px;
+    background: $orange;
+    border-radius: 50px;
+
+    > img {
+      padding: 0 1px;
+      width: 12px;
+
+      @media #{$mobile} {
+        padding: 3px;
+        width: 14px;
+      }
+    }
+
+    > span {
+      font-size: 9px;
+      font-weight: $bold;
+      letter-spacing: 3px;
+      padding: 0 1px;
+
+      @media #{$mobile} {
+        display: none;
+      }
+    }
+
+    @media #{$mobile} {
+      position: relative;
+      margin: auto;
+      width: auto;
+      height: auto;
+    }
   }
 
   > img {
