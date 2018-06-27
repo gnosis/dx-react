@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { object, text } from '@storybook/addon-knobs'
+import { object, text, boolean } from '@storybook/addon-knobs'
 
 import { auctionFactory, getRandomInt, tokenArr, makeTopDecorator } from './helpers'
 
@@ -20,7 +20,8 @@ const constructKnobs = (
 ) => ({
   name: text('title', name),
   ongoingAuctions: auctionsArr.map((item: object, i: number) => object(`Ongoing Auctions ${i}`, item)),
-  claimSellerFundsFromSeveral: () => console.log('Claiming!')
+  claimSellerFundsFromSeveral: () => console.log('Claiming!'),
+  claimable: boolean('claimable', true)
 })
 
 storiesOf(`MenuAuctions`, module)
