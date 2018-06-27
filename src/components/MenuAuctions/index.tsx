@@ -9,15 +9,22 @@ export interface MenuAuctionProps {
   claimSellerFundsFromSeveral(
     sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
+  claimable: any;
 }
 
 export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
   name = 'Your Auctions',
   ongoingAuctions,
   claimSellerFundsFromSeveral,
+  claimable,
 }) => (
     <div className="menuAuctions"><img src={require('assets/auction.svg')} />
-      <strong>{name}</strong>
+      <strong className={claimable && 'claimable'}>{name}</strong>
+      {claimable &&
+      <span>
+        <span>CLAIM</span>
+        <img src={require('assets/claim.svg')}/>
+      </span>}
       <div>
         {ongoingAuctions.length ?
           <table>
