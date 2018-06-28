@@ -12,7 +12,7 @@
   src:
     url("#{$fonts}Montserrat-Regular.woff2") format("woff2"),
     url("#{$fonts}Montserrat-Regular.woff") format("woff");
-  font-weight: normal;
+  font-weight: $normal;
   font-style: normal;
 }
 
@@ -21,6 +21,6 @@
   src:
     url("#{$fonts}Montserrat-Medium.woff2") format("woff2"),
     url("#{$fonts}Montserrat-Medium.woff") format("woff");
-  font-weight: bold;
+  font-weight: $bold;
   font-style: normal;
 }
