@@ -16,9 +16,31 @@ export interface DefaultTokenObject {
 }
 export type DefaultTokenList = DefaultTokenObject[]
 
+export type Hash = string
+export interface BlockReceipt {
+  number: number | null, // - the block number. null when its pending block.
+  hash: string | null, // - hash of the block. null when its pending block.
+  parentHash: string,  // - hash of the parent block.
+  nonce: string | null, // - hash of the generated proof-of-work. null when its pending block.
+  sha3Uncles: string, // - SHA3 of the uncles data in the block.
+  logsBloom: string, // - the bloom filter for the logs of the block. null when its pending block.
+  transactionsRoot: string, // - the root of the transaction trie of the block
+  stateRoot: string, // - the root of the final state trie of the block.
+  miner: string, // - the address of the beneficiary to whom the mining rewards were given.
+  difficulty: BigNumber, // - integer of the difficulty for this block.
+  totalDifficulty: BigNumber, // - integer of the total difficulty of the chain until this block.
+  extraData: string, // - the "extra data" field of this block.
+  size: number, // - integer the size of this block in bytes.
+  gasLimit: number, // - the maximum gas allowed in this block.
+  gasUsed: number, // - the total used gas by all transactions in this block.
+  timestamp: number, // - the unix timestamp for when the block was collated.
+  transactions: TransactionObject[] | Hash[], // - Array of transaction objects, or 32 Bytes transaction hashes
+  uncles: Hash[], // - Array of uncle hashes.
+}
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
+  getBlock(bl: 'earliest' | 'latest' | 'pending' | Hash, returnTransactionObjects?: boolean): Promise<BlockReceipt>,
   getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
@@ -31,13 +53,14 @@ export interface ProviderInterface {
 }
 
 export interface TransactionObject {
+  hash?: string,
   from: Account,
   to?: Account,
   value?: Balance | number,
   gas?: Balance | number,
   gasPrice?: Balance | number,
   data?: string,
-  nonce?: number,
+  nonce?: string,
 }
 
 export interface TokensInterface {
