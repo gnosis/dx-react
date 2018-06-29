@@ -25,6 +25,8 @@ async function init(): Promise<ProviderInterface> {
   const getAccounts = promisify(web3.eth.getAccounts, web3.eth)
   const getBalance = promisify(web3.eth.getBalance, web3.eth)
 
+  const getBlock = promisify(web3.eth.getBlock, web3.eth)
+
   const getCurrentAccount = async () => {
     const [account] = await getAccounts()
 
@@ -56,6 +58,7 @@ async function init(): Promise<ProviderInterface> {
   return {
     getCurrentAccount,
     getAccounts,
+    getBlock,
     getETHBalance,
     getNetwork,
     isConnected,
