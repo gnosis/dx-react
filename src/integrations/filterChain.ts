@@ -1,6 +1,6 @@
 import { promisedWeb3 } from 'api/web3Provider'
 import { Account } from 'types'
-import { TransactionObject, BlockReceipt, Hash } from 'api/types'
+import { TransactionObject, BlockReceipt, Hash, TransactionReceipt } from 'api/types'
 type Error1stCallback<T = any> = (error: Error, result: T) => void
 
 interface Web3Filter {
@@ -69,24 +69,28 @@ export const getBlock = async (bl: Hash, returnTransactionObjects?: boolean) => 
   return getBlock(bl, returnTransactionObjects)
 }
 
-// waits for tx hash to appear includedin the latest block
+// waits for tx hash to appear included in the latest block
 export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
   const watchFunc = reuse ? watch : filter.watch.bind(filter)
 
-  let stopWatchingFunc: () => void
+  let stopWatchingFunc: () => void, res: BlockReceipt
 
-  const res = await new Promise(async (resolve, reject) => {
-    stopWatchingFunc = await watchFunc.watch(async (e: Error, bl: Hash) => {
-      if (e) return reject(e)
-
-      const blReceipt = await getBlock(bl)
-
-      if (isTxInBlock(blReceipt, hash)) resolve(true)
+  try {
+    res = await new Promise<BlockReceipt>(async (resolve, reject) => {
+      stopWatchingFunc = await watchFunc.watch(async (e: Error, bl: Hash) => {
+        if (e) return reject(e)
+  
+        const blReceipt = await getBlock(bl)
+  
+        if (isTxInBlock(blReceipt, hash)) resolve(blReceipt)
+      })
     })
-  })
-
-  // don't stop watching the mainFilter
+  } catch (error) {
+    // don't stop watching the mainFilter
+    stopWatchingFunc()
+    throw error
+  }
   stopWatchingFunc()
 
   return res
@@ -96,26 +100,30 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
   const watchFunc = reuse ? watch : filter.watch.bind(filter)
 
-  let stopWatchingFunc: () => void
+  let stopWatchingFunc: () => void, res: TransactionReceipt
 
   const { getTransactionReceipt } = await promisedWeb3
 
-  const res = await new Promise(async (resolve, reject) => {
-    stopWatchingFunc = await watchFunc.watch(async (e: Error) => {
-      if (e) return reject(e)
-
-
-      const txReceipt = await getTransactionReceipt(hash)
-
-      if (txReceipt) {
-        // tx is mined
-        // based on if succeeded, resolve or reject
-        txReceipt.status === '0x1' ? resolve(txReceipt) : reject(txReceipt)
-      }
+  try {
+    res = await new Promise<TransactionReceipt>(async (resolve, reject) => {
+      stopWatchingFunc = await watchFunc.watch(async (e: Error) => {
+        if (e) return reject(e)
+  
+  
+        const txReceipt = await getTransactionReceipt(hash)
+  
+        if (txReceipt) {
+          // tx is mined
+          // based on if succeeded, resolve or reject
+          txReceipt.status === '0x1' ? resolve(txReceipt) : reject(txReceipt)
+        }
+      })
     })
-  })
-
-  // don't stop watching the mainFilter
+  } catch (error) {
+    // don't stop watching the mainFilter
+    stopWatchingFunc()
+    throw error
+  }
   stopWatchingFunc()
 
   return res
