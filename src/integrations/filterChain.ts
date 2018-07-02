@@ -16,7 +16,7 @@ interface FilterOptions {
   fromBlock: BlockN,
   toBlock: BlockN,
   address: Account | Account[],
-  topics: string[],
+  topics: (string | null)[],
 }
 
 
@@ -42,16 +42,19 @@ export const getFilter = async (options: BlockN | FilterOptions = 'latest', reus
 export const watch = async (cb: Error1stCallback<Hash>): Promise<Web3Filter['stopWatching']> => {
   const filter = await getFilter()
   
-  accumCB.push(cb)
+  const length = accumCB.push(cb)
   console.log('STARTED WATCHING')
   // if it's the first callback added
   // start watching
-  if (accumCB.length === 1) filter.watch(mainFilterCB)  
+  if (length === 1) filter.watch(mainFilterCB)  
 
-  return filter.stopWatching.bind(filter)
+  return () => {
+    // remove callback
+    accumCB.splice(length - 1, 1)
+    // if accumCB is empty, stop watching alltogether
+    if (accumCB.length === 0) filter.stopWatching()
+  }
 }
-
-export const stopWatching = (filter = mainFilter) => filter.stopWatching()
 
 export const isTxInBlock = (blockReceipt: BlockReceipt, tx:Hash) => {
   const { transactions } = blockReceipt
@@ -66,15 +69,16 @@ export const getBlock = async (bl: Hash, returnTransactionObjects?: boolean) => 
   return getBlock(bl, returnTransactionObjects)
 }
 
-// creates new filter, so that we don't call watch multiple times on the mainFilter
-export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
+// waits for tx hash to appear includedin the latest block
+export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
+  const watchFunc = reuse ? watch : filter.watch.bind(filter)
+
+  let stopWatchingFunc: () => void
 
   await new Promise(async (resolve, reject) => {
-    const watchFunc  = reuse ? watch : filter.watch.bind(filter)
-    watchFunc.watch(async (e: Error, bl: Hash) => {
+    stopWatchingFunc = await watchFunc.watch(async (e: Error, bl: Hash) => {
       if (e) return reject(e)
-
 
       const blReceipt = await getBlock(bl)
 
@@ -83,7 +87,36 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
   })
 
   // don't stop watching the mainFilter
-  if (reuse) filter.stopWatching()
+  stopWatchingFunc()
+
+  return true
+}
+
+export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
+  const filter = await getFilter('latest', reuse)
+  const watchFunc = reuse ? watch : filter.watch.bind(filter)
+
+  let stopWatchingFunc: () => void
+
+  const { getTransactionReceipt } = await promisedWeb3
+
+  await new Promise(async (resolve, reject) => {
+    stopWatchingFunc = await watchFunc.watch(async (e: Error) => {
+      if (e) return reject(e)
+
+
+      const txReceipt = await getTransactionReceipt(hash)
+
+      if (txReceipt) {
+        // tx is mined
+        // based on if succeeded, resolve or reject
+        txReceipt.status === '0x1' ? resolve(txReceipt) : reject(txReceipt)
+      }
+    })
+  })
+
+  // don't stop watching the mainFilter
+  stopWatchingFunc()
 
   return true
 }
