@@ -102,6 +102,10 @@ $modal-max-width: 600px;
     font-family: inherit;
     outline: 0;
 
+    @media #{$mobile} {
+      font-size: 1.4em;
+    }
+
     &.alternative {
       background: $white;
       color: $greyTextDark;
@@ -126,6 +130,7 @@ $modal-max-width: 600px;
     @media #{$mobile} {
       font-size: 1.2em;
       padding: 0;
+      margin-right: 0;
     }
   }
 

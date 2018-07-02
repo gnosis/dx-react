@@ -289,10 +289,6 @@ header {
     }
   }
 
-  .menuWallet.active > span::after {
-    transform: rotate(180deg);
-  }
-
   > span > small {
     display: inline-block;
     background: $white;
@@ -437,16 +433,25 @@ header {
     }
   }
 
-  &:hover {
-    > div {
+  &:hover > div {
+    @media #{$medium-and-up} {
       height: auto;
       min-height: 50px;
       opacity: 1;
-
-      @media #{$mobile} {
-        height: calc(100vh - 59px);
-      }
     }
+  }
+
+  &.active > div {
+    @media #{$mobile} {
+      height: calc(100vh - 59px);
+      min-height: 50px;
+      opacity: 1;
+    }
+  }
+
+  &.active > span::after {
+    content: "";
+    transform: rotate(180deg);
   }
 }
 
@@ -481,14 +486,10 @@ header {
       top: 0;
       bottom: 0;
       margin: auto;
+    }
 
-      .active & {
-        transform: rotate(180deg);
-      }
-
-      @media #{$mobile} {
-        right: -15px;
-      }
+    &.active::before {
+      transform: rotate(180deg);
     }
 
     &[data-unclaimed="true"]::after {
@@ -747,18 +748,21 @@ header {
     }
   }
 
-  &:hover {
-    > div {
-      // display: block;
+  &:hover > div {
+    @media #{$medium-and-up} {
       height: auto;
       opacity: 1;
       visibility: visible;
+    }
+  }
 
-      @media #{$mobile} {
-        height: calc(100vh - 59px);
-        width: 100vw;
-        max-height: initial;
-      }
+  &.active > div {
+    @media #{$mobile} {
+      height: calc(100vh - 59px);
+      width: 100vw;
+      opacity: 1;
+      visibility: visible;
+      max-height: initial;
     }
   }
 }
