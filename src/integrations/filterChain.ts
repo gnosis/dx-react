@@ -76,7 +76,7 @@ export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
 
   let stopWatchingFunc: () => void
 
-  await new Promise(async (resolve, reject) => {
+  const res = await new Promise(async (resolve, reject) => {
     stopWatchingFunc = await watchFunc.watch(async (e: Error, bl: Hash) => {
       if (e) return reject(e)
 
@@ -89,7 +89,7 @@ export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
   // don't stop watching the mainFilter
   stopWatchingFunc()
 
-  return true
+  return res
 }
 
 export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
@@ -100,7 +100,7 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
 
   const { getTransactionReceipt } = await promisedWeb3
 
-  await new Promise(async (resolve, reject) => {
+  const res = await new Promise(async (resolve, reject) => {
     stopWatchingFunc = await watchFunc.watch(async (e: Error) => {
       if (e) return reject(e)
 
@@ -118,5 +118,5 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
   // don't stop watching the mainFilter
   stopWatchingFunc()
 
-  return true
+  return res
 }
