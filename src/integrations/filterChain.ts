@@ -72,13 +72,13 @@ export const getBlock = async (bl: Hash, returnTransactionObjects?: boolean) => 
 // waits for tx hash to appear included in the latest block
 export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
-  const watchFunc = reuse ? watch : filter.watch.bind(filter)
+  const watchFunc: typeof watch = reuse ? watch : filter.watch.bind(filter)
 
   let stopWatchingFunc: () => void, res: BlockReceipt
 
   try {
     res = await new Promise<BlockReceipt>(async (resolve, reject) => {
-      stopWatchingFunc = await watchFunc.watch(async (e: Error, bl: Hash) => {
+      stopWatchingFunc = await watchFunc(async (e: Error, bl: Hash) => {
         if (e) return reject(e)
   
         const blReceipt = await getBlock(bl)
@@ -98,7 +98,7 @@ export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
 
 export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
-  const watchFunc = reuse ? watch : filter.watch.bind(filter)
+  const watchFunc: typeof watch = reuse ? watch : filter.watch.bind(filter)
 
   let stopWatchingFunc: () => void, res: TransactionReceipt
 
@@ -106,7 +106,7 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
 
   try {
     res = await new Promise<TransactionReceipt>(async (resolve, reject) => {
-      stopWatchingFunc = await watchFunc.watch(async (e: Error) => {
+      stopWatchingFunc = await watchFunc(async (e: Error) => {
         if (e) return reject(e)
   
   
