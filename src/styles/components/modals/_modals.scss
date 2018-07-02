@@ -11,9 +11,7 @@ $modal-max-width: 600px;
   height: 100vh;
   width: 100vw;
   text-align: center;
-  justify-content: flex-start;
-  // padding: 15% 0 0;
-  padding: 15% 0 0;
+  justify-content: center;
   box-sizing: border-box;
 
   @media #{$mobile} {

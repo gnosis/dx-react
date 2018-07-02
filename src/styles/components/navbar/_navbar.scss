@@ -5,12 +5,12 @@
 
 header {
   height: 60px;
-  width: 100vw;
+  width: 100%;
   background: 0;
   display: flex;
   align-items: center;
   max-width: $max-width;
-  margin: 0 auto;
+  margin: 0 auto auto;
   z-index: 99;
 
   @media #{$mobile} {

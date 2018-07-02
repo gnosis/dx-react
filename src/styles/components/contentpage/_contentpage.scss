@@ -1,9 +1,14 @@
 .contentPage {
-  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 100%;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
-  background: $white;
-  height: 100%;
+
+  width: 100%;
   padding: 0;
+  background: $white;
   box-sizing: border-box;
 
   @media #{$mobile} {
@@ -114,6 +119,8 @@
     padding: 14px 0 0;
     cursor: pointer;
     border-bottom: 1px solid $greyLight;
+
+    overflow: hidden;
 
     &.active {
       border-bottom: 4px solid rgba(0, 114, 207, 0.16);
