@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ content }: HeaderProps) => (
-  <header className={content && 'solid-background'}>
+  <header className={content ? 'solid-background' : ''}>
     <div>
       <Link to="/" title="DutchX - Dutch Auction Exchange" className="logo"></Link>
       <MenuWallet />

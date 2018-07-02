@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { ConnectedRouter } from 'connected-react-router'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect, StaticRouter, Switch } from 'react-router-dom'
 import { History } from 'history'
 import { hot } from 'react-hot-loader'
 
@@ -15,8 +15,6 @@ import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 
-import { StaticRouter, Switch } from 'react-router-dom'
-
 interface AppRouterProps {
   history: History;
   disabled?: boolean;
@@ -24,11 +22,11 @@ interface AppRouterProps {
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
 const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, content?: boolean) => (props: any) => (
-  <Fragment>
+  <>
     <Header content={content}/>
     <Component {...props}/>
     <Footer />
-  </Fragment>
+  </>
 )
 
 const HomeWH = withHeaderAndFooter(Home)
