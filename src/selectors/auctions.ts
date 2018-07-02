@@ -3,5 +3,5 @@ import { State } from 'types'
 
 export const auctionClaimable = createSelector(
   (state: State) => state.auctions.ongoingAuctions,
-  auctions => auctions.find((auc: any) => auc.claim || auc.claimInverse),
+  auctions => auctions.some((auc: any) => auc.claim || auc.claimInverse),
 )
