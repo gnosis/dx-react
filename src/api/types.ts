@@ -41,6 +41,8 @@ export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
   getBlock(bl: 'earliest' | 'latest' | 'pending' | Hash, returnTransactionObjects?: boolean): Promise<BlockReceipt>,
+  getTransaction(tx: Hash): Promise<TransactionObject | null>,
+  getTransactionReceipt(tx: Hash): Promise<TransactionReceipt | null>,
   getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
@@ -60,7 +62,32 @@ export interface TransactionObject {
   gas?: Balance | number,
   gasPrice?: Balance | number,
   data?: string,
-  nonce?: string,
+  nonce?: string | number,
+}
+
+export interface TransactionLog {
+  logIndex: number,
+  transactionIndex: number,
+  transactionHash: string,
+  blockHash: string,
+  blockNumber: number,
+  address: Account,
+  data: string,
+  topics: (string | null)[],
+  type: 'mined' | 'pending',
+}
+
+export interface TransactionReceipt {
+  transactionHash: string,
+  transactionIndex: number,
+  blockHash: string,
+  blockNumber: number,
+  gasUsed: number,
+  cumulativeGasUsed: number,
+  contractAddress: null | Account,
+  logs: TransactionLog[],
+  status: '0x1' | '0x0',
+  logsBloom: string,
 }
 
 export interface TokensInterface {
