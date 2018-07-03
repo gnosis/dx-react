@@ -9,7 +9,7 @@ a.buttonCTA {
   min-height: 56px;
   box-sizing: border-box;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 18px;
   color: $darkBlue;
   letter-spacing: 0;
   line-height: 1;
@@ -20,16 +20,18 @@ a.buttonCTA {
   outline: 0;
   margin: auto;
   border: 0;
+  font-weight: $normal;
 
   &:hover {
     box-shadow: 0 6px 14px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.15);
   }
 
   &.buttonCTA-disabled {
-    background: $grey;
+    background: $greyText;
     color: $white;
     text-align: center;
     pointer-events: none;
+    opacity: .5;
   }
 
   &.blue {
@@ -46,11 +48,11 @@ a.buttonCTA {
 
 .buttonExit {
   display: block;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  height: 40px;
-  width: 40px;
+  // position: absolute;
+  // top: 15px;
+  // right: 15px;
+  // height: 40px;
+  // width: 40px;
   font-size: 40px;
   font-family: $arial;
   color: $greyBorder;
@@ -74,25 +76,32 @@ a.buttonCTA {
 }
 
 .buttonReset {
-  margin: 0 4rem 0 auto;
-  font-size: 1.2em;
+  color: $red;
+  margin: 0 auto 1em;
+  font-size: .9em;
   font-family: inherit;
-  text-transform: uppercase;
-  color: $greyBorder;
-  background: 0;
   border: 0;
   outline: 0;
   cursor: pointer;
   white-space: nowrap;
+  background: #f2f3f5;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 3px;
+  letter-spacing: 1px;
 
   &:hover {
-    color: $greyText;
-    text-decoration: underline;
+    background: $red;
+    color: $white;
+    text-decoration: none;
+    // color: $greyText;
+    // text-decoration: underline;
   }
 
   .tokenPair & {
     position: absolute;
-    color: $lightBlue;
+    top: 0;
+    // color: $lightBlue;
   }
 }
 

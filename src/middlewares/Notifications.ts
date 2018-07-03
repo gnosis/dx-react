@@ -1,4 +1,4 @@
-import {
+/* import {
   createNotificationFromTransaction,
   hideAllNotifications,
 } from 'actions/notifications'
@@ -46,3 +46,4 @@ const Notifications: Middleware = store => next => (action: Action | ThunkAction
 }
 
 export default Notifications
+ */

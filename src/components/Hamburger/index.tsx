@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { handleKeyDown } from 'utils/helpers'
+import { Link } from 'react-router-dom'
 
 interface HamburgerProps {}
-
 interface HamburgerState {
-  isOpen: boolean
+  isOpen: boolean;
 }
 
 export default class Hamburger extends Component<HamburgerProps, HamburgerState> {
@@ -19,20 +19,27 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
 
   render() {
     const { isOpen } = this.state
-
     return (
-      <div tabIndex={-1} onKeyDown={(e) => handleKeyDown(e, this.handleClick, 'Escape')}>
-        <button
-          className="hamburger"
-          onClick={this.handleClick}></button>
+      <div
+        className="navParent"
+        tabIndex={-1}
+        onKeyDown={(e) => handleKeyDown(e, this.handleClick, 'Escape')}
+      >
+        <button className="hamburger" onClick={this.handleClick}></button>
         <nav className={isOpen ? 'show' : null}>
           <button
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          <a href="#">How it works</a>
-          <a href="#">About</a>
-          <a href="#">Faq</a>
+          {window && window.location.pathname !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
+          <Link to="/content/HowItWorks" onClick={this.handleClick}> How It Works </Link>
+          <Link to="/content/Screencast" onClick={this.handleClick}> Screencast </Link>
+          <Link to="/content/Tokens" onClick={this.handleClick}> Tokens </Link>
+          <Link to="/content/Fees" onClick={this.handleClick}> Fees </Link>
+          <Link to="/content/FAQ" onClick={this.handleClick}> FAQ </Link>
+          <Link to="/content/Technical" onClick={this.handleClick}> Technical </Link>
+          <Link to="/content/Downtime" onClick={this.handleClick}> Downtime </Link>
+          <Link to="/content/Help" onClick={this.handleClick}> Help </Link>
         </nav>
       </div>
     )

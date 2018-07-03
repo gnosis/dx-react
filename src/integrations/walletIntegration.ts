@@ -61,7 +61,7 @@ export default async function walletIntegration(store: Store<any>) {
         // TODO: change for prod
         defaultTokens = await ipfsFetchFromHash('QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM') as DefaultTokens
       }
-      
+
       console.log('​getTokenList -> ', defaultTokens)
       // set tokens to localForage
       await localForage.setItem('defaultTokens', defaultTokens)

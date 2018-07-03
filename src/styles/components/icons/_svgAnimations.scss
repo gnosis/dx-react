@@ -14,6 +14,10 @@ $CB4: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 
 .dutchxSVGContainer {
   margin: auto;
+
+  @media #{$mobile} {
+    max-width: 80%;
+  }
 }
 
 .dutchXSVGGroup {

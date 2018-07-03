@@ -16,15 +16,15 @@ export const TextSquare: React.SFC = () => {
 
         <br />
         <br />
-        <ul>
-          <li>Choose the token you would like to sell</li>
-          <li>Pick the token you would like to receive</li>
+        <ol>
+          <li>Choose the tokens you would like to exchange</li>
           <li>Specify the amount to sell</li>
-        </ul>
+          <li>Submit the order via your wallet provider’s screens</li>
+        </ol>
 
         <br />
 
-        Your order gets automatically submitted into the next running auction - no strategy needed!
+        Your order is automatically deposited into the next running auction - no strategy needed!
 
         <br />
         <br />

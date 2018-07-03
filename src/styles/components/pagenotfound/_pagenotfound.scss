@@ -13,7 +13,7 @@
 
   > h1 {
     font-size: 70px;
-    font-weight: bold;
+    font-weight: $bold;
     color: $white;
     letter-spacing: 0;
     text-align: center;
@@ -21,7 +21,7 @@
   }
 
   > h2 {
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 23px;
     color: $white;
     letter-spacing: 0;
