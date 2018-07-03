@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { handleKeyDown } from 'utils/helpers'
 import { Link } from 'react-router-dom'
 
-interface HamburgerProps {}
-
+interface HamburgerProps {
+  url: string;
+}
 interface HamburgerState {
-  isOpen: boolean
+  isOpen: boolean;
 }
 
 export default class Hamburger extends Component<HamburgerProps, HamburgerState> {
@@ -32,7 +33,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          <Link to="/" onClick={this.handleClick}> Home </Link>
+          {this.props.url !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
           <Link to="/content/HowItWorks" onClick={this.handleClick}> How It Works </Link>
           <Link to="/content/Screencast" onClick={this.handleClick}> Screencast </Link>
           <Link to="/content/Tokens" onClick={this.handleClick}> Tokens </Link>
