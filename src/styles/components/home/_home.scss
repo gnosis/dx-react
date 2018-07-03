@@ -51,6 +51,10 @@
       display: flex;
       flex-wrap: wrap;
 
+      @media #{$desktop} {
+        margin-right: 60px;
+      }
+
       ul, ol {
         list-style: none;
         position: relative;
@@ -241,7 +245,7 @@
     padding: 0 10px;
 
     .tokenItem {
-      padding: 10px;
+      padding: 5px;
     }
   }
 }
@@ -340,6 +344,10 @@
   position: relative;
   margin: 5px auto 10px;
 
+  @media #{$desktop} {
+    padding: 25px 0;
+  }
+
   &-switch {
     display: block;
     position: absolute;
@@ -405,9 +413,11 @@
   }
 
   @media #{$mobile} {
-    height: 30px;
-    top: 85px;
+    // height: 30px;
+    // top: 85px;
+    height: 46px;
     background-size: 30px;
+    margin: 70px auto 0;
   }
 }
 

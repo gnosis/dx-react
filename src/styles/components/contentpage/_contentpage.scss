@@ -45,6 +45,10 @@
     text-transform: uppercase;
     text-align: left;
     line-height: 2;
+
+    @media #{$mobile} {
+      line-height: 1.3;
+    }
   }
 
   table {

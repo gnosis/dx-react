@@ -76,25 +76,32 @@ a.buttonCTA {
 }
 
 .buttonReset {
-  margin: 0 4rem 0 auto;
-  font-size: 1.2em;
+  color: $red;
+  margin: 0 auto 1em;
+  font-size: .9em;
   font-family: inherit;
-  text-transform: uppercase;
-  color: $greyBorder;
-  background: 0;
   border: 0;
   outline: 0;
   cursor: pointer;
   white-space: nowrap;
+  background: #f2f3f5;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 3px;
+  letter-spacing: 1px;
 
   &:hover {
-    color: $greyText;
-    text-decoration: underline;
+    background: $red;
+    color: $white;
+    text-decoration: none;
+    // color: $greyText;
+    // text-decoration: underline;
   }
 
   .tokenPair & {
     position: absolute;
-    color: $lightBlue;
+    top: 0;
+    // color: $lightBlue;
   }
 }
 
