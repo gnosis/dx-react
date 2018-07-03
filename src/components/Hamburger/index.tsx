@@ -20,7 +20,6 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
 
   render() {
     const { isOpen } = this.state
-
     return (
       <div
         className="navParent"
@@ -33,14 +32,15 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          <Link to="/content/HowItWorks"> How It Works </Link>
-          <Link to="/content/Screencast">Screencast</Link>
-          <Link to="/content/Tokens">Tokens </Link>
-          <Link to="/content/Fees">Fees</Link>
-          <Link to="/content/FAQ">FAQ</Link>
-          <Link to="/content/Technical">Technical </Link>
-          <Link to="/content/Downtime">Downtime</Link>
-          <Link to="/content/Help">Help</Link>
+          <Link to="/" onClick={this.handleClick}> Home </Link>
+          <Link to="/content/HowItWorks" onClick={this.handleClick}> How It Works </Link>
+          <Link to="/content/Screencast" onClick={this.handleClick}> Screencast </Link>
+          <Link to="/content/Tokens" onClick={this.handleClick}> Tokens </Link>
+          <Link to="/content/Fees" onClick={this.handleClick}> Fees </Link>
+          <Link to="/content/FAQ" onClick={this.handleClick}> FAQ </Link>
+          <Link to="/content/Technical" onClick={this.handleClick}> Technical </Link>
+          <Link to="/content/Downtime" onClick={this.handleClick}> Downtime </Link>
+          <Link to="/content/Help" onClick={this.handleClick}> Help </Link>
         </nav>
       </div>
     )
