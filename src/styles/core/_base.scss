@@ -85,6 +85,10 @@ img {
 section.home, section.auction {
   height: calc(100vh - 60px);
   align-items: center;
+
+  @media #{$mobile} {
+    height: auto;
+  }
 }
 
 section.home {

@@ -61,6 +61,7 @@
     margin: 20px auto;
     box-sizing: border-box;
     padding: 0;
+    text-align: left;
   }
 
   table > thead {
@@ -101,14 +102,58 @@
     }
   }
 
-  section p {
-    font-weight: $normal;
-    font-size: 14px;
-    color: $white;
+  section p,
+  section ul,
+  section ol {
     letter-spacing: 0;
-    text-align: left;
-    line-height: 1.5;
     margin: 0;
+    color: $greyTextDark;
+    font-weight: $normal;
+    font-size: 1em;
+    line-height: 1.5;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  section ul {
+    list-style: square;
+    padding: 6px 0 12px 28px;
+    font-size: .9em;
+  }
+
+  section ol {
+    position: relative;
+    padding: 0;
+    margin: 20px auto 0;
+    list-style: none;
+
+    > li {
+      counter-increment: item;
+      padding: 0 0 0 2.3em;
+      margin: 0 0 1.1em;
+      position: relative;
+    }
+
+    > li::before {
+      content: counter(item);
+      color: $white;
+      background: $blue;
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      display: block;
+      border-radius: 100%;
+      line-height: 25px;
+      font-size: .9em;
+      box-sizing: border-box;
+      padding: 0;
+      font-weight: $normal;
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: auto;
+    }
   }
 
   section a {
@@ -119,13 +164,14 @@
   section.drawer {
     position: relative;
     margin: 0 0 5px;
-    font-size: 18px;
-    line-height: 1;
-    text-align: left;
-    font-weight: $normal;
+    // font-size: 18px;
+    // line-height: 1;
+    // text-align: left;
+    // font-weight: $normal;
+    display: flex;
+    flex-wrap: wrap;
     text-transform: none;
     padding: 14px 0 0;
-    cursor: pointer;
     border-bottom: 1px solid $greyLight;
 
     overflow: hidden;
@@ -134,7 +180,7 @@
       border-bottom: 4px solid rgba(0, 114, 207, 0.16);
     }
 
-    > p {
+    > span {
       visibility: hidden;
       opacity: 0;
       height: 0;
@@ -150,12 +196,18 @@
       box-sizing: border-box;
     }
 
-    &.active > p {
+    &.active > span {
       visibility: visible;
       height: auto;
       margin: 15px auto 0;
       padding: 20px;
       opacity: 1;
+      display: block;
+    }
+
+    h3 {
+      cursor: pointer;
+      width: 100%;
     }
 
     h3::after {
@@ -199,7 +251,7 @@
       color: $greyTextDark;
       font-weight: $normal;
       font-size: 1.1em;
-      line-height: 1.5;
+      line-height: 1.7;
       width: 100%;
       text-align: left;
     }
