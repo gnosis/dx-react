@@ -4,25 +4,22 @@ import MenuWallet from 'containers/MenuWallet'
 import MenuAuctions from 'containers/MenuAuctions'
 import Hamburger from 'components/Hamburger'
 import MenuFeeBalance from 'containers/MenuFeeBalance'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 interface HeaderProps {
   content?: boolean;
-  match: {
-    url: string;
-  };
 }
 
-export const Header = ({ content, match: { url } }: HeaderProps) => (
+export const Header = ({ content }: HeaderProps) => (
   <header className={content ? 'solid-background' : ''}>
     <div>
       <Link to="/" title="DutchX - Dutch Auction Exchange" className="logo"></Link>
       <MenuWallet />
       <MenuAuctions />
       <MenuFeeBalance />
-      <Hamburger url={url}/>
+      <Hamburger />
     </div>
   </header>
 )
 
-export default withRouter(Header)
+export default Header

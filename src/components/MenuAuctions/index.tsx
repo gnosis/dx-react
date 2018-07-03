@@ -19,7 +19,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
   claimable,
 }) => (
     <div className="menuAuctions"><img src={require('assets/auction.svg')} />
-      <strong className={claimable && 'claimable'}>{name}</strong>
+      <strong className={claimable ? 'claimable' : null}>{name}</strong>
       {claimable &&
       <span>
         <span>CLAIM</span>
