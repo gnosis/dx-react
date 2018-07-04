@@ -2,7 +2,6 @@ $headerHeight: 58px;
 
 .auction {
   max-width: $max-width;
-  // margin: 75px auto 0;
   margin: 0 auto;
   display: flex;
   font-family: inherit;
@@ -195,7 +194,6 @@ $headerHeight: 58px;
     }
 
     &[readonly] {
-      // background: #f2f3f5;
       background: transparent;
       border: 1px solid #a5b1c1;
     }

@@ -164,16 +164,11 @@
   section.drawer {
     position: relative;
     margin: 0 0 5px;
-    // font-size: 18px;
-    // line-height: 1;
-    // text-align: left;
-    // font-weight: $normal;
     display: flex;
     flex-wrap: wrap;
     text-transform: none;
     padding: 14px 0 0;
     border-bottom: 1px solid $greyLight;
-
     overflow: hidden;
 
     &.active {

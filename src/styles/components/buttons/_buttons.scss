@@ -95,6 +95,16 @@ a.buttonCTA {
   .tokenPair & {
     position: absolute;
     bottom: 100px;
+
+    @media #{$mobile} {
+      position: absolute;
+      top: 36px;
+      width: 52px;
+      left: 0;
+      right: 0;
+      bottom: initial;
+      font-size: .8em;
+    }
   }
 }
 
