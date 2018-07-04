@@ -65,6 +65,8 @@ export interface TransactionObject {
   nonce?: string | number,
 }
 
+export type Web3EventLog = { _eventName: string } & {[T: string]: string | BigNumber}
+
 export interface TransactionLog {
   logIndex: number,
   transactionIndex: number,
@@ -142,18 +144,20 @@ interface FilterObject {
 
 export type Filter = 'latest' | 'pending' | FilterObject | void
 
+export type ABI = {
+  anonymous?: boolean,
+  constant?: boolean,
+  inputs: {name: string, type: string}[],
+  name: string,
+  outputs?: {name: string, type: string}[],
+  payable?: boolean,
+  stateMutability?: string,
+  type: string,
+}[]
+
 export interface ContractArtifact {
   contractName: string,
-  abi: {
-    anonymous?: boolean,
-    constant?: boolean,
-    inputs: {name: string, type: string}[],
-    name: string,
-    outputs?: {name: string, type: string}[],
-    payable?: boolean,
-    stateMutability?: string,
-    type: string,
-  },
+  abi: ABI,
   bytecode: string,
   deployedBytecode: string,
   sourceMap: string,
@@ -181,8 +185,10 @@ export interface SimpleContract {
   at<T = SimpleContract>(address: Account): T,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
+  abi?: ABI,
 }
 export interface DeployedContract {
+  abi: ABI,
   address: Account,
 }
 
@@ -288,6 +294,7 @@ type DXAuctionExtended = {
 export { DXAuctionExtended as DXAuction }
 
 interface DXAuction<T = Receipt> {
+  abi: ABI,
   address: Account,
   newMasterCopy(): Promise<Account>,
   masterCopyCountdown(): Promise<BigNumber>,

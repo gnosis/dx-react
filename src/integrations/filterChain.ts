@@ -43,7 +43,6 @@ export const watch = async (cb: Error1stCallback<Hash>): Promise<Web3Filter['sto
   const filter = await getFilter()
   
   const length = accumCB.push(cb)
-  console.log('STARTED WATCHING')
   // if it's the first callback added
   // start watching
   if (length === 1) filter.watch(mainFilterCB)  
@@ -109,6 +108,8 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
   const { getTransactionReceipt } = await promisedWeb3
 
   try {
+    console.log('STARTED WATCHING', hash)
+
     res = await new Promise<TransactionReceipt>(async (resolve, reject) => {
       stopWatchingFunc = await watchFunc(async (e: Error, bl: Hash) => {
         if (e) return reject(e)
@@ -130,6 +131,7 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
     throw error
   }
   stopWatchingFunc()
+  console.log('STOPPED WATCHING', hash)
 
   return res
 }
