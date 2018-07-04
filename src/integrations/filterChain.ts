@@ -49,10 +49,14 @@ export const watch = async (cb: Error1stCallback<Hash>): Promise<Web3Filter['sto
   if (length === 1) filter.watch(mainFilterCB)  
 
   return () => {
-    // remove callback
-    accumCB.splice(length - 1, 1)
-    // if accumCB is empty, stop watching alltogether
-    if (accumCB.length === 0) filter.stopWatching()
+    const cbInd  = accumCB.indexOf(cb)
+
+    if (cbInd !== -1) {
+      // remove callback
+      accumCB.splice(cbInd, 1)
+      // if accumCB is empty, stop watching alltogether
+      if (accumCB.length === 0) filter.stopWatching()
+    }
   }
 }
 
