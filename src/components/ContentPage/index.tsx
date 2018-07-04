@@ -221,7 +221,6 @@ export const Tokens = ({ handleClick }: ContentPages) =>
 export const Fees = ({ handleClick }: ContentPages) => 
   <article>
     <h1>Fees</h1>
-    <h2>[Section subtitle]</h2>
     <section className="drawer" onClick={handleClick}>
       <h3>What fees do I have to pay?</h3>
       <span>
