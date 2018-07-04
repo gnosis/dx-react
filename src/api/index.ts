@@ -5,7 +5,7 @@ import { promisedDutchX } from './dutchx'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
-import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange } from './types'
+import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
 import { ETH_ADDRESS } from 'globals'
 
@@ -164,12 +164,22 @@ export const getTokenAllowance = async (tokenAddress: Account, userAddress?: Acc
 
   return Tokens.allowance(tokenAddress, userAddress, DutchX.address)
 }
-
-export const tokenApproval = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
+interface TokenApproval<T = Receipt> {
+  (tokenAddress: Account, amount: Balance, userAddress?: Account): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  TokenApproval<Hash>,
+}
+export const tokenApproval: TokenApproval = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
   userAddress = await fillDefaultAccount(userAddress)
 
   return Tokens.approve(tokenAddress, DutchX.address, amount, { from: userAddress })
+}
+
+tokenApproval.sendTransaction = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
+  const { DutchX, Tokens } = await promisedAPI
+  userAddress = await fillDefaultAccount(userAddress)
+
+  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress })
 }
 
 export const tokenSupply = async (tokenAddress: Account) => {
@@ -178,11 +188,23 @@ export const tokenSupply = async (tokenAddress: Account) => {
   return Tokens.getTotalSupply(tokenAddress)
 }
 
-export const depositETH = async (amount: Balance, userAddress?: Account) => {
+interface DepositETH<T = Receipt> {
+  (amount: Balance, userAddress?: Account): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  DepositETH<Hash>,
+}
+
+export const depositETH: DepositETH = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await promisedAPI
   userAddress = await fillDefaultAccount(userAddress)
 
   return Tokens.depositETH({ from: userAddress, value: amount })
+}
+
+depositETH.sendTransaction = async (amount: Balance, userAddress?: Account) => {
+  const { Tokens } = await promisedAPI
+  userAddress = await fillDefaultAccount(userAddress)
+
+  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount })
 }
 
 /* =================================================================
@@ -266,8 +288,19 @@ export const approveAndPostSellOrder = async (
   return DutchX.postSellOrder(pair, amount, index, account)
 }
 
+interface PostSellOrder<T = Receipt> {
+  (
+    sell: DefaultTokenObject,
+    buy: DefaultTokenObject,
+    amount: Balance,
+    index: Index,
+    account?: Account,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never : PostSellOrder<Hash>,
+}
+
 // TODO: pass in the whole TokenPair from the action
-export const postSellOrder = async (
+export const postSellOrder: PostSellOrder = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   amount: Balance,
@@ -282,8 +315,8 @@ export const postSellOrder = async (
 }
 
 postSellOrder.call = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   index: Index,
   account?: Account,
@@ -295,7 +328,31 @@ postSellOrder.call = async (
   return DutchX.postSellOrder.call(pair, amount, index, account)
 }
 
-export const depositAndSell = async (
+postSellOrder.sendTransaction = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+
+  return DutchX.postSellOrder.sendTransaction(pair, amount, index, account)
+}
+
+interface DepositAndSell<T = Receipt> {
+  (
+    sell: DefaultTokenObject,
+    buy: DefaultTokenObject,
+    amount: Balance,
+    account?: Account,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  DepositAndSell<Hash>,
+}
+
+export const depositAndSell: DepositAndSell = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   amount: Balance,
@@ -309,8 +366,8 @@ export const depositAndSell = async (
 }
 
 depositAndSell.call = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   account?: Account,
 ) => {
@@ -320,6 +377,20 @@ depositAndSell.call = async (
 
   return DutchX.depositAndSell.call(pair, amount, account)
 }
+
+depositAndSell.sendTransaction = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  amount: Balance,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+
+  return DutchX.depositAndSell.sendTransaction(pair, amount, account)
+}
+
 
 export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Account) => {
   const { DutchX } = await promisedAPI

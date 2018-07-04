@@ -57,7 +57,7 @@ async function init(): Promise<DutchExchange> {
     userAccount: Account,
   ) => dx.claimedAmounts.call(t1, t2, index, userAccount)
 
-  const postSellOrder = (
+  const postSellOrder: DutchExchange['postSellOrder'] = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
@@ -70,6 +70,13 @@ async function init(): Promise<DutchExchange> {
     index: Index,
     userAccount: Account,
   ) => dx.postSellOrder.call(t1, t2, index, amount, { from: userAccount })
+
+  postSellOrder.sendTransaction = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    amount: Balance,
+    index: Index,
+    userAccount: Account,
+  ) => dx.postSellOrder.sendTransaction(t1, t2, index, amount, { from: userAccount })
 
   const postBuyOrder = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -128,7 +135,7 @@ async function init(): Promise<DutchExchange> {
   const withdraw = (tokenAddress: TokenCode, amount: Balance, userAccount: Account) =>
     dx.withdraw(tokenAddress, amount, { from: userAccount })
 
-  const depositAndSell = (
+  const depositAndSell: DutchExchange['depositAndSell'] = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     userAccount: Account,
@@ -137,7 +144,14 @@ async function init(): Promise<DutchExchange> {
   depositAndSell.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
-  ) => dx.depositAndSell.call(t1, t2, amount)
+    userAccount: Account,
+  ) => dx.depositAndSell.call(t1, t2, amount, { from: userAccount })
+
+  depositAndSell.sendTransaction = (
+    { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
+    amount: Balance,
+    userAccount: Account,
+  ) => dx.depositAndSell.sendTransaction(t1, t2, amount, { from: userAccount })
 
   const claimAndWithdraw = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
