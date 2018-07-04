@@ -143,7 +143,8 @@ header {
         color: $white;
       }
 
-      &:hover {
+      &:hover,
+      &.active {
         background: $white;
         color: #35373c;
         text-decoration: none;
