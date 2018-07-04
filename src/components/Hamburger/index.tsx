@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { handleKeyDown } from 'utils/helpers'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 interface HamburgerProps {}
 interface HamburgerState {
@@ -32,14 +32,14 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             onClick={this.handleClick}>
           </button>
           {window && window.location.pathname !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
-          <Link to="/content/HowItWorks" onClick={this.handleClick}> How It Works </Link>
-          <Link to="/content/Screencast" onClick={this.handleClick}> Screencast </Link>
-          <Link to="/content/Tokens" onClick={this.handleClick}> Tokens </Link>
-          <Link to="/content/Fees" onClick={this.handleClick}> Fees </Link>
-          <Link to="/content/FAQ" onClick={this.handleClick}> FAQ </Link>
-          <Link to="/content/Technical" onClick={this.handleClick}> Technical </Link>
-          <Link to="/content/Downtime" onClick={this.handleClick}> Downtime </Link>
-          <Link to="/content/Help" onClick={this.handleClick}> Help </Link>
+          <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How It Works </NavLink>
+          <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink>
+          <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
+          <NavLink to="/content/Fees" onClick={this.handleClick}> Fees </NavLink>
+          <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
+          <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink>
+          <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink>x`
+          <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
         </nav>
       </div>
     )
