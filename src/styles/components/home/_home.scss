@@ -527,7 +527,7 @@
     color: $darkBlue;
     letter-spacing: 1px;
     line-height: 1;
-    font-weight: $normal;
+    font-weight: $bold;
     width: 100%;
     display: block;
     text-align: center;
@@ -609,8 +609,9 @@
   > p {
     font-family: inherit;
     font-weight: $bold;
-    font-size: 11px;
+    font-size: 13px;
     color: $blue;
+    word-wrap: break-word;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
@@ -650,6 +651,7 @@
   height: 100%;
   background: $white;
   z-index: 99;
+  outline: 0;
 
   @media #{$tablet} {
     position: fixed;

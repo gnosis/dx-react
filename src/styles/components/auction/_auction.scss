@@ -431,9 +431,9 @@ $headerHeight: 58px;
   }
 
   > span > small {
-    font-size: 12px;
+    font-size: 11px;
     color: $greyText;
-    letter-spacing: 5px;
+    letter-spacing: 3px;
     line-height: 1.6;
     display: block;
     text-align: center;
@@ -445,20 +445,36 @@ $headerHeight: 58px;
     color: $darkBlue;
     letter-spacing: 0.5px;
     line-height: 1;
+    font-weight: $bold;
+    text-transform: uppercase;
+  }
+
+  > span > big[data-status] {
+    font-size: 14px;
+    background: $grey;
+    border-radius: 16px;
+    padding: 6px 16px;
+    color: $white;
+    letter-spacing: 2px;
+    display: table;
+    margin: auto;
   }
 
   > span:nth-of-type(2) > big {
     &[data-status="planned"],
     &[data-status="initialising"] {
-      color: $orange;
+      background: $orange; // in case no support (probably remove?)
+      background: linear-gradient(to right, $orange 0%,#ff7724 100%);
     }
 
     &[data-status="active"] {
-      color: $darkBlue;
+      background: $blue; // in case no support (probably remove?)
+      background: linear-gradient(to right, $blue 0%,#1183e0 100%);
     }
 
     &[data-status="ended"] {
-      color: $green;
+      background: $green; // in case no support (probably remove?)
+      background: linear-gradient(to right, $green 0%,#01a94d 100%);
     }
   }
 
@@ -670,6 +686,13 @@ $headerHeight: 58px;
   color: $white;
   justify-content: space-around;
   align-items: center;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+  }
 
   > span > small {
     opacity: .5;

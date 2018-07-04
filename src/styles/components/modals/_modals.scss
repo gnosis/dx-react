@@ -91,16 +91,17 @@ $modal-max-width: 600px;
   }
 
   .modalButton {
-    background-color: $orange;
+    background-color: $white;
     border: 0;
     border-radius: 3px;
-    color: $white;
+    color: $blue;
     font-size: 1.5em;
     min-height: 50px;
     width: 100%;
     max-width: 14em;
     font-family: inherit;
     outline: 0;
+    font-weight: bold;
 
     @media #{$mobile} {
       font-size: 1.4em;

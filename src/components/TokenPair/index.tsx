@@ -63,7 +63,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
           onClick={openOverlay}
         />
       }
-      {resettable && <button className="buttonReset" onClick={resetTokenPair}>reset selection</button>}
+      {resettable && <button className="buttonReset" onClick={resetTokenPair}>reset</button>}
     </div>
 
 export default TokenPair
