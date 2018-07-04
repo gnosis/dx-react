@@ -33,6 +33,13 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
   closeModal,
 }) =>
   <div className="modalDivStyle">
+    {loader &&
+      <Loader
+        hasData={false}
+        render={() => <div>Loading...</div>}
+        SVGChoice="ETHLogo"
+      />
+    }
     <h1>{header || 'Approving Tokens and Transferring'}</h1>
     <p className="modalHeaderDescriptor">
       { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
@@ -64,13 +71,6 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
       CLOSE
     </button>
     }
-    {loader &&
-      <Loader
-        hasData={false}
-        render={() => <div>Loading...</div>}
-        SVGChoice="ETHLogo"
-      />
-    }
   </div>
 
 export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
@@ -101,7 +101,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
       </div>
       <div className="modalButtonDiv">
         <button
-          className="modalButton"
+          className="modalButton alternative"
           onClick={() => onClick('MIN')}
           >
           {buttons && buttons.button2.buttonTitle2 || 'Approve Min'}

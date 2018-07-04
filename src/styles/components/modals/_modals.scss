@@ -1,15 +1,23 @@
+$modal-max-width: 600px;
+
 // Modal
 .modalDivStyle {
   position: fixed;
   display: flex;
   flex-flow: column;
-  justify-content: center;
   align-items: center;
-  background: rgba(26, 73, 119, 0.87);
+  background: rgba(26, 73, 119, .87);
   color: $white;
   height: 100vh;
   width: 100vw;
   text-align: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  @media #{$mobile} {
+    padding: 25px 25px 0;
+    overflow-y: scroll;
+  }
 
   .modalParentDiv {
     display: flex;
@@ -17,10 +25,20 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    max-width: $modal-max-width;
   }
 
   > h1 {
     font-size: 2.5em;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    max-width: $modal-max-width;
+    width: 100%;
+
+    @media #{$mobile} {
+      font-size: 1.7em;
+    }
   }
 
   > h1, .modalButtonDescription {
@@ -32,38 +50,66 @@
     line-height: normal;
   }
 
+  > .modalP {
+    max-width: $modal-max-width;
+    width: 100%;
+    font-size: 21px;
+    line-height: 1.5;
+    font-weight: lighter;
+
+    @media #{$mobile} {
+      font-size: 15px;
+      margin: 0;
+      font-weight: normal;
+    }
+  }
+
   > .modalHeaderDescriptor {
     font-size: 1.5em;
     line-height: 1.5;
     margin: 0 30px;
     text-align: center;
     width: 100%;
-    max-width: 40em;
+    // max-width: 40em;
+    max-width: $modal-max-width;
   }
 
   .modalError {
-    background-color: #911919;
-    color: white;
-    font-size: .9vw;
     line-height: normal;
     margin: 30px;
     padding: 15px;
-    max-width: 60%;
-    text-align: left;
     word-wrap: break-word;
+    font-size: 1.2em;
+    border-radius: 3px;
+    flex: 1 1 auto;
+    max-width: 600px;
+    text-align: center;
+    display: table;
+    border: 1px dotted $red;
+    background-color: #fef1f1;
+    color: $red;
   }
 
   .modalButton {
     background-color: $orange;
     border: 0;
     border-radius: 3px;
-    color: white;
+    color: $white;
     font-size: 1.5em;
     min-height: 50px;
     width: 100%;
     max-width: 14em;
     font-family: inherit;
     outline: 0;
+
+    @media #{$mobile} {
+      font-size: 1.4em;
+    }
+
+    &.alternative {
+      background: $white;
+      color: $greyTextDark;
+    }
 
     &:hover {
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.15);
@@ -72,10 +118,20 @@
   }
 
   .modalButtonDescription {
-    font-size: 1.2vw;
+    // font-size: 1.2vw;
     padding: 0 10px;
     text-align: left;
-    width: 70vw;
+    // width: 70vw;
+    width: 100%;
+    font-size: 1.3em;
+    font-weight: normal;
+    letter-spacing: 1px;
+
+    @media #{$mobile} {
+      font-size: 1.2em;
+      padding: 0;
+      margin-right: 0;
+    }
   }
 
   .modalButtonDiv {
@@ -84,20 +140,37 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-    width: 75%;
+    width: 100%;
   }
 
   .modalTXDataDiv {
-    background: #2fff8c6b;
-    font-size: 1.4vw;
-    margin: 32px 0;
-    padding: 20px;
+    line-height: normal;
+    margin: 20px 0;
+    padding: 15px;
+    text-align: left;
+    word-wrap: break-word;
+    font-size: 1.2em;
+    border-radius: 3px;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 600px;
+    display: table;
+    color: #84deb3;
+    background: #0f2b48;
 
     > ul {
-      color: $white;
-      font-family: monospace;
+      color: inherit;
+      font-family: $mono;
       line-height: initial;
       text-align: left;
+      width: 100%;
+      word-break: break-all;
+    }
+
+    > ul > li > a {
+      &:link, &:visited, &:active, &:focus {
+        color: #f2f3f5;
+      }
     }
   }
 }

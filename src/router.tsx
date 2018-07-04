@@ -1,10 +1,11 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { ConnectedRouter } from 'connected-react-router'
-import { Route } from 'react-router-dom'
+import { Route, Redirect, StaticRouter, Switch } from 'react-router-dom'
 import { History } from 'history'
 import { hot } from 'react-hot-loader'
 
 import Header from 'components/Header'
+import Footer from 'components/Footer'
 import Home from 'containers/Home'
 import PageNotFound from 'components/PageNotFound'
 import Disclaimer from 'containers/Disclaimer'
@@ -12,9 +13,7 @@ import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
-
-import { StaticRouter, Switch } from 'react-router-dom'
-
+import ContentPageContainer from 'containers/ContentPages'
 
 interface AppRouterProps {
   history: History;
@@ -22,19 +21,20 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-
-const withHeader = (Component: React.ComponentClass) => (props: any) => (
-  <Fragment>
-    <Header/>
+const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, content?: boolean) => (props: any) => (
+  <>
+    <Header content={content}/>
     <Component {...props}/>
-  </Fragment>
+    <Footer />
+  </>
 )
 
-const HomeWH = withHeader(Home)
-const OrderPanelWH = withHeader(OrderPanel)
-const WalletPanelWH = withHeader(WalletPanel)
-const AuctionPanelWH = withHeader(AuctionPanel)
-
+const HomeWH = withHeaderAndFooter(Home)
+const OrderPanelWH = withHeaderAndFooter(OrderPanel)
+const WalletPanelWH = withHeaderAndFooter(WalletPanel)
+const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
+// true passed in to show different, solidBackgorund Header
+const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
@@ -59,7 +59,12 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
           {/* TODO: check for valid params.addr and redirect if necessary */}
           <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
           <Route path="/disclaimer" component={Disclaimer} />
-          <Route component={PageNotFound} />
+
+          <Route path="/content/:contentPage" component={ContentPageContainerWH} />
+          <Redirect from="/content" to="/content/HowItWorks" />
+
+          <Route path="/404" component={PageNotFound} />
+          <Redirect to="/404" />
         </Switch>
       </div>
   </ConnectedRouter>
