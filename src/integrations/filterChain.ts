@@ -110,17 +110,18 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
 
   try {
     res = await new Promise<TransactionReceipt>(async (resolve, reject) => {
-      stopWatchingFunc = await watchFunc(async (e: Error) => {
+      stopWatchingFunc = await watchFunc(async (e: Error, bl: Hash) => {
         if (e) return reject(e)
   
   
         const txReceipt = await getTransactionReceipt(hash)
   
         if (txReceipt) {
+          console.log(`FOUND ${hash} receipt after block ${bl}`)
           // tx is mined
           // based on if succeeded, resolve or reject
           txReceipt.status === '0x1' ? resolve(txReceipt) : reject(txReceipt)
-        }
+        } else console.log(`NO ${hash} receipt after block ${bl}`)
       })
     })
   } catch (error) {
