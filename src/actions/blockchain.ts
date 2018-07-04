@@ -48,7 +48,7 @@ import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
 import { ETH_ADDRESS } from 'globals'
 import { waitForTx } from 'integrations/filterChain'
-import { getDecgetDecoderForABI, getDecoderForABI } from 'api/utils'
+import { getDecoderForABI } from 'api/utils'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
