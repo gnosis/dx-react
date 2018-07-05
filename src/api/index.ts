@@ -491,11 +491,13 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   console.log('lastIndex: ', lastIndex.toString())
   console.log('lastIndex + 1: ', lastIndex.add(1).toString())
   const oppositePair = { sell: pair.buy, buy: pair.sell }
-  const [closingPriceDir, closingPriceOpp, normal, inverse] = await Promise.all([
+  const [closingPriceDir, closingPriceOpp, normal, inverse, sellVolNormal, sellVolInverse] = await Promise.all([
     DutchX.getClosingPrice(pair, lastIndex),
     DutchX.getClosingPrice(oppositePair, lastIndex),
     DutchX.getSellerBalances(pair, lastIndex.add(1), account),
     DutchX.getSellerBalances(oppositePair, lastIndex.add(1), account),
+    DutchX.getSellerBalances(pair, lastIndex, account),
+    DutchX.getSellerBalances(oppositePair, lastIndex, account),
   ])
 
   return {
@@ -505,6 +507,7 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
       closingPriceOpp,
     },
     sellVolumeNext: { normal, inverse },
+    sellVolNormal, sellVolInverse,
   }
 }
 
@@ -576,6 +579,7 @@ export const getSellerOngoingAuctions = async (
         closingPriceOpp: [BigNumber, BigNumber],
       },
       sellVolumeNext: { normal: BigNumber, inverse: BigNumber },
+      sellVolNormal: BigNumber, sellVolInverse: BigNumber, 
     }>[] = []
 
     const ongoingAuctions: {
@@ -627,10 +631,23 @@ export const getSellerOngoingAuctions = async (
 
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
 
-      const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
-
+      const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext, sellVolNormal, sellVolInverse } = lastAuctionsData[index]
+      
+      const currAuctionNeverRanDir = sellVolNormal.eq(0) && closingPriceDir[1].eq(0)
+      const currAuctionNeverRanOpp = sellVolInverse.eq(0) && closingPriceOpp[1].eq(0)
       const committedToNextNormal = sellVolumeNext.normal.gt(0)
       const committedToNextInverse = sellVolumeNext.inverse.gt(0)
+      
+      console.log(`
+        closingPriceDir: ${closingPriceDir}
+        closingPriceOpp: ${closingPriceOpp}
+
+        sellVolNormal: ${sellVolNormal}
+        sellVolInverse: ${sellVolInverse}
+
+        currAuctionNeverRanDir: ${currAuctionNeverRanDir}
+        currAuctionNeverRanOpp: ${currAuctionNeverRanOpp}
+      `)
 
       if (  // if there are truly no auctions with sellBalance
         !committedToNextNormal && !committedToNextInverse &&
@@ -638,14 +655,14 @@ export const getSellerOngoingAuctions = async (
       ) return accum
 
       let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
-// fuck you satan!!
         latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
 
-      if (committedToNextNormal) {
+      if (committedToNextNormal && currAuctionNeverRanDir) {
+        // if (currAuctionNeverRanDir) 
         latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
         balancePerIndex.push(sellVolumeNext.normal)
       }
-      if (committedToNextInverse) {
+      if (committedToNextInverse && currAuctionNeverRanOpp) {
         latestIndicesReverse = [...indicesWithSellerBalanceInverse, lastIndex.add(1)]
         balancePerIndexInverse.push(sellVolumeNext.inverse)
       }
