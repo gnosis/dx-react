@@ -625,56 +625,41 @@ export const getSellerOngoingAuctions = async (
       const [indicesWithSellerBalanceInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
       let ongoingAuction: AuctionObject
 
-      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
-      if (
-        indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1 ||
-        // also check for no claiming indices, but potentially sellVolumeNext
-        indicesWithSellerBalance.length === 0 || indicesWithSellerBalanceInverse.length === 0
-      ) {
-        const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
+      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction\
 
-        const committedToNextNormal = sellVolumeNext.normal.gt(0)
-        const committedToNextInverse = sellVolumeNext.inverse.gt(0)
+      const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
 
-        if (  // if there are truly no auctions with sellBalance
-          !committedToNextNormal && !committedToNextInverse &&
-          indicesWithSellerBalance.length === 0 && indicesWithSellerBalanceInverse.length === 0
-        ) return accum
+      const committedToNextNormal = sellVolumeNext.normal.gt(0)
+      const committedToNextInverse = sellVolumeNext.inverse.gt(0)
 
-        let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
+      if (  // if there are truly no auctions with sellBalance
+        !committedToNextNormal && !committedToNextInverse &&
+        indicesWithSellerBalance.length === 0 && indicesWithSellerBalanceInverse.length === 0
+      ) return accum
+
+      let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
 // fuck you satan!!
-          latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
+        latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
 
-        if (committedToNextNormal) {
-          latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
-          balancePerIndex.push(sellVolumeNext.normal)
-        }
-        if (committedToNextInverse) {
-          latestIndicesReverse = [...indicesWithSellerBalanceInverse, lastIndex.add(1)]
-          balancePerIndexInverse.push(sellVolumeNext.inverse)
-        }
-
-        ongoingAuction = {
-          ...auction,
-          indicesWithSellerBalance: latestIndicesNormal,
-          indicesWithSellerBalanceInverse: latestIndicesReverse,
-          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-          claim: checkClaimableStatus({ claimableIndices: indicesWithSellerBalance, idx: lastIndex, closingPricePair: closingPriceDir }),
-          claimInverse: checkClaimableStatus({ claimableIndices: indicesWithSellerBalanceInverse, idx: lastIndex, closingPricePair: closingPriceOpp }),
-        }
-        // for first time auctions, show auction even if it hasnt started yet
-      } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
-        ongoingAuction = {
-          ...auction,
-          indicesWithSellerBalance,
-          indicesWithSellerBalanceInverse,
-          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-        }
-      } else {
-        return accum
+      if (committedToNextNormal) {
+        latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
+        balancePerIndex.push(sellVolumeNext.normal)
       }
+      if (committedToNextInverse) {
+        latestIndicesReverse = [...indicesWithSellerBalanceInverse, lastIndex.add(1)]
+        balancePerIndexInverse.push(sellVolumeNext.inverse)
+      }
+
+      ongoingAuction = {
+        ...auction,
+        indicesWithSellerBalance: latestIndicesNormal,
+        indicesWithSellerBalanceInverse: latestIndicesReverse,
+        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+        claim: checkClaimableStatus({ claimableIndices: indicesWithSellerBalance, idx: lastIndex, closingPricePair: closingPriceDir }),
+        claimInverse: checkClaimableStatus({ claimableIndices: indicesWithSellerBalanceInverse, idx: lastIndex, closingPricePair: closingPriceOpp }),
+      }
+
       accum.push(ongoingAuction)
       return accum
     }, [])
