@@ -9,6 +9,7 @@ import claim from 'assets/claim.svg'
 export interface AuctionStatusProps {
   sellToken: DefaultTokenObject,
   buyToken: DefaultTokenObject,
+  sellAmount: BigNumber,
   buyAmount: BigNumber,
   timeLeft: number,
   status: Status,
@@ -16,19 +17,29 @@ export interface AuctionStatusProps {
   claimSellerFunds: () => any,
 }
 
-const getTimeStr = (timestamp: number) => {
-  const date = new Date(timestamp)
-  const hh = date.getUTCHours()
-  const mm = date.getUTCMinutes()
-  const ss = date.getUTCSeconds()
+// const getTimeStr = (timestamp: number) => {
+//   const date = new Date(timestamp)
+//   const hh = date.getUTCHours()
+//   const mm = date.getUTCMinutes()
+//   const ss = date.getUTCSeconds()
 
-  return `${hh ? `${hh} hour(s) ` : ''}${mm ? `${mm} minute(s) ` : ''}${ss ? `${ss} second(s) ` : ''}`
+//   return `${hh ? `${hh} hour(s) ` : ''}${mm ? `${mm} minute(s) ` : ''}${ss ? `${ss} second(s) ` : ''}`
+// }
+
+const statusText: {[T in Status]: string} = {
+  [Status.ACTIVE]: 'Ongoing',
+  [Status.ENDED]: 'Ended',
+  // WHAT should Status.INACTIVE be?
+  [Status.INACTIVE]: 'Inactive ',
+  [Status.INIT]: 'Not Started',
+  [Status.PLANNED]: 'Not Started',
 }
 
-const capitalize = (str: string) => str && (str[0].toUpperCase() + str.slice(1))
+const translateStatus2Text = (str: string) => statusText[str] || str
 
 const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTokens: () => {} }> = ({
-  timeLeft,
+  // timeLeft,
+  sellAmount,
   buyAmount,
   buyToken,
   status,
@@ -36,12 +47,14 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
   isClaiming,
 }) => {
   switch (status) {
-    case Status.ACTIVE:
-      return [
-        <h5 key="0">ESTIMATED COMPLETION TIME</h5>,
-        <i key="1">{getTimeStr(timeLeft)}</i>,
-      ] as any
     case Status.ENDED:
+      if (sellAmount.eq(0)) { return (
+        <span>
+          <big>No funds to claim</big>
+        </span>
+      )
+      }
+
       return (console.log((buyAmount.div(buyToken.decimals)).toFixed(4)),
         <span>
           <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
@@ -51,6 +64,20 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
           </button>
         </span>
       )
+    case Status.ACTIVE:
+    case Status.PLANNED:
+    case Status.INIT:
+    // no deposit -- no button
+      if (sellAmount.eq(0)) return null
+      return (
+        <span>
+          <button id="claimToken" disabled>
+            <i>CLAIM</i>
+            <strong>{buyToken.symbol || buyToken.name || buyToken.address} here later</strong>
+            <span><img src={claim} /></span>
+          </button>
+        </span>
+    )
     default:
       return null
   }
@@ -73,7 +100,7 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = props => {
 
       <span>
         <small>STATUS</small>
-        <big data-status={status}>{capitalize(status)}</big>
+        <big data-status={status}>{translateStatus2Text(status)}</big>
       </span>
 
       <ShowStatusWithClaiming {...props}/>
