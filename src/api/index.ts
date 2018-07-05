@@ -625,7 +625,7 @@ export const getSellerOngoingAuctions = async (
       const [indicesWithSellerBalanceInverse, balancePerIndexInverse] = inverseClaimableTokens[index]
       let ongoingAuction: AuctionObject
 
-      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction\
+      const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
 
       const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
 
