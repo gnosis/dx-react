@@ -626,11 +626,20 @@ export const getSellerOngoingAuctions = async (
       let ongoingAuction: AuctionObject
 
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
-      if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
+      if (
+        indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1 ||
+        // also check for no claiming indices, but potentially sellVolumeNext
+        indicesWithSellerBalance.length === 0 || indicesWithSellerBalanceInverse.length === 0
+      ) {
         const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
 
         const committedToNextNormal = sellVolumeNext.normal.gt(0)
         const committedToNextInverse = sellVolumeNext.inverse.gt(0)
+
+        if (  // if there are truly no auctions with sellBalance
+          !committedToNextNormal && !committedToNextInverse &&
+          indicesWithSellerBalance.length === 0 && indicesWithSellerBalanceInverse.length === 0
+        ) return accum
 
         let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
 // fuck you satan!!
