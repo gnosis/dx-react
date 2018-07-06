@@ -16,13 +16,12 @@ interface EventTarget {
   target: {
     parentElement: HTMLElement;
   }
+  currentTarget: HTMLElement;
 }
 
 class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   outerDiv: HTMLElement
   
-  state = { active: false }
-
   /* componentDidMount() {
     this.outerDiv && this.outerDiv.focus()
   } */
@@ -33,12 +32,8 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 
   handleClick = (e: EventTarget) => {
-    if (e.target.parentElement.classList[0] !== 'drawer') return
-    
-    this.setState({
-      active: !this.state.active,
-    })
-    return this.state.active ? (e.target).parentElement.classList.remove('active') : (e.target).parentElement.classList.add('active')
+    if (e.target.parentElement !== e.currentTarget) return
+    e.currentTarget.classList.toggle('active')
   }
 
   render() {
