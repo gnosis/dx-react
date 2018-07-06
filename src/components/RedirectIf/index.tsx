@@ -36,7 +36,7 @@ export interface RedirectToDisclaimerProps extends RouteComponentProps<any> {
   disclaimer_accepted: boolean,
 }
 const ToDosclaimer: React.SFC<RedirectToDisclaimerProps> = ({ disclaimer_accepted, location }) =>
-  disclaimer_accepted ? null :
+  (disclaimer_accepted || location.pathname === '/disclaimer') ? null :
   <Redirect to={{ pathname: '/disclaimer', state: { from: location } }}/>
 
 export const RedirectToDisclaimer = withRouter(ToDosclaimer)
