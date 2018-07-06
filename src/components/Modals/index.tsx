@@ -101,7 +101,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
       </div>
       <div className="modalButtonDiv">
         <button
-          className="modalButton alternative"
+          className="modalButton"
           onClick={() => onClick('MIN')}
           >
           {buttons && buttons.button2.buttonTitle2 || 'Approve Min'}

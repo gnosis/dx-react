@@ -70,7 +70,6 @@ $modal-max-width: 600px;
     margin: 0 30px;
     text-align: center;
     width: 100%;
-    // max-width: 40em;
     max-width: $modal-max-width;
   }
 
@@ -91,16 +90,17 @@ $modal-max-width: 600px;
   }
 
   .modalButton {
-    background-color: $orange;
+    background-color: $white;
     border: 0;
     border-radius: 3px;
-    color: $white;
+    color: $blue;
     font-size: 1.5em;
     min-height: 50px;
     width: 100%;
     max-width: 14em;
     font-family: inherit;
     outline: 0;
+    font-weight: bold;
 
     @media #{$mobile} {
       font-size: 1.4em;
@@ -118,10 +118,8 @@ $modal-max-width: 600px;
   }
 
   .modalButtonDescription {
-    // font-size: 1.2vw;
     padding: 0 10px;
     text-align: left;
-    // width: 70vw;
     width: 100%;
     font-size: 1.3em;
     font-weight: normal;

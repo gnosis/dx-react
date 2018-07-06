@@ -24,7 +24,7 @@ const TokenOverlayHeader: React.SFC<TokenOverlayHeaderProps> = ({
       onChange={onChange}
       value={value}
     />
-    {resettable && <button className="buttonReset" onClick={reset}>reset selection</button>}
+    {resettable && <button className="buttonReset" onClick={reset}>reset</button>}
     <button className="buttonExit" onClick={closeOverlay} />
   </span>
 )

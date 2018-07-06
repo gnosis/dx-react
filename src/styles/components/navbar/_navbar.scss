@@ -31,7 +31,6 @@ header {
     width: 100%;
 
     @media #{$mobile} {
-      // padding: 20px 0;
       margin: 0 auto 74px;
       padding: 0 16px;
     }
@@ -69,6 +68,15 @@ header {
   }
 
   > div > .navParent {
+    .navShadow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(26,73,119,.9);
+    }
+
     .buttonExit {
       position: absolute;
       top: 15px;
@@ -88,7 +96,6 @@ header {
     height: 100%;
     right: 0;
     background: #35373c;
-    box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
     z-index: 9999;
     transition: transform .2s ease-in-out, opacity .2s ease-in-out;
     will-change: transform, opacity;
@@ -125,6 +132,7 @@ header {
     > a {
       display: block;
       width: 100%;
+      font-weight: $normal;
       margin: 0;
       padding: 18px;
       color: $white;
@@ -143,7 +151,8 @@ header {
         color: $white;
       }
 
-      &:hover {
+      &:hover,
+      &.active {
         background: $white;
         color: #35373c;
         text-decoration: none;
@@ -201,9 +210,6 @@ header {
   cursor: pointer;
 
   @media #{$mobile} {
-    // flex: 1;
-    // max-width: 94px;
-    // margin: 0 10px 0 0;
     position: absolute;
     top: 59px;
     width: 100%;
@@ -232,18 +238,13 @@ header {
     @media #{$mobile} {
       display: none;
       content: none;
-      // position: absolute;
-      // top: -6px;
-      // height: 58px;
-      // right: -10px;
-      // display: block;
-      // margin: 0;
     }
   }
 
   > span {
     font-size: 10px;
     font-style: normal;
+    font-weight: $normal;
     line-height: 1;
     color: $white;
     border: 1px solid $white;
@@ -301,10 +302,8 @@ header {
     text-align: center;
 
     @media #{$mobile} {
-      // width: 100%;
       box-sizing: border-box;
       color: $white;
-      // border-radius: 0 0 3px;
       border-radius: 0;
       width: auto;
       background: transparent;
@@ -321,7 +320,6 @@ header {
     font-family: inherit;
 
     @media #{$mobile} {
-      // width: 58px;
       width: auto;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -356,21 +354,10 @@ header {
     @media #{$mobile} {
       position: fixed;
       width: 100%;
-      // top: 59px;
       top: 105px;
       box-sizing: border-box;
       border-radius: 0;
     }
-
-    // &::before {
-    //   content: " ";
-    //   display: block;
-    //   height: 13px;
-    //   position: absolute;
-    //   top: -13px;
-    //   background: transparent;
-    //   width: 100%;
-    // }
   }
 
   > div > table {
@@ -379,6 +366,7 @@ header {
     font-size: 12px;
     padding: 0;
     line-height: 1;
+    font-weight: bold;
 
     @media #{$mobile} {
       padding: 5px 12px 50px;
@@ -387,7 +375,6 @@ header {
     tr {
       text-transform: uppercase;
       font-size: 11px;
-      // cursor: pointer;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
 
@@ -397,13 +384,16 @@ header {
     }
 
     tbody {
+      color: $grey;
+
       &:nth-child(odd) {
         background: $greyLight;
       }
 
       tr {
         &:hover {
-          background: $greyBorder;
+          background: #f2f3f5;
+          color: $darkBlue;
         }
       }
     }
@@ -524,11 +514,6 @@ header {
 
     @media #{$mobile} {
       display: none;
-      // right: -10px;
-      // position: absolute;
-      // top: -18px;
-      // height: 59px;
-      // margin: 0;
     }
   }
 
@@ -543,8 +528,6 @@ header {
 
     @media #{$mobile} {
       display: none;
-      // font-weight: inherit;
-      // text-transform: inherit;
     }
 
     &::before {
@@ -771,6 +754,7 @@ header {
 
 .menuFeeBalance {
   font-size: 10px;
+  font-weight: bold;
   color: $white;
   line-height: 1;
   height: 24px;
@@ -782,7 +766,6 @@ header {
   @media #{$mobile} {
     position: absolute;
     top: 104px;
-    // background: $white;
     background: $greyLight;
     width: 100%;
     left: 0;

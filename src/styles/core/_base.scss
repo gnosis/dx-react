@@ -16,22 +16,12 @@ body {
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  // @media #{$tablet} {
-  // }
-
-  // @media #{$mobile} {
-  // }
 }
 
 #root > div {
   display: flex;
   flex-flow: column nowrap;
   min-height: 100vh;
-
-  @media #{$tablet} {
-    // padding: 0 35px;
-  }
 
   @media #{$mobile} {
     max-width: 100%;
@@ -121,7 +111,6 @@ footer {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-
   margin: auto auto 0;
 
   > p {

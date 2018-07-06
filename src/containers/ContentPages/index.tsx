@@ -1,46 +1,52 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { push } from 'connected-react-router'
 
 import * as ContentPages from 'components/ContentPage'
-import { handleKeyDown } from 'utils/helpers'
 
 export interface ContentPageContainerProps {
   match: {
     params: {
       contentPage: string,
     },
-    url?: string,
   },
-  push: (url: string) => any,
   children?: JSX.Element
+}
+
+interface EventTarget {
+  target: {
+    parentElement: HTMLElement;
+  }
+  currentTarget: HTMLElement;
 }
 
 class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   outerDiv: HTMLElement
   
-  componentDidMount() {
+  /* componentDidMount() {
     this.outerDiv && this.outerDiv.focus()
+  } */
+
+  renderContentPage = (name: string, props?: any) => {  
+    const Component = ContentPages[name]
+    return <Component {...props}/>
   }
 
-  renderContentPage = (name: string) => {
-    const Component = ContentPages[name]
-    return <Component />
+  handleClick = (e: EventTarget) => {
+    if (e.target.parentElement !== e.currentTarget) return
+    e.currentTarget.classList.toggle('active')
   }
 
   render() {
-    const { match: { params: { contentPage } }, push: goTo } = this.props
+    const { match: { params: { contentPage } } } = this.props
     return (
       ContentPages[contentPage]
       ?
         <div 
           className="contentPage" 
-          ref={c => this.outerDiv = c}
+          /* ref={c => this.outerDiv = c} */
           tabIndex={1} 
-          onKeyDown={(e) => handleKeyDown(e, () => goTo('/'), 'Escape')}
         > 
-          {this.renderContentPage(contentPage)}
+          {this.renderContentPage(contentPage, { handleClick: this.handleClick })}
         </div>
       :
         <Redirect to="/404" />
@@ -48,4 +54,4 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 }
 
-export default connect(undefined, { push })(ContentPageContainer as any)
+export default ContentPageContainer
