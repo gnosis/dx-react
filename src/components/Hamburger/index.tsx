@@ -25,6 +25,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
         tabIndex={-1}
         onKeyDown={(e) => handleKeyDown(e, this.handleClick, 'Escape')}
       >
+        {isOpen && <div className="navShadow" onClick={this.handleClick} />}
         <button className="hamburger" onClick={this.handleClick}></button>
         <nav className={isOpen ? 'show' : null}>
           <button

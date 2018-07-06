@@ -68,6 +68,15 @@ header {
   }
 
   > div > .navParent {
+    .navShadow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(26,73,119,.9);
+    }
+
     .buttonExit {
       position: absolute;
       top: 15px;
@@ -87,7 +96,6 @@ header {
     height: 100%;
     right: 0;
     background: #35373c;
-    box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
     z-index: 9999;
     transition: transform .2s ease-in-out, opacity .2s ease-in-out;
     will-change: transform, opacity;
