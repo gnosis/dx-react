@@ -59,7 +59,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
         <span>
           <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
             <i>CLAIM</i>
-            <strong>{(buyAmount.div(10 ** buyToken.decimals)).toString()} {buyToken.symbol || buyToken.name || buyToken.address}</strong>
+            <strong>{(buyAmount.div(10 ** buyToken.decimals)).toFixed()} {buyToken.symbol || buyToken.name || buyToken.address}</strong>
             <span><img src={claim} /></span>
           </button>
         </span>
