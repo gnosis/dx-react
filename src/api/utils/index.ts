@@ -1,6 +1,7 @@
 import { promisedWeb3 } from 'api/web3Provider'
+import { logDecoder } from 'ethjs-abi'
 
-import { DefaultTokenList, ProviderInterface, DefaultTokenObject } from 'api/types'
+import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog } from 'api/types'
 import { Account } from 'types'
 import { ETH_ADDRESS } from 'globals'
 
@@ -63,7 +64,7 @@ const tokenFieldsChecks = {
     if (symbol !== 'ETH' || name !== 'ETHER' || address !== ETH_ADDRESS || decimals !== 18) {
       return 'only one token can represent ETHER'
     }
-  }
+  },
 }
 export const checkTokenListJSON = async (json: DefaultTokenList) => {
   if (!Array.isArray(json)) throw new Error('JSON should be an array of token objects')
@@ -75,4 +76,16 @@ export const checkTokenListJSON = async (json: DefaultTokenList) => {
     Object.keys(token).some(key => errMessage = tokenFieldsChecks[key](token[key], web3, token))
     if (errMessage) throw new Error(`Token ${JSON.stringify(token)} is invalid format: ${errMessage}`)
   }
+}
+
+type Decoder = (logs: Receipt['logs']) => Web3EventLog[]
+
+const decodersMap = new WeakMap<ABI, Decoder>()
+
+export const getDecoderForABI = (abi: ABI): Decoder => {
+  if (decodersMap.has(abi)) return decodersMap.get(abi)
+
+  const decoder = logDecoder(abi)
+  decodersMap.set(abi, decoder)
+  return decoder
 }
