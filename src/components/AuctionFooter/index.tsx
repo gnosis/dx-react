@@ -57,8 +57,7 @@ const AuctionFooter: React.SFC<AuctionFooterProps> = ({
   )
   }
 
-
-  return null
+  return <div className="auctionFooter closedFooter"></div>
 }
 
 export default AuctionFooter
