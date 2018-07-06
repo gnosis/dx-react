@@ -197,9 +197,18 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 }
 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
-  const { tokenPair: { buy, sell } } = getState()
+  let { tokenPair: { buy, sell } } = getState()
 
   if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
+
+  if (sell.address === ETH_ADDRESS || buy.address === ETH_ADDRESS) {
+    const { TokenETH } = await promisedContractsMap
+    if (sell.address === ETH_ADDRESS) {
+      sell = TokenETH
+    } else {
+      buy = TokenETH
+    }
+  }
 
   try {
     const currAucIdx = await getLatestAuctionIndex({ sell, buy })
