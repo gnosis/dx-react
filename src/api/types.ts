@@ -16,9 +16,33 @@ export interface DefaultTokenObject {
 }
 export type DefaultTokenList = DefaultTokenObject[]
 
+export type Hash = string
+export interface BlockReceipt {
+  number: number | null, // - the block number. null when its pending block.
+  hash: string | null, // - hash of the block. null when its pending block.
+  parentHash: string,  // - hash of the parent block.
+  nonce: string | null, // - hash of the generated proof-of-work. null when its pending block.
+  sha3Uncles: string, // - SHA3 of the uncles data in the block.
+  logsBloom: string, // - the bloom filter for the logs of the block. null when its pending block.
+  transactionsRoot: string, // - the root of the transaction trie of the block
+  stateRoot: string, // - the root of the final state trie of the block.
+  miner: string, // - the address of the beneficiary to whom the mining rewards were given.
+  difficulty: BigNumber, // - integer of the difficulty for this block.
+  totalDifficulty: BigNumber, // - integer of the total difficulty of the chain until this block.
+  extraData: string, // - the "extra data" field of this block.
+  size: number, // - integer the size of this block in bytes.
+  gasLimit: number, // - the maximum gas allowed in this block.
+  gasUsed: number, // - the total used gas by all transactions in this block.
+  timestamp: number, // - the unix timestamp for when the block was collated.
+  transactions: TransactionObject[] | Hash[], // - Array of transaction objects, or 32 Bytes transaction hashes
+  uncles: Hash[], // - Array of uncle hashes.
+}
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
+  getBlock(bl: 'earliest' | 'latest' | 'pending' | Hash, returnTransactionObjects?: boolean): Promise<BlockReceipt>,
+  getTransaction(tx: Hash): Promise<TransactionObject | null>,
+  getTransactionReceipt(tx: Hash): Promise<TransactionReceipt | null>,
   getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
   isConnected(): boolean,
@@ -31,33 +55,69 @@ export interface ProviderInterface {
 }
 
 export interface TransactionObject {
+  hash?: string,
   from: Account,
   to?: Account,
   value?: Balance | number,
   gas?: Balance | number,
   gasPrice?: Balance | number,
   data?: string,
-  nonce?: number,
+  nonce?: string | number,
 }
 
-export interface TokensInterface {
+export type Web3EventLog = { _eventName: string } & {[T: string]: string | BigNumber}
+
+export interface TransactionLog {
+  logIndex: number,
+  transactionIndex: number,
+  transactionHash: string,
+  blockHash: string,
+  blockNumber: number,
+  address: Account,
+  data: string,
+  topics: (string | null)[],
+  type: 'mined' | 'pending',
+}
+
+export interface TransactionReceipt {
+  transactionHash: string,
+  transactionIndex: number,
+  blockHash: string,
+  blockNumber: number,
+  gasUsed: number,
+  cumulativeGasUsed: number,
+  contractAddress: null | Account,
+  logs: TransactionLog[],
+  status: '0x1' | '0x0',
+  logsBloom: string,
+}
+
+type TokensInterfaceExtended = {
+  [K in keyof TokensInterface]: TokensInterface[K] extends (...args: any[]) => Promise<Receipt> ? 
+    TokensInterface[K] & {sendTransaction?: TokensInterface<Hash>[K]} :
+    TokensInterface[K]
+}
+
+export { TokensInterfaceExtended as TokensInterface }
+
+interface TokensInterface<T = Receipt> {
   getTokenDecimals(tokenAddress: Account): Promise<BigNumber>,
   getTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>,
   getTotalSupply(tokenAddress: Account): Promise<BigNumber>,
-  transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  transfer(tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject): Promise<T>,
   transferFrom(
     tokenAddress: Account,
     from: Account,
     to: Account,
     value: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
-  approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<Receipt>,
+  ): Promise<T>,
+  approve(tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject): Promise<T>,
   allowance(tokenAddress: Account, owner: Account, spender: Account): Promise<BigNumber>,
 
   ethTokenBalance(account: Account): Promise<BigNumber>,
-  depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
-  withdrawETH(value: Balance, tx: TransactionObject): Promise<Receipt>,
+  depositETH(tx: TransactionObject & {value: TransactionObject['value']}): Promise<T>,
+  withdrawETH(value: Balance, tx: TransactionObject): Promise<T>,
 }
 
 export interface ErrorFirstCallback {
@@ -84,18 +144,20 @@ interface FilterObject {
 
 export type Filter = 'latest' | 'pending' | FilterObject | void
 
+export type ABI = {
+  anonymous?: boolean,
+  constant?: boolean,
+  inputs: {name: string, type: string}[],
+  name: string,
+  outputs?: {name: string, type: string}[],
+  payable?: boolean,
+  stateMutability?: string,
+  type: string,
+}[]
+
 export interface ContractArtifact {
   contractName: string,
-  abi: {
-    anonymous?: boolean,
-    constant?: boolean,
-    inputs: {name: string, type: string}[],
-    name: string,
-    outputs?: {name: string, type: string}[],
-    payable?: boolean,
-    stateMutability?: string,
-    type: string,
-  },
+  abi: ABI,
   bytecode: string,
   deployedBytecode: string,
   sourceMap: string,
@@ -123,8 +185,10 @@ export interface SimpleContract {
   at<T = SimpleContract>(address: Account): T,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
+  abi?: ABI,
 }
 export interface DeployedContract {
+  abi: ABI,
   address: Account,
 }
 
@@ -147,13 +211,21 @@ export interface GNOInterface extends ERC20Interface {
   decimals(): Promise<BigNumber>,
 }
 
-export interface ETHInterface extends ERC20Interface {
+type ETHInterfaceExtended = {
+  [K in keyof ETHInterface]: ETHInterface[K] extends (...args: any[]) => Promise<Receipt> ? 
+    ETHInterface[K] & {sendTransaction?: ETHInterface<Hash>[K]} :
+    ETHInterface[K]
+}
+
+export { ETHInterfaceExtended as ETHInterface }
+
+interface ETHInterface<T = Receipt> extends ERC20Interface {
   symbol(): Promise<'ETH'>,
   name(): Promise<'Ether Token'>,
   decimals(): Promise<BigNumber>,
 
-  deposit(tx: TransactionObject & {value: TransactionObject['value']}): Promise<Receipt>,
-  withdraw(value: Balance, tx: TransactionObject): Promise<Receipt>,
+  deposit(tx: TransactionObject & {value: TransactionObject['value']}): Promise<T>,
+  withdraw(value: Balance, tx: TransactionObject): Promise<T>,
   Deposit: ContractEvent,
   Withdrawal: ContractEvent,
 }
@@ -213,7 +285,16 @@ export interface Receipt {
   logs: {[key: string]: any}[],
 }
 
-export interface DXAuction {
+type DXAuctionExtended = {
+  [K in keyof DXAuction]: DXAuction[K] extends (...args: any[]) => Promise<Receipt> ? 
+    DXAuction[K] & {sendTransaction: DXAuction<Hash>[K]} :
+    DXAuction[K]
+}
+
+export { DXAuctionExtended as DXAuction }
+
+interface DXAuction<T = Receipt> {
+  abi: ABI,
   address: Account,
   newMasterCopy(): Promise<Account>,
   masterCopyCountdown(): Promise<BigNumber>,
@@ -263,14 +344,14 @@ export interface DXAuction {
     thresholdNewAuction: Balance,
     tx: TransactionObject,
   ): never,
-  updateAuctioneer(auctioneer: Account, tx: TransactionObject): Promise<Receipt>,
-  initiateEthUsdOracleUpdate(ethUSDOracle: Account, tx: TransactionObject): Promise<Receipt>,
-  updateEthUSDOracle(tx: TransactionObject): Promise<Receipt>,
-  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance, tx: TransactionObject): Promise<Receipt>,
-  updateThresholdNewAuction(thresholdNewAuction: Balance, tx: TransactionObject): Promise<Receipt>,
-  updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<Receipt>,
-  startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<Receipt>,
-  updateMasterCopy(tx: TransactionObject): Promise<Receipt>,
+  updateAuctioneer(auctioneer: Account, tx: TransactionObject): Promise<T>,
+  initiateEthUsdOracleUpdate(ethUSDOracle: Account, tx: TransactionObject): Promise<T>,
+  updateEthUSDOracle(tx: TransactionObject): Promise<T>,
+  updateThresholdNewTokenPair(thresholdNewTokenPair: Balance, tx: TransactionObject): Promise<T>,
+  updateThresholdNewAuction(thresholdNewAuction: Balance, tx: TransactionObject): Promise<T>,
+  updateApprovalOfToken(token: Account, approved: boolean, tx: TransactionObject): Promise<T>,
+  startMasterCopyCountdown(masterCopy: Account, tx: TransactionObject): Promise<T>,
+  updateMasterCopy(tx: TransactionObject): Promise<T>,
   addTokenPair(
     token1: Account,
     token2: Account,
@@ -279,43 +360,43 @@ export interface DXAuction {
     initialClosingPriceNum: Balance,
     initialClosingPriceDen: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
-  deposit(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
-  withdraw(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  ): Promise<T>,
+  deposit(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<T>,
+  withdraw(tokenAddress: Account, amount: Balance, tx: TransactionObject): Promise<T>,
   postSellOrder(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   postBuyOrder(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
     amount: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   claimSellerFunds(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     auctionIndex: Index,
     tx?: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   claimBuyerFunds(
     sellToken: Account,
     buyToken: Account,
     user: Account,
     auctionIndex: Index,
     tx?: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   closeTheoreticalClosedAuction(
     sellToken: Account,
     buyToken: Account,
     auctionIndex: Index,
     tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   /**
    * @returns Promise<[unclaimedBuyerFunds, currentPriceNum, currentPriceDen]>
    */
@@ -345,7 +426,7 @@ export interface DXAuction {
     buyToken: Account,
     auctionIndex: Index,
   ): Promise<[BigNumber, BigNumber]>,
-  depositAndSell(sellToken: Account, buyToken: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
+  depositAndSell(sellToken: Account, buyToken: Account, amount: Balance, tx: TransactionObject): Promise<T>,
   claimAndWithdraw(
     sellToken: Account,
     buyToken: Account,
@@ -353,7 +434,7 @@ export interface DXAuction {
     auctionIndex: Index,
     amount: Balance,
     tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   getAuctionStart(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getAuctionIndex(tokenA: Account, tokenB: Account): Promise<BigNumber>,
   getTokenOrder(tokenA: Account, tokenB: Account): Promise<[Account, Account]>,
@@ -401,16 +482,24 @@ export interface DXAuction {
     auctionIndices: number[],
     user: Account,
     tx: TransactionObject,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   claimTokensFromSeveralAuctionsAsBuyer(
     sellTokens: Account[],
     buyTokens: Account[],
     auctionIndices: number[],
     user: Account,
-  ): Promise<Receipt>,
+  ): Promise<T>,
 }
 
-export interface DutchExchange {
+type DutchExchangeExtended = {
+  [K in keyof DutchExchange]: DutchExchange[K] extends (...args: any[]) => Promise<Receipt> ? 
+    DutchExchange[K] & {sendTransaction?: DutchExchange<Hash>[K]} :
+    DutchExchange[K]
+}
+
+export { DutchExchangeExtended as DutchExchange }
+
+interface DutchExchange<T = Receipt> {
   address: Account,
 
   isTokenApproved(tokenAddress: Account): Promise<boolean>,
@@ -445,7 +534,7 @@ export interface DutchExchange {
     buyTokenAddresses: Account[],
     indices: number[],
     account: Account,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   getFeeRatio(account: Account): Promise<[BigNumber, BigNumber]>,
 
   postSellOrder(
@@ -453,19 +542,19 @@ export interface DutchExchange {
     amount: Balance,
     index: Index,
     account: Account,
-  ): Promise<Receipt>,
+  ): Promise<T>,
   postBuyOrder(
     pair: TokenPair,
     amount: Balance,
     index: Index,
     account: Account,
-  ): Promise<Receipt>,
-  claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
-  claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<Receipt>,
-  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<Receipt>,
-  deposit(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
-  withdraw(tokenAddress: Account, amount: Balance, account: Account): Promise<Receipt>,
-  depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<Receipt>,
+  ): Promise<T>,
+  claimSellerFunds(pair: TokenPair, index: Index, account: Account): Promise<T>,
+  claimBuyerFunds(pair: TokenPair, index: Index, account: Account): Promise<T>,
+  claimAndWithdraw(pair: TokenPair, index: Index, amount: Balance, account: Account): Promise<T>,
+  deposit(tokenAddress: Account, amount: Balance, account: Account): Promise<T>,
+  withdraw(tokenAddress: Account, amount: Balance, account: Account): Promise<T>,
+  depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<T>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,
@@ -486,6 +575,6 @@ export type DutchExchangeEvents = 'NewDeposit' |
 
 export interface dxAPI {
   web3: ProviderInterface,
-  Tokens: TokensInterface,
-  DutchX: DutchExchange,
+  Tokens: TokensInterfaceExtended,
+  DutchX: DutchExchangeExtended,
 }

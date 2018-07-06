@@ -26,5 +26,5 @@ const range = () => number('progress', 2, {
 storiesOf(`AuctionProgress`, module)
   .addDecorator(CenterDecor)
   .addWithJSX('ongoing auction', () => (
-    <AuctionProgress progress={range()} />
+    <AuctionProgress progress={range()} marks={[true, false, false]}/>
   ))

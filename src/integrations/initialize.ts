@@ -8,6 +8,8 @@ import MetamaskProvider from './metamask'
 import ParityProvider from './parity'
 import RemoteProvider from './remote'
 
+import { watch, getBlock } from './filterChain'
+
 export const WATCHER_INTERVAL = 6000
 
 const networkById = {
@@ -112,5 +114,12 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
     watcher(provider)
     // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
+  })
+
+  // TEMP SAMPLE USAGE
+  watch(async (e, bl) => {
+    if (e) return console.error('Chain watching Error', e)
+    console.log('LATEST BLOCK')
+    console.log(await getBlock(bl))
   })
 }

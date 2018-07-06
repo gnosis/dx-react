@@ -25,7 +25,6 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     this.setState({
       formInvalid: !accepted,
     })
-    console.log('SUBMITTING')
     // redirect to /
     if (accepted) {
       this.props.acceptDisclaimer()
@@ -64,7 +63,6 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             ref={c => this.form = c}
             onSubmit={this.onSubmit}
             onChange={this.onChange}
-            onInvalid={e => console.warn('INVALID', e.target)}
           >
 
             <div className="disclaimerBox md-checkbox">

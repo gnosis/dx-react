@@ -43,10 +43,12 @@ import { findDefaultProvider } from 'selectors/blockchain'
 import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, State } from 'types'
-import { promisedContractsMap } from 'api/contracts'
-import { DefaultTokenObject } from 'api/types'
+import { promisedContractsMap, contractsMap } from 'api/contracts'
+import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
 import { ETH_ADDRESS } from 'globals'
+import { waitForTx } from 'integrations/filterChain'
+import { getDecoderForABI } from 'api/utils'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -257,11 +259,12 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           loader: true,
         },
       }))
-      // TODO only deposit difference
-      const depositReceipt = await depositETH(ETHToWrap.toString(), currentAccount)
-      console.log('​EtherToken Deposit receipt: ', depositReceipt)
+      // TODO: only deposit difference
+      console.log('PROMPTING to start depositETH tx')
+      const depositHash = await depositETH.sendTransaction(ETHToWrap.toString(), currentAccount)
+      console.log('​depositETH tx hash: ', depositHash)
     }
-    //  if sell or buy is unwrapped ETH replace token with previously WETH
+    // if sell or buy is unwrapped ETH replace token with previously WETH
     changeETHforWETH(dispatch, getState, TokenETH.address)
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
@@ -311,6 +314,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
         })
         const choice = await promisedChoice
 
+
         await dispatch(approveTokens(choice, 'OWLTOKEN'))
       }
     }
@@ -352,17 +356,41 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     }))
     // if user's sellAmt > DX.balance(token)
     // deposit(sellAmt) && postSellOrder(sellAmt)
-    let receipt
+    let hash: string
     const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     if (nativeSellAmt.greaterThan(userDXBalance)) {
-      receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
-      console.log('depositAndSell receipt', receipt)
+
+      console.log('PROMPTING to start depositAndSell tx')
+      hash = await depositAndSell.sendTransaction(sell, buy, nativeSellAmt.toString(), currentAccount)
+      console.log('depositAndSell tx hash', hash)
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-      receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
-      console.log('postSellOrder receipt', receipt)
+
+      console.log('PROMPTING to start depositAndSell tx')
+      hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
+      console.log('postSellOrder tx hash', hash)
     }
-    const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
+    const receipt = await waitForTx(hash)
+    console.log('postSellOrder tx receipt: ', receipt)
+
+    const { DutchExchange } =  contractsMap
+    const decoder = getDecoderForABI(DutchExchange.abi)
+    const logs = decoder(receipt.logs)
+    console.log('postSellOrder tx logs', logs)
+    const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
+  
+    // let receipt
+    // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
+    // if (nativeSellAmt.greaterThan(userDXBalance)) {
+    //   receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
+    //   console.log('depositAndSell receipt', receipt)
+    // // else User has enough balance on DX for Token and can sell w/o deposit
+    // } else {
+    //   receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
+    //   console.log('postSellOrder receipt', receipt)
+    // }
+    // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
+  
     console.log(`Sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
     dispatch(closeModal())
 
@@ -410,8 +438,11 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           },
         }))
         const nativeSellAmt = await promisedNativeSellAmt
-        const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
-        console.log('Approved token', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
+        const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
+        console.log('tokenApproval tx hash', tokenApprovalHash)
       } else {
         dispatch(openModal({
           modalName: 'TransactionModal',
@@ -423,8 +454,11 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
-        const tokenApprovalReceipt = await tokenApproval(sell.address, ((2 ** 255) - allowanceLeft).toString())
-        console.log('Approved token', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
+        const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('tokenApproval tx hash', tokenApprovalHash)
       }
     // OWL APPROVAL
     } else {
@@ -440,8 +474,11 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
-        const tokenApprovalReceipt = await tokenApproval(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
-        console.log('Approved OWL', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for OWL')
+        const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
       } else {
         console.log('Disallowing OWL')
         dispatch(closeModal())
