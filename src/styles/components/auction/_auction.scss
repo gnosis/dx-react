@@ -520,7 +520,7 @@ $headerHeight: 58px;
     font-size: 12px;
     font-weight: $bold;
     letter-spacing: 0;
-    color: $orange;
+    color: #9b9b9b;
     line-height: 1;
     vertical-align: middle;
     margin: 0 16px;
@@ -556,12 +556,14 @@ $headerHeight: 58px;
   }
 
   &[disabled] {
+    cursor: initial;
+
     &:hover {
       box-shadow: none;
     }
 
     > span {
-      background-color: #ceb6a8;
+      background-color: #a9a9a9;
     }
   }
 }
@@ -671,6 +673,8 @@ $headerHeight: 58px;
   justify-content: space-around;
   align-items: center;
 
+  transition: 1s all ease-in-out;
+  
   > span > small {
     opacity: .5;
     letter-spacing: 1px;
@@ -681,13 +685,17 @@ $headerHeight: 58px;
     line-height: 1;
     padding: 0 0 10px;
   }
-
+  
   > span > big {
     font-size: 20px;
     font-weight: normal;
   }
-
+  
   a {
     color: $white;
   }
+}
+
+.auctionFooter.closedFooter {
+  height: 0;
 }

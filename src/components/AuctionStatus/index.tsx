@@ -59,7 +59,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
         <span>
           <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
             <i>CLAIM</i>
-            <strong>{(buyAmount.div(10 ** buyToken.decimals)).toString()} {buyToken.symbol || buyToken.name || buyToken.address}</strong>
+            <strong>{(buyAmount.div(10 ** buyToken.decimals)).toFixed()} {buyToken.symbol || buyToken.name || buyToken.address}</strong>
             <span><img src={claim} /></span>
           </button>
         </span>
@@ -70,14 +70,17 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
     // no deposit -- no button
       if (sellAmount.eq(0)) return null
       return (
-        <span>
-          <button id="claimToken" disabled>
-            <i>CLAIM</i>
-            <strong>{buyToken.symbol || buyToken.name || buyToken.address} here later</strong>
-            <span><img src={claim} /></span>
-          </button>
-        </span>
-    )
+        <>
+          <span>
+            <button id="claimToken" disabled>
+              <i>CLAIM</i>
+              <strong>{buyToken.symbol || buyToken.name || buyToken.address}</strong>
+              <span><img src={claim} /></span>
+            </button>
+          </span>
+          <h3>{buyToken.symbol || buyToken.name || buyToken.address} not yet claimable - please check back later</h3>
+        </>
+      )
     default:
       return null
   }

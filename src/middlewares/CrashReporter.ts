@@ -1,5 +1,6 @@
 import { Middleware, Action } from 'redux'
 import { ThunkAction } from 'redux-thunk'
+import { push } from 'connected-react-router'
 // import { State } from 'types'
 
 /**
@@ -10,6 +11,7 @@ const CrashReporter: Middleware = () => next => (action: ThunkAction<Action, any
     return next(action)
   } catch (err) {
     console.error('Caught an exception!', err)
+    next(push('/'))
     throw err
   }
 }

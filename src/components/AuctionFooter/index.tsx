@@ -24,7 +24,7 @@ const AuctionFooter: React.SFC<AuctionFooterProps> = ({
   // buyDecimal,
   status,
 }) => {
-  if (status === Status.PLANNED || status == Status.INIT || status === Status.ACTIVE) {
+  if (status === Status.PLANNED || status === Status.INIT || status === Status.ACTIVE) {
     if (sellAmount.gt(0)) { return (
       <div className="auctionFooter">
         <span>
@@ -57,10 +57,7 @@ const AuctionFooter: React.SFC<AuctionFooterProps> = ({
   )
   }
 
-
-  return (
-    <div className="auctionFooter"/>
-  )
+  return <div className="auctionFooter closedFooter"></div>
 }
 
 export default AuctionFooter
