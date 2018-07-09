@@ -14,6 +14,7 @@ export interface AuctionStatusProps {
   timeLeft: number,
   status: Status,
   completed: boolean,
+  theoreticallyCompleted: boolean,
   claimSellerFunds: () => any,
 }
 

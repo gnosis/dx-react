@@ -2,6 +2,7 @@ import React from 'react'
 
 export interface TokenClaimingProps {
   completed: boolean,
+  theoreticallyCompleted: boolean,
   buyAmount: number,
   claimSellerFunds: () => any,
 }
@@ -22,11 +23,12 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
     async claimTokens() {
       const {
         completed,
+        theoreticallyCompleted,
         buyAmount,
         claimSellerFunds,
       } = this.props
       // don't claim anything if auction isn't completed or nothing to claim
-      if (!completed || buyAmount <= 0) return
+      if (!completed || (!theoreticallyCompleted && buyAmount <= 0)) return
 
       // indicate that claiming is in progress
       // can be used to disallow multiple simultaneous claimRequests or just for indication

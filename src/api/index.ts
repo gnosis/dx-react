@@ -417,6 +417,59 @@ export const getSellerBalance = async (pair: TokenPair, index?: Index, account?:
 }
 
 /*
+ * gets sell volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ */
+export const getSellVolumeCurrent = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getSellVolumesCurrent(pair)
+}
+
+/*
+ * gets buy volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ */
+export const getBuyVolume = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getBuyVolumes(pair)
+}
+
+interface OutstandingVolumeArgs {
+  sellVolume?: BigNumber,
+  buyVolume?: BigNumber,
+  price?: [BigNumber, BigNumber],
+  auctionIndex?: Index,
+}
+
+/*
+ * gets buy volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ * @param opts
+ * @param opts.sellVolume
+ * @param opts.buyVolume
+ * @param opts.price
+ * @param opts.auctionIndex
+ */
+export const getOutstandingVolume = async (
+  pair: TokenPair,
+  { sellVolume, buyVolume, price, auctionIndex }: OutstandingVolumeArgs = {},
+): Promise<BigNumber> => {
+  const { DutchX } = await promisedAPI;
+
+  [sellVolume, buyVolume, price] = await Promise.all([
+    sellVolume || DutchX.getSellVolumesCurrent(pair),
+    buyVolume || DutchX.getBuyVolumes(pair),
+    price || DutchX.getPrice(pair, auctionIndex),
+  ])
+
+  const outstandingVolume = sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
+
+  return outstandingVolume.lt(0) ? toBigNumber(0) : outstandingVolume
+}
+
+/*
  * claim seller funds from auction corresponding to a pair of tokens at an index
  * @param pair TokenPair
  * @param index auctionIndex, current auction by default
@@ -456,6 +509,7 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
 
   try {
     const [claimable] = await DutchX.claimSellerFunds.call(pair, index, account)
+    console.log('claimable: ', claimable)
     return claimable as BigNumber
   } catch (e) {
     console.log('Nothing to claim')

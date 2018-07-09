@@ -33,6 +33,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   progress,
   error,
   claimSellerFunds,
+  theoreticallyCompleted,
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
@@ -53,6 +54,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             timeLeft={timeToCompletion}
             status={status}
             completed={completed}
+            theoreticallyCompleted={theoreticallyCompleted}
             claimSellerFunds={claimSellerFunds}
           />
           <AuctionProgress
