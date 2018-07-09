@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { Modal } from 'types'
 import { closeModal } from 'actions'
 import { network2URL } from 'globals'
@@ -113,14 +113,35 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
     </div>
   </div>
 
+const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
+
 const disabledReasons = {
-  geoblock: 'The Dutch Exchange is not available in your country',
-  networkblock: 'The Dutch Exchange is not available on the current network',
+  geoblock: {
+    title: 'The DutchX is currently not available.',
+    render: () => 
+      <div style={blockModalStyle}>
+        <p>Please try again later. No funds are lost due to downtime.</p>
+        <p>Still experiencing issues? You may be accessing the DutchX from a restricted country or region.</p>
+        <br />
+        <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+      </div>,
+  },
+  networkblock: {
+    title: 'The DutchX is not available on the current network',
+    render: () =>
+    <div style={blockModalStyle}>
+      <p>Please try switching to an available network.</p>
+      <p></p>
+      <br />
+      <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+    </div>,
+  },
 }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({
   disabledReason,
 }) =>
   <div className="modalDivStyle">
-    <h1 className="modalH1">{disabledReasons[disabledReason]}</h1>
+    <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
+    {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render()}
   </div>
