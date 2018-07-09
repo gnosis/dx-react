@@ -402,12 +402,12 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
   
     console.log(`Sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
     dispatch(closeModal())
+    // jump to Auction Page
+    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
 
     // grab balance of sold token after sale
     const balance = await getTokenBalance(sell.address, currentAccount)
 
-    // jump to Auction Page
-    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // dispatch Actions
     dispatch(batchActions([
       setTokenBalance({ address: sell.address, balance }),
