@@ -100,6 +100,7 @@ storiesOf('AuctionContainer', module)
           step: 5,
         })}
         completed={boolean('comleted', true)}
+        theoreticallyCompleted={boolean('comleted', true)}
         claimSellerFunds={() => {}}
       />
       <AuctionProgress progress={4} marks={[true, true, true]} />
