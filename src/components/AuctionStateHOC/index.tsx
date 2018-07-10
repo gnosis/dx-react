@@ -89,14 +89,18 @@ const getAuctionStatus = ({
   if (closingPrice[1].gt(0) || currentAuctionIndex.gt(index)) return { status: AuctionStatus.ENDED }
   // this should show theoretically auctions as ENDED and allow to claim,
   // which internally closes the auction with a 0 buy order
+  // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
+  if (currentAuctionIndex.lt(index)) return { status: AuctionStatus.PLANNED }
+  
+  if (auctionStart.equals(1)) return { status: AuctionStatus.INIT }
+  
   if (currentAuctionIndex.equals(index) && closingPrice[0].equals(0) && outstandingVolume.eq(0)) {
     console.log('Theoretically closed')
     return { status: AuctionStatus.ENDED, theoretically: true }
   }
-  // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
-  if (currentAuctionIndex.lt(index)) return { status: AuctionStatus.PLANNED }
-  if (auctionStart.equals(1)) return { status: AuctionStatus.INIT }
+  
   if (!price[1].equals(0)) return { status: AuctionStatus.ACTIVE }
+
   return { status: AuctionStatus.INACTIVE }
 }
 
