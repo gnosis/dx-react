@@ -264,7 +264,12 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
         modalProps: {
           header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
-          body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
+          body: `
+            ${sellName} is not an ERC20 Token and must be wrapped.
+            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder. 
+          
+            Please confirm with ${activeProvider}.
+          `,
           loader: true,
         },
       }))
@@ -279,14 +284,26 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     // if allowance is ok, skip
     const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
     if (needSellTokenAllowance) {
-      sellName = getTokenName(sell)
+      ({ symbol: sellName } = getTokenName(sell))
+
       const promisedChoice: Promise<string> = new Promise((accept) => {
         dispatch(openModal({
           modalName: 'ApprovalModal',
           modalProps: {
-            header: `Confirm ${sellName} Token movement`,
+            header: `Confirm ${sellName} token transfer`,
             // tslint:disable-next-line
-            body: `Confirmation: DutchX needs your permission to move your ${sellName} Tokens for this Auction - please check ${activeProvider}`,
+            body: `The DutchX needs your permission to transfer your ${sellName}.`,
+            buttons: {
+              button1: {
+                buttonTitle1: 'Approve this trade only',
+                buttonDesc1: 'You\'ll allow the DutchX to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.',
+              },
+              button2: {
+                buttonTitle2: `Approve also for future trades with ${sellName}`,
+                buttonDesc2: `You'll allow the DutchX to take ${sellName} also for future trades. The DutchX won't take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.`,
+              },
+            },
+            footer: 'If you are unsure, select “Approve this trade only”.',
             onClick: accept,
           },
         }))
@@ -297,7 +314,6 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     // Go straight to sell order if deposit && allowance both good
     }
 
-    console.log('​exportcheckUserStateAndSell -> OWLBalance ', OWLBalance)
     if (OWLBalance.gt(0)) {
       const needOWLAllowance = await checkTokenAllowance(TokenOWL.address, nativeSellAmt, currentAccount)
       if (needOWLAllowance) {
@@ -305,16 +321,18 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           dispatch(openModal({
             modalName: 'ApprovalModal',
             modalProps: {
-              header: `Approving OWL use for fees`,
-              body: `You have OWL available in your linked wallet address. Would you like to use OWL to pay for half of the fees on the DutchX? Any fee reduction due to MGN is valid and applied before the fee calculation.`,
+              header: `Using OWL to pay for fees`,
+              body: `You have the option to pay half of your fees on the DutchX in OWL. 
+              Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
+              `,
               buttons: {
-                button1: {
-                  buttonTitle1: 'Approve',
-                  buttonDesc1: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
-                },
                 button2: {
-                  buttonTitle2: 'Disallow',
-                  buttonDesc2: 'Choose this option if you do not want to use OWL',
+                  buttonTitle2: 'Use OWL to pay for fees',
+                  buttonDesc2: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
+                },
+                button1: {
+                  buttonTitle1: 'Don\'t use OWL to pay for fees',
+                  buttonDesc1: 'Choose this option if you do not want to use OWL',
                 },
               },
               onClick: accept,
@@ -352,11 +370,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Sell Confirmation`,
-        body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
+        header: `Order confirmation`,
+        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain. Processing the transaction may take a while. `,
         txData: {
-          tokenA: { ...sell, name: sellName } as DefaultTokenObject,
-          tokenB: { ...buy, name: buyName } as DefaultTokenObject,
+          tokenA: { ...sell, ...sellName } as DefaultTokenObject,
+          tokenB: { ...buy, ...buyName } as DefaultTokenObject,
           sellAmount,
           network,
         },
@@ -400,10 +418,10 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // }
     // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
   
-    console.log(`Sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
+    console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     dispatch(closeModal())
     // jump to Auction Page
-    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
+    dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
 
     // grab balance of sold token after sale
     const balance = await getTokenBalance(sell.address, currentAccount)
@@ -425,11 +443,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN') => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
-    blockchain: { currentAccount },
+    blockchain: { activeProvider, currentAccount },
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
   const promisedContracts = promisedContractsMap
-  const sellName = getTokenName(sell)
+  const { symbol: sellName } = getTokenName(sell)
 
   try {
     // don't do anything when submitting a <= 0 amount
@@ -441,8 +459,8 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving minimum token movement`,
-            body: `You are approving ${sellAmount} for this particular token [${sellName}]. For future transactions with this particular token, you will continue needing to sign two transactions.`,
+            header: `Approving token transfer for this trade only`,
+            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
         }))
@@ -456,8 +474,8 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving maximum token movement`,
-            body: `You are approving the maximum amount for this particular token [${sellName}]. You will no longer need to sign two transactions for this token going forward.`,
+            header: `Approving token transfer also for future trades`,
+            body: `You will no longer need to sign two transactions for future orders with ${sellName} and will save transaction costs. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
         }))
@@ -510,8 +528,8 @@ export const claimSellerFundsFromSeveral = (
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Claiming Funds`,
-        body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        header: `Claiming funds`,
+        body: `You are claiming ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -521,7 +539,7 @@ export const claimSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: `Withdrawing Claimed Funds`,
-        body: `Withdrawing ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -603,8 +621,8 @@ export function errorHandling(error: Error) {
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `TRANSACTION FAILED/CANCELLED`,
-        body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
+        header: `Transaction failed / was cancelled`,
+        body: `${activeProvider || 'Your provider'} has cancelled your transaction. Please see below for more information:`,
         button: true,
         error: errorFind(normError),
       },

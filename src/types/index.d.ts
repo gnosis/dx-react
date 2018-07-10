@@ -81,6 +81,7 @@ export interface Modal {
         buttonDesc2: string,
       },
     },
+    footer?: string,
     txData?: {
       tokenA: DefaultTokenObject,
       tokenB?: DefaultTokenObject,

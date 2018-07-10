@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { Modal } from 'types'
 import { closeModal } from 'actions'
 import { network2URL } from 'globals'
@@ -46,16 +46,16 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     </p>
     {txData && <div className="modalTXDataDiv">
       <ul>
-        <li>{`Sell Amount:    ${txData.sellAmount}`}</li>
+        <li>{`Amount deposited:    ${txData.sellAmount}`}</li>
         {(txData.tokenA.symbol || txData.tokenA.name) &&
-        <li>{`Token Selling:  ${txData.tokenA.symbol || txData.tokenA.name}${txData.tokenA.name && txData.tokenA.symbol && ' [' + txData.tokenA.name + ']'}`}</li>
+        <li>{`Token depositing:  ${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</li>
         }
-        <li>{`Sell Token Address:  ${txData.tokenA.address}`}</li>
+        <li>{`Deposit token address:  ${txData.tokenA.address}`}</li>
         <br />
         {(txData.tokenB.symbol || txData.tokenB.name) &&
-        <li>{`Token Receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${txData.tokenB.name && txData.tokenB.symbol && ' [' + txData.tokenB.name + ']'}`}</li>
+        <li>{`Token receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${(txData.tokenB.name && txData.tokenB.symbol) && ' (' + txData.tokenB.name + ')'}`}</li>
         }
-        <li>{`Receiving Token Address:  ${txData.tokenB.address}`}</li>
+        <li>{`Receiving token address:  ${txData.tokenB.address}`}</li>
         <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></li>
       </ul>
     </div>}
@@ -77,6 +77,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
   modalProps: {
     header,
     body,
+    footer,
     onClick,
     buttons,
   },
@@ -88,39 +89,62 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
       { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
     </p>
     <div className="modalParentDiv">
-      <div className="modalButtonDiv">
-        <button
-          className="modalButton"
-          onClick={() => onClick('MAX')}
-          >
-          {buttons && buttons.button1.buttonTitle1 || 'Approve Max'}
-        </button>
-        <p className="modalButtonDescription">
-          {buttons && buttons.button1.buttonDesc1 || 'Choose this option to stop seeing this prompt and only sign 1 transaction per sell order'}
-        </p>
-      </div>
+      
       <div className="modalButtonDiv">
         <button
           className="modalButton"
           onClick={() => onClick('MIN')}
           >
-          {buttons && buttons.button2.buttonTitle2 || 'Approve Min'}
+          {buttons && buttons.button1.buttonTitle1 || 'Approve Min'}
         </button>
         <p className="modalButtonDescription">
-          {buttons && buttons.button2.buttonDesc2 || 'Choose this option to require signing 2 transactions for each sell order'}
+          {buttons && buttons.button1.buttonDesc1 || 'You\'ll allow the DutchX to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.'}
         </p>
       </div>
+
+      <div className="modalButtonDiv">
+        <button
+          className="modalButton"
+          onClick={() => onClick('MAX')}
+          >
+          {buttons && buttons.button2.buttonTitle2 || 'Approve Max'}
+        </button>
+        <p className="modalButtonDescription">
+          {buttons && buttons.button2.buttonDesc2 || 'You\'ll allow the DutchX to also take your bidding token for future trades. The DutchX won\'t take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.'}
+        </p>
+      </div>
+      {footer && <i>{footer}</i>}
     </div>
   </div>
 
+const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
+
 const disabledReasons = {
-  geoblock: 'The Dutch Exchange is not available in your country',
-  networkblock: 'The Dutch Exchange is not available on the current network',
+  geoblock: {
+    title: 'The DutchX is currently not available.',
+    render: () => 
+      <div style={blockModalStyle}>
+        <p>Please try again later. No funds are lost due to downtime.</p>
+        <p>Still experiencing issues? You may be accessing the DutchX from a restricted country or region.</p>
+        <br />
+        <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+      </div>,
+  },
+  networkblock: {
+    title: 'The DutchX is not available on your network.',
+    render: () =>
+    <div style={blockModalStyle}>
+      <p>Make sure you’re connected to the Ethereum Mainnet.</p>
+      <br />
+      <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+    </div>,
+  },
 }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({
   disabledReason,
 }) =>
   <div className="modalDivStyle">
-    <h1 className="modalH1">{disabledReasons[disabledReason]}</h1>
+    <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
+    {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render()}
   </div>

@@ -1,11 +1,13 @@
 import { DefaultTokenObject, State } from 'types'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS, EMPTY_TOKEN } from 'globals'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
-import { EMPTY_TOKEN } from 'globals'
 
 export const getTokenName = ({ symbol, name, address, isETH }: DefaultTokenObject) => {
-  if (address === ETH_ADDRESS && isETH) return 'WETH'
-  return symbol && symbol.toUpperCase() || name && name.toUpperCase() || address
+  if (address === ETH_ADDRESS && isETH) return { symbol: 'WETH', name: 'Wrapped-Ether' }
+  return { 
+    name: name && name.toUpperCase() || symbol && symbol.toUpperCase() || address,
+    symbol: symbol && symbol.toUpperCase() || name && name.toUpperCase() || address,
+  }
 }
 
 export const getSellTokenBalance = ({ tokenPair: { sell = EMPTY_TOKEN }, tokenBalances }: State) => {
