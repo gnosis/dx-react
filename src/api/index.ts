@@ -636,12 +636,18 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   }
 }
 
-const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: any) => {
+interface CheckClaimableStatus {
+  claimableIndices: BigNumber[];
+  idx: BigNumber;
+  closingPricePair: BigNumber[];
+}
+
+const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: CheckClaimableStatus) => {
   if (claimableIndices.length >= 2) return true
 
   if (claimableIndices.length === 1) {
-    if (idx.eq(claimableIndices.last())) return closingPricePair[1].gt(0)
-    if (idx.gt(claimableIndices.last())) return true
+    if (idx.equals(claimableIndices.last())) return closingPricePair[1].gt(0)
+    if (idx.greaterThan(claimableIndices.last())) return true
   }
   return false
 }
