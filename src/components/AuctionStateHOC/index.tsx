@@ -1,5 +1,5 @@
 import React from 'react'
-import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
+import { TokenCode, TokenName, Account, DefaultTokenObject, TokenPair } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
 // import { promisedDutchX } from 'api/dutchx'
@@ -15,7 +15,6 @@ import {
   getBuyVolume,
   getOutstandingVolume,
   getUnclaimedSellerFunds,
-  claimSellerFundsAndWithdraw,
 } from 'api'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -35,6 +34,12 @@ export interface AuctionStateProps {
   tokenList: DefaultTokenObject[],
   address2Token: { [P in Account]: DefaultTokenObject },
   symbol2Token: { [P in TokenCode]: DefaultTokenObject },
+  claimSellerFundsAndWithdrawFromAuction(
+    pair: TokenPair,
+    index: number,
+    amount: BigNumber,
+    account: Account,
+  ): void
 }
 
 export interface AuctionStateState {
@@ -266,7 +271,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         `claiming tokens for ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
-      return claimSellerFundsAndWithdraw({ sell, buy }, index, amount, account)
+      return this.props.claimSellerFundsAndWithdrawFromAuction({ sell, buy }, index, amount, account)
     }
 
     render() {
