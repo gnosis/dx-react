@@ -1,4 +1,4 @@
-$modal-max-width: 600px;
+$modal-max-width: 800px;
 
 // Modal
 .modalDivStyle {
@@ -21,11 +21,13 @@ $modal-max-width: 600px;
 
   .modalParentDiv {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: center;
     width: 100%;
     max-width: $modal-max-width;
+
+    margin-top: 20px;
   }
 
   > h1 {
@@ -48,6 +50,11 @@ $modal-max-width: 600px;
   > h1, .modalButtonDescription, .modalPSmall {
     color: white;
     line-height: normal;
+  }
+
+  > .modalFooter {
+    font-size: 14px;
+    max-width: 600px;
   }
 
   > .modalP {
@@ -98,13 +105,13 @@ $modal-max-width: 600px;
     border: 0;
     border-radius: 3px;
     color: $blue;
+    font-family: inherit;
     font-size: 1.5em;
-    min-height: 50px;
+    font-weight: $normal;
     width: 100%;
     max-width: 14em;
-    font-family: inherit;
+    padding: 20px;
     outline: 0;
-    font-weight: bold;
 
     @media #{$mobile} {
       font-size: 1.4em;
@@ -142,7 +149,7 @@ $modal-max-width: 600px;
     justify-content: center;
     align-items: center;
     padding: 10px;
-    width: 100%;
+    // width: 100%;
   }
 
   .modalTXDataDiv {

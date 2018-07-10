@@ -74,14 +74,14 @@ export interface Modal {
     buttons?: {
       button1: {
         buttonTitle1: string,
-        buttonDesc1: string,
+        buttonDesc1?: string,
       },
       button2: {
         buttonTitle2: string,
-        buttonDesc2: string,
+        buttonDesc2?: string,
       },
     },
-    footer?: string,
+    footer?: { msg: string, url?: string },
     txData?: {
       tokenA: DefaultTokenObject,
       tokenB?: DefaultTokenObject,
