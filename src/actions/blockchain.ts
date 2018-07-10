@@ -25,6 +25,8 @@ import {
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
+  claimSellerFundsAndWithdraw,
+  getSellerBalance,
 } from 'api'
 
 import {
@@ -42,7 +44,7 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, State } from 'types'
+import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { promisedContractsMap, contractsMap } from 'api/contracts'
 import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
@@ -498,6 +500,43 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
   }
 }
 
+export const claimSellerFundsAndWithdrawFromAuction = (
+  pair: TokenPair,
+  index: number,
+  amount: BigNumber,
+  account: Account,
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { sell, buy } = pair
+  const { blockchain: { activeProvider } } = getState(),
+    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Claiming Funds`,
+        body: `You are claiming ${buyName} from this ${sellName}-${buyName} auction to your wallet. Please confirm with ${activeProvider}`,
+        loader: true,
+      },
+    }))
+    const claimAndWithdrawReceipt = await claimSellerFundsAndWithdraw(pair, index, amount, account)
+    console.log('​ClaimAndWithdraw receipt => ', claimAndWithdrawReceipt)
+
+    // refresh state ...
+    let sellerBalance: BigNumber = await dispatch(updateMainAppState({ fn: getSellerBalance, args: [pair, index, account] }))
+    // loop until sellBalance drops to 0
+    while (sellerBalance.gt(0)) {
+      (sellerBalance = await dispatch(updateMainAppState({ fn: getSellerBalance, args: [pair, index, account] })))
+    }
+
+    return dispatch(closeModal())
+  } catch (error) {
+    console.error(error.message)
+
+    dispatch(errorHandling(error, false))
+  }
+}
+
 export const claimSellerFundsFromSeveral = (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
@@ -587,7 +626,7 @@ async function checkTokenAllowance(
   return tokenAllowance
 }
 
-export function errorHandling(error: Error) {
+export function errorHandling(error: Error, goHome = true) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
     const place = string.search(toFind)
     return string.slice(place + offset)
@@ -599,7 +638,7 @@ export function errorHandling(error: Error) {
     // close to unmount
     dispatch(closeModal())
     // go home stacy
-    dispatch(push('/'))
+    if (goHome) dispatch(push('/'))
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
