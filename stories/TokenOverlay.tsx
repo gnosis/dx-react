@@ -32,6 +32,7 @@ storiesOf('TokenOverlay', module)
         approvedTokens={approvedTokens}
         availableAuctions={new Set()}
         WETHAddress=""
+        MGNAddress=""
         tokenPair={{} as TokenPair}
      />
     )

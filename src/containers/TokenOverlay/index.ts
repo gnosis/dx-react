@@ -2,16 +2,19 @@ import { connect } from 'react-redux'
 
 import TokenOverlay from 'components/TokenOverlay'
 import { closeOverlay, selectTokenPairAndRatioPair, resetTokenPairAndCloseOverlay } from 'actions'
-import { State } from 'types'
+import { State, TokenCode } from 'types'
 import { createSelector } from 'reselect'
 
-const getWETHAddress = createSelector(
+const getTokenAddress = (code: TokenCode) => createSelector(
   ({ tokenList }) => tokenList.defaultTokenList,
   (defaultTokenList) => {
-    const WETH = defaultTokenList.find((t: typeof defaultTokenList[0]) => t.symbol === 'WETH')
-    return WETH && WETH.address
+    const token = defaultTokenList.find((t: typeof defaultTokenList[0]) => t.symbol === code)
+    return token && token.address
   },
 )
+
+const getWETHAddress = getTokenAddress('WETH')
+const getMGNAddress = getTokenAddress('MGN')
 
 const mapStateToProps = (state: State) => {
   const { tokenList, tokenPair, tokenBalances, tokenOverlay, approvedTokens, auctions } = state
@@ -29,6 +32,7 @@ const mapStateToProps = (state: State) => {
     approvedTokens,
     availableAuctions: auctions.availableAuctions,
     WETHAddress: getWETHAddress(state),
+    MGNAddress: getMGNAddress(state),
   }
 }
 

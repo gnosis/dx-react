@@ -31,8 +31,11 @@ async function init(): Promise<TokensInterface> {
   const transferFrom = (tokenAddress: Account, from: Account, to: Account, value: Balance, tx: TransactionObject) =>
     getToken(tokenAddress).transferFrom(from, to, value, tx)
 
-  const approve = (tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject) =>
+  const approve: TokensInterface['approve'] = (tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject) =>
     getToken(tokenAddress).approve(spender, value, tx)
+
+  approve.sendTransaction = (tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject) =>
+    getToken(tokenAddress).approve.sendTransaction(spender, value, tx)
 
   const allowance = (tokenAddress: Account, owner: Account, spender: Account) =>
     getToken(tokenAddress).allowance(owner, spender)
@@ -41,7 +44,10 @@ async function init(): Promise<TokensInterface> {
 
   const ethTokenBalance = (owner: Account) => eth.balanceOf(owner)
 
-  const depositETH = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
+  const depositETH: TokensInterface['depositETH'] = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
+
+  depositETH.sendTransaction = (tx: TransactionObject & {value: TransactionObject['value']}) =>
+    eth.deposit.sendTransaction(tx)
 
   const withdrawETH = (value: Balance, tx: TransactionObject) => eth.withdraw(value, tx)
 

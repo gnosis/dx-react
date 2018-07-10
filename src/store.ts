@@ -5,9 +5,6 @@ import thunk from 'redux-thunk'
 
 import { enableBatching } from 'redux-batched-actions'
 import CrashReporter from 'middlewares/CrashReporter'
-import LocalStorageDump from 'middlewares/LocalStorageDump'
-import LocalStorageLoad from 'middlewares/LocalStorageLoad'
-import Notifications from 'middlewares/Notifications'
 
 import { State } from 'types'
 
@@ -17,14 +14,11 @@ export default function (history: History, initialState?: Partial<State>) {
   const middlewares = [
     thunk,
     routerMiddleware(history),
-    Notifications,
-    LocalStorageLoad,
-    LocalStorageDump,
     CrashReporter,
   ]
 
   const composeEnhancers = (process.env.NODE_ENV !== 'production' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ? 
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ?
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ serialize: true }) : compose
 
   const enhancer = composeEnhancers(applyMiddleware(...middlewares))

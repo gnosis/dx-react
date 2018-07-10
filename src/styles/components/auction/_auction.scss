@@ -2,7 +2,6 @@ $headerHeight: 58px;
 
 .auction {
   max-width: $max-width;
-  // margin: 75px auto 0;
   margin: 0 auto;
   display: flex;
   font-family: inherit;
@@ -29,6 +28,12 @@ $headerHeight: 58px;
   box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
   padding: 0 0 40px;
 
+  @media #{$mobile} {
+    width: 100%;
+    border-radius: 0;
+    border: 0;
+  }
+
   &[data-screen="status"] {
     padding: 0;
   }
@@ -42,6 +47,10 @@ $headerHeight: 58px;
     margin: 0 auto 35px;
     text-align: center;
     width: 100%;
+
+    @media #{$mobile} {
+      padding: 0 20px;
+    }
   }
 
   .buttonCTA {
@@ -64,7 +73,7 @@ $headerHeight: 58px;
     vertical-align: middle;
     line-height: $headerHeight;
     font-family: inherit;
-    font-weight: bold;
+    font-weight: $bold;
     font-size: 18px;
     color: #1a4977;
     letter-spacing: 0;
@@ -113,7 +122,7 @@ $headerHeight: 58px;
     font-size: 14px;
     color: $darkBlue;
     letter-spacing: 1px;
-    font-weight: bold;
+    font-weight: $bold;
     line-height: 1;
     text-transform: uppercase;
   }
@@ -134,6 +143,14 @@ $headerHeight: 58px;
     ".   label1 .      . label2 ."
     "max input1 token1 . input2 token2";
 
+  @media #{$mobile} {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+
   &::after {
     content: "";
     position: absolute;
@@ -143,6 +160,11 @@ $headerHeight: 58px;
     left: 0;
     right: 0;
     margin: auto;
+
+    @media #{$mobile} {
+      display: none;
+      content: none;
+    }
   }
 
   input {
@@ -152,12 +174,16 @@ $headerHeight: 58px;
     background: $white;
     border-radius: 2px;
     border: 0;
-    outline: 0;
-    font-size: 13px;
-    color: #444951;
+    // outline: 0;
+    font-size: 15px;
+    color: $darkBlue;
     letter-spacing: 0.5px;
     line-height: 1;
     text-align: right;
+
+    @media #{$mobile} {
+      margin: 0 10px 0 0;
+    }
 
     &:first-of-type {
       grid-area: input1;
@@ -168,7 +194,8 @@ $headerHeight: 58px;
     }
 
     &[readonly] {
-      background: #f2f3f5;
+      background: transparent;
+      border: 1px solid #a5b1c1;
     }
   }
 
@@ -181,8 +208,12 @@ $headerHeight: 58px;
     letter-spacing: 1px;
     line-height: 1;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: $bold;
     white-space: nowrap;
+
+    @media #{$mobile} {
+      margin: 0 0 5px;
+    }
 
     &:first-of-type {
       grid-area: label1;
@@ -190,17 +221,22 @@ $headerHeight: 58px;
 
     &:last-of-type {
       grid-area: label2;
+
+      @media #{$mobile} {
+        margin: 25px 0 5px;
+      }
     }
   }
 
   a {
     text-decoration: underline;
-    font-weight: $lighter;
+    font-weight: $bold;
     font-family: inherit;
     font-size: 10px;
     color: $blue;
     grid-area: max;
     text-align: right;
+    letter-spacing: 1px;
   }
 
   small {
@@ -209,7 +245,7 @@ $headerHeight: 58px;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
-    font-weight: bold;
+    font-weight: $bold;
 
     &:first-of-type {
       grid-area: token1;
@@ -243,22 +279,37 @@ $headerHeight: 58px;
     width: 32%;
     border-right: 1px solid $greyBorder;
     flex-basis: 32%;
+
+    @media #{$mobile} {
+      width: 50%;
+      flex-basis: 50%;
+    }
   }
 
   > span:last-child {
     width: 68%;
     flex-basis: 68%;
+
+    @media #{$mobile} {
+      width: 50%;
+      flex-basis: 50%;
+    }
   }
 
   > span > big {
     font-size: 11px;
-    font-weight: bold;
+    font-weight: $bold;
     color: $darkBlue;
     letter-spacing: 2px;
     line-height: 1;
     text-transform: uppercase;
     width: 100%;
     margin: 0 auto 10px;
+
+    @media #{$mobile} {
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
   }
 
   > span > i {
@@ -267,7 +318,7 @@ $headerHeight: 58px;
     margin: 0 auto 3px;
     letter-spacing: 0;
     line-height: 17px;
-    font-weight: bold;
+    font-weight: $bold;
     font-style: normal;
     display: block;
     width: 100%;
@@ -280,13 +331,18 @@ $headerHeight: 58px;
 
   > span > code {
     background: #f2f3f5;
-    color: #e00000;
+    color: $red;
     padding: 4px 8px;
     box-sizing: border-box;
     border-radius: 2px;
     letter-spacing: 0.5px;
     display: table;
     font-family: monospace;
+    word-break: break-all;
+
+    @media #{$mobile} {
+      margin: 0 15px;
+    }
   }
 }
 
@@ -336,7 +392,7 @@ $headerHeight: 58px;
     width: 100%;
     margin: 0 auto 5px;
     text-align: center;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > p {
@@ -373,13 +429,13 @@ $headerHeight: 58px;
   }
 
   > span > small {
-    font-size: 12px;
+    font-size: 11px;
     color: $greyText;
-    letter-spacing: 5px;
+    letter-spacing: 3px;
     line-height: 1.6;
     display: block;
     text-align: center;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > span > big {
@@ -387,20 +443,36 @@ $headerHeight: 58px;
     color: $darkBlue;
     letter-spacing: 0.5px;
     line-height: 1;
+    font-weight: $bold;
+    text-transform: uppercase;
+  }
+
+  > span > big[data-status] {
+    font-size: 14px;
+    background: $grey;
+    border-radius: 16px;
+    padding: 6px 16px;
+    color: $white;
+    letter-spacing: 2px;
+    display: table;
+    margin: auto;
   }
 
   > span:nth-of-type(2) > big {
     &[data-status="planned"],
     &[data-status="initialising"] {
-      color: $orange;
+      background: $orange; // in case no support (probably remove?)
+      background: linear-gradient(to right, $orange 0%,#ff7724 100%);
     }
 
     &[data-status="active"] {
-      color: $darkBlue;
+      background: $blue; // in case no support (probably remove?)
+      background: linear-gradient(to right, $blue 0%,#1183e0 100%);
     }
 
     &[data-status="ended"] {
-      color: $green;
+      background: $green; // in case no support (probably remove?)
+      background: linear-gradient(to right, $green 0%,#01a94d 100%);
     }
   }
 
@@ -412,7 +484,7 @@ $headerHeight: 58px;
     margin: 0 auto 8px;
     text-align: center;
     display: block;
-    font-weight: bold;
+    font-weight: $bold;
   }
 
   > span > i {
@@ -460,9 +532,9 @@ $headerHeight: 58px;
   > i {
     font-style: normal;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: $bold;
     letter-spacing: 0;
-    color: $orange;
+    color: #9b9b9b;
     line-height: 1;
     vertical-align: middle;
     margin: 0 16px;
@@ -473,7 +545,7 @@ $headerHeight: 58px;
     font-family: inherit;
     color: $greyTextDark;
     font-size: 18px;
-    font-weight: 400;
+    font-weight: $normal;
     margin: 0;
     display: inline-block;
     flex: 0 1 auto;
@@ -498,12 +570,14 @@ $headerHeight: 58px;
   }
 
   &[disabled] {
+    cursor: initial;
+
     &:hover {
       box-shadow: none;
     }
 
     > span {
-      background-color: #ceb6a8;
+      background-color: #a9a9a9;
     }
   }
 }
@@ -553,7 +627,7 @@ $headerHeight: 58px;
     color: $greyTextDark;
     letter-spacing: 1px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: $normal;
     max-width: 105px;
     display: block;
     text-align: center;
@@ -612,7 +686,15 @@ $headerHeight: 58px;
   color: $white;
   justify-content: space-around;
   align-items: center;
-
+  transition: 1s all ease-in-out;
+  
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  
   > span > small {
     opacity: .5;
     letter-spacing: 1px;
@@ -623,9 +705,17 @@ $headerHeight: 58px;
     line-height: 1;
     padding: 0 0 10px;
   }
-
+  
   > span > big {
     font-size: 20px;
     font-weight: normal;
   }
+  
+  a {
+    color: $white;
+  }
+}
+
+.auctionFooter.closedFooter {
+  height: 0;
 }

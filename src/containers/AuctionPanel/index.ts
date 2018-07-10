@@ -3,6 +3,7 @@ import AuctionPanel from 'components/AuctionPanel'
 import { State } from 'types'
 import AuctionStateHOC from 'components/AuctionStateHOC'
 import { createSelector } from 'reselect'
+import { claimSellerFundsAndWithdrawFromAuction } from 'actions'
 
 const makeSets = createSelector(
   ({ tokenList }) => tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList,
@@ -25,4 +26,4 @@ const mapStateToProps = (state: State) => ({
 })
 
 
-export default connect(mapStateToProps)(AuctionStateHOC(AuctionPanel))
+export default connect(mapStateToProps, { claimSellerFundsAndWithdrawFromAuction })(AuctionStateHOC(AuctionPanel))

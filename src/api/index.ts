@@ -5,7 +5,7 @@ import { promisedDutchX } from './dutchx'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
-import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange } from './types'
+import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
 import { ETH_ADDRESS } from 'globals'
 
@@ -164,12 +164,22 @@ export const getTokenAllowance = async (tokenAddress: Account, userAddress?: Acc
 
   return Tokens.allowance(tokenAddress, userAddress, DutchX.address)
 }
-
-export const tokenApproval = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
+interface TokenApproval<T = Receipt> {
+  (tokenAddress: Account, amount: Balance, userAddress?: Account): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  TokenApproval<Hash>,
+}
+export const tokenApproval: TokenApproval = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
   const { DutchX, Tokens } = await promisedAPI
   userAddress = await fillDefaultAccount(userAddress)
 
   return Tokens.approve(tokenAddress, DutchX.address, amount, { from: userAddress })
+}
+
+tokenApproval.sendTransaction = async (tokenAddress: Account, amount: Balance, userAddress?: Account) => {
+  const { DutchX, Tokens } = await promisedAPI
+  userAddress = await fillDefaultAccount(userAddress)
+
+  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress })
 }
 
 export const tokenSupply = async (tokenAddress: Account) => {
@@ -178,11 +188,23 @@ export const tokenSupply = async (tokenAddress: Account) => {
   return Tokens.getTotalSupply(tokenAddress)
 }
 
-export const depositETH = async (amount: Balance, userAddress?: Account) => {
+interface DepositETH<T = Receipt> {
+  (amount: Balance, userAddress?: Account): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  DepositETH<Hash>,
+}
+
+export const depositETH: DepositETH = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await promisedAPI
   userAddress = await fillDefaultAccount(userAddress)
 
   return Tokens.depositETH({ from: userAddress, value: amount })
+}
+
+depositETH.sendTransaction = async (amount: Balance, userAddress?: Account) => {
+  const { Tokens } = await promisedAPI
+  userAddress = await fillDefaultAccount(userAddress)
+
+  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount })
 }
 
 /* =================================================================
@@ -266,8 +288,19 @@ export const approveAndPostSellOrder = async (
   return DutchX.postSellOrder(pair, amount, index, account)
 }
 
+interface PostSellOrder<T = Receipt> {
+  (
+    sell: DefaultTokenObject,
+    buy: DefaultTokenObject,
+    amount: Balance,
+    index: Index,
+    account?: Account,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never : PostSellOrder<Hash>,
+}
+
 // TODO: pass in the whole TokenPair from the action
-export const postSellOrder = async (
+export const postSellOrder: PostSellOrder = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   amount: Balance,
@@ -282,8 +315,8 @@ export const postSellOrder = async (
 }
 
 postSellOrder.call = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   index: Index,
   account?: Account,
@@ -295,7 +328,31 @@ postSellOrder.call = async (
   return DutchX.postSellOrder.call(pair, amount, index, account)
 }
 
-export const depositAndSell = async (
+postSellOrder.sendTransaction = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  amount: Balance,
+  index: Index,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+
+  return DutchX.postSellOrder.sendTransaction(pair, amount, index, account)
+}
+
+interface DepositAndSell<T = Receipt> {
+  (
+    sell: DefaultTokenObject,
+    buy: DefaultTokenObject,
+    amount: Balance,
+    account?: Account,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  DepositAndSell<Hash>,
+}
+
+export const depositAndSell: DepositAndSell = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   amount: Balance,
@@ -309,8 +366,8 @@ export const depositAndSell = async (
 }
 
 depositAndSell.call = async (
-  sell: TokenCode,
-  buy: TokenCode,
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
   amount: Balance,
   account?: Account,
 ) => {
@@ -320,6 +377,20 @@ depositAndSell.call = async (
 
   return DutchX.depositAndSell.call(pair, amount, account)
 }
+
+depositAndSell.sendTransaction = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  amount: Balance,
+  account?: Account,
+) => {
+  const { DutchX } = await promisedAPI
+  const pair = { sell, buy }
+  account = await fillDefaultAccount(account)
+
+  return DutchX.depositAndSell.sendTransaction(pair, amount, account)
+}
+
 
 export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
@@ -343,6 +414,59 @@ export const getSellerBalance = async (pair: TokenPair, index?: Index, account?:
   ])
 
   return DutchX.getSellerBalances(pair, index, account)
+}
+
+/*
+ * gets sell volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ */
+export const getSellVolumeCurrent = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getSellVolumesCurrent(pair)
+}
+
+/*
+ * gets buy volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ */
+export const getBuyVolume = async (pair: TokenPair) => {
+  const { DutchX } = await promisedAPI
+
+  return DutchX.getBuyVolumes(pair)
+}
+
+interface OutstandingVolumeArgs {
+  sellVolume?: BigNumber,
+  buyVolume?: BigNumber,
+  price?: [BigNumber, BigNumber],
+  auctionIndex?: Index,
+}
+
+/*
+ * gets buy volume from auction corresponding to a pair of tokens
+ * @param pair TokenPair
+ * @param opts
+ * @param opts.sellVolume
+ * @param opts.buyVolume
+ * @param opts.price
+ * @param opts.auctionIndex
+ */
+export const getOutstandingVolume = async (
+  pair: TokenPair,
+  { sellVolume, buyVolume, price, auctionIndex }: OutstandingVolumeArgs = {},
+): Promise<BigNumber> => {
+  const { DutchX } = await promisedAPI;
+
+  [sellVolume, buyVolume, price] = await Promise.all([
+    sellVolume || DutchX.getSellVolumesCurrent(pair),
+    buyVolume || DutchX.getBuyVolumes(pair),
+    price || DutchX.getPrice(pair, auctionIndex),
+  ])
+
+  const outstandingVolume = sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
+
+  return outstandingVolume.lt(0) ? toBigNumber(0) : outstandingVolume
 }
 
 /*
@@ -385,6 +509,7 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
 
   try {
     const [claimable] = await DutchX.claimSellerFunds.call(pair, index, account)
+    console.log('claimable: ', claimable)
     return claimable as BigNumber
   } catch (e) {
     console.log('Nothing to claim')
@@ -491,11 +616,13 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
   console.log('lastIndex: ', lastIndex.toString())
   console.log('lastIndex + 1: ', lastIndex.add(1).toString())
   const oppositePair = { sell: pair.buy, buy: pair.sell }
-  const [closingPriceDir, closingPriceOpp, normal, inverse] = await Promise.all([
+  const [closingPriceDir, closingPriceOpp, normal, inverse, sellVolNormal, sellVolInverse] = await Promise.all([
     DutchX.getClosingPrice(pair, lastIndex),
     DutchX.getClosingPrice(oppositePair, lastIndex),
     DutchX.getSellerBalances(pair, lastIndex.add(1), account),
     DutchX.getSellerBalances(oppositePair, lastIndex.add(1), account),
+    DutchX.getSellerBalances(pair, lastIndex, account),
+    DutchX.getSellerBalances(oppositePair, lastIndex, account),
   ])
 
   return {
@@ -505,15 +632,22 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
       closingPriceOpp,
     },
     sellVolumeNext: { normal, inverse },
+    sellVolNormal, sellVolInverse,
   }
 }
 
-const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: any) => {
+interface CheckClaimableStatus {
+  claimableIndices: BigNumber[];
+  idx: BigNumber;
+  closingPricePair: BigNumber[];
+}
+
+const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: CheckClaimableStatus) => {
   if (claimableIndices.length >= 2) return true
 
   if (claimableIndices.length === 1) {
-    if (idx.eq(claimableIndices.last())) return closingPricePair[1].gt(0)
-    if (idx.gt(claimableIndices.last())) return true
+    if (idx.equals(claimableIndices.last())) return closingPricePair[1].gt(0)
+    if (idx.greaterThan(claimableIndices.last())) return true
   }
   return false
 }
@@ -576,6 +710,7 @@ export const getSellerOngoingAuctions = async (
         closingPriceOpp: [BigNumber, BigNumber],
       },
       sellVolumeNext: { normal: BigNumber, inverse: BigNumber },
+      sellVolNormal: BigNumber, sellVolInverse: BigNumber, 
     }>[] = []
 
     const ongoingAuctions: {
@@ -626,46 +761,53 @@ export const getSellerOngoingAuctions = async (
       let ongoingAuction: AuctionObject
 
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
-      if (indicesWithSellerBalance.length >= 1 || indicesWithSellerBalanceInverse.length >= 1) {
-        const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext } = lastAuctionsData[index]
 
-        const committedToNextNormal = sellVolumeNext.normal.gt(0)
-        const committedToNextInverse = sellVolumeNext.inverse.gt(0)
+      const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext, sellVolNormal, sellVolInverse } = lastAuctionsData[index]
+      
+      const currAuctionNeverRanDir = sellVolNormal.eq(0) && closingPriceDir[1].eq(0)
+      const currAuctionNeverRanOpp = sellVolInverse.eq(0) && closingPriceOpp[1].eq(0)
+      const committedToNextNormal = sellVolumeNext.normal.gt(0)
+      const committedToNextInverse = sellVolumeNext.inverse.gt(0)
+      
+      console.log(`
+        closingPriceDir: ${closingPriceDir}
+        closingPriceOpp: ${closingPriceOpp}
 
-        let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
-// fuck you satan!!
-          latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
+        sellVolNormal: ${sellVolNormal}
+        sellVolInverse: ${sellVolInverse}
 
-        if (committedToNextNormal) {
-          latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
-          balancePerIndex.push(sellVolumeNext.normal)
-        }
-        if (committedToNextInverse) {
-          latestIndicesReverse = [...indicesWithSellerBalanceInverse, lastIndex.add(1)]
-          balancePerIndexInverse.push(sellVolumeNext.inverse)
-        }
+        currAuctionNeverRanDir: ${currAuctionNeverRanDir}
+        currAuctionNeverRanOpp: ${currAuctionNeverRanOpp}
+      `)
 
-        ongoingAuction = {
-          ...auction,
-          indicesWithSellerBalance: latestIndicesNormal,
-          indicesWithSellerBalanceInverse: latestIndicesReverse,
-          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-          claim: checkClaimableStatus({ claimableIndices: indicesWithSellerBalance, idx: lastIndex, closingPricePair: closingPriceDir }),
-          claimInverse: checkClaimableStatus({ claimableIndices: indicesWithSellerBalanceInverse, idx: lastIndex, closingPricePair: closingPriceOpp }),
-        }
-        // for first time auctions, show auction even if it hasnt started yet
-      } else if (indicesWithSellerBalance.length === 1 || indicesWithSellerBalanceInverse.length === 1) {
-        ongoingAuction = {
-          ...auction,
-          indicesWithSellerBalance,
-          indicesWithSellerBalanceInverse,
-          balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-          balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
-        }
-      } else {
-        return accum
+      if (  // if there are truly no auctions with sellBalance
+        !committedToNextNormal && !committedToNextInverse &&
+        indicesWithSellerBalance.length === 0 && indicesWithSellerBalanceInverse.length === 0
+      ) return accum
+
+      let latestIndicesNormal: BigNumber[] = indicesWithSellerBalance,
+        latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
+
+      if (committedToNextNormal && currAuctionNeverRanDir) {
+        // if (currAuctionNeverRanDir) 
+        latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
+        balancePerIndex.push(sellVolumeNext.normal)
       }
+      if (committedToNextInverse && currAuctionNeverRanOpp) {
+        latestIndicesReverse = [...indicesWithSellerBalanceInverse, lastIndex.add(1)]
+        balancePerIndexInverse.push(sellVolumeNext.inverse)
+      }
+
+      ongoingAuction = {
+        ...auction,
+        indicesWithSellerBalance: latestIndicesNormal,
+        indicesWithSellerBalanceInverse: latestIndicesReverse,
+        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
+        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+        claim: checkClaimableStatus({ claimableIndices: indicesWithSellerBalance, idx: lastIndex, closingPricePair: closingPriceDir }),
+        claimInverse: checkClaimableStatus({ claimableIndices: indicesWithSellerBalanceInverse, idx: lastIndex, closingPricePair: closingPriceOpp }),
+      }
+
       accum.push(ongoingAuction)
       return accum
     }, [])

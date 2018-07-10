@@ -5,37 +5,58 @@
 
 header {
   height: 60px;
-  width: 100vw;
+  width: 100%;
   background: 0;
   display: flex;
   align-items: center;
   max-width: $max-width;
-  margin: 0 auto;
+  margin: 0 auto auto;
   z-index: 99;
 
   @media #{$mobile} {
     border-bottom: 1px solid #5386b3;
-    max-width: 100%;
-    padding: 0 12px;
+    max-width: 100vw;
+    padding: 0 15px;
     box-sizing: border-box;
+    margin: 0 auto 74px;
+    background: $darkBlue;
+    border: 0;
+  }
+
+  &.solid-background {
+    margin: 0 auto;
+    background: $darkBlue;
+    max-width: initial;
+    padding: 0 0 20px;
+    width: 100%;
+
+    @media #{$mobile} {
+      margin: 0 auto 74px;
+      padding: 0 16px;
+    }
+
+    > div {
+      max-width: $max-width;
+    }
   }
 
   > div {
     width: 100%;
-    // max-width: $max-width;
     display: flex;
     align-items: flex-end;
     margin: 10px auto 0;
-    padding: 0;
+    padding: 0 30px;
 
     @media #{$tablet} {
       padding: 0 35px;
     }
 
     @media #{$mobile} {
+      justify-content: space-between;
       margin: 0 auto;
       height: 100%;
       align-items: center;
+      padding: 0;
     }
   }
 
@@ -46,17 +67,35 @@ header {
     flex-flow: column wrap;
   }
 
-  > div > div > nav {
-    transform: translate3d(240px, 0, 0);
+  > div > .navParent {
+    .navShadow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(26,73,119,.9);
+    }
+
+    .buttonExit {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      height: 40px;
+      width: 40px;
+    }
+  }
+
+  > div > .navParent > nav {
+    transform: translate3d(100%, 0, 0);
     opacity: 0;
     visibility: hidden;
     width: 240px;
     position: fixed;
     top: 0;
-    height: 100vh;
+    height: 100%;
     right: 0;
     background: #35373c;
-    box-shadow: 0 100vh 0 100vw rgba(26,73,119,.9);
     z-index: 9999;
     transition: transform .2s ease-in-out, opacity .2s ease-in-out;
     will-change: transform, opacity;
@@ -93,36 +132,33 @@ header {
     > a {
       display: block;
       width: 100%;
-      padding: 20px;
-      color: #f2f3f5;
+      font-weight: $normal;
+      margin: 0;
+      padding: 18px;
+      color: $white;
       text-transform: uppercase;
-      font-size: 18px;
+      font-size: 15px;
       text-align: center;
       box-sizing: border-box;
       transition: background .25s ease-in-out, color .25s ease-in-out;
       will-change: background, color;
 
-      &:hover {
+      &:link,
+      &:link,
+      &:visited,
+      &:active,
+      &:focus {
+        color: $white;
+      }
+
+      &:hover,
+      &.active {
         background: $white;
         color: #35373c;
+        text-decoration: none;
       }
     }
   }
-
-  // > div > span > h1 {
-  //   font-weight: bold;
-  //   font-size: 18px;
-  //   flex-basis: 100%;
-  //   flex: 0 1 auto;
-  // }
-
-  // > div > span > h2 {
-  //   font-weight: 500;
-  //   font-size: 13px;
-  //   flex: 0 1 auto;
-  //   color: #555;
-  //   letter-spacing: -0.5px;
-  // }
 }
 
 .logo {
@@ -133,22 +169,39 @@ header {
   margin-right: auto;
 
   @media #{$mobile} {
-    flex-basis: 33%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 90px;
+    height: 18px;
   }
 }
 
 .hamburger {
-  background: transparent url('#{$images}berliner.svg') no-repeat center / contain;
+  background: transparent url('#{$images}berliner.svg') no-repeat center 0/ contain;
   width: 25px;
   height: 25px;
   border: 0;
   outline: 0;
   cursor: pointer;
+  position: relative;
+  display: block;
+  flex: 1;
+  max-width: 25px;
+  margin: 0;
 
-  @media #{$mobile} {
-    flex: 1;
-    max-width: 25px;
-    margin: 0 0 0 10px;
+  &::after {
+    content: "MENU";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    left: -1px;
+    font-size: 8px;
+    color: white;
+    font-weight: $bold;
+    letter-spacing: 1px;
+    font-family: $montserrat;
   }
 }
 
@@ -157,9 +210,20 @@ header {
   cursor: pointer;
 
   @media #{$mobile} {
-    flex: 1;
-    max-width: 94px;
-    margin: 0 10px 0 0;
+    position: absolute;
+    top: 59px;
+    width: 100%;
+    background: #205790;
+    right: 0;
+    flex: none;
+    max-width: initial;
+    margin: 0;
+    border-radius: 0;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
   }
 
   &::after {
@@ -172,18 +236,15 @@ header {
     vertical-align: middle;
 
     @media #{$mobile} {
-      position: absolute;
-      top: -6px;
-      height: 58px;
-      right: -10px;
-      display: block;
-      margin: 0;
+      display: none;
+      content: none;
     }
   }
 
   > span {
     font-size: 10px;
     font-style: normal;
+    font-weight: $normal;
     line-height: 1;
     color: $white;
     border: 1px solid $white;
@@ -194,6 +255,21 @@ header {
     position: relative;
     margin: 0 14px 0 0;
 
+    @media #{$mobile} {
+      width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      border: 0;
+      border-radius: 0;
+      color: $darkBlue;
+      margin: 0 15px;
+      padding: 0 10px 0 0;
+      font-size: 14px;
+      align-items: center;
+      align-content: center;
+    }
+
     &::after {
       content: " ";
       width: 0;
@@ -202,32 +278,19 @@ header {
       border-width: 5px 5px 0;
       border-color: $white transparent transparent;
       position: absolute;
+      transition: all .3s ease-in-out;
       right: -16px;
       bottom: 8px;
 
       @media #{$mobile} {
         position: absolute;
-        right: -16px;
-        bottom: 16px;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        margin: auto;
       }
     }
   }
-
-  // > span > span {
-  //   background: $white;
-  //   display: inline-block;
-  //   margin: 0;
-  //   padding: 3px;
-  // }
-
-  // > span > span > img {
-  //   height: 16px;
-  //   width: 16px;
-  //   object-fit: contain;
-  //   border-radius: 16px;
-  //   margin: 0;
-  //   display: inline-block;
-  // }
 
   > span > small {
     display: inline-block;
@@ -239,9 +302,12 @@ header {
     text-align: center;
 
     @media #{$mobile} {
-      width: 100%;
       box-sizing: border-box;
-      border-radius: 0 0 3px;
+      color: $white;
+      border-radius: 0;
+      width: auto;
+      background: transparent;
+      text-align: right;
     }
   }
 
@@ -254,9 +320,14 @@ header {
     font-family: inherit;
 
     @media #{$mobile} {
-      width: 58px;
+      width: auto;
       text-overflow: ellipsis;
       overflow: hidden;
+      border-radius: 0;
+      color: $white;
+      padding: 0;
+      font-family: $mono;
+      font-size: 13px;
     }
   }
 
@@ -283,20 +354,10 @@ header {
     @media #{$mobile} {
       position: fixed;
       width: 100%;
-      top: 59px;
+      top: 105px;
       box-sizing: border-box;
       border-radius: 0;
     }
-
-    // &::before {
-    //   content: " ";
-    //   display: block;
-    //   height: 13px;
-    //   position: absolute;
-    //   top: -13px;
-    //   background: transparent;
-    //   width: 100%;
-    // }
   }
 
   > div > table {
@@ -305,6 +366,7 @@ header {
     font-size: 12px;
     padding: 0;
     line-height: 1;
+    font-weight: $normal;
 
     @media #{$mobile} {
       padding: 5px 12px 50px;
@@ -313,7 +375,6 @@ header {
     tr {
       text-transform: uppercase;
       font-size: 11px;
-      // cursor: pointer;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
 
@@ -323,13 +384,16 @@ header {
     }
 
     tbody {
+      color: $greyTextDark;
+
       &:nth-child(odd) {
         background: $greyLight;
       }
 
       tr {
         &:hover {
-          background: $greyBorder;
+          background: #f2f3f5;
+          color: $darkBlue;
         }
       }
     }
@@ -338,7 +402,7 @@ header {
       tr {
         font-size: 10px;
         letter-spacing: 1px;
-        font-weight: bold;
+        font-weight: $bold;
         color: $darkBlue;
 
         > th {
@@ -361,15 +425,25 @@ header {
     }
   }
 
-  &:hover {
-    > div {
+  &:hover > div {
+    @media #{$medium-and-up} {
       height: auto;
+      min-height: 50px;
       opacity: 1;
-
-      @media #{$mobile} {
-        height: calc(100vh - 59px);
-      }
     }
+  }
+
+  &.active > div {
+    @media #{$mobile} {
+      height: calc(100vh - 59px);
+      min-height: 50px;
+      opacity: 1;
+    }
+  }
+
+  &.active > span::after {
+    content: "";
+    transform: rotate(180deg);
   }
 }
 
@@ -382,24 +456,51 @@ header {
   position: relative;
   cursor: pointer;
   height: 24px;
+  font-weight: $bold;
 
   @media #{$mobile} {
-    margin: 0 10px;
-  }
+    margin: 0;
 
-  &[data-unclaimed="true"]::before {
-    content: " ";
-    background: $orange url('#{$images}claim.svg') no-repeat center / 12px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    border: 0;
-    position: absolute;
-    cursor: pointer;
-    left: 9px;
-    bottom: 0;
-    width: 16px;
-    height: 16px;
-    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+    &::before {
+      content: " ";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 5px 5px 0;
+      border-color: $white transparent transparent;
+      position: absolute;
+      right: -10px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+
+    &.active::before {
+      transform: rotate(180deg);
+    }
+
+    &[data-unclaimed="true"]::after {
+      background: $orange url('#{$images}claim.svg') no-repeat center / 14px;
+      border-radius: 20px;
+      box-sizing: border-box;
+      border: 0;
+      cursor: pointer;
+      width: 20px;
+      height: 16px;
+      padding: 0 5px;
+      display: block;
+      margin: 0;
+      letter-spacing: 0;
+      content: " ";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+    }
   }
 
   &::after {
@@ -412,33 +513,24 @@ header {
     margin: 0 15px 0 10px;
 
     @media #{$mobile} {
-      right: -10px;
-      position: absolute;
-      top: -18px;
-      height: 59px;
-      margin: 0;
+      display: none;
     }
   }
 
-  > span {
-    text-transform: uppercase;
-    font-weight: normal;
+  > strong {
+    font-weight: $bold;
     width: auto;
     display: inline-block;
     vertical-align: middle;
-    margin: 1px auto 0;
+    margin: auto 0;
     position: relative;
     padding: 0 15px 0 0;
 
-    > strong {
-      @media #{$mobile} {
-        display: none;
-        font-weight: inherit;
-        text-transform: inherit;
-      }
+    @media #{$mobile} {
+      display: none;
     }
 
-    &::after {
+    &::before {
       content: " ";
       width: 0;
       height: 0;
@@ -447,7 +539,76 @@ header {
       border-color: $white transparent transparent;
       position: absolute;
       right: 0;
-      bottom: 3px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+
+  > strong.claimable {
+    margin: -13px auto 0;
+
+    &::before {
+      top: 16px;
+    }
+  }
+
+  &[data-unclaimed="true"] > strong::after {
+    content: "CLAIM";
+    background: $orange url('#{$images}claim.svg') no-repeat 51px / 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 0;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    height: 12px;
+    line-height: 12px;
+    font-size: 8px;
+    letter-spacing: 4px;
+    padding: 0 0 0 6px;
+    display: block;
+    margin: 2px 0 0;
+  }
+
+  > span {
+    position: absolute;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 11px;
+    margin: -11px 0 0 26px;
+    background: $orange;
+    border-radius: 50px;
+
+    > img {
+      padding: 0 1px;
+      width: 12px;
+
+      @media #{$mobile} {
+        padding: 3px;
+        width: 14px;
+      }
+    }
+
+    > span {
+      font-size: 9px;
+      font-weight: $bold;
+      letter-spacing: 3px;
+      padding: 0 1px;
+
+      @media #{$mobile} {
+        display: none;
+      }
+    }
+
+    @media #{$mobile} {
+      position: relative;
+      margin: auto;
+      width: auto;
+      height: auto;
     }
   }
 
@@ -462,6 +623,7 @@ header {
     // display: none;
     height: 0;
     opacity: 0;
+    visibility: hidden;
     position: absolute;
     top: 24px;
     background: $white;
@@ -483,8 +645,10 @@ header {
       position: fixed;
       width: 100%;
       top: 59px;
+      padding: 0 0 100px;
       box-sizing: border-box;
       border-radius: 0;
+      border: 0;
     }
   }
 
@@ -496,7 +660,7 @@ header {
     line-height: 1;
 
     @media #{$mobile} {
-      padding: 5px 12px 50px;
+      padding: 15px 15px 50px;
     }
 
     tr {
@@ -508,11 +672,18 @@ header {
       will-change: background, color;
     }
 
+    td > p {
+      padding: 0;
+      margin: 0;
+      text-align: right;
+      line-height: 1.5;
+    }
+
     thead {
       tr {
         font-size: 10px;
         letter-spacing: 1px;
-        font-weight: bold;
+        font-weight: $bold;
         color: $darkBlue;
 
         > th {
@@ -543,6 +714,10 @@ header {
       td {
         height: 30px;
 
+        @media #{$mobile} {
+          height: 46px;
+        }
+
         &:last-of-type {
           text-align: center;
         }
@@ -558,29 +733,53 @@ header {
     }
   }
 
-  &:hover {
-    > div {
-      // display: block;
+  &:hover > div {
+    @media #{$medium-and-up} {
       height: auto;
       opacity: 1;
+      visibility: visible;
+    }
+  }
 
-      @media #{$mobile} {
-        height: calc(100vh - 59px);
-      }
+  &.active > div {
+    @media #{$mobile} {
+      height: calc(100vh - 59px);
+      width: 100vw;
+      opacity: 1;
+      visibility: visible;
+      max-height: initial;
     }
   }
 }
 
 .menuFeeBalance {
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: bold;
   color: $white;
   line-height: 1;
   height: 24px;
   display: flex;
   flex-wrap: nowrap;
-  min-width: 135px;
   justify-content: center;
   align-items: flex-start;
+
+  @media #{$mobile} {
+    position: absolute;
+    top: 104px;
+    background: $greyLight;
+    width: 100%;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    height: 32px;
+    color: $darkBlue;
+    padding: 0 15px;
+    box-sizing: border-box;
+    text-align: center;
+    border-top: 1px solid $white;
+    display: flex;
+  }
 
   &::after {
     content: " ";
@@ -590,21 +789,47 @@ header {
     background: rgba(255, 255, 255, 0.25);
     vertical-align: middle;
     margin: 0 15px 0 10px;
+
+    @media #{$mobile} {
+      content: none;
+      display: none;
+    }
   }
 
   > p {
     flex: 1;
     margin: 0;
-    // max-width: 50%;
+    text-transform: capitalize;
     word-wrap: break-word;
+    min-width: 50px;
+
+    @media #{$mobile} {
+      min-width: initial;
+      text-align: left;
+      margin: 0;
+    }
 
     &:first-child {
       margin: 0 12px 0 0;
+
+      @media #{$mobile} {
+        margin: 0;
+      }
+    }
+
+    &:last-child {
+      @media #{$mobile} {
+        text-align: right;
+      }
     }
   }
 
   > p > strong {
     letter-spacing: 1px;
     display: block;
+
+    @media #{$mobile} {
+      display: inline-block;
+    }
   }
 }

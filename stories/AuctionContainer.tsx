@@ -91,6 +91,7 @@ storiesOf('AuctionContainer', module)
         buyToken={object('buyToken', { name: 'GNOSIS', symbol: 'GNO', address: '', decimals: 18 }) as DefaultTokenObject}
         sellToken={object('sellToken', { name: 'ETHER', symbol: 'ETH', address: '', decimals: 18 }) as DefaultTokenObject}
         buyAmount={toBigNumber(number('buyAmt', 100))}
+        sellAmount={toBigNumber(number('sellAmt', 100))}
         status={Status.ENDED}
         timeLeft={number('timeLeft', 5, {
           range: true,
@@ -99,9 +100,10 @@ storiesOf('AuctionContainer', module)
           step: 5,
         })}
         completed={boolean('comleted', true)}
+        theoreticallyCompleted={boolean('comleted', true)}
         claimSellerFunds={() => {}}
       />
-      <AuctionProgress progress={4} />
+      <AuctionProgress progress={4} marks={[true, true, true]} />
       <AuctionFooter
         buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
         sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
@@ -110,6 +112,7 @@ storiesOf('AuctionContainer', module)
         buyDecimal={number('buyDecimal', 18)}
         buyAmount={toBigNumber(number('buyAmt', 100))}
         auctionEnded={boolean('auctionEnded', false)}
+        status={Status.ENDED}
       />
     </AuctionContainer>,
 )

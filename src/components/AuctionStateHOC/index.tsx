@@ -1,5 +1,5 @@
 import React from 'react'
-import { TokenCode, TokenName, Account, DefaultTokenObject } from 'types'
+import { TokenCode, TokenName, Account, DefaultTokenObject, TokenPair } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
 // import { promisedDutchX } from 'api/dutchx'
@@ -11,8 +11,10 @@ import {
   getCurrentAccount,
   getTime,
   getSellerBalance,
+  getSellVolumeCurrent,
+  getBuyVolume,
+  getOutstandingVolume,
   getUnclaimedSellerFunds,
-  claimSellerFundsAndWithdraw,
 } from 'api'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -32,18 +34,29 @@ export interface AuctionStateProps {
   tokenList: DefaultTokenObject[],
   address2Token: { [P in Account]: DefaultTokenObject },
   symbol2Token: { [P in TokenCode]: DefaultTokenObject },
+  claimSellerFundsAndWithdrawFromAuction(
+    pair: TokenPair,
+    index: number,
+    amount: BigNumber,
+    account: Account,
+  ): void
 }
 
 export interface AuctionStateState {
   completed: boolean,
+  theoreticallyCompleted: boolean,
   status: AuctionStatus,
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   price: number[],
+  closingPrice: number[],
   timeToCompletion: number,
   userSelling: BigNumber,
   userGetting:  BigNumber,
   userCanClaim: BigNumber,
+  sellVolume: BigNumber,
+  buyVolume: BigNumber,
+  outstandingVolume: BigNumber,
   progress: number,
   index: number,
   account: Account,
@@ -57,6 +70,7 @@ interface AuctionStatusArgs {
   auctionStart: BigNumber,
   now: number,
   price: [BigNumber, BigNumber],
+  outstandingVolume: BigNumber,
 }
 
 const getAuctionStatus = ({
@@ -65,18 +79,29 @@ const getAuctionStatus = ({
   currentAuctionIndex,
   auctionStart,
   price,
+  outstandingVolume,
 }: AuctionStatusArgs) => {
   console.log('closingPrice: ', closingPrice.map(n => n.toNumber()))
   console.log('index: ', index)
   console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
   console.log('auctionStart: ', auctionStart.toNumber())
   console.log('price: ', price.map(n => n.toNumber()))
-  if (closingPrice[1].gt(0) || currentAuctionIndex.greaterThan(index)) return AuctionStatus.ENDED
+  if (closingPrice[1].gt(0) || currentAuctionIndex.gt(index)) return { status: AuctionStatus.ENDED }
+  // this should show theoretically auctions as ENDED and allow to claim,
+  // which internally closes the auction with a 0 buy order
   // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
-  if (currentAuctionIndex.lessThan(index)) return AuctionStatus.PLANNED
-  if (auctionStart.equals(1)) return AuctionStatus.INIT
-  if (!price[1].equals(0)) return AuctionStatus.ACTIVE
-  return AuctionStatus.INACTIVE
+  if (currentAuctionIndex.lt(index)) return { status: AuctionStatus.PLANNED }
+  
+  if (auctionStart.equals(1)) return { status: AuctionStatus.INIT }
+  
+  if (currentAuctionIndex.equals(index) && closingPrice[0].equals(0) && outstandingVolume.eq(0)) {
+    console.log('Theoretically closed')
+    return { status: AuctionStatus.ENDED, theoretically: true }
+  }
+  
+  if (!price[1].equals(0)) return { status: AuctionStatus.ACTIVE }
+
+  return { status: AuctionStatus.INACTIVE }
 }
 
 interface ProgressStepArgs {
@@ -170,20 +195,24 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       const promisedAccount = getCurrentAccount()
-      const [closingPrice, price, auctionStart, now] = await Promise.all([
+      const [closingPrice, price, auctionStart, now, sellVolume, buyVolume] = await Promise.all([
         getClosingPrice(pair, index),
         getPrice(pair, index),
         getAuctionStart(pair),
         getTime(),
+        getSellVolumeCurrent(pair),
+        getBuyVolume(pair),
       ])
+      const outstandingVolume = await getOutstandingVolume(pair, { price, sellVolume, buyVolume, auctionIndex: index })
 
-      const status = getAuctionStatus({
+      const { status, theoretically } = getAuctionStatus({
         closingPrice,
         price,
         auctionStart,
         now,
         index,
         currentAuctionIndex,
+        outstandingVolume,
       })
       console.log('status: ', status)
 
@@ -196,8 +225,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       // as price calculation returns a slightly larger figure than buyerVolume even (price is too optimistic)
       const userGetting = sellerBalance.mul(price[0]).div(price[1])
 
-      const userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].greaterThan(0) ?
+      let userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].gte(0) ?
         (await getUnclaimedSellerFunds(pair, index, account)) : toBigNumber(0)
+      
+        // if theoretically closed, then calculate differently as fraction of current volume
+      if (theoretically) userCanClaim = buyVolume.div(sellVolume).mul(sellerBalance)
 
       const timeToCompletion = status === AuctionStatus.ACTIVE ? auctionStart.plus(86400 - now).mul(1000).toNumber() : 0
 
@@ -208,14 +240,19 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       this.setState({
         completed: status === AuctionStatus.ENDED,
+        theoreticallyCompleted: theoretically,
         status,
         sell: pair.sell,
         buy: pair.buy,
         price: price.map(n => n.toNumber()),
+        closingPrice: closingPrice.map(n => n.toNumber()),
         timeToCompletion,
         userSelling: sellerBalance,
         userGetting,
         userCanClaim,
+        sellVolume,
+        buyVolume,
+        outstandingVolume,
         progress,
         index,
         account,
@@ -230,13 +267,15 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
     }
 
     claimSellerFunds = () => {
-      const { sell, buy, index, account, userCanClaim } = this.state
+      const { sell, buy, index, account, userCanClaim, theoreticallyCompleted } = this.state
+      //  withdraw reverts if amount < 0
+      const amount = theoreticallyCompleted && userCanClaim.eq(0) ? userCanClaim.add(1) : userCanClaim
       
       console.log(
         `claiming tokens for ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
-      return claimSellerFundsAndWithdraw({ sell, buy }, index, userCanClaim, account)
+      return this.props.claimSellerFundsAndWithdrawFromAuction({ sell, buy }, index, amount, account)
     }
 
     render() {

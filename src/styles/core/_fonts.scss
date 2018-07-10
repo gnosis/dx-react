@@ -1,26 +1,29 @@
-// @font-face {
-//   font-family: 'Montserrat';
-//   src:
-//     url("#{$fonts}Montserrat-Light.woff2") format("woff2"),
-//     url("#{$fonts}Montserrat-Light.woff") format("woff");
-//   font-weight: $lighter;
-//   font-style: normal;
-// }
+// 300 - Light
+@font-face {
+  font-family: 'Montserrat';
+  src:
+    url("#{$fonts}Montserrat-Light.woff2") format("woff2"),
+    url("#{$fonts}Montserrat-Light.woff") format("woff");
+  font-weight: $lighter;
+  font-style: normal;
+}
 
-// @font-face {
-//   font-family: 'Montserrat';
-//   src:
-//     url("#{$fonts}Montserrat-Regular.woff2") format("woff2"),
-//     url("#{$fonts}Montserrat-Regular.woff") format("woff");
-//   font-weight: normal;
-//   font-style: normal;
-// }
+// 500 - normal
+@font-face {
+  font-family: 'Montserrat';
+  src:
+    url("#{$fonts}Montserrat-500.woff2") format("woff2"),
+    url("#{$fonts}Montserrat-500.woff") format("woff");
+  font-weight: $normal;
+  font-style: normal;
+}
 
-// @font-face {
-//   font-family: 'Montserrat';
-//   src:
-//     url("#{$fonts}Montserrat-Medium.woff2") format("woff2"),
-//     url("#{$fonts}Montserrat-Medium.woff") format("woff");
-//   font-weight: bold;
-//   font-style: normal;
-// }
+// 600 - Bold
+@font-face {
+  font-family: 'Montserrat';
+  src:
+    url("#{$fonts}Montserrat-600.woff2") format("woff2"),
+    url("#{$fonts}Montserrat-600.woff") format("woff");
+  font-weight: $bold;
+  font-style: normal;
+}

@@ -9,20 +9,21 @@
     justify-content: center;
     align-items: flex-start;
     max-width: 100%;
+    padding: 25px 0 0;
     height: auto;
   }
 
   h1 {
     font-family: inherit;
     font-weight: $bold;
-    font-size: 48px;
+    font-size: 38px;
     color: $white;
     line-height: 1.2;
     margin: 0 0 30px;
     display: block;
 
     @media #{$tablet} {
-      text-align: center;
+      font-size: 25px;
     }
 
     @media #{$tablet-portrait} {
@@ -35,7 +36,7 @@
       font-size: 23px;
       width: 100%;
       text-align: center;
-      margin: 0 auto;
+      margin: 0 auto 15px;
     }
   }
 
@@ -44,13 +45,60 @@
 
     &.intro {
       flex: 1;
-      margin-right: 140px;
+      margin-right: 120px;
       align-content: center;
       display: flex;
       flex-wrap: wrap;
 
-      ul {
-        list-style: inside;
+      @media #{$desktop} {
+        margin-right: 60px;
+      }
+
+      ul, ol {
+        list-style: none;
+        position: relative;
+        padding: 0;
+
+        > li {
+          counter-increment: item;
+          position: relative;
+          padding: 0 0 0 3em;
+          margin: 0 0 1.5em;
+          display: flex;
+          font-weight: $bold;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          justify-content: flex-start;
+
+          @media #{$mobile} {
+            text-align: left;
+          }
+
+          &:last-of-type {
+            margin: 0;
+          }
+        }
+
+        > li::before {
+          content: counter(item);
+          color: $white;
+          background: $blue;
+          width: 35px;
+          height: 35px;
+          text-align: center;
+          display: block;
+          border-radius: 100%;
+          line-height: 35px;
+          font-size: 1em;
+          box-sizing: border-box;
+          padding: 0;
+          font-weight: $normal;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          margin: auto;
+        }
       }
 
       @media #{$tablet} {
@@ -65,8 +113,9 @@
       }
 
       @media #{$mobile} {
-        margin: 0 auto 15px;
+        margin: 0 auto 80px;
         flex-basis: 100%;
+        order: 2;
       }
     }
 
@@ -86,13 +135,22 @@
 
       @media #{$tablet-portrait} {
         margin: 35px auto 0;
+        order: -1;
       }
 
       @media #{$mobile} {
-        max-width: 95%;
-        margin: 0 auto;
+        max-width: 85%;
+        margin: 0 auto 40px;
         height: auto;
-        flex: 1 1 95%;
+        flex: 1;
+        min-height: initial;
+        order: 1;
+      }
+    }
+
+    &.noWallet {
+      @media #{$mobile} {
+        margin: 25px auto 40px;
       }
     }
 
@@ -101,9 +159,9 @@
       font-size: 16px;
       color: $white;
       line-height: 1.4;
+      font-weight: $lighter;
 
       @media #{$tablet} {
-        text-align: center;
         font-size: 16px;
         width: 100%;
       }
@@ -147,14 +205,28 @@
     color: $white;
     line-height: 1.2;
     margin: 0 auto 30px;
+
+    @media #{$mobile} {
+      font-size: 18px;
+
+      > strong {
+        display: block;
+      }
+    }
   }
 
   .buttonCTA {
     margin: 40px auto 0;
+
+    @media #{$mobile} {
+      margin: 0;
+      font-size: 16px;
+    }
   }
 }
 
-.tokenPicker {
+.tokenPicker,
+.home > div.tokenPicker {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,6 +236,18 @@
   border: 2px solid transparent;
   background: $white;
   min-height: 460px;
+
+  @media #{$mobile} {
+    max-width: 100%;
+    border-radius: 0;
+    margin: 0 auto 40px;
+    align-items: flex-start;
+    padding: 25px 10px 0;
+
+    .tokenItem {
+      padding: 5px;
+    }
+  }
 }
 
 .tokenIntro,
@@ -176,7 +260,7 @@
 
   @media #{$mobile} {
     align-content: flex-start;
-    padding: 25px 0;
+    padding: 0 0 25px;
     height: auto;
   }
 
@@ -260,6 +344,15 @@
   position: relative;
   margin: 5px auto 10px;
 
+  @media #{$desktop} {
+    padding: 25px 0;
+  }
+
+  @media #{$mobile} {
+    justify-content: space-between;
+    margin: 5px auto 10px;
+  }
+
   &-switch {
     display: block;
     position: absolute;
@@ -281,36 +374,13 @@
   .auctionContainer & {
     margin-bottom: 10px;
     padding: 15px;
+    box-sizing: border-box;
   }
-
-  // &::before {
-  //   .auctionContainer & {
-  //     content: " ";
-  //     display: block;
-  //     position: absolute;
-  //     margin: auto;
-  //     left: 0;
-  //     right: 0;
-  //     height: 49px;
-  //     background: url('#{$images}arrowSidesRight.svg') no-repeat center / 60px;
-  //     top: 70px;
-  //   }
-
-  //   @media #{$mobile} {
-  //     height: 30px;
-  //     top: 85px;
-  //     background-size: 30px;
-  //   }
-  // }
 }
 
 .tokenPairSwitcher {
   display: block;
   margin: auto 0;
-  // position: absolute;
-  // top: 100px;
-  // right: 0;
-  // left: 0;
   height: 70px;
   width: 70px;
   cursor: pointer;
@@ -324,9 +394,10 @@
   }
 
   @media #{$mobile} {
-    height: 30px;
-    top: 85px;
+    height: 46px;
     background-size: 30px;
+    width: 46px;
+    margin: 70px 0 auto;
   }
 }
 
@@ -346,13 +417,13 @@
 
   > span > a {
     color: $darkRed;
-    font-weight: bold;
+    font-weight: $bold;
     text-decoration: underline;
   }
 }
 
 .tokenItem {
-  flex: 0 0 33%;
+  flex: 0 1 31%;
   cursor: pointer;
   margin: 8px 0;
   padding: 20px;
@@ -361,6 +432,11 @@
   transition: box-shadow, transform .15s ease;
   text-align: center;
   text-transform: uppercase;
+
+  @media #{$mobile} {
+    padding: 0;
+    flex: 0 0 40%;
+  }
 
   // Disable interaction when no token list has been suplied yet:
   .noTokenList & {
@@ -373,7 +449,8 @@
   .auctionContainer & {
     box-sizing: border-box;
     flex: 0 1 31%;
-    // flex-basis: 31%;
+    max-width: 33%;
+    max-height: 300px;
     margin: 5px;
     padding: 15px;
     align-self: stretch;
@@ -385,6 +462,7 @@
     @media #{$mobile} {
       max-width: calc(50% - 10px);
       flex-basis: calc(50% - 10px);
+      padding: 0;
     }
   }
 
@@ -395,6 +473,10 @@
   &:not(.disabled):hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+
+    @media #{$mobile} {
+      box-shadow: none;
+    }
 
     .tokenOverlay & {
       border: 1px solid $blue;
@@ -428,7 +510,7 @@
     color: $darkBlue;
     letter-spacing: 1px;
     line-height: 1;
-    font-weight: $normal;
+    font-weight: $bold;
     width: 100%;
     display: block;
     text-align: center;
@@ -439,7 +521,7 @@
     font-size: 16px;
     color: $darkBlue;
     letter-spacing: 0;
-    line-height: 1;
+    line-height: 1.4;
     margin: 0 5px 0 0;
     vertical-align: middle;
 
@@ -504,14 +586,16 @@
     @media #{$mobile} {
       line-height: 1;
       margin: 10px auto 5px;
+      letter-spacing: 1px;
     }
   }
 
   > p {
     font-family: inherit;
     font-weight: $bold;
-    font-size: 11px;
+    font-size: 13px;
     color: $blue;
+    word-wrap: break-word;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
@@ -551,6 +635,7 @@
   height: 100%;
   background: $white;
   z-index: 99;
+  outline: 0;
 
   @media #{$tablet} {
     position: fixed;
@@ -582,6 +667,9 @@
       padding: 6px;
       margin: 10px auto 0;
       line-height: 1.4;
+      letter-spacing: 1px;
+      font-weight: $normal;
+      box-sizing: border-box;
     }
   }
 
@@ -614,20 +702,45 @@
   align-items: center;
   padding: 0 0 0 10px;
   box-sizing: border-box;
+
+  .buttonExit {
+    position: relative;
+    flex: 0 1 auto;
+    line-height: 1;
+    margin: 0 10px;
+
+    @media #{$mobile} {
+      flex: 0;
+      position: relative;
+      top: initial;
+      right: initial;
+      line-height: 1;
+      height: auto;
+      margin: 0 10px;
+      width: auto;
+    }
+  }
 }
 
 .tokenSearch {
   height: 44px;
-  width: 340px;
+  width: auto;
+  flex: 1 1 auto;
   border: 1px solid $greyBorder;
   font-family: inherit;
   font-size: 16px;
   color: $greyText;
   letter-spacing: 0;
+  margin-right: 18px;
   padding: 12px;
   border-radius: 2px;
   outline: 0;
   box-sizing: border-box;
+
+  @media #{$mobile} {
+    width: auto;
+    flex: 1 1 auto;
+  }
 
   &::placeholder {
     will-change: color;

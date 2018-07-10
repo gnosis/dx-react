@@ -25,6 +25,8 @@ import {
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
+  claimSellerFundsAndWithdraw,
+  getSellerBalance,
 } from 'api'
 
 import {
@@ -42,11 +44,13 @@ import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
-import { BigNumber, TokenBalances, Account, State } from 'types'
-import { promisedContractsMap } from 'api/contracts'
-import { DefaultTokenObject } from 'api/types'
+import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
+import { promisedContractsMap, contractsMap } from 'api/contracts'
+import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
 import { ETH_ADDRESS } from 'globals'
+import { waitForTx } from 'integrations/filterChain'
+import { getDecoderForABI } from 'api/utils'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -195,9 +199,18 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 }
 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
-  const { tokenPair: { buy, sell } } = getState()
+  let { tokenPair: { buy, sell } } = getState()
 
   if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
+
+  if (sell.address === ETH_ADDRESS || buy.address === ETH_ADDRESS) {
+    const { TokenETH } = await promisedContractsMap
+    if (sell.address === ETH_ADDRESS) {
+      sell = TokenETH
+    } else {
+      buy = TokenETH
+    }
+  }
 
   try {
     const currAucIdx = await getLatestAuctionIndex({ sell, buy })
@@ -253,28 +266,47 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
         modalProps: {
           header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
-          body: `Confirmation: ${sellName} is not an ERC20 Token and must be wrapped - please check ${activeProvider}`,
+          body: `
+            ${sellName} is not an ERC20 Token and must be wrapped.
+            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder. 
+          
+            Please confirm with ${activeProvider}.
+          `,
           loader: true,
         },
       }))
-      // TODO only deposit difference
-      const depositReceipt = await depositETH(ETHToWrap.toString(), currentAccount)
-      console.log('​EtherToken Deposit receipt: ', depositReceipt)
+      // TODO: only deposit difference
+      console.log('PROMPTING to start depositETH tx')
+      const depositHash = await depositETH.sendTransaction(ETHToWrap.toString(), currentAccount)
+      console.log('​depositETH tx hash: ', depositHash)
     }
-    //  if sell or buy is unwrapped ETH replace token with previously WETH
+    // if sell or buy is unwrapped ETH replace token with previously WETH
     changeETHforWETH(dispatch, getState, TokenETH.address)
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
     const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
     if (needSellTokenAllowance) {
-      sellName = getTokenName(sell)
+      ({ symbol: sellName } = getTokenName(sell))
+
       const promisedChoice: Promise<string> = new Promise((accept) => {
         dispatch(openModal({
           modalName: 'ApprovalModal',
           modalProps: {
-            header: `Confirm ${sellName} Token movement`,
+            header: `Confirm ${sellName} token transfer`,
             // tslint:disable-next-line
-            body: `Confirmation: DutchX needs your permission to move your ${sellName} Tokens for this Auction - please check ${activeProvider}`,
+            body: `The DutchX needs your permission to transfer your ${sellName}.`,
+            buttons: {
+              button1: {
+                buttonTitle1: `Approve ${sellName} for this trade only`,
+              },
+              button2: {
+                buttonTitle2: `Approve ${sellName} also for future trades`,
+              },
+            },
+            footer: { 
+              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`, 
+              url: './content/FAQ', 
+            },
             onClick: accept,
           },
         }))
@@ -285,7 +317,6 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
     // Go straight to sell order if deposit && allowance both good
     }
 
-    console.log('​exportcheckUserStateAndSell -> OWLBalance ', OWLBalance)
     if (OWLBalance.gt(0)) {
       const needOWLAllowance = await checkTokenAllowance(TokenOWL.address, nativeSellAmt, currentAccount)
       if (needOWLAllowance) {
@@ -293,17 +324,21 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           dispatch(openModal({
             modalName: 'ApprovalModal',
             modalProps: {
-              header: `Approving OWL use for fees`,
-              body: `You have OWL available in your linked wallet address. Would you like to use OWL to pay for half of the fees on the DutchX? Any fee reduction due to MGN is valid and applied before the fee calculation.`,
+              header: `Using OWL to pay for fees`,
+              body: `You have the option to pay half of your fees on the DutchX in OWL. 
+              Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
+              `,
               buttons: {
-                button1: {
-                  buttonTitle1: 'Approve',
-                  buttonDesc1: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
-                },
                 button2: {
-                  buttonTitle2: 'Disallow',
-                  buttonDesc2: 'Choose this option if you do not want to use OWL',
+                  buttonTitle2: 'Use OWL to pay for fees',
                 },
+                button1: {
+                  buttonTitle1: 'Don\'t use OWL to pay for fees',
+                },
+              },
+              footer: { 
+                msg: 'More information regarding the DutchX and OWL can be found below.', 
+                url: './content/FAQ', 
               },
               onClick: accept,
             },
@@ -339,11 +374,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Sell Confirmation`,
-        body: `Final confirmation: please accept/reject ${sellName} sell order via ${activeProvider}`,
+        header: `Order confirmation`,
+        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain. Processing the transaction may take a while. `,
         txData: {
-          tokenA: { ...sell, name: sellName } as DefaultTokenObject,
-          tokenB: { ...buy, name: buyName } as DefaultTokenObject,
+          tokenA: { ...sell, ...sellName } as DefaultTokenObject,
+          tokenB: { ...buy, ...buyName } as DefaultTokenObject,
           sellAmount,
           network,
         },
@@ -352,25 +387,49 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     }))
     // if user's sellAmt > DX.balance(token)
     // deposit(sellAmt) && postSellOrder(sellAmt)
-    let receipt
+    let hash: string
     const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     if (nativeSellAmt.greaterThan(userDXBalance)) {
-      receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
-      console.log('depositAndSell receipt', receipt)
+
+      console.log('PROMPTING to start depositAndSell tx')
+      hash = await depositAndSell.sendTransaction(sell, buy, nativeSellAmt.toString(), currentAccount)
+      console.log('depositAndSell tx hash', hash)
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-      receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
-      console.log('postSellOrder receipt', receipt)
+
+      console.log('PROMPTING to start depositAndSell tx')
+      hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
+      console.log('postSellOrder tx hash', hash)
     }
-    const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
-    console.log(`Sell order went to ${sellName}-${buyName}-${auctionIndex.toString()}`)
+    const receipt = await waitForTx(hash)
+    console.log('postSellOrder tx receipt: ', receipt)
+
+    const { DutchExchange } =  contractsMap
+    const decoder = getDecoderForABI(DutchExchange.abi)
+    const logs = decoder(receipt.logs)
+    console.log('postSellOrder tx logs', logs)
+    const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
+  
+    // let receipt
+    // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
+    // if (nativeSellAmt.greaterThan(userDXBalance)) {
+    //   receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
+    //   console.log('depositAndSell receipt', receipt)
+    // // else User has enough balance on DX for Token and can sell w/o deposit
+    // } else {
+    //   receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
+    //   console.log('postSellOrder receipt', receipt)
+    // }
+    // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
+  
+    console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     dispatch(closeModal())
+    // jump to Auction Page
+    dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
 
     // grab balance of sold token after sale
     const balance = await getTokenBalance(sell.address, currentAccount)
 
-    // jump to Auction Page
-    dispatch(push(`auction/${sellName}-${buyName}-${auctionIndex.toString()}`))
     // dispatch Actions
     dispatch(batchActions([
       setTokenBalance({ address: sell.address, balance }),
@@ -388,11 +447,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN') => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
-    blockchain: { currentAccount },
+    blockchain: { activeProvider, currentAccount },
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
   const promisedContracts = promisedContractsMap
-  const sellName = getTokenName(sell)
+  const { symbol: sellName } = getTokenName(sell)
 
   try {
     // don't do anything when submitting a <= 0 amount
@@ -404,27 +463,33 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving minimum token movement`,
-            body: `You are approving ${sellAmount} for this particular token [${sellName}]. For future transactions with this particular token, you will continue needing to sign two transactions.`,
+            header: `Approving token transfer for this trade only`,
+            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
         }))
         const nativeSellAmt = await promisedNativeSellAmt
-        const tokenApprovalReceipt = await tokenApproval(sell.address, nativeSellAmt.toString())
-        console.log('Approved token', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
+        const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
+        console.log('tokenApproval tx hash', tokenApprovalHash)
       } else {
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving maximum token movement`,
-            body: `You are approving the maximum amount for this particular token [${sellName}]. You will no longer need to sign two transactions for this token going forward.`,
+            header: `Approving token transfer also for future trades`,
+            body: `You will no longer need to sign two transactions for future orders with ${sellName} and will save transaction costs. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
-        const tokenApprovalReceipt = await tokenApproval(sell.address, ((2 ** 255) - allowanceLeft).toString())
-        console.log('Approved token', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
+        const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('tokenApproval tx hash', tokenApprovalHash)
       }
     // OWL APPROVAL
     } else {
@@ -440,8 +505,11 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
-        const tokenApprovalReceipt = await tokenApproval(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
-        console.log('Approved OWL', tokenApprovalReceipt)
+
+
+        console.log('PROMPTING to start tokenApproval tx for OWL')
+        const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
+        console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
       } else {
         console.log('Disallowing OWL')
         dispatch(closeModal())
@@ -449,6 +517,43 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
     }
   } catch (error) {
     throw error
+  }
+}
+
+export const claimSellerFundsAndWithdrawFromAuction = (
+  pair: TokenPair,
+  index: number,
+  amount: BigNumber,
+  account: Account,
+) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { sell, buy } = pair
+  const { blockchain: { activeProvider } } = getState(),
+    sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Claiming Funds`,
+        body: `You are claiming ${buyName} from this ${sellName}-${buyName} auction to your wallet. Please confirm with ${activeProvider}`,
+        loader: true,
+      },
+    }))
+    const claimAndWithdrawReceipt = await claimSellerFundsAndWithdraw(pair, index, amount, account)
+    console.log('​ClaimAndWithdraw receipt => ', claimAndWithdrawReceipt)
+
+    // refresh state ...
+    let sellerBalance: BigNumber = await dispatch(updateMainAppState({ fn: getSellerBalance, args: [pair, index, account] }))
+    // loop until sellBalance drops to 0
+    while (sellerBalance.gt(0)) {
+      (sellerBalance = await dispatch(updateMainAppState({ fn: getSellerBalance, args: [pair, index, account] })))
+    }
+
+    return dispatch(closeModal())
+  } catch (error) {
+    console.error(error.message)
+
+    dispatch(errorHandling(error, false))
   }
 }
 
@@ -464,8 +569,8 @@ export const claimSellerFundsFromSeveral = (
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Claiming Funds`,
-        body: `Claiming ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        header: `Claiming funds`,
+        body: `You are claiming ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -475,7 +580,7 @@ export const claimSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: `Withdrawing Claimed Funds`,
-        body: `Withdrawing ${buyName} tokens from ${sellName}-${buyName} auction. Please check ${activeProvider}`,
+        body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -541,7 +646,7 @@ async function checkTokenAllowance(
   return tokenAllowance
 }
 
-export function errorHandling(error: Error) {
+export function errorHandling(error: Error, goHome = true) {
   const errorFind = (string: string, toFind = '}', offset = 1) => {
     const place = string.search(toFind)
     return string.slice(place + offset)
@@ -553,12 +658,12 @@ export function errorHandling(error: Error) {
     // close to unmount
     dispatch(closeModal())
     // go home stacy
-    dispatch(push('/'))
+    if (goHome) dispatch(push('/'))
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `TRANSACTION FAILED/CANCELLED`,
-        body: `${activeProvider || 'Your provider'} has stopped your transaction. Please see below or console for more info:`,
+        header: `Transaction failed / was cancelled`,
+        body: `${activeProvider || 'Your provider'} has cancelled your transaction. Please see below for more information:`,
         button: true,
         error: errorFind(normError),
       },
