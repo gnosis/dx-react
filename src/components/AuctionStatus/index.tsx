@@ -14,6 +14,7 @@ export interface AuctionStatusProps {
   timeLeft: number,
   status: Status,
   completed: boolean,
+  theoreticallyCompleted: boolean,
   claimSellerFunds: () => any,
 }
 
@@ -48,7 +49,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
 }) => {
   switch (status) {
     case Status.ENDED:
-      if (sellAmount.eq(0)) { return (
+      if (sellAmount.eq(0) || buyAmount.eq(0)) { return (
         <span>
           <big>No funds to claim</big>
         </span>

@@ -34,7 +34,10 @@
     "storybook": "start-storybook -s ./ -p 6006",
     "build-storybook": "build-storybook",
     "add2ipfs": "node ./scripts/add2ipfs.js",
-    "simulateAuction": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' -n 100e18 && truffle exec test/trufflescripts/increase_time.js -h 1"
+    "simulateAuction": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' -n 100e18 && truffle exec test/trufflescripts/increase_time.js -h 1",
+    "simulateTheoreticallyClosedAuction": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 50 && truffle exec test/trufflescripts/increase_time.js -h 1",
+    "simulateTheoreticallyClosedAuctionWithBuyVolume": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' -n 1e17 && truffle exec test/trufflescripts/increase_time.js -h 50"
+
   },
   "lint-staged": {
     "@(src|test)/**/*.js?(x)": [
