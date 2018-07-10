@@ -366,7 +366,7 @@ header {
     font-size: 12px;
     padding: 0;
     line-height: 1;
-    font-weight: bold;
+    font-weight: $normal;
 
     @media #{$mobile} {
       padding: 5px 12px 50px;
@@ -384,7 +384,7 @@ header {
     }
 
     tbody {
-      color: $grey;
+      color: $greyTextDark;
 
       &:nth-child(odd) {
         background: $greyLight;
