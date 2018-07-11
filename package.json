@@ -37,7 +37,6 @@
     "simulateAuction": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' -n 100e18 && truffle exec test/trufflescripts/increase_time.js -h 1",
     "simulateTheoreticallyClosedAuction": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 50 && truffle exec test/trufflescripts/increase_time.js -h 1",
     "simulateTheoreticallyClosedAuctionWithBuyVolume": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js -a '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1' -n 1e17 && truffle exec test/trufflescripts/increase_time.js -h 50"
-
   },
   "lint-staged": {
     "@(src|test)/**/*.js?(x)": [
@@ -78,8 +77,8 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.44",
     "@digix/tempo": "^0.2.0",
-    "@gnosis.pm/dx-contracts": "0.9.0",
-    "@gnosis.pm/util-contracts": "^0.2.14",
+    "@gnosis.pm/dx-contracts": "^1.0.1",
+    "@gnosis.pm/util-contracts": "^1.0.1",
     "autobind-decorator": "^2.1.0",
     "await-delay": "^1.0.0",
     "bignumber.js": "^5.0.0",
