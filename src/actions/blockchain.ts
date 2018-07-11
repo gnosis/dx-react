@@ -297,15 +297,16 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             body: `The DutchX needs your permission to transfer your ${sellName}.`,
             buttons: {
               button1: {
-                buttonTitle1: 'Approve this trade only',
-                buttonDesc1: 'You\'ll allow the DutchX to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.',
+                buttonTitle1: `Approve ${sellName} for this trade only`,
               },
               button2: {
-                buttonTitle2: `Approve also for future trades with ${sellName}`,
-                buttonDesc2: `You'll allow the DutchX to take ${sellName} also for future trades. The DutchX won't take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.`,
+                buttonTitle2: `Approve ${sellName} also for future trades`,
               },
             },
-            footer: 'If you are unsure, select “Approve this trade only”.',
+            footer: { 
+              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`, 
+              url: './content/FAQ', 
+            },
             onClick: accept,
           },
         }))
@@ -330,19 +331,20 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
               buttons: {
                 button2: {
                   buttonTitle2: 'Use OWL to pay for fees',
-                  buttonDesc2: 'Choose this option to approve the use of OWL to pay for half of the fees on the DutchX',
                 },
                 button1: {
                   buttonTitle1: 'Don\'t use OWL to pay for fees',
-                  buttonDesc1: 'Choose this option if you do not want to use OWL',
                 },
+              },
+              footer: { 
+                msg: 'More information regarding the DutchX and OWL can be found below.', 
+                url: './content/FAQ', 
               },
               onClick: accept,
             },
           }))
         })
         const choice = await promisedChoice
-
 
         await dispatch(approveTokens(choice, 'OWLTOKEN'))
       }
