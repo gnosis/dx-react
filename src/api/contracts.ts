@@ -21,7 +21,7 @@ const contractNames = [
   'TokenOWLProxy',          // TODO: > 0.9.0 will be @gnosis/token-owl
 ]
 
-if (process.env.NODE_ENV === 'development') { 
+if (process.env.NODE_ENV === 'development') {
   contractNames.push(
     'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
     'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
@@ -49,9 +49,9 @@ interface ContractsMapWProxy extends ContractsMap {
 }
 
 let req: any
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   req = require.context(
-    '@gnosis.pm/dx-contracts/build/contracts/',
+    '../../build/contracts/',
     false,
     /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenOMG|TokenRDN)\.json$/,
   )
@@ -66,15 +66,15 @@ if (process.env.NODE_ENV !== 'production') {
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
-  './DutchExchange.json'  |
-  './DutchExchangeProxy.json'          |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
-  './TokenFRT.json'       |
-  './TokenOWL.json'       |   // Moving to @gnosis.pm/owl-token
-  './TokenOWLProxy.json'  |   // Moving to @gnosis.pm/owl-token
-  './EtherToken.json'     |   // Moving to @gnosis.pm/util-contracts
-  './TokenGNO.json'       |   // Moving to @gnosis.pm/gno-token
-  './TokenOMG.json'       |   // deleted in dx-contracts@0.9.1+
-  './TokenRDN.json'           // deleted in dx-contracts@0.9.1+
+  './DutchExchange.json'      |
+  './DutchExchangeProxy.json' |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
+  './TokenFRT.json'           |
+  './TokenOWL.json'           |   // Moving to @gnosis.pm/owl-token
+  './TokenOWLProxy.json'      |   // Moving to @gnosis.pm/owl-token
+  './EtherToken.json'         |   // Moving to @gnosis.pm/util-contracts
+  './TokenGNO.json'           |   // Moving to @gnosis.pm/gno-token
+  './TokenOMG.json'           |   // deleted in dx-contracts@0.9.1+
+  './TokenRDN.json'               // deleted in dx-contracts@0.9.1+
 
 const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
@@ -88,7 +88,7 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
 )
 
 // in development use different contract addresses
-/* if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
   // from networks-%ENV%.json
   const networks = require('@gnosis.pm/dx-contracts/networks-dev.json')
 
@@ -98,7 +98,7 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
     // but keeping local network ids
     if (networks[contractName]) Object.assign(contrArt.networks, networks[contractName])
   }
-} */
+}
 
 const Contracts: SimpleContract[] = ContractsArtifacts.map(
   art => TruffleContract(art),
@@ -109,7 +109,6 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
   acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
 }, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
-
 
 export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
@@ -122,9 +121,9 @@ export const promisedContractsMap = init()
 async function init() {
   const { currentProvider } = await promisedWeb3
   setProvider(currentProvider)
-  
+
   const instances = await getPromisedIntances()
-  
+
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
   const deployedContracts = contractNames.reduce((acc, name, i) => {
@@ -135,15 +134,15 @@ async function init() {
     }
     return acc
   }, {}) as ContractsMapWProxy
-  
+
   const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
-  
+
   const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
   deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
   delete deployedContracts.DutchExchangeProxy
   delete deployedContracts.TokenOWLProxy
-  
+
   if (process.env.NODE_ENV !== 'production') {
     console.log(deployedContracts)
   }
