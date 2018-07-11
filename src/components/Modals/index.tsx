@@ -97,9 +97,9 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           >
           {buttons && buttons.button1.buttonTitle1 || 'Approve Min'}
         </button>
-        <p className="modalButtonDescription">
+        {buttons && buttons.button1.buttonDesc1 && <p className="modalButtonDescription">
           {buttons && buttons.button1.buttonDesc1 || 'You\'ll allow the DutchX to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.'}
-        </p>
+        </p>}
       </div>
 
       <div className="modalButtonDiv">
@@ -109,12 +109,19 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           >
           {buttons && buttons.button2.buttonTitle2 || 'Approve Max'}
         </button>
-        <p className="modalButtonDescription">
+        {buttons && buttons.button2.buttonDesc2 && <p className="modalButtonDescription">
           {buttons && buttons.button2.buttonDesc2 || 'You\'ll allow the DutchX to also take your bidding token for future trades. The DutchX won\'t take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.'}
-        </p>
+        </p>}
       </div>
-      {footer && <i>{footer}</i>}
     </div>
+    {footer && 
+      <p className="modalFooter">
+        <i>
+          {footer.msg || null} 
+          <br/> 
+          See the <a href={footer.url || './content/FAQ/#approval'} target="_blank">FAQ</a> section to learn more about how the DutchX works.
+        </i>
+      </p>}
   </div>
 
 const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
