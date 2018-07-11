@@ -21,12 +21,13 @@ const contractNames = [
   'TokenOWLProxy',          // TODO: > 0.9.0 will be @gnosis/token-owl
 ]
 
-if (process.env.NODE_ENV === 'development') {
+// breaks in rinkeby, cancel for now
+/* if (process.env.NODE_ENV === 'development') {
   contractNames.push(
     'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
     'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
   )
-}
+} */
 
 // fill contractsMap from here if available
 const filename2ContractNameMap = {
@@ -36,11 +37,11 @@ const filename2ContractNameMap = {
 interface ContractsMap {
   DutchExchange:  DXAuction,
   TokenMGN:       MGNInterface,
-  TokenETH?:       ETHInterface,
-  TokenGNO?:       GNOInterface,
-  TokenOWL?:       OWLInterface,
-  TokenOMG?:       GNOInterface,
-  TokenRDN?:       GNOInterface,
+  TokenETH?:      ETHInterface,
+  TokenGNO?:      GNOInterface,
+  TokenOWL?:      OWLInterface,
+  TokenOMG?:      GNOInterface,
+  TokenRDN?:      GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
@@ -53,7 +54,7 @@ if (process.env.NODE_ENV === 'development') {
   req = require.context(
     '../../build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenOMG|TokenRDN)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
   )
 } else {
   req = require.context(
@@ -80,8 +81,10 @@ const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
   c => {
     if (process.env.NODE_ENV === 'production') {
-      if (c === 'EtherToken') return require('@gnosis.pm/util-contracts/build/contracts/EtherToken.json')
-      if (c === 'TokenGNO') return require('@gnosis.pm/gno-token/build/contracts/TokenGNO.json')
+      if (c === 'EtherToken')     return require('@gnosis.pm/util-contracts/build/contracts/EtherToken.json')
+      if (c === 'TokenGNO')       return require('@gnosis.pm/gno-token/build/contracts/TokenGNO.json')
+      if (c === 'TokenOWLProxy')  return require('@gnosis.pm/owl-token/build/contracts/TokenOWLProxy.json')
+      if (c === 'TokenOWL')       return require('@gnosis.pm/owl-token/build/contracts/TokenOWL.json')
     }
     return req(reqKeys.find(key => key === `./${c}.json`))
   },
@@ -90,13 +93,16 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
 // in development use different contract addresses
 if (process.env.NODE_ENV === 'development') {
   // from networks-%ENV%.json
-  const networks = require('@gnosis.pm/dx-contracts/networks-dev.json')
+  const networksDX    = require('@gnosis.pm/dx-contracts/networks.json'),
+    networksUtils = require('@gnosis.pm/util-contracts/networks.json'),
+    networksGNO   = require('@gnosis.pm/gno-token/networks.json'),
+    networksOWL   = require('@gnosis.pm/owl-token/networks.json')
 
   for (const contrArt of ContractsArtifacts) {
     const { contractName } = contrArt
     // assign networks from the file, overriding from /build/contracts with same network id
     // but keeping local network ids
-    if (networks[contractName]) Object.assign(contrArt.networks, networks[contractName])
+    Object.assign(contrArt.networks, networksDX[contractName], networksUtils[contractName], networksGNO[contractName], networksOWL[contractName])
   }
 }
 
