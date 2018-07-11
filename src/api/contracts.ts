@@ -14,7 +14,7 @@ import {
 const contractNames = [
   'DutchExchange',          // Stays in dx-contracts
   'TokenFRT',               // Stays in dx-contracts
-  'Proxy',                  // Stays in dx-contracts - will be renamed DutchExchangeProxy
+  'DutchExchangeProxy',                  // Stays in dx-contracts - will be renamed DutchExchangeProxy
   'EtherToken',             // TODO: > 0.9.0 will be @gnosis/util-contracts
   'TokenGNO',               // TODO: > 0.9.0 will be @gnosis/token-gno
   'TokenOWL',               // TODO: > 0.9.0 will be @gnosis/token-owl
@@ -44,7 +44,7 @@ interface ContractsMap {
 }
 
 interface ContractsMapWProxy extends ContractsMap {
-  Proxy: DeployedContract,
+  DutchExchangeProxy: DeployedContract,
   TokenOWLProxy: DeployedContract,
 }
 
@@ -53,13 +53,13 @@ if (process.env.NODE_ENV !== 'production') {
   req = require.context(
     '@gnosis.pm/dx-contracts/build/contracts/',
     false,
-    /(DutchExchange|Proxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenOMG|TokenRDN)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|TokenOMG|TokenRDN)\.json$/,
   )
 } else {
   req = require.context(
     '@gnosis.pm/dx-contracts/build/contracts/',
     false,
-    /(DutchExchange|Proxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
   )
 }
 
@@ -67,7 +67,7 @@ export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contr
 
 type TokenArtifact =
   './DutchExchange.json'  |
-  './Proxy.json'          |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
+  './DutchExchangeProxy.json'          |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
   './TokenFRT.json'       |
   './TokenOWL.json'       |   // Moving to @gnosis.pm/owl-token
   './TokenOWLProxy.json'  |   // Moving to @gnosis.pm/owl-token
@@ -130,12 +130,12 @@ async function init() {
     return acc
   }, {}) as ContractsMapWProxy
   
-  const { address: proxyAddress } = deployedContracts.Proxy
+  const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
   deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
   
   const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
   deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
-  delete deployedContracts.Proxy
+  delete deployedContracts.DutchExchangeProxy
   delete deployedContracts.TokenOWLProxy
   
   if (process.env.NODE_ENV !== 'production') {
