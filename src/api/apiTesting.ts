@@ -13,7 +13,7 @@ export default async () => {
   } = await promisedContractsMap
 
   // TODO: hard-code actual addresses here
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV === 'development') {
     return {
       elements: [
         {
