@@ -78,7 +78,11 @@ type TokenArtifact =
 
 const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
-  c => req(reqKeys.find(key => key === `./${c}.json`)),
+  c => {
+    if (c === 'EtherToken') return require('@gnosis.pm/util-contracts/build/contracts/EtherToken.json')
+    if (c === 'TokenGNO') return require('@gnosis.pm/gno-token/build/contracts/TokenGNO.json')
+    return req(reqKeys.find(key => key === `./${c}.json`))
+  },
 )
 
 // in development use different contract addresses
