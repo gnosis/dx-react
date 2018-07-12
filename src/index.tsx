@@ -8,6 +8,9 @@ import App, { initializer, loadSettings } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
 
+// run Event Listeners from events.ts
+import 'integrations/events'
+
 // set last () => any on Array prototype
 Array.prototype.last = function getLast() {
   return this[this.length - 1]
@@ -30,7 +33,7 @@ const geoBlockedCountryCodes = new Set(blocked_codes)
 const isGeoBlocked = async () => {
   try {
     const res = await fetch('https://geoip.gnosis.pm/json/')
-    
+
     // this DOES NOT block even if the URL above starts returning 404
     if (!res.ok) return false
 
@@ -39,7 +42,7 @@ const isGeoBlocked = async () => {
     return geoBlockedCountryCodes.has(country_code)
   } catch (error) {
     console.error(error)
-    
+
     // this does NOT block if there is a network error, e.g. URL is blocked
     return false
   }
