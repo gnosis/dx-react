@@ -15,7 +15,7 @@ import ModalContainer from 'containers/Modals'
 import { asyncLoadSettings } from 'actions'
 
 export const history = createHistory()
-const store = createStoreWithHistory(history)
+export const store = createStoreWithHistory(history)
 
 // load data from localstorage
 store.dispatch({ type: 'INIT' })
