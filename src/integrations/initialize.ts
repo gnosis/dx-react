@@ -8,9 +8,7 @@ import MetamaskProvider from './metamask'
 import ParityProvider from './parity'
 import RemoteProvider from './remote'
 
-import { watch, getBlock } from './filterChain'
-
-export const WATCHER_INTERVAL = 6000
+export const WATCHER_INTERVAL = 5000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,
@@ -76,7 +74,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
         available = provider.walletAvailable,
         unlocked = !!(available && account),
         newState = { account, network, balance, available, unlocked, timestamp }
-        
+
         // if data changed
       if (shallowDifferent(provider.state, newState)) {
         console.log('app state is different')
@@ -114,12 +112,5 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
     watcher(provider)
     // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
-  })
-
-  // TEMP SAMPLE USAGE
-  watch(async (e, bl) => {
-    if (e) return console.error('Chain watching Error', e)
-    console.log('LATEST BLOCK')
-    console.log(await getBlock(bl))
   })
 }
