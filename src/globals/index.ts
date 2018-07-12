@@ -41,3 +41,5 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
   decimals: 18,
   address: '',
 }
+
+export const IPFS_TOKENS_HASH = 'QmWTuHWwmeLT359SkXfvENpnevCbHE1Cdxx2NAGjMfqEGo'

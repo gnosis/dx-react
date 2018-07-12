@@ -22,12 +22,12 @@ const contractNames = [
 ]
 
 // breaks in rinkeby, cancel for now
-/* if (process.env.NODE_ENV === 'development') {
-  contractNames.push(
-    'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
-    'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
-  )
-} */
+// if (process.env.NODE_ENV === 'development') {
+//   contractNames.push(
+//     'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
+//     'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
+//   )
+// }
 
 // fill contractsMap from here if available
 const filename2ContractNameMap = {
@@ -90,19 +90,28 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
   },
 )
 
+// inject network addresses
+const networksUtils = require('@gnosis.pm/util-contracts/networks.json'),
+  networksGNO   = require('@gnosis.pm/gno-token/networks.json'),
+  networksOWL   = require('@gnosis.pm/owl-token/networks.json')
+
+for (const contrArt of ContractsArtifacts) {
+  const { contractName } = contrArt
+  // assign networks from the file, overriding from /build/contracts with same network id
+  // but keeping local network ids
+  Object.assign(contrArt.networks, networksUtils[contractName], networksGNO[contractName], networksOWL[contractName])
+}
+
 // in development use different contract addresses
 if (process.env.NODE_ENV === 'development') {
   // from networks-%ENV%.json
-  const networksDX    = require('@gnosis.pm/dx-contracts/networks.json'),
-    networksUtils = require('@gnosis.pm/util-contracts/networks.json'),
-    networksGNO   = require('@gnosis.pm/gno-token/networks.json'),
-    networksOWL   = require('@gnosis.pm/owl-token/networks.json')
+  const networksDX    = require('@gnosis.pm/dx-contracts/networks-dev.json')
 
   for (const contrArt of ContractsArtifacts) {
     const { contractName } = contrArt
     // assign networks from the file, overriding from /build/contracts with same network id
     // but keeping local network ids
-    Object.assign(contrArt.networks, networksDX[contractName], networksUtils[contractName], networksGNO[contractName], networksOWL[contractName])
+    Object.assign(contrArt.networks, networksDX[contractName])
   }
 }
 
