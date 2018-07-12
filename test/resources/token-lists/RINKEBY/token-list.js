@@ -1,5 +1,7 @@
 // npm run add2ipfs -- test/resources/token-pairs-ipfs-rinkeby.js
 
+// RINKEBY
+
 module.exports = {
   elements: [
     {
