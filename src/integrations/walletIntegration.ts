@@ -22,10 +22,63 @@ import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals, getApprovedTokensFromAllTokens, getAvailableAuctionsFromAllTokens } from 'api'
 
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
-import tokensMap from 'api/apiTesting'
+// import tokensMap from 'api/apiTesting'
 
 import { State } from 'types'
 import { ConnectedInterface } from './types'
+import { IPFS_TOKENS_HASH } from 'globals'
+
+export const getTokenList = async (dispatch: Dispatch<any>, getState: () => State) => {
+  let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
+    localForage.getItem('defaultTokens'),
+    localForage.getItem('customTokens'),
+    localForage.getItem('customListHash'),
+  ])
+  const { ipfsFetchFromHash } = await promisedIPFS
+  const isDefaultTokensAvailable = !!(defaultTokens)
+
+  if (!isDefaultTokensAvailable) {
+    // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
+    if (process.env.NODE_ENV === 'development') {
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } else {
+      // TODO: change for prod
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    }
+
+    console.log('​getTokenList -> ', defaultTokens)
+    // set tokens to localForage
+    await localForage.setItem('defaultTokens', defaultTokens)
+  }
+
+  // IPFS hash for tokens exists in localForage
+  if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
+
+  if (customTokens) {
+    const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
+
+    // reset localForage customTokens w/decimals filled in
+    localForage.setItem('customTokens', customTokensWithDecimals)
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  else if (customListHash) {
+    const fileContent = await ipfsFetchFromHash(customListHash)
+
+    const json = fileContent
+    await checkTokenListJSON(json as DefaultTokenObject[])
+
+    const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
+    localForage.setItem('customTokens', customTokensWithDecimals)
+
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  // set defaulTokenList && setDefaulTokenPair visible when in App
+  dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
+
+  return getState().tokenList
+}
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState }: { dispatch: Dispatch<any>, getState: () => State } = store
@@ -44,59 +97,8 @@ export default async function walletIntegration(store: Store<any>) {
     resetMainAppState: () => dispatch(resetMainAppState()),
   }
 
-  const getTokenList = async () => {
-    let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
-      localForage.getItem('defaultTokens'),
-      localForage.getItem('customTokens'),
-      localForage.getItem('customListHash'),
-    ])
-    const { ipfsFetchFromHash } = await promisedIPFS
-    const isDefaultTokensAvailable = !!(defaultTokens)
-
-    if (!isDefaultTokensAvailable) {
-      // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-      if (process.env.NODE_ENV !== 'production') {
-        defaultTokens = await tokensMap()
-      } else {
-        // TODO: change for prod
-        defaultTokens = await ipfsFetchFromHash('QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM') as DefaultTokens
-      }
-
-      console.log('​getTokenList -> ', defaultTokens)
-      // set tokens to localForage
-      await localForage.setItem('defaultTokens', defaultTokens)
-    }
-
-    // IPFS hash for tokens exists in localForage
-    if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
-
-    if (customTokens) {
-      const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
-
-      // reset localForage customTokens w/decimals filled in
-      localForage.setItem('customTokens', customTokensWithDecimals)
-      dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-      dispatch(setTokenListType({ type: 'CUSTOM' }))
-    } else if (customListHash) {
-      const fileContent = await ipfsFetchFromHash(customListHash)
-
-      const json = fileContent
-      await checkTokenListJSON(json as DefaultTokenObject[])
-
-      const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
-      localForage.setItem('customTokens', customTokensWithDecimals)
-
-      dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-      dispatch(setTokenListType({ type: 'CUSTOM' }))
-    }
-    // set defaulTokenList && setDefaulTokenPair visible when in App
-    dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-
-    return getState().tokenList
-  }
-
   try {
-    const { combinedTokenList } = await getTokenList()
+    const { combinedTokenList } = await getTokenList(dispatch, getState)
 
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
