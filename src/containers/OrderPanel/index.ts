@@ -6,7 +6,7 @@ import { EMPTY_TOKEN } from 'globals'
 import { RedirectHomeIfNoAccountHOC } from 'components/RedirectIf'
 
 const isTokenApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
-  approvedTokens.has(sell.address) && approvedTokens.has(buy.address)
+  (approvedTokens.has(sell.address) && approvedTokens.has(buy.address)) || (sell.isETH || buy.isETH)
 
 const mapStateToProps = (state: State) => {
   const { tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN, sellAmount }, tokenOverlay, blockchain } = state
@@ -25,6 +25,5 @@ const mapStateToProps = (state: State) => {
     currentAccount: blockchain.currentAccount,
   }
 }
-
 
 export default connect(mapStateToProps)(RedirectHomeIfNoAccountHOC(OrderPanel))
