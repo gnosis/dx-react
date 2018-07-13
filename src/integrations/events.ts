@@ -2,12 +2,13 @@ import { watch, getBlock } from 'integrations/filterChain'
 import localForage from 'localforage'
 import { promisedWeb3 } from 'api/web3Provider'
 import { store } from 'components/App'
+import { code2Network } from 'utils/helpers'
 
 // ========== //
 // scope vars //
 // ========== //
 
-let netID: string
+let netID: string = window.web3.version.network
 
 // =============== //
 // event listeners //
@@ -17,19 +18,44 @@ const fireListeners = async () => {
   console.log('FIRING LISTENERS')
 
   const { web3  } = await promisedWeb3
-  web3.currentProvider.publicConfigStore.on('update', async ({ selectedAddress, networkVersion }: any) => {
-
-    if (selectedAddress === store.getState().blockchain.currentAccount && netID === networkVersion) return
+  web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
+    const { currentAccount: currentAccountFromState, providers: { METAMASK: { network: networkFromState } } } = store.getState().blockchain
+    const { defaultTokenList } = store.getState().tokenList
 
     console.log(`
-    ==> 1: Network watcher fired, detected network change
-      L.Net.ID  ${netID}
-      C.Net.ID: ${networkVersion}
+    [[LISTENER]] ---> CHANGES DETECTED
+      >>====> Account Before: ${currentAccountFromState}
+      >>====> Account After:  ${selectedAddress}
+      >>====> Network Before: ${netID}
+      >>====> Network After:  ${networkVersion}
+    [[LISTENER]]
     `)
-    // alert(`networkVersions: ${networkVersion} ${netID}`)
-    if (!netID || netID !== networkVersion) {
+
+    if (netID === networkVersion) return
+
+    // set scoped netID var to networkVersion detected
+    netID = networkVersion
+
+    console.log(`
+    [[LISTENER]] --> NETWORK CHANGE DETECTED
+      >>====> localNetID      ${netID}
+      >>====> C.Net.ID:       ${networkVersion}
+    [[LISTENER]]
+    `)
+
+    if (
+      // network undefined (page refresh)
+      (!netID && defaultTokenList.length < 1) ||
+      // change of networks
+      (netID !== networkVersion && defaultTokenList.length < 1) ||
+      // state network !== networkVersion (network change)
+      networkFromState !== code2Network(networkVersion)
+    ) {
       netID = networkVersion
-      await localForage.removeItem('defaultTokens')
+      console.log(`
+      [[LISTENER]] --> NETWORK CHANGE DETECTED, GRABBING NEW NETWORK TOKEN LIST
+      `)
+      return localForage.removeItem('defaultTokens')
     }
   })
 
