@@ -7,6 +7,7 @@ import ReactDOMServer from 'react-dom/server'
 import App, { initializer, loadSettings } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
+import { ALLOWED_NETWORK } from 'globals'
 
 // run Event Listeners from events.ts
 import 'integrations/events'
@@ -90,7 +91,7 @@ async function blockIf() {
 
   if (blocked) {
     window.history.replaceState(null, '', '/')
-    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} />)
+    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
   } else {
     await renderApp()
   }

@@ -31,7 +31,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
             <thead>
               <tr>
                 <th>Auction</th>
-                <th>Committed</th>
+                <th>Deposited</th>
                 <th>Claim Tokens</th>
               </tr>
             </thead>

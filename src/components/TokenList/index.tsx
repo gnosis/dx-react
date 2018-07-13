@@ -3,7 +3,6 @@ import TokenItem from '../TokenItem'
 import { code2tokenMap } from 'globals'
 import { TokenBalances, DefaultTokenObject, AccountsSet } from 'types'
 
-
 interface TokenListProps {
   tokens: DefaultTokenObject[],
   balances: TokenBalances,
@@ -20,7 +19,7 @@ const TokenList: React.SFC<TokenListProps> = ({ tokens, balances, onTokenClick, 
         balance={balances[token.address]}
         key={token.address}
         onClick={onTokenClick}
-        generatesMGN={approvedTokens.has(token.address)}
+        generatesMGN={approvedTokens.has(token.address) || token.isETH}
       />)}
   </div>
 )

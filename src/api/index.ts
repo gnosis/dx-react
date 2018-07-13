@@ -391,7 +391,6 @@ depositAndSell.sendTransaction = async (
   return DutchX.depositAndSell.sendTransaction(pair, amount, account)
 }
 
-
 export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
@@ -517,7 +516,17 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
   }
 }
 
-export const claimSellerFundsFromSeveralAuctions = async (
+interface ClaimSellerFundsFromSeveralAuctions<T = Receipt> {
+  (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  userAccount?: Account,
+  indices?: number,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  ClaimSellerFundsFromSeveralAuctions<Hash>,
+}
+
+export const claimSellerFundsFromSeveralAuctions: ClaimSellerFundsFromSeveralAuctions = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   userAccount?: Account,
@@ -548,6 +557,36 @@ export const claimSellerFundsFromSeveralAuctions = async (
   return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
 }
 
+claimSellerFundsFromSeveralAuctions.sendTransaction = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  userAccount?: Account,
+  indices: number = 0,
+) => {
+  const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
+
+  const claimableIndices = (
+    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
+  )[0].map(i => i.toNumber())
+
+  if (claimableIndices.length === 0) return
+
+  // getIndicesWithClaimableTokensForSellers returns auctions with sellBalance > 0
+  // this means currentAucIndx may have > 0 sellBalance BUT NOT HAVE CLEARED (only last Index though)
+  const lastIndexCleared = (
+    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
+  )[0].gt(0)
+
+  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
+
+  const finalIndices = claimableIndices.slice(0, length)
+  const sellArr = Array.from({ length }, () => sell.address)
+  const buyArr = Array.from({ length }, () => buy.address)
+
+  console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
+  return DutchX.claimTokensFromSeveralAuctionsAsSeller.sendTransaction(sellArr, buyArr, finalIndices, userAccount)
+}
 
 /*
  * get amount of funds already claimed for auction corresponding to a pair of tokens at an index
@@ -591,6 +630,15 @@ deposit.call = async (code: TokenCode, amount: Balance, account?: Account) => {
   return DutchX.deposit.call(code, amount, account)
 }
 
+interface Withdraw<T = Receipt> {
+  (
+  tokenAddress: string,
+  amount?: Balance,
+  userAccount?: Account,
+  ): Promise<T>,
+  sendTransaction?: T extends Hash ? never :  Withdraw<Hash>,
+}
+
 /*
  * withdraw tokens that the DutchExchange auction is holding in the account's name
  * @param pair TokenPair
@@ -599,14 +647,24 @@ deposit.call = async (code: TokenCode, amount: Balance, account?: Account) => {
  *
  * If AMOUNT is left out, withdraws ALL funds
  */
-export const withdraw = async (tokenAddress: string, amount?: Balance, userAccount?: Account) => {
+export const withdraw: Withdraw = async (tokenAddress: string, amount?: Balance, userAccount?: Account) => {
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
   const withdrawableBalance = await DutchX.getBalance(tokenAddress, userAccount)
-  if (withdrawableBalance.lte(0)) throw new Error ('Withdraw balance cannot be 0')
+  if (withdrawableBalance.lte(0)) throw new Error('Withdraw balance cannot be 0')
 
   return amount ? DutchX.withdraw(tokenAddress, amount, userAccount) : DutchX.withdraw(tokenAddress, withdrawableBalance, userAccount)
+}
+
+withdraw.sendTransaction = async (tokenAddress: string, amount?: Balance, userAccount?: Account) => {
+  const { DutchX } = await promisedAPI
+  userAccount = await fillDefaultAccount(userAccount)
+
+  const withdrawableBalance = await DutchX.getBalance(tokenAddress, userAccount)
+  if (withdrawableBalance.lte(0)) throw new Error('Withdraw balance cannot be 0')
+
+  return amount ? DutchX.withdraw.sendTransaction(tokenAddress, amount, userAccount) : DutchX.withdraw.sendTransaction(tokenAddress, withdrawableBalance, userAccount)
 }
 
 // helper fro getting last index of a token pair and closing price
@@ -710,7 +768,7 @@ export const getSellerOngoingAuctions = async (
         closingPriceOpp: [BigNumber, BigNumber],
       },
       sellVolumeNext: { normal: BigNumber, inverse: BigNumber },
-      sellVolNormal: BigNumber, sellVolInverse: BigNumber, 
+      sellVolNormal: BigNumber, sellVolInverse: BigNumber,
     }>[] = []
 
     const ongoingAuctions: {
@@ -763,12 +821,12 @@ export const getSellerOngoingAuctions = async (
       const { sell: { decimals }, buy: { decimals: decimalsInverse } } = auction
 
       const { lastIndex, closingPrices: { closingPriceDir, closingPriceOpp }, sellVolumeNext, sellVolNormal, sellVolInverse } = lastAuctionsData[index]
-      
+
       const currAuctionNeverRanDir = sellVolNormal.eq(0) && closingPriceDir[1].eq(0)
       const currAuctionNeverRanOpp = sellVolInverse.eq(0) && closingPriceOpp[1].eq(0)
       const committedToNextNormal = sellVolumeNext.normal.gt(0)
       const committedToNextInverse = sellVolumeNext.inverse.gt(0)
-      
+
       console.log(`
         closingPriceDir: ${closingPriceDir}
         closingPriceOpp: ${closingPriceOpp}
@@ -789,7 +847,7 @@ export const getSellerOngoingAuctions = async (
         latestIndicesReverse: BigNumber[] = indicesWithSellerBalanceInverse
 
       if (committedToNextNormal && currAuctionNeverRanDir) {
-        // if (currAuctionNeverRanDir) 
+        // if (currAuctionNeverRanDir)
         latestIndicesNormal = [...indicesWithSellerBalance, lastIndex.add(1)]
         balancePerIndex.push(sellVolumeNext.normal)
       }
@@ -811,7 +869,6 @@ export const getSellerOngoingAuctions = async (
       accum.push(ongoingAuction)
       return accum
     }, [])
-
 
     return Promise.all(auctionsArray)
   } catch (e) {
@@ -866,7 +923,7 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
             auctionPairs.push(`${buy.address}-${sell.address}`)
           }
         })
-      
+
       auctionPairsPromises.push(directPromise, inversePromise)
     }
   }

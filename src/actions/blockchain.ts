@@ -21,7 +21,7 @@ import {
   getTokenBalance,
   toNative,
   claimSellerFundsFromSeveralAuctions,
-  getIndicesWithClaimableTokensForSellers,
+  // getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
@@ -39,7 +39,6 @@ import {
   selectTokenPair,
 } from 'actions'
 
-
 import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
@@ -48,7 +47,7 @@ import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { promisedContractsMap, contractsMap } from 'api/contracts'
 import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT } from 'globals'
 import { waitForTx } from 'integrations/filterChain'
 import { getDecoderForABI } from 'api/utils'
 
@@ -77,8 +76,6 @@ export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKEN
 export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
 export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
 export const resetAppState = createAction('RESET_APP_STATE')
-
-const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   try {
@@ -112,7 +109,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   ])
   const mainList = [...defaultList, { symbol: 'MGN', name: 'MAGNOLIA', decimals: 18, address: TokenMGN.address }]
 
-  const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
+  const status = condition && condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
   // Check state in parallel
   /*
@@ -143,7 +140,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions(ongoingAuctions),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
-    setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
+    setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(FIXED_DECIMALS) }),
     setCurrentAccountAddress({ currentAccount }),
     setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
   ], 'HYDRATING_MAIN_STATE'))
@@ -219,7 +216,7 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
     if (currAucIdx.lte(0)) return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: '0' }))
 
     const [pNum, pDen] = await getLastAuctionPrice({ sell, buy }, currAucIdx)
-    const price = (pNum.div(pDen)).toFixed(4)
+    const price = (pNum.div(pDen)).toFixed(FIXED_DECIMALS)
     console.log('lastClosingPrice -> ', price)
 
     return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
@@ -236,7 +233,7 @@ const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenE
 
     dispatch(selectTokenPair({ sell, buy, sellAmount }))
   }
-} 
+}
 
 /**
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
@@ -268,8 +265,8 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           // tslint:disable-next-line
           body: `
             ${sellName} is not an ERC20 Token and must be wrapped.
-            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder. 
-          
+            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder.
+
             Please confirm with ${activeProvider}.
           `,
           loader: true,
@@ -303,9 +300,10 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                 buttonTitle2: `Approve ${sellName} also for future trades`,
               },
             },
-            footer: { 
-              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`, 
-              url: './content/FAQ', 
+            footer: {
+              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
+              url: './content/FAQ',
+              urlMsg: 'FAQ',
             },
             onClick: accept,
           },
@@ -325,7 +323,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             modalName: 'ApprovalModal',
             modalProps: {
               header: `Using OWL to pay for fees`,
-              body: `You have the option to pay half of your fees on the DutchX in OWL. 
+              body: `You have the option to pay half of your fees on the DutchX in OWL.
               Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
               `,
               buttons: {
@@ -336,9 +334,9 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                   buttonTitle1: 'Don\'t use OWL to pay for fees',
                 },
               },
-              footer: { 
-                msg: 'More information regarding the DutchX and OWL can be found below.', 
-                url: './content/FAQ', 
+              footer: {
+                url: './content/Fees',
+                urlMsg: 'Fees',
               },
               onClick: accept,
             },
@@ -404,12 +402,12 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     const receipt = await waitForTx(hash)
     console.log('postSellOrder tx receipt: ', receipt)
 
-    const { DutchExchange } =  contractsMap
+    const { DutchExchange } = contractsMap
     const decoder = getDecoderForABI(DutchExchange.abi)
     const logs = decoder(receipt.logs)
     console.log('postSellOrder tx logs', logs)
     const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
-  
+
     // let receipt
     // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     // if (nativeSellAmt.greaterThan(userDXBalance)) {
@@ -421,7 +419,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     //   console.log('postSellOrder receipt', receipt)
     // }
     // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
-  
+
     console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     dispatch(closeModal())
     // jump to Auction Page
@@ -470,7 +468,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         const nativeSellAmt = await promisedNativeSellAmt
 
-
         console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
@@ -485,7 +482,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
-
 
         console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
@@ -505,7 +501,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
-
 
         console.log('PROMPTING to start tokenApproval tx for OWL')
         const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
@@ -564,7 +559,11 @@ export const claimSellerFundsFromSeveral = (
 ) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
+    { DutchExchange } = contractsMap
+
+  let decoder
+
   try {
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -574,8 +573,18 @@ export const claimSellerFundsFromSeveral = (
         loader: true,
       },
     }))
-    const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
-    console.log('​Claim receipt => ', claimReceipt)
+
+    // >>> ============= >>>
+    // CLAIMING TX WATCHING
+    // >>> ============= >>>
+
+    const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
+    console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
+
+    // >>> ============= >>>
+    // END CLAIMING TX WATCHING
+    // >>> ============= >>>
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -584,14 +593,34 @@ export const claimSellerFundsFromSeveral = (
         loader: true,
       },
     }))
-    const withdrawReceipt = await withdraw(buy.address)
-    console.log('​withdrawReceipt => ', withdrawReceipt)
-    // refresh state ...
-    let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
+
+    // >>> ======== >>>
+    // WITHDRAW TX WATCHING
+    // >>> ======== >>>
+
+    const withdrawHash = await withdraw.sendTransaction(buy.address)
+    // get receipt or throw TIMEOUT
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    console.log('Withdraw TX receipt: ', withdrawReceipt)
+
+    decoder = getDecoderForABI(DutchExchange.abi)
+    // next line unreachable in case of TIMEOUT
+    // @ts-ignore
+    const withdrawLogs = decoder(withdrawReceipt.logs)
+    console.log('withdraw tx logs', withdrawLogs)
+
+    // Find the 'NewWithdrawal' log
+    let withdrawEvents
     // loop until sellBalance drops to 0
-    while (sellBalance.length && sellBalance[0].gt(0)) {
-      ([, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] })))
+    while (!withdrawEvents) {
+      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
     }
+
+    console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
+
+    // >>> ======== >>>
+    // END WITHDRAW TX WATCHING
+    // >>> ======== >>>
 
     return dispatch(closeModal())
   } catch (error) {
