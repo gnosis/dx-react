@@ -5,8 +5,8 @@ import { WalletProvider, ConnectedInterface } from './types'
 import { Account, Balance } from 'types'
 
 import MetamaskProvider from './metamask'
-import ParityProvider from './parity'
-import RemoteProvider from './remote'
+// import ParityProvider from './parity'
+// import RemoteProvider from './remote'
 
 export const WATCHER_INTERVAL = 5000
 
@@ -20,8 +20,8 @@ const networkById = {
 
 const providers: WalletProvider[] = [
   MetamaskProvider,
-  ParityProvider,
-  RemoteProvider,
+  // ParityProvider,
+  // RemoteProvider,
 ]
 
 // compare object properties
@@ -37,9 +37,8 @@ const shallowDifferent = (obj1: object, obj2: object) => {
 }
 
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
-export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
+export default ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
   let prevTime: number
-
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
 
@@ -59,7 +58,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
   }
 
   // Fired on setInterval every 10 seconds
-  const watcher = async (provider: WalletProvider) => {
+  const watcher = async (provider: WalletProvider, init?: string | boolean) => {
     if (!provider.checkAvailability()) return
 
     // set block timestamp to provider state and compare
@@ -84,7 +83,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
         prevTime = timestamp
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
-        await updateMainAppState()
+        init ? console.log('Provider INIT - not updating state') : await updateMainAppState()
       }
     } catch (err) {
       console.warn(err)
@@ -106,10 +105,10 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
     // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
     if (!provider.walletAvailable) return
-    // dispatch action to save provider name and proirity
+    // dispatch action to save provider name and priority
     registerProvider(provider.providerName, { priority: provider.priority })
-    // get account, balance, etc. state
-    watcher(provider)
+    // get account, balance, etc. PROVIDER state - do not update main app state yet
+    watcher(provider, 'init')
     // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
   })
