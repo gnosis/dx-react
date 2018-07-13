@@ -37,7 +37,7 @@ const shallowDifferent = (obj1: object, obj2: object) => {
 }
 
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
-export default ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
+export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
   let prevTime: number
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()

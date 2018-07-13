@@ -42,6 +42,8 @@ export enum AuctionStatus {
 export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
 
+export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 10000 : 200000
+
 export const ETH_ADDRESS = '0x0'
 export const WETH_ADDRESS_RINKEBY = '0xc778417e063141139fce010982780140aa0cd5ab'
 

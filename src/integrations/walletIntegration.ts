@@ -129,7 +129,7 @@ export default async function walletIntegration(store: Store<any>) {
 
   try {
     // init Provider first - set a watcher for 6000 ms to check changes
-    initialize(providerOptions)
+    await initialize(providerOptions)
 
     const { combinedTokenList } = await dispatch(getTokenList())
 
@@ -145,7 +145,8 @@ export default async function walletIntegration(store: Store<any>) {
     ])
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
-
+    // set state in app
+    return dispatch(updateMainAppState())
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
   } finally {
