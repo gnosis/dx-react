@@ -83,7 +83,7 @@ module.exports = async () => {
 
   console.log('Account', accountName)
   console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toNumber() / (10 ** 18))
-  console.log('Buy Token = ', buy, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
+  console.log('Buy Token = ', buy, ' @', buyToken.address, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
 
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index BEFORE == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
