@@ -600,7 +600,7 @@ export const claimSellerFundsFromSeveral = (
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT
-    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE')]).catch(() => { throw new Error('Safety Timeout') })
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)
 
     decoder = getDecoderForABI(DutchExchange.abi)
