@@ -56,7 +56,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
       )
       }
 
-      return (console.log((buyAmount.div(buyToken.decimals)).toFixed(4)),
+      return (
         <span>
           <button id="claimToken" onClick={claimTokens} disabled={isClaiming || !buyAmount}>
             <i>CLAIM</i>
