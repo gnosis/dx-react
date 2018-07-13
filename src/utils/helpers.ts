@@ -21,6 +21,22 @@ export const getDutchXOptions = (provider: any) => {
   return opts
 }
 
+export const code2Network = (code: '1' | '4' | '42') => {
+  switch (code) {
+    case '1':
+      return 'MAIN'
+
+    case '4':
+      return 'RINKEBY'
+
+    case '42':
+      return 'KOVAN'
+
+    default:
+      return 'UNKNOWN'
+  }
+}
+
 export const timeoutCondition = (timeout: any, rejectReason: any) => new Promise((_, reject) => {
   setTimeout(() => {
     reject(rejectReason)

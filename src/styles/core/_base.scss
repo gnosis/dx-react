@@ -108,7 +108,7 @@ footer {
   box-sizing: border-box;
   display: flex;
   background: $greyLight;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   margin: auto auto 0;
@@ -119,5 +119,17 @@ footer {
 
   p > a {
     color: $blue;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    > i {
+      font-size: 8px;
+      padding: 0 3px;
+    }
   }
 }

@@ -22,13 +22,15 @@ import { checkTokenListJSON } from 'api/utils'
 import { getAllTokenDecimals, getApprovedTokensFromAllTokens, getAvailableAuctionsFromAllTokens } from 'api'
 
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
-// import tokensMap from 'api/apiTesting'
+import tokensMap from 'api/apiTesting'
 
 import { State } from 'types'
 import { ConnectedInterface } from './types'
-import { IPFS_TOKENS_HASH } from 'globals'
+import { ETHEREUM_NETWORKS } from './constants'
+// import { IPFS_TOKENS_HASH } from 'globals'
 
-export const getTokenList = async (dispatch: Dispatch<any>, getState: () => State) => {
+export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
+
   let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
     localForage.getItem('defaultTokens'),
     localForage.getItem('customTokens'),
@@ -38,15 +40,43 @@ export const getTokenList = async (dispatch: Dispatch<any>, getState: () => Stat
   const isDefaultTokensAvailable = !!(defaultTokens)
 
   if (!isDefaultTokensAvailable) {
+    network = network || window.web3.version.network
+
+    console.log('Current Network =', network)
+
     // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-    if (process.env.NODE_ENV === 'development') {
+    /* if (process.env.NODE_ENV === 'development') {
       defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
     } else {
       // TODO: change for prod
       defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } */
+
+    switch (network) {
+      case '4' || ETHEREUM_NETWORKS.RINKEBY:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
+        defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
+        console.log('Rinkeby Token List -> ', defaultTokens.elements)
+        break
+
+      case '1' || ETHEREUM_NETWORKS.MAIN:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
+        // TODO: fix for Mainnet
+        defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
+        console.warn(`
+          Ethereum Mainnet not supported - please try another network.
+          Removing tokens from localForage ...
+          ${defaultTokens.elements}
+        `)
+        break
+
+      default:
+        console.log(`Detected connection to an UNKNOWN network -- localhost?`)
+        defaultTokens = await tokensMap()
+        console.log('LocalHost Token List -> ', defaultTokens.elements)
+        break
     }
 
-    console.log('​getTokenList -> ', defaultTokens)
     // set tokens to localForage
     await localForage.setItem('defaultTokens', defaultTokens)
   }
@@ -98,7 +128,10 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   try {
-    const { combinedTokenList } = await getTokenList(dispatch, getState)
+    // init Provider first - set a watcher for 6000 ms to check changes
+    initialize(providerOptions)
+
+    const { combinedTokenList } = await dispatch(getTokenList())
 
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
@@ -113,7 +146,6 @@ export default async function walletIntegration(store: Store<any>) {
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
 
-    await initialize(providerOptions)
   } catch (error) {
     console.warn('Error in walletIntegrations: ', error.message || error)
   } finally {
