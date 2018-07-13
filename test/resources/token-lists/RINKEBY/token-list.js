@@ -23,12 +23,6 @@ module.exports = {
       address: '0x3615757011112560521536258c1e7325ae3b48ae',
       decimals: 18,
     },
-    {
-      symbol: 'OMG',
-      name: 'OmiseGO',
-      address: '0x00df91984582e6e96288307e9c2f20b38c8fece9',
-      decimals: 18,
-    },
   ],
   pagination: {
     endingBefore: null,
