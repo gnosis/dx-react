@@ -13,6 +13,15 @@ export const code2tokenMap: Code2Name = {
   REP: 'AUGUR',
 }
 
+export const tokenSVG = new Set([
+  'REP',
+  'ETH',
+  'GNO',
+  'OMG',
+  '1ST',
+  'GNT',
+])
+
 export const network2URL: Network2URL = {
   RINKEBY: 'https://rinkeby.etherscan.io/',
   MAIN: 'https://etherscan.io/',
@@ -34,6 +43,7 @@ export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
 
 export const ETH_ADDRESS = '0x0'
+export const WETH_ADDRESS_RINKEBY = '0xc778417e063141139fce010982780140aa0cd5ab'
 
 export const EMPTY_TOKEN: DefaultTokenObject = {
   name: '' as TokenName,
@@ -43,3 +53,7 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 }
 
 export const IPFS_TOKENS_HASH = 'QmWTuHWwmeLT359SkXfvENpnevCbHE1Cdxx2NAGjMfqEGo'
+
+export const ALLOWED_NETWORK = 'Rinkeby Test Network'
+
+export const FIXED_DECIMALS = 4
