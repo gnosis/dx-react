@@ -4,6 +4,7 @@ import { closeModal } from 'actions'
 import { network2URL } from 'globals'
 
 import Loader from 'components/Loader'
+import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -18,6 +19,7 @@ interface ApprovalModalProps extends TransactionModalProps {
 
 interface BlockModalProps extends TransactionModalProps {
   disabledReason: string,
+  networkAllowed?: Partial<ETHEREUM_NETWORKS>,
 }
 
 export const TransactionModal: React.SFC<TransactionModalProps> = ({
@@ -89,7 +91,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
       { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
     </p>
     <div className="modalParentDiv">
-      
+
       <div className="modalButtonDiv">
         <button
           className="modalButton"
@@ -114,12 +116,13 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
         </p>}
       </div>
     </div>
-    {footer && 
+    {footer &&
       <p className="modalFooter">
         <i>
-          {footer.msg || null} 
-          <br/> 
-          See the <a href={footer.url || './content/FAQ/#approval'} target="_blank">FAQ</a> section to learn more about how the DutchX works.
+          {footer.msg || null}
+          <br/>
+          <br/>
+          For more information, read the <a href={footer.url || './content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
         </i>
       </p>}
   </div>
@@ -129,29 +132,32 @@ const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
 const disabledReasons = {
   geoblock: {
     title: 'The DutchX is currently not available.',
-    render: () => 
+    render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
         <p>Still experiencing issues? You may be accessing the DutchX from a restricted country or region.</p>
         <br />
-        <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+        <br />
+        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
       </div>,
   },
   networkblock: {
     title: 'The DutchX is not available on your network.',
-    render: () =>
+    render: (network = 'RINKEBY Test Network') =>
     <div style={blockModalStyle}>
-      <p>Make sure you’re connected to the Ethereum Mainnet.</p>
+      <p>{`Make sure you’re connected to the ${network}.`}</p>
       <br />
-      <small><i>Check out the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+      <br />
+      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
     </div>,
   },
 }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({
   disabledReason,
+  networkAllowed,
 }) =>
   <div className="modalDivStyle">
     <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
-    {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render()}
+    {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render(networkAllowed)}
   </div>

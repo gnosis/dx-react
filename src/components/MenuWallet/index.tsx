@@ -3,6 +3,7 @@ import React from 'react'
 import Loader from 'components/Loader'
 
 import { Account, BigNumber, TokenBalances } from 'types'
+import { FIXED_DECIMALS } from 'globals'
 
 export interface WalletProps {
   account: Account,
@@ -19,8 +20,8 @@ export interface WalletProps {
 export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens }) => (
   <div className="menuWallet">
     <span>
-      <code>{`${account ? account.slice(0,10) : 'No Wallet Detected'}...`}</code>
-      <small>{balance != null ? balance.toNumber().toFixed(4) : '0'} ETH</small>
+      <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
+      <small>{balance != null ? balance.toNumber().toFixed(FIXED_DECIMALS) : '0'} ETH</small>
     </span>
     {account && <div>
       <Loader
@@ -44,7 +45,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
                 tokens[addressKey].gt(0) &&
                 <tr key={addressKey}>
                   <td>{name || 'Unknown'}</td>
-                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(4)}</td>
+                  <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(FIXED_DECIMALS)}</td>
                 </tr>
               )
             })}
