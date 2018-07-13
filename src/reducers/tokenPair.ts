@@ -59,7 +59,7 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
     [swapTokensInAPair.toString()]: (state) => ({
       ...state,
       sell: state.buy,
-      buy: state.sell.isETH ? WETH : state.sell,
+      buy: state.sell && state.sell.isETH ? WETH : state.sell,
       sellAmount: '0',
     }),
     [setClosingPrice.toString()]: (state, action) => ({ ...state, lastPrice: action.payload.price }),
