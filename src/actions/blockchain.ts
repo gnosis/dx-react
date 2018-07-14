@@ -598,6 +598,9 @@ export const claimSellerFundsFromSeveral = (
     // WITHDRAW TX WATCHING
     // >>> ======== >>>
 
+    // wait claimHash
+    await waitForTx(claimHash)
+
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT
     const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
