@@ -13,6 +13,8 @@ import tokenList from './tokenList'
 import tokenOverlay from './tokenOverlay'
 import tokenPair from './tokenPair'
 
+import dxBalances from 'actions/dxBalances'
+
 const reducers = combineReducers<State>({
   form: formReducer,
   auctions,
@@ -26,6 +28,8 @@ const reducers = combineReducers<State>({
   tokenList,
   tokenOverlay,
   tokenPair,
+
+  dxBalances,
 })
 
 const rootReducer: Reducer<State> = (state, action) => {
