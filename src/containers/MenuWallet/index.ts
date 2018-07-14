@@ -24,6 +24,7 @@ const mapStateToProps = (state: State) => ({
   addressToSymbolDecimal: tokenNamesAndDecimals(state),
   balance: getCurrentBalance(state),
   tokens: state.tokenBalances,
+  dxBalances: state.dxBalances,
 })
 
 export default connect<WalletProps>(mapStateToProps)(MenuWallet)
