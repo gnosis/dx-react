@@ -8,7 +8,7 @@ import { code2Network } from 'utils/helpers'
 // scope vars //
 // ========== //
 
-let netID: string = window.web3.version.network
+let netID: string
 
 // =============== //
 // event listeners //
@@ -18,6 +18,8 @@ const fireListeners = async () => {
   console.log('FIRING LISTENERS')
 
   const { web3  } = await promisedWeb3
+  web3.currentProvider                    &&
+  web3.currentProvider.publicConfigStore  &&
   web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
     const { currentAccount: currentAccountFromState, providers: { METAMASK: { network: networkFromState } } } = store.getState().blockchain
     const { defaultTokenList } = store.getState().tokenList
