@@ -1,7 +1,6 @@
-// import { getCurrentAccount } from '../api/dutchx'
 import { State, Provider } from 'types'
 import { ProviderName } from 'globals'
-import { /* get, */ find, orderBy } from 'lodash'
+import { find, orderBy } from 'lodash'
 
 export const selector = (state: State) => state.blockchain
 
