@@ -36,6 +36,13 @@ const shallowDifferent = (obj1: object, obj2: object) => {
   return keys1.some(key => obj1[key] !== obj2[key])
 }
 
+const watcherLogger = ({ logType = 'log', status, info, updateState }: { logType: string, status: string, info: string, updateState: boolean }) =>
+  console[logType](`
+    Provider status:  ${status}
+    Information:      ${info}
+    Updating State:   ${updateState}
+  `)
+
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
 export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
   let prevTime: number
@@ -79,11 +86,49 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
         console.log('app state is different')
         console.log('was: ', newState)
         console.log('now: ', provider.state)
+
         // reset module timestamp with updated timestamp
         prevTime = timestamp
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
-        init ? console.log('Provider INIT - not updating state') : await updateMainAppState()
+        // check if initial load or wallet locked
+
+        if (init && unlocked) {
+          watcherLogger({
+            logType: 'warn',
+            status: 'INITIALISING',
+            info: 'Setting up Web3 provider',
+            updateState: false,
+          })
+        }
+        else if (!unlocked) {
+          watcherLogger({
+            logType: 'warn',
+            status: 'WALLET LOCKED',
+            info: 'Please unlock your wallet provider',
+            updateState: false,
+          })
+          // if error
+          // connection lost or provider no longer returns data (locked/logged out)
+          // reset all data associated with account
+          resetMainAppState()
+
+          if (provider.walletAvailable) {
+            // disable internal provider
+            provider.state.unlocked = false
+            // and dispatch action with { available: false }
+            updateProvider(provider.providerName, provider.state)
+          }
+        }
+        else {
+          watcherLogger({
+            logType: 'warn',
+            status: 'CONNECTED + WALLET UNLOCKED',
+            info: 'Web3 provider connected + wallet unlocked',
+            updateState: true,
+          })
+          await updateMainAppState()
+        }
       }
     } catch (err) {
       console.warn(err)
@@ -108,7 +153,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
     // dispatch action to save provider name and priority
     registerProvider(provider.providerName, { priority: provider.priority })
     // get account, balance, etc. PROVIDER state - do not update main app state yet
-    watcher(provider, 'init')
+    watcher(provider, 'INIT')
     // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
   })
