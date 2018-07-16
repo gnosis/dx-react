@@ -145,11 +145,11 @@ export default async function walletIntegration(store: Store<any>) {
     ])
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
+
+    await dispatch(initDutchX())
     // set state in app
     return dispatch(updateMainAppState())
   } catch (error) {
-    console.warn('Error in walletIntegrations: ', error.message || error)
-  } finally {
-    return dispatch(initDutchX())
+    console.warn(error.message || error)
   }
 }
