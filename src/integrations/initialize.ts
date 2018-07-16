@@ -100,6 +100,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
             info: 'Setting up Web3 provider',
             updateState: false,
           })
+          // await updateMainAppState()
         }
         else if (!unlocked) {
           watcherLogger({
@@ -111,14 +112,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
           // if error
           // connection lost or provider no longer returns data (locked/logged out)
           // reset all data associated with account
-          resetMainAppState()
-
-          if (provider.walletAvailable) {
-            // disable internal provider
-            provider.state.unlocked = false
-            // and dispatch action with { available: false }
-            updateProvider(provider.providerName, provider.state)
-          }
+          throw 'Wallet locked during polling'
         }
         else {
           watcherLogger({
