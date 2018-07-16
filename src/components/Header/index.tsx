@@ -5,15 +5,21 @@ import MenuAuctions from 'containers/MenuAuctions'
 import Hamburger from 'components/Hamburger'
 import MenuFeeBalance from 'containers/MenuFeeBalance'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { State } from 'types'
 
 interface HeaderProps {
   content?: boolean;
 }
 
-export const Header = ({ content }: HeaderProps) => (
+interface HeaderState {
+  network?: string | 'RINKEBY' | 'MAIN' | 'UNKNOWN';
+}
+
+export const Header = ({ content, network }: HeaderProps & HeaderState) => (
   <header className={content ? 'solid-background' : ''}>
     <div>
-      <Link to="/" title="DutchX - Dutch Auction Exchange" className="logo"></Link>
+      <Link to="/" title="DutchX - Dutch Auction Exchange" className={`logo ${network && network.toLowerCase()}`}></Link>
       <MenuWallet />
       <MenuAuctions />
       <MenuFeeBalance />
@@ -22,4 +28,8 @@ export const Header = ({ content }: HeaderProps) => (
   </header>
 )
 
-export default Header
+const mapState = ({ blockchain: { providers: { METAMASK: { network } } } }: State) => ({
+  network,
+})
+
+export default connect<HeaderState>(mapState)(Header)

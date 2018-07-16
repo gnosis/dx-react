@@ -65,8 +65,7 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
         defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
         console.warn(`
           Ethereum Mainnet not supported - please try another network.
-          Removing tokens from localForage ...
-          ${defaultTokens.elements}
+          Removing tokens from local forage ...
         `)
         break
 
