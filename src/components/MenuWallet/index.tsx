@@ -21,7 +21,7 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
-      <small>{balance != null ? balance.toNumber().toFixed(FIXED_DECIMALS) : '0'} ETH</small>
+      <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
     </span>
     {account && <div>
       <Loader
