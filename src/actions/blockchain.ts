@@ -153,7 +153,12 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
  * (Re)-Initializes DutchX connection according to current providers settings
  */
 export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const state = getState()
+  const state = getState(),
+    {
+          blockchain: { providers: { METAMASK: { unlocked } } },
+          tokenList: { combinedTokenList: tokenAddresses },
+        } = state
+
   // initialize
   // determine new provider
   setActiveProviderHelper(dispatch, state)
@@ -166,7 +171,7 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
-        const tokenAddresses = state.tokenList.combinedTokenList
+        if (!unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
         account = await getCurrentAccount();
         ([currentBalance, tokenBalances] = await Promise.all([
           getETHBalance(account, true),
@@ -174,7 +179,7 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
         ]))
         return dispatch(getClosingPrice())
       } catch (e) {
-        console.error(e)
+        // console.error(e)
         throw e
       }
 
@@ -190,8 +195,8 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
-    console.error(`DutchX connection Error: ${error.message}`)
-    return dispatch(setConnectionStatus({ connected: false }))
+    dispatch(setConnectionStatus({ connected: false }))
+    throw error
   }
 }
 
