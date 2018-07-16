@@ -100,7 +100,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
             info: 'Setting up Web3 provider',
             updateState: false,
           })
-          // await updateMainAppState()
+          await updateMainAppState()
         }
         else if (!unlocked) {
           watcherLogger({
