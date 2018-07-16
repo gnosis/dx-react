@@ -21,7 +21,6 @@ import {
   getTokenBalance,
   toNative,
   claimSellerFundsFromSeveralAuctions,
-  // getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
@@ -177,12 +176,9 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
           getETHBalance(account, true),
           calcAllTokenBalances(tokenAddresses),
         ]))
-        return dispatch(getClosingPrice())
       } catch (e) {
-        // console.error(e)
         throw e
       }
-
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
@@ -213,6 +209,9 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
       buy = TokenETH
     }
   }
+
+  // show intermittent loading until price calculated
+  dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: 'LOADING' }))
 
   try {
     const currAucIdx = await getLatestAuctionIndex({ sell, buy })
