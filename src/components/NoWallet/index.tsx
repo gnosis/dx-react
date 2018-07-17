@@ -1,7 +1,5 @@
 import React from 'react'
 
-import ButtonCTA from 'components/ButtonCTA'
-
 interface NoWalletProps {
   handleClick?(): void,
   walletUnavailable: boolean,
@@ -9,7 +7,7 @@ interface NoWalletProps {
 }
 
 export const NoWallet: React.SFC<NoWalletProps> = ({
-  handleClick, walletUnavailable, walletLocked,
+  walletUnavailable, walletLocked,
 }) => {
   const showUnlock = !walletUnavailable && walletLocked
   return (
@@ -26,9 +24,9 @@ export const NoWallet: React.SFC<NoWalletProps> = ({
       {showUnlock && <span className="icon-walletUnlock"></span>}
 
       {walletUnavailable &&
-        <ButtonCTA onClick={handleClick} className={null} to="https://metamask.io/" target="_blank">
+        <a className="buttonCTA" href="https://metamask.io/" target="_blank">
           Download MetaMask <i className="icon icon-arrowDown"></i>
-        </ButtonCTA >
+        </a>
       }
     </div >
   )
