@@ -21,7 +21,8 @@ const constructKnobs = (
   name: text('title', name),
   ongoingAuctions: auctionsArr.map((item: object, i: number) => object(`Ongoing Auctions ${i}`, item)),
   claimSellerFundsFromSeveral: () => console.log('Claiming!'),
-  claimable: boolean('claimable', true)
+  claimable: boolean('claimable', true),
+  push: () => console.log('Moving to auction') as any,
 })
 
 storiesOf(`MenuAuctions`, module)

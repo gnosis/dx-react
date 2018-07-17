@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 
 import { State } from 'types'
 
@@ -12,4 +13,4 @@ const mapStateToProps = (state: State) => ({
   claimable: auctionClaimable(state),
 })
 
-export default connect(mapStateToProps, { claimSellerFundsFromSeveral })(MenuAuctions)
+export default connect(mapStateToProps, { claimSellerFundsFromSeveral, push })(MenuAuctions)
