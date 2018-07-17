@@ -64,7 +64,7 @@ export enum TypeKeys {
 
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
-export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
+export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_DUTCHX_CONNECTION_STATUS')
 export const setActiveProvider = createAction<string>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
@@ -183,12 +183,16 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
-    dispatch(setCurrentAccountAddress({ currentAccount: account }))
-    dispatch(setCurrentBalance({ currentBalance }))
-
-    // Grab each TokenBalance and dispatch
-    dispatch(batchActions(tokenBalances.map(token =>
-      setTokenBalance({ address: token.address, balance: token.balance })), 'SET_ALL_TOKEN_BALANCES'))
+    // batch init dutchX actions
+    dispatch(
+      batchActions([
+        setCurrentAccountAddress({ currentAccount: account }),
+        setCurrentBalance({ currentBalance }),
+        // dispatches array of tokenBalances
+        ...tokenBalances.map(token =>
+          setTokenBalance({ address: token.address, balance: token.balance })),
+      ], 'SETTING_UP_DUTCH_X'),
+      )
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
