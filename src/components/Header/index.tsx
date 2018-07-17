@@ -28,8 +28,8 @@ export const Header = ({ content, network }: HeaderProps & HeaderState) => (
   </header>
 )
 
-const mapState = ({ blockchain: { providers: { METAMASK: { network } } } }: State) => ({
-  network,
+const mapState = ({ blockchain: { providers } }: State) => ({
+  network: providers.METAMASK && providers.METAMASK.network,
 })
 
 export default connect<HeaderState>(mapState)(Header)
