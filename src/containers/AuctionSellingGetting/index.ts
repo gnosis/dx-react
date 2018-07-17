@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { setSellTokenAmount } from 'actions'
 import { getSellTokenBalance } from 'selectors'
-import { EMPTY_TOKEN } from 'globals'
+import { EMPTY_TOKEN, FIXED_DECIMALS } from 'globals'
 
 import { State } from 'types'
 import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/AuctionSellingGetting'
@@ -20,7 +20,7 @@ const mapState = (state: State) => {
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
     sellAmount,
     // TODO: use BN.mult()
-    buyAmount: (+sellAmount * +price).toFixed(4),
+    buyAmount: (+sellAmount * +price).toFixed(FIXED_DECIMALS),
   }) as AuctionSellingGettingProps
 }
 

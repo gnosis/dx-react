@@ -1,5 +1,6 @@
 import React from 'react'
 import { Balance } from 'types'
+import { tokenSVG } from 'globals'
 
 export interface AuctionAmountSummaryProps {
   sellTokenSymbol: string,
@@ -13,14 +14,14 @@ const AuctionAmountSummary: React.SFC<AuctionAmountSummaryProps> = ({
 }) => (
     <div className="auctionAmountSummary">
       <span className="tokenItemSummary">
-        <i data-coin={sellTokenSymbol}></i>
-        <big>SELLING</big>
+        <i data-coin={tokenSVG.has(sellTokenSymbol) ? sellTokenSymbol : 'DEFAULT_TOKEN'}></i>
+        <big>DEPOSITING</big>
         <p>{sellTokenAmount} {sellTokenSymbol}</p>
       </span>
 
       <span className="tokenItemSummary">
-        <i data-coin={buyTokenSymbol}></i>
-        <big>RECEIVING</big>
+        <i data-coin={tokenSVG.has(buyTokenSymbol) ? buyTokenSymbol : 'DEFAULT_TOKEN'}></i>
+        <big>RECEIVING (approx.)</big>
         <p>{buyTokenAmount} {buyTokenSymbol}</p>
       </span>
     </div>

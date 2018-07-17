@@ -18,8 +18,8 @@ export const TextSquare: React.SFC = () => {
         <br />
         <ol>
           <li>Choose the tokens you would like to exchange</li>
-          <li>Specify the amount to sell</li>
-          <li>Submit the order via your wallet provider’s screens</li>
+          <li>Specify the amount to deposit</li>
+          <li>Submit the order via your wallet provider’s interface</li>
         </ol>
 
         <br />
@@ -29,7 +29,7 @@ export const TextSquare: React.SFC = () => {
         <br />
         <br />
         { /*TODO: change this below - defaultProp is hurting this*/ }
-        <ButtonCTA className="void" to="#">How the DutchX works</ButtonCTA>
+        <ButtonCTA className="void" to="/content/HowItWorks">How the DutchX works</ButtonCTA>
       </div>
     </div>
   )

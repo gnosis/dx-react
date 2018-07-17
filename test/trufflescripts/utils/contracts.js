@@ -1,21 +1,21 @@
 /* eslint no-console:0 */
 
 module.exports = (artifacts) => {
-  const TokenETH = artifacts.require('./EtherToken')
-  const TokenGNO = artifacts.require('./TokenGNO')
-  const TokenFRT = artifacts.require('./TokenFRT')
+  const TokenETH = artifacts.require('EtherToken')
+  const TokenGNO = artifacts.require('TokenGNO')
+  const TokenFRT = artifacts.require('TokenFRT')
   const TokenOMG = artifacts.require('TokenOMG')
   const TokenRDN = artifacts.require('TokenRDN')
 
-  const TokenOWLProxy = artifacts.require('./TokenOWLProxy')
-  const TokenOWL = artifacts.require('./TokenOWL')
+  const TokenOWLProxy = artifacts.require('TokenOWLProxy')
+  const TokenOWL = artifacts.require('TokenOWL')
 
-  const Proxy = artifacts.require('./DutchExchangeProxy')
-  const DutchExchange = artifacts.require('./DutchExchange')
+  const Proxy = artifacts.require('DutchExchangeProxy')
+  const DutchExchange = artifacts.require('DutchExchange')
 
-  const PriceOracleInterface = artifacts.require('./PriceOracleInterface')
-  const PriceFeed = artifacts.require('./PriceFeed')
-  const Medianizer = artifacts.require('./Medianizer')
+  const PriceOracleInterface = artifacts.require('PriceOracleInterface')
+  const PriceFeed = artifacts.require('PriceFeed')
+  const Medianizer = artifacts.require('Medianizer')
 
   /**
  * @typedef {"ETH"|"GNO"|"FRT"|"OWL"} TokenCode - token symbol

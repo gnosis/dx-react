@@ -5,12 +5,10 @@ import { WalletProvider, ConnectedInterface } from './types'
 import { Account, Balance } from 'types'
 
 import MetamaskProvider from './metamask'
-import ParityProvider from './parity'
-import RemoteProvider from './remote'
+// import ParityProvider from './parity'
+// import RemoteProvider from './remote'
 
-import { watch, getBlock } from './filterChain'
-
-export const WATCHER_INTERVAL = 6000
+export const WATCHER_INTERVAL = 5000
 
 const networkById = {
   1: ETHEREUM_NETWORKS.MAIN,
@@ -22,8 +20,8 @@ const networkById = {
 
 const providers: WalletProvider[] = [
   MetamaskProvider,
-  ParityProvider,
-  RemoteProvider,
+  // ParityProvider,
+  // RemoteProvider,
 ]
 
 // compare object properties
@@ -38,10 +36,16 @@ const shallowDifferent = (obj1: object, obj2: object) => {
   return keys1.some(key => obj1[key] !== obj2[key])
 }
 
+const watcherLogger = ({ logType = 'log', status, info, updateState }: { logType: string, status: string, info: string, updateState: boolean }) =>
+  console[logType](`
+    Provider status:  ${status}
+    Information:      ${info}
+    Updating State:   ${updateState}
+  `)
+
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
 export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
   let prevTime: number
-
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
 
@@ -61,7 +65,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
   }
 
   // Fired on setInterval every 10 seconds
-  const watcher = async (provider: WalletProvider) => {
+  const watcher = async (provider: WalletProvider, init?: string | boolean) => {
     if (!provider.checkAvailability()) return
 
     // set block timestamp to provider state and compare
@@ -76,17 +80,49 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
         available = provider.walletAvailable,
         unlocked = !!(available && account),
         newState = { account, network, balance, available, unlocked, timestamp }
-        
+
         // if data changed
       if (shallowDifferent(provider.state, newState)) {
         console.log('app state is different')
         console.log('was: ', newState)
         console.log('now: ', provider.state)
+
         // reset module timestamp with updated timestamp
         prevTime = timestamp
         // dispatch action with updated provider state
         updateProvider(provider.providerName, provider.state = newState)
-        await updateMainAppState()
+        // check if initial load or wallet locked
+
+        if (init && unlocked) {
+          watcherLogger({
+            logType: 'warn',
+            status: 'INITIALISING',
+            info: 'Setting up Web3 provider',
+            updateState: false,
+          })
+          // await updateMainAppState()
+        }
+        else if (!unlocked) {
+          watcherLogger({
+            logType: 'warn',
+            status: 'WALLET LOCKED',
+            info: 'Please unlock your wallet provider',
+            updateState: false,
+          })
+          // if error
+          // connection lost or provider no longer returns data (locked/logged out)
+          // reset all data associated with account
+          throw 'Wallet locked during polling'
+        }
+        else {
+          watcherLogger({
+            logType: 'warn',
+            status: 'CONNECTED + WALLET UNLOCKED',
+            info: 'Web3 provider connected + wallet unlocked',
+            updateState: true,
+          })
+          await updateMainAppState()
+        }
       }
     } catch (err) {
       console.warn(err)
@@ -108,18 +144,11 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
     // each provider intializes by creating its own web3 instance if there is a corresponding currentProvider injected
     provider.initialize()
     if (!provider.walletAvailable) return
-    // dispatch action to save provider name and proirity
+    // dispatch action to save provider name and priority
     registerProvider(provider.providerName, { priority: provider.priority })
-    // get account, balance, etc. state
-    watcher(provider)
+    // get account, balance, etc. PROVIDER state - do not update main app state yet
+    watcher(provider, 'INIT')
     // regularly refetch state
     setInterval(() => watcher(provider), WATCHER_INTERVAL)
-  })
-
-  // TEMP SAMPLE USAGE
-  watch(async (e, bl) => {
-    if (e) return console.error('Chain watching Error', e)
-    console.log('LATEST BLOCK')
-    console.log(await getBlock(bl))
   })
 }

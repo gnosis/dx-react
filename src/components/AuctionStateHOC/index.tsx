@@ -91,14 +91,14 @@ const getAuctionStatus = ({
   // which internally closes the auction with a 0 buy order
   // TODO: consider if (currentAuctionIndex < index && auction has sell volume) return AuctionStatus.PLANNED
   if (currentAuctionIndex.lt(index)) return { status: AuctionStatus.PLANNED }
-  
+
   if (auctionStart.equals(1)) return { status: AuctionStatus.INIT }
-  
+
   if (currentAuctionIndex.equals(index) && closingPrice[0].equals(0) && outstandingVolume.eq(0)) {
     console.log('Theoretically closed')
     return { status: AuctionStatus.ENDED, theoretically: true }
   }
-  
+
   if (!price[1].equals(0)) return { status: AuctionStatus.ACTIVE }
 
   return { status: AuctionStatus.INACTIVE }
@@ -146,7 +146,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const index = +indexParam
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
-        const error = `wrong index format: ${indexParam}`
+        const error = `Incorrect index format: ${indexParam}`
         console.warn(error)
         this.setState({
           error,
@@ -155,10 +155,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       if (
-        !address2Token[sell] && !address2Token[buy] &&
-        !symbol2Token[sell] && !symbol2Token[buy]
+        (!symbol2Token[sell] || !symbol2Token[buy])
+        &&
+        (!address2Token[sell] || !address2Token[buy])
       ) {
-        const error = `${sell}->${buy} auction isn't supported in Frontend UI`
+        const error = `${sell} / ${buy} pairing is not supported in the Frontend UI, please try another token pairing.`
         console.warn(error)
         this.setState({
           error,
@@ -175,7 +176,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
 
       if (currentAuctionIndex.equals(0)) {
-        const error = `${sell}->${buy} auction hasn't run once yet`
+        const error = `${sell} / ${buy} token pair auction has not yet been initiated. Please try another token pairing.`
         // TODO: display something and redirect to home?
         console.warn(error)
         this.setState({
@@ -185,8 +186,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       if (currentAuctionIndex.lessThan(index - 1)) {
-        const error = `auction index ${index} hasn't run yet nor is it scheduled to run next,
-        current index = ${currentAuctionIndex.toNumber()}`
+        const error = `${sell} / ${buy} token pair auction @ index ${index} has not run yet.
+        The current auction index for ${sell} / ${buy} is ${currentAuctionIndex.toNumber()}.`
         console.warn(error)
         this.setState({
           error,
@@ -227,7 +228,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
       let userCanClaim = sellerBalance.greaterThan(0) && closingPrice[0].gte(0) ?
         (await getUnclaimedSellerFunds(pair, index, account)) : toBigNumber(0)
-      
+
         // if theoretically closed, then calculate differently as fraction of current volume
       if (theoretically) userCanClaim = buyVolume.div(sellVolume).mul(sellerBalance)
 
@@ -270,9 +271,9 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const { sell, buy, index, account, userCanClaim, theoreticallyCompleted } = this.state
       //  withdraw reverts if amount < 0
       const amount = theoreticallyCompleted && userCanClaim.eq(0) ? userCanClaim.add(1) : userCanClaim
-      
+
       console.log(
-        `claiming tokens for ${account} for
+        `Claiming tokens to ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
       return this.props.claimSellerFundsAndWithdrawFromAuction({ sell, buy }, index, amount, account)
@@ -283,9 +284,6 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const { error } = this.state
       return (
         <div>
-          {/* <pre style={{ position: 'fixed', zIndex: 2, opacity: 0.9 }}>
-            {JSON.stringify(this.state, null, 2)}
-          </pre> */}
           <Component {...this.props} {...this.state} claimSellerFunds={this.claimSellerFunds}/> :
           {error && <h3> Invalid auction: {error}</h3>}
         </div>
