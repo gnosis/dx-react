@@ -29,5 +29,6 @@ export interface ConnectedInterface {
   updateProvider: Function,
   updateMainAppState: Function,
   resetMainAppState: Function,
+  initDutchX: Function,
   getState(): State,
 }

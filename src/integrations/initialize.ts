@@ -44,7 +44,7 @@ const watcherLogger = ({ logType = 'log', status, info, updateState }: { logType
   `)
 
 // Fired from WalletIntegrations as part of the React mounting CB in src/index.ts
-export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState }: ConnectedInterface | any) => {
+export default async ({ registerProvider, updateProvider, updateMainAppState, resetMainAppState, initDutchX }: ConnectedInterface | any) => {
   let prevTime: number
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
     const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -100,7 +100,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
             info: 'Setting up Web3 provider',
             updateState: false,
           })
-          // await updateMainAppState()
+          await initDutchX()
         }
         else if (!unlocked) {
           watcherLogger({
