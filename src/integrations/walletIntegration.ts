@@ -40,7 +40,7 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
   const isDefaultTokensAvailable = !!(defaultTokens)
 
   if (!isDefaultTokensAvailable) {
-    network = network || window.web3.version.network
+    network = network || (window.web3 && window.web3.version.network) || 'NONE'
 
     console.log('Current Network =', network)
 
@@ -67,6 +67,10 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
           Ethereum Mainnet not supported - please try another network.
           Removing tokens from local forage ...
         `)
+        break
+
+      case 'NONE':
+        console.error('No Web3 instance detected - please check your wallet provider.')
         break
 
       default:
