@@ -146,7 +146,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const index = +indexParam
 
       if (Number.isNaN(index) || index < 0 || !Number.isInteger(index)) {
-        const error = `wrong index format: ${indexParam}`
+        const error = `Incorrect index format: ${indexParam}`
         console.warn(error)
         this.setState({
           error,
@@ -155,10 +155,11 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       if (
-        !address2Token[sell] && !address2Token[buy] &&
-        !symbol2Token[sell] && !symbol2Token[buy]
+        (!symbol2Token[sell] || !symbol2Token[buy])
+        &&
+        (!address2Token[sell] || !address2Token[buy])
       ) {
-        const error = `${sell}->${buy} auction isn't supported in Frontend UI`
+        const error = `${sell} / ${buy} pairing is not supported in the Frontend UI, please try another token pairing.`
         console.warn(error)
         this.setState({
           error,
@@ -175,7 +176,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       console.log('currentAuctionIndex: ', currentAuctionIndex.toNumber())
 
       if (currentAuctionIndex.equals(0)) {
-        const error = `${sell}->${buy} auction hasn't run once yet`
+        const error = `${sell} / ${buy} token pair auction has not yet been initiated. Please try another token pairing.`
         // TODO: display something and redirect to home?
         console.warn(error)
         this.setState({
@@ -185,8 +186,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
 
       if (currentAuctionIndex.lessThan(index - 1)) {
-        const error = `auction index ${index} hasn't run yet nor is it scheduled to run next,
-        current index = ${currentAuctionIndex.toNumber()}`
+        const error = `${sell} / ${buy} token pair auction @ index ${index} has not run yet.
+        The current auction index for ${sell} / ${buy} is ${currentAuctionIndex.toNumber()}.`
         console.warn(error)
         this.setState({
           error,
@@ -272,7 +273,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       const amount = theoreticallyCompleted && userCanClaim.eq(0) ? userCanClaim.add(1) : userCanClaim
 
       console.log(
-        `claiming tokens for ${account} for
+        `Claiming tokens to ${account} for
         ${sell.symbol || sell.name || sell.address}->${buy.symbol || buy.name || buy.address}-${index}`,
       )
       return this.props.claimSellerFundsAndWithdrawFromAuction({ sell, buy }, index, amount, account)
