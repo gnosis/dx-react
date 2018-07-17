@@ -40,7 +40,7 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
   const isDefaultTokensAvailable = !!(defaultTokens)
 
   if (!isDefaultTokensAvailable) {
-    network = network || window.web3.version.network
+    network = network || (window.web3 && window.web3.version.network) || 'NONE'
 
     console.log('Current Network =', network)
 
@@ -65,9 +65,12 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
         defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
         console.warn(`
           Ethereum Mainnet not supported - please try another network.
-          Removing tokens from localForage ...
-          ${defaultTokens.elements}
+          Removing tokens from local forage ...
         `)
+        break
+
+      case 'NONE':
+        console.error('No Web3 instance detected - please check your wallet provider.')
         break
 
       default:
@@ -145,11 +148,11 @@ export default async function walletIntegration(store: Store<any>) {
     ])
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
+
+    await dispatch(initDutchX())
     // set state in app
     return dispatch(updateMainAppState())
   } catch (error) {
-    console.warn('Error in walletIntegrations: ', error.message || error)
-  } finally {
-    return dispatch(initDutchX())
+    console.warn(error.message || error)
   }
 }

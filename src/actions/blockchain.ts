@@ -21,7 +21,6 @@ import {
   getTokenBalance,
   toNative,
   claimSellerFundsFromSeveralAuctions,
-  // getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
@@ -153,7 +152,12 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
  * (Re)-Initializes DutchX connection according to current providers settings
  */
 export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const state = getState()
+  const state = getState(),
+    {
+      blockchain: { providers },
+      tokenList: { combinedTokenList: tokenAddresses },
+    } = state
+
   // initialize
   // determine new provider
   setActiveProviderHelper(dispatch, state)
@@ -166,18 +170,16 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
-        const tokenAddresses = state.tokenList.combinedTokenList
+        if (!providers.METAMASK) throw 'MetaMask not detected, please check that you have MetaMask properly installed and configured.'
+        if (!providers.METAMASK.unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
         account = await getCurrentAccount();
         ([currentBalance, tokenBalances] = await Promise.all([
           getETHBalance(account, true),
           calcAllTokenBalances(tokenAddresses),
         ]))
-        return dispatch(getClosingPrice())
       } catch (e) {
-        console.error(e)
         throw e
       }
-
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
@@ -190,8 +192,8 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
-    console.error(`DutchX connection Error: ${error.message}`)
-    return dispatch(setConnectionStatus({ connected: false }))
+    dispatch(setConnectionStatus({ connected: false }))
+    throw error
   }
 }
 
@@ -208,6 +210,9 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
       buy = TokenETH
     }
   }
+
+  // show intermittent loading until price calculated
+  dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: 'LOADING' }))
 
   try {
     const currAucIdx = await getLatestAuctionIndex({ sell, buy })
