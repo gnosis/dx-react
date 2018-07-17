@@ -128,6 +128,7 @@ export default async function walletIntegration(store: Store<any>) {
     registerProvider: dispatchProviderAction(registerProvider),
     updateMainAppState: dispatchProviderAction(updateMainAppState),
     resetMainAppState: () => dispatch(resetMainAppState()),
+    initDutchX: dispatchProviderAction(initDutchX),
   }
 
   try {
@@ -149,7 +150,7 @@ export default async function walletIntegration(store: Store<any>) {
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
 
-    await dispatch(initDutchX())
+    // await dispatch(initDutchX())
     // set state in app
     return dispatch(updateMainAppState())
   } catch (error) {
