@@ -154,9 +154,9 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const state = getState(),
     {
-          blockchain: { providers: { METAMASK: { unlocked } } },
-          tokenList: { combinedTokenList: tokenAddresses },
-        } = state
+      blockchain: { providers },
+      tokenList: { combinedTokenList: tokenAddresses },
+    } = state
 
   // initialize
   // determine new provider
@@ -170,7 +170,8 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
-        if (!unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
+        if (!providers.METAMASK) throw 'MetaMask not detected, please check that you have MetaMask properly installed and configured.'
+        if (!providers.METAMASK.unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
         account = await getCurrentAccount();
         ([currentBalance, tokenBalances] = await Promise.all([
           getETHBalance(account, true),
