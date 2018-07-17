@@ -14,17 +14,21 @@ export interface WalletPanelProps {
 const WalletPanel: React.SFC<WalletPanelProps> = ({ checkUserStateAndSell }) => (
   <AuctionContainer auctionDataScreen="details">
     <AuctionHeader backTo="/order">
-      Confirm Order Details
-      </AuctionHeader>
+      Confirm Deposit Details
+    </AuctionHeader>
     <AuctionAmountSummary />
     <AuctionPriceBar header="Price" />
     <AuctionWalletSummary />
-    <p>
-      When submitting the order and signing with MetaMask,
-        your deposit will be added to the next (scheduled) auction. Every auction takes approx. 5 hours.
+      <p>
+        When submitting your order, you will be asked to sign transactions with MetaMask.
+        Explanations will be provided with each transaction.
+        Upon final confirmation, your deposit will be added on your behalf to the next auction.
+        <br/>
+        <br/>
+        Every auction takes approx. 6 hours.
       </p>
     <ButtonCTA onClick={checkUserStateAndSell}>
-      Submit Sell Order <i className="icon icon-walletOK"></i>
+      Submit Deposit <i className="icon icon-walletOK"></i>
     </ButtonCTA>
   </AuctionContainer>
 )

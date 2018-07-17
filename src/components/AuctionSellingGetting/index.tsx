@@ -12,7 +12,6 @@ export interface AuctionSellingGettingProps {
   setSellTokenAmount(props: any): any,
 }
 
-
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
   onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
     const input = e.target
@@ -43,7 +42,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
 
     return (
       <div className="auctionAmounts">
-        <label htmlFor="sellingAmount">Amount Selling:</label>
+        <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
           type="number"
@@ -58,7 +57,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
         />
         <small>{sellTokenSymbol}</small>
 
-        <label htmlFor="gettingAmount">Est. Amount Getting:</label>
+        <label htmlFor="gettingAmount">Est. Amount Receiving:</label>
         <input type="number" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
         <small>{buyTokenSymbol}</small>
       </div>

@@ -21,7 +21,6 @@ import {
   getTokenBalance,
   toNative,
   claimSellerFundsFromSeveralAuctions,
-  getIndicesWithClaimableTokensForSellers,
   getLatestAuctionIndex,
   withdraw,
   getLockedMGNBalance,
@@ -39,7 +38,6 @@ import {
   selectTokenPair,
 } from 'actions'
 
-
 import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
@@ -48,7 +46,7 @@ import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { promisedContractsMap, contractsMap } from 'api/contracts'
 import { DefaultTokenObject, Web3EventLog } from 'api/types'
 import { Dispatch } from 'react-redux'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT } from 'globals'
 import { waitForTx } from 'integrations/filterChain'
 import { getDecoderForABI } from 'api/utils'
 
@@ -66,7 +64,7 @@ export enum TypeKeys {
 
 // TODO define reducer for GnosisStatus
 export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
-export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_CONNECTION_STATUS')
+export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_DUTCHX_CONNECTION_STATUS')
 export const setActiveProvider = createAction<string>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
@@ -77,8 +75,6 @@ export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKEN
 export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
 export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
 export const resetAppState = createAction('RESET_APP_STATE')
-
-const NETWORK_TIMEOUT = process.env.NODE_ENV === 'production' ? 10000 : 200000
 
 const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   try {
@@ -112,7 +108,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   ])
   const mainList = [...defaultList, { symbol: 'MGN', name: 'MAGNOLIA', decimals: 18, address: TokenMGN.address }]
 
-  const status = condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
+  const status = condition && condition.fn && typeof condition.fn === 'function' ? condition.fn && await condition.fn(...condition.args) : condition
 
   // Check state in parallel
   /*
@@ -143,7 +139,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setTokenBalance({ address: token.address, balance: token.balance })),
     setOngoingAuctions(ongoingAuctions),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
-    setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(4) }),
+    setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(FIXED_DECIMALS) }),
     setCurrentAccountAddress({ currentAccount }),
     setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
   ], 'HYDRATING_MAIN_STATE'))
@@ -156,7 +152,12 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
  * (Re)-Initializes DutchX connection according to current providers settings
  */
 export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-  const state = getState()
+  const state = getState(),
+    {
+      blockchain: { providers },
+      tokenList: { combinedTokenList: tokenAddresses },
+    } = state
+
   // initialize
   // determine new provider
   setActiveProviderHelper(dispatch, state)
@@ -169,32 +170,34 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     // runs test executions on gnosisjs
     const getConnection = async () => {
       try {
-        const tokenAddresses = state.tokenList.combinedTokenList
+        if (!providers.METAMASK) throw 'MetaMask not detected, please check that you have MetaMask properly installed and configured.'
+        if (!providers.METAMASK.unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
         account = await getCurrentAccount();
         ([currentBalance, tokenBalances] = await Promise.all([
           getETHBalance(account, true),
           calcAllTokenBalances(tokenAddresses),
         ]))
-        return dispatch(getClosingPrice())
       } catch (e) {
-        console.error(e)
         throw e
       }
-
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
-    dispatch(setCurrentAccountAddress({ currentAccount: account }))
-    dispatch(setCurrentBalance({ currentBalance }))
-
-    // Grab each TokenBalance and dispatch
-    dispatch(batchActions(tokenBalances.map(token =>
-      setTokenBalance({ address: token.address, balance: token.balance })), 'SET_ALL_TOKEN_BALANCES'))
+    // batch init dutchX actions
+    dispatch(
+      batchActions([
+        setCurrentAccountAddress({ currentAccount: account }),
+        setCurrentBalance({ currentBalance }),
+        // dispatches array of tokenBalances
+        ...tokenBalances.map(token =>
+          setTokenBalance({ address: token.address, balance: token.balance })),
+      ], 'SETTING_UP_DUTCH_X'),
+      )
 
     return dispatch(setConnectionStatus({ connected: true }))
   } catch (error) {
-    console.error(`DutchX connection Error: ${error.message}`)
-    return dispatch(setConnectionStatus({ connected: false }))
+    dispatch(setConnectionStatus({ connected: false }))
+    throw error
   }
 }
 
@@ -212,6 +215,9 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
     }
   }
 
+  // show intermittent loading until price calculated
+  dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: 'LOADING' }))
+
   try {
     const currAucIdx = await getLatestAuctionIndex({ sell, buy })
 
@@ -219,7 +225,7 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
     if (currAucIdx.lte(0)) return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price: '0' }))
 
     const [pNum, pDen] = await getLastAuctionPrice({ sell, buy }, currAucIdx)
-    const price = (pNum.div(pDen)).toFixed(4)
+    const price = (pNum.div(pDen)).toFixed(FIXED_DECIMALS)
     console.log('lastClosingPrice -> ', price)
 
     return dispatch(setClosingPrice({ sell: sell.symbol, buy: buy.symbol, price }))
@@ -236,7 +242,7 @@ const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenE
 
     dispatch(selectTokenPair({ sell, buy, sellAmount }))
   }
-} 
+}
 
 /**
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
@@ -268,8 +274,8 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           // tslint:disable-next-line
           body: `
             ${sellName} is not an ERC20 Token and must be wrapped.
-            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder. 
-          
+            In case you already have wrapped ${sellName}, you are confirming to wrap the remainder.
+
             Please confirm with ${activeProvider}.
           `,
           loader: true,
@@ -303,9 +309,10 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                 buttonTitle2: `Approve ${sellName} also for future trades`,
               },
             },
-            footer: { 
-              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`, 
-              url: './content/FAQ', 
+            footer: {
+              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
+              url: './content/FAQ',
+              urlMsg: 'FAQ',
             },
             onClick: accept,
           },
@@ -325,7 +332,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             modalName: 'ApprovalModal',
             modalProps: {
               header: `Using OWL to pay for fees`,
-              body: `You have the option to pay half of your fees on the DutchX in OWL. 
+              body: `You have the option to pay half of your fees on the DutchX in OWL.
               Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
               `,
               buttons: {
@@ -336,9 +343,9 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                   buttonTitle1: 'Don\'t use OWL to pay for fees',
                 },
               },
-              footer: { 
-                msg: 'More information regarding the DutchX and OWL can be found below.', 
-                url: './content/FAQ', 
+              footer: {
+                url: './content/Fees',
+                urlMsg: 'Fees',
               },
               onClick: accept,
             },
@@ -404,12 +411,12 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     const receipt = await waitForTx(hash)
     console.log('postSellOrder tx receipt: ', receipt)
 
-    const { DutchExchange } =  contractsMap
+    const { DutchExchange } = contractsMap
     const decoder = getDecoderForABI(DutchExchange.abi)
     const logs = decoder(receipt.logs)
     console.log('postSellOrder tx logs', logs)
     const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
-  
+
     // let receipt
     // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     // if (nativeSellAmt.greaterThan(userDXBalance)) {
@@ -421,7 +428,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     //   console.log('postSellOrder receipt', receipt)
     // }
     // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
-  
+
     console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     dispatch(closeModal())
     // jump to Auction Page
@@ -470,7 +477,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         const nativeSellAmt = await promisedNativeSellAmt
 
-
         console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
@@ -485,7 +491,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
-
 
         console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
@@ -505,7 +510,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         }))
         // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
-
 
         console.log('PROMPTING to start tokenApproval tx for OWL')
         const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
@@ -564,7 +568,11 @@ export const claimSellerFundsFromSeveral = (
 ) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
+    { DutchExchange } = contractsMap
+
+  let decoder
+
   try {
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -574,8 +582,18 @@ export const claimSellerFundsFromSeveral = (
         loader: true,
       },
     }))
-    const claimReceipt = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
-    console.log('​Claim receipt => ', claimReceipt)
+
+    // >>> ============= >>>
+    // CLAIMING TX WATCHING
+    // >>> ============= >>>
+
+    const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
+    console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
+
+    // >>> ============= >>>
+    // END CLAIMING TX WATCHING
+    // >>> ============= >>>
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -584,14 +602,37 @@ export const claimSellerFundsFromSeveral = (
         loader: true,
       },
     }))
-    const withdrawReceipt = await withdraw(buy.address)
-    console.log('​withdrawReceipt => ', withdrawReceipt)
-    // refresh state ...
-    let [, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] }))
+
+    // >>> ======== >>>
+    // WITHDRAW TX WATCHING
+    // >>> ======== >>>
+
+    // wait claimHash
+    await waitForTx(claimHash)
+
+    const withdrawHash = await withdraw.sendTransaction(buy.address)
+    // get receipt or throw TIMEOUT
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    console.log('Withdraw TX receipt: ', withdrawReceipt)
+
+    decoder = getDecoderForABI(DutchExchange.abi)
+    // next line unreachable in case of TIMEOUT
+    // @ts-ignore
+    const withdrawLogs = decoder(withdrawReceipt.logs)
+    console.log('withdraw tx logs', withdrawLogs)
+
+    // Find the 'NewWithdrawal' log
+    let withdrawEvents
     // loop until sellBalance drops to 0
-    while (sellBalance.length && sellBalance[0].gt(0)) {
-      ([, sellBalance] = await dispatch(updateMainAppState({ fn: getIndicesWithClaimableTokensForSellers, args: [{ sell, buy }, currentAccount, 0] })))
+    while (!withdrawEvents) {
+      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
     }
+
+    console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
+
+    // >>> ======== >>>
+    // END WITHDRAW TX WATCHING
+    // >>> ======== >>>
 
     return dispatch(closeModal())
   } catch (error) {

@@ -43,6 +43,19 @@ deploy:
       secure: oH/pscrzrzFrtcTTWX8aUChjbvbpXyf7rglhjBs7Zr9DouUcHrvcm4k+ddykkVdpCAYmtopECKeLyNL/wQod8NmaAC21T5MVnrtQkCOXReoV2VYYRXDcs8wBSL0MOMGdXAbrZ7u2jEskWYHNar+ctrHYkPWLjIc8W875qp3cZdsZ8QvfJMkluFREIDINWsVGhJaE4c34npXpst810nXo1ukuwEadltXYy0MZhh4ssenlRwqkSm//VIR7AW2Yl8eY4QT7EYYrYeja3ZuK//C6FwXPnzzaN/UJHo2WBwSOPQRc5N6aDcGjpzFugEbl08Vq9LmKg4VHalNW8Kik/EXDf0FpXUy1fXLxIWU5cjR9UCzQD03zShSRDEwnD2VydSZrTmaoIEwAGK2I4GNFVUcOUSTxqt+9HmcMOwzVtPJ1Tz2IXXTR/gpeV7SlYVdRF3pTAQfqxv0z6xTztKc4y36e1ynajI1FOUKXHic5KWlSCWAWlXk9HIpGsjpabQCBMYJY0/SQDHDlRs8RLpoHqto50IIqNjRcwoENxtudsZTFAlcNFjT0fc6tXOc5qwMK5+xUn+Kl2F6Lc5k89c6mlF0Dg9VFYwTEh+LpejwZWTTp+zZM+kP878IT3sAr9YvEK2xta2jjJf/pKwzF6gq+22WWBCSr7sCQXEbUj1DNPvXrUkY=
     skip_cleanup: true
     local_dir: dist
+    upload-dir: current
     on:
       branch: master
+      node: '9'
+  - provider: s3
+    bucket: dx-staging
+    secret_access_key:
+      secure: Ql46TXXhRjSOzZrvWWe3R/779E5i57aAJDgSCH9a9KzwM48SUTDdFSXarqOsyMKH8/b5L9j6+ayuzO9dJIZNp/ivbBZbVLPPpqOqq0ZgA1DJcJtan6vpvb4RQijLZ9r3dbSIEDQET3RTRM1YzV63gaNfvb0DqRG1RA9cD4dNLKQsjX3fSIU+qWP/FOpu1YAfS3Pgmm5/Wd9nrkQF0ABOyysZ7qvfErq842bbijzi8aDlhH35R8zpbUVr0tPisiv34382Mu7ScY/9KPyLY3pGiuf/a8Q0m2Oh3OfVhB9jcKooVcQHiSjpTXRXoiUmZ0ugrhSwO8N6ieio7/X3ZSXt6AEkIuRZ/zCFSPu4OL6luhIsnC7KnZN3mpz73ne8xv/Fvm4g1BcicSzPmFi2gbwcIuIseBSE1ef5Sdhj8Tefa+RC618EubOX7JH70bVoeZa7CpsKHFpE9419f79RKEGvFxTEX232JWw1bhN5fPPyZlQAvQ6HhbGEs9xuXi8IjZjTywfvIOLOp+FmHFrCz258uIJEUsXMAOY4Q+E9LChGVTvqjkpWfttt31/V/5/QtPskBL/cLZmmStN7PnBbQy7Z0hXbWssSK5yhJg28erNb2nxbX8tyuDuv2XJvDI3WF5WI83EEEU3YjDEwo/TJbUGghXPyTy7EI8NWQT0NoeJPHvY=
+    access_key_id:
+      secure: oH/pscrzrzFrtcTTWX8aUChjbvbpXyf7rglhjBs7Zr9DouUcHrvcm4k+ddykkVdpCAYmtopECKeLyNL/wQod8NmaAC21T5MVnrtQkCOXReoV2VYYRXDcs8wBSL0MOMGdXAbrZ7u2jEskWYHNar+ctrHYkPWLjIc8W875qp3cZdsZ8QvfJMkluFREIDINWsVGhJaE4c34npXpst810nXo1ukuwEadltXYy0MZhh4ssenlRwqkSm//VIR7AW2Yl8eY4QT7EYYrYeja3ZuK//C6FwXPnzzaN/UJHo2WBwSOPQRc5N6aDcGjpzFugEbl08Vq9LmKg4VHalNW8Kik/EXDf0FpXUy1fXLxIWU5cjR9UCzQD03zShSRDEwnD2VydSZrTmaoIEwAGK2I4GNFVUcOUSTxqt+9HmcMOwzVtPJ1Tz2IXXTR/gpeV7SlYVdRF3pTAQfqxv0z6xTztKc4y36e1ynajI1FOUKXHic5KWlSCWAWlXk9HIpGsjpabQCBMYJY0/SQDHDlRs8RLpoHqto50IIqNjRcwoENxtudsZTFAlcNFjT0fc6tXOc5qwMK5+xUn+Kl2F6Lc5k89c6mlF0Dg9VFYwTEh+LpejwZWTTp+zZM+kP878IT3sAr9YvEK2xta2jjJf/pKwzF6gq+22WWBCSr7sCQXEbUj1DNPvXrUkY=
+    skip_cleanup: true
+    local_dir: dist
+    upload-dir: releases/$TRAVIS_TAG
+    on:
+      tags: true
       node: '9'

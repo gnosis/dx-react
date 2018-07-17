@@ -20,7 +20,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
   <AuctionContainer auctionDataScreen="amount">
     {overlayOpen && <TokenOverlay />}
     <AuctionHeader backTo="/">
-      Token Auction {sellTokenSymbol || '?'} / {buyTokenSymbol || '?'}
+      Token Pair {sellTokenSymbol || '?'} / {buyTokenSymbol || '?'}
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
@@ -35,7 +35,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
       className={validSellAmount ? 'blue' : 'buttonCTA-disabled'}
       onClick={e => validSellAmount ? console.log('Continuing to wallet') : e.preventDefault()}
       to={'./wallet'}>
-      {validSellAmount ? 'Continue to wallet details' : 'Please select a sell amount'}
+      {validSellAmount ? 'Continue to wallet details' : 'Please select amount to deposit'}
     </ButtonCTA>
   </AuctionContainer>
 )

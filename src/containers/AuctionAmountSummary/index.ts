@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 
 import { State } from 'types'
 import AuctionAmountSummary from 'components/AuctionAmountSummary'
+import { FIXED_DECIMALS } from 'globals'
 
 const mapState = (state: State) => {
   // TODO: always have some price for every pair in RatioPairs
@@ -13,7 +14,7 @@ const mapState = (state: State) => {
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
     sellTokenAmount: sellAmount,
     // TODO: use BN.mult() inside component
-    buyTokenAmount: (+price * +sellAmount).toString(),
+    buyTokenAmount: (+price * +sellAmount).toFixed(FIXED_DECIMALS),
   })
 }
 

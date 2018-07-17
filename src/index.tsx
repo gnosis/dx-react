@@ -7,6 +7,10 @@ import ReactDOMServer from 'react-dom/server'
 import App, { initializer, loadSettings } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
+import { ALLOWED_NETWORK } from 'globals'
+
+// run Event Listeners from events.ts
+import 'integrations/events'
 
 // set last () => any on Array prototype
 Array.prototype.last = function getLast() {
@@ -30,7 +34,7 @@ const geoBlockedCountryCodes = new Set(blocked_codes)
 const isGeoBlocked = async () => {
   try {
     const res = await fetch('https://geoip.gnosis.pm/json/')
-    
+
     // this DOES NOT block even if the URL above starts returning 404
     if (!res.ok) return false
 
@@ -39,7 +43,7 @@ const isGeoBlocked = async () => {
     return geoBlockedCountryCodes.has(country_code)
   } catch (error) {
     console.error(error)
-    
+
     // this does NOT block if there is a network error, e.g. URL is blocked
     return false
   }
@@ -87,7 +91,7 @@ async function blockIf() {
 
   if (blocked) {
     window.history.replaceState(null, '', '/')
-    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} />)
+    rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
   } else {
     await renderApp()
   }

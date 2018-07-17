@@ -26,6 +26,92 @@ import tokensMap from 'api/apiTesting'
 
 import { State } from 'types'
 import { ConnectedInterface } from './types'
+import { ETHEREUM_NETWORKS } from './constants'
+// import { IPFS_TOKENS_HASH } from 'globals'
+
+export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
+
+  let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
+    localForage.getItem('defaultTokens'),
+    localForage.getItem('customTokens'),
+    localForage.getItem('customListHash'),
+  ])
+  const { ipfsFetchFromHash } = await promisedIPFS
+  const isDefaultTokensAvailable = !!(defaultTokens)
+
+  if (!isDefaultTokensAvailable) {
+    network = network || (window.web3 && window.web3.version.network) || 'NONE'
+
+    console.log('Current Network =', network)
+
+    // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
+    /* if (process.env.NODE_ENV === 'development') {
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } else {
+      // TODO: change for prod
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } */
+
+    switch (network) {
+      case '4' || ETHEREUM_NETWORKS.RINKEBY:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
+        defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
+        console.log('Rinkeby Token List -> ', defaultTokens.elements)
+        break
+
+      case '1' || ETHEREUM_NETWORKS.MAIN:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
+        // TODO: fix for Mainnet
+        defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
+        console.warn(`
+          Ethereum Mainnet not supported - please try another network.
+          Removing tokens from local forage ...
+        `)
+        break
+
+      case 'NONE':
+        console.error('No Web3 instance detected - please check your wallet provider.')
+        break
+
+      default:
+        console.log(`Detected connection to an UNKNOWN network -- localhost?`)
+        defaultTokens = await tokensMap()
+        console.log('LocalHost Token List -> ', defaultTokens.elements)
+        break
+    }
+
+    // set tokens to localForage
+    await localForage.setItem('defaultTokens', defaultTokens)
+  }
+
+  // IPFS hash for tokens exists in localForage
+  if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
+
+  if (customTokens) {
+    const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
+
+    // reset localForage customTokens w/decimals filled in
+    localForage.setItem('customTokens', customTokensWithDecimals)
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  else if (customListHash) {
+    const fileContent = await ipfsFetchFromHash(customListHash)
+
+    const json = fileContent
+    await checkTokenListJSON(json as DefaultTokenObject[])
+
+    const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
+    localForage.setItem('customTokens', customTokensWithDecimals)
+
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  // set defaulTokenList && setDefaulTokenPair visible when in App
+  dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
+
+  return getState().tokenList
+}
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch, getState }: { dispatch: Dispatch<any>, getState: () => State } = store
@@ -42,61 +128,14 @@ export default async function walletIntegration(store: Store<any>) {
     registerProvider: dispatchProviderAction(registerProvider),
     updateMainAppState: dispatchProviderAction(updateMainAppState),
     resetMainAppState: () => dispatch(resetMainAppState()),
-  }
-
-  const getTokenList = async () => {
-    let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
-      localForage.getItem('defaultTokens'),
-      localForage.getItem('customTokens'),
-      localForage.getItem('customListHash'),
-    ])
-    const { ipfsFetchFromHash } = await promisedIPFS
-    const isDefaultTokensAvailable = !!(defaultTokens)
-
-    if (!isDefaultTokensAvailable) {
-      // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-      if (process.env.NODE_ENV !== 'production') {
-        defaultTokens = await tokensMap()
-      } else {
-        // TODO: change for prod
-        defaultTokens = await ipfsFetchFromHash('QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM') as DefaultTokens
-      }
-
-      console.log('​getTokenList -> ', defaultTokens)
-      // set tokens to localForage
-      await localForage.setItem('defaultTokens', defaultTokens)
-    }
-
-    // IPFS hash for tokens exists in localForage
-    if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
-
-    if (customTokens) {
-      const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
-
-      // reset localForage customTokens w/decimals filled in
-      localForage.setItem('customTokens', customTokensWithDecimals)
-      dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-      dispatch(setTokenListType({ type: 'CUSTOM' }))
-    } else if (customListHash) {
-      const fileContent = await ipfsFetchFromHash(customListHash)
-
-      const json = fileContent
-      await checkTokenListJSON(json as DefaultTokenObject[])
-
-      const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
-      localForage.setItem('customTokens', customTokensWithDecimals)
-
-      dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-      dispatch(setTokenListType({ type: 'CUSTOM' }))
-    }
-    // set defaulTokenList && setDefaulTokenPair visible when in App
-    dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-
-    return getState().tokenList
+    initDutchX: dispatchProviderAction(initDutchX),
   }
 
   try {
-    const { combinedTokenList } = await getTokenList()
+    // init Provider first - set a watcher for 6000 ms to check changes
+    await initialize(providerOptions)
+
+    const { combinedTokenList } = await dispatch(getTokenList())
 
     // TODO: fetch approvedTokens list from api
     // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
@@ -111,10 +150,10 @@ export default async function walletIntegration(store: Store<any>) {
     dispatch(setApprovedTokens(approvedTokenAddresses))
     dispatch(setAvailableAuctions(availableAuctions))
 
-    await initialize(providerOptions)
+    // await dispatch(initDutchX())
+    // set state in app
+    return dispatch(updateMainAppState())
   } catch (error) {
-    console.warn('Error in walletIntegrations: ', error.message || error)
-  } finally {
-    return dispatch(initDutchX())
+    console.warn(error.message || error)
   }
 }

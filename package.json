@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-react",
-  "version": "0.5.0",
+  "version": "0.6.2",
   "description": "DutchX - Dutch Auction Trading Platform",
   "main": "src/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "lint": "npm run lint:js; npm run lint:ts; npm run lint:css",
     "lint:fix": "npm run lint:js:fix; npm run lint:ts:fix; npm run lint:css:fix",
     "migrate_old": "cd ./node_modules/@gnosis.pm/dx-contracts && truffle migrate --reset && cd ../../../",
-    "migrate": "truffle migrate",
+    "migrate": "truffle migrate --reset",
     "addTokenPair:gno": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno",
     "addTokenPair:omg": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,omg",
     "addTokenPair:rdn": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,rdn",

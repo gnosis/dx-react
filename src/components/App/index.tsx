@@ -13,9 +13,10 @@ import createStoreWithHistory from 'store'
 import ModalContainer from 'containers/Modals'
 
 import { asyncLoadSettings } from 'actions'
+import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
 export const history = createHistory()
-const store = createStoreWithHistory(history)
+export const store = createStoreWithHistory(history)
 
 // load data from localstorage
 store.dispatch({ type: 'INIT' })
@@ -26,12 +27,13 @@ export const initializer = () => walletIntegrationCallback(store)
 interface AppProps {
   disabled?: boolean;
   disabledReason?: string;
+  networkAllowed?: Partial<ETHEREUM_NETWORKS>
 }
 
-const App = ({ disabled, disabledReason }: AppProps): any =>
+const App = (props: AppProps): any =>
   <Provider store={store}>
-    <ModalContainer isOpen={disabled} modalName={disabled && 'BlockModal'} disabledReason={disabledReason}>
-      <AppRouter disabled={disabled} history={history} />
+    <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
+      <AppRouter disabled={props.disabled} history={history} />
     </ModalContainer>
   </Provider>
 

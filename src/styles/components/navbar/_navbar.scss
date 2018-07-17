@@ -167,6 +167,7 @@ header {
   height: 35px;
   border: 0;
   margin-right: auto;
+  position: relative;
 
   @media #{$mobile} {
     position: absolute;
@@ -175,6 +176,24 @@ header {
     margin: auto;
     width: 90px;
     height: 18px;
+  }
+
+  &.rinkeby::before {
+    content: "RINKEBY";
+    position: absolute;
+    bottom: -11px;
+    color: $greyBorder;
+    left: 31px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 9px;
+
+    @media #{$mobile} {
+      font-size: 8px;
+      letter-spacing: 5px;
+      left: 21px;
+      bottom: -14px;
+    }
   }
 }
 
