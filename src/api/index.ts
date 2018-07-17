@@ -7,7 +7,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
 
 const promisedAPI = (window as any).AP = initAPI()
 
@@ -214,6 +214,9 @@ DUTCH-EXCHANGE API
 ===================================================================*/
 
 export const getLatestAuctionIndex = async (pair: TokenPair) => {
+  const { sell, buy } = pair
+  if (!sell || !buy) return
+
   const { DutchX } = await promisedAPI
 
   return DutchX.getLatestAuctionIndex(pair)
@@ -860,8 +863,8 @@ export const getSellerOngoingAuctions = async (
         ...auction,
         indicesWithSellerBalance: latestIndicesNormal,
         indicesWithSellerBalanceInverse: latestIndicesReverse,
-        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toString()),
-        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toString()),
+        balancePerIndex: balancePerIndex.map(i => i.div(10 ** decimals).toFixed(FIXED_DECIMALS)),
+        balancePerIndexInverse: balancePerIndexInverse.map(i => i.div(10 ** decimalsInverse).toFixed(FIXED_DECIMALS)),
         claim: checkClaimableStatus({ claimableIndices: indicesWithSellerBalance, idx: lastIndex, closingPricePair: closingPriceDir }),
         claimInverse: checkClaimableStatus({ claimableIndices: indicesWithSellerBalanceInverse, idx: lastIndex, closingPricePair: closingPriceOpp }),
       }
