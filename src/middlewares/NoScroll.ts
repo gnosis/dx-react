@@ -11,9 +11,9 @@ const NoScroll: Middleware = () => next => async (action: Action | ThunkAction<A
 
   try {
     if (type === 'OPEN_MODAL') {
-      document.body.classList.add('noScroll')
+      document && document.body && document.body.classList.add('noScroll')
     } else if (type === 'CLOSE_MODAL') {
-      document.body.classList.remove('noScroll')
+      document && document.body && document.body.classList.remove('noScroll')
     }
 
     return next(action as Action)
