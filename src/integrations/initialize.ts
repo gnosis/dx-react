@@ -101,6 +101,7 @@ export default async ({ registerProvider, updateProvider, updateMainAppState, re
             updateState: false,
           })
           await initDutchX()
+          await updateMainAppState()
         }
         else if (!unlocked) {
           watcherLogger({

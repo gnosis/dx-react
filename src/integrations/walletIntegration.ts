@@ -152,7 +152,7 @@ export default async function walletIntegration(store: Store<any>) {
 
     // await dispatch(initDutchX())
     // set state in app
-    return dispatch(updateMainAppState())
+    // return dispatch(updateMainAppState())
   } catch (error) {
     console.warn(error.message || error)
   }
