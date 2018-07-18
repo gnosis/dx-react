@@ -5,8 +5,16 @@ $defaultTokenSize_mobile: 50px;
   background: url('#{$images}tokens/ETH.svg') no-repeat center / $defaultTokenSize;
 }
 
+[data-coin="WETH"] {
+  background: url('#{$images}tokens/WETH.svg') no-repeat center / $defaultTokenSize;
+}
+
 [data-coin="GNO"] {
   background: url('#{$images}tokens/GNO.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="RDN"] {
+  background: url('#{$images}tokens/RDN.svg') no-repeat center / $defaultTokenSize;
 }
 
 [data-coin="REP"] {

@@ -16,10 +16,12 @@ export const code2tokenMap: Code2Name = {
 export const tokenSVG = new Set([
   'REP',
   'ETH',
+  'WETH',
   'GNO',
   'OMG',
   '1ST',
   'GNT',
+  'RDN',
 ])
 
 export const network2URL: Network2URL = {
