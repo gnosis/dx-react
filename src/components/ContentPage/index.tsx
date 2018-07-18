@@ -1,6 +1,8 @@
 import React from 'react'
 import { URLS } from 'globals'
 
+import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+
 interface ContentPages {
   handleClick: () => any;
   handleSectionMove(sectionID: string, sectionPage?: string): () => any;
@@ -932,7 +934,7 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>Which data do you collect?</h3>
       <span>
-        <p>Whenever you take part in a trade on the DutchX, transactions are stored on immutable public blockchains. For more information, please refer to the Privacy Policy in the footer.</p>
+        <p>Whenever you take part in a trade on the DutchX, transactions are stored on immutable public blockchains. For more information, please refer to the <a href="../docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a> in the footer.</p>
       </span>
     </section>
 

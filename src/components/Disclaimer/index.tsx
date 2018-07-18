@@ -1,6 +1,8 @@
 import React from 'react'
 import disclaimerSVG from 'assets/disclaimer.svg'
 
+import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+
 import { RouteComponentProps } from 'react-router'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
@@ -77,13 +79,13 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer2">
-                I certify that I am NOT (and NOT under the control of), 
-                a citizen or resident of or entity formed under the laws of any of the following countries 
-                and/or territories and that I am NOT currently located in any thereof: 
-                Afghanistan, Belarus, Bosnia and Herzegovina, Côte d’Ivoire, Central African Republic, 
-                Crimea (Region of Ukraine), Cuba, Democratic Republic of the Congo, 
-                Democratic People's Republic of Korea, Eritrea, Ethiopia, Guinea-Bissau, Iran, Iraq, 
-                Japan, Myanmar, Libya, Lebanon, Liberia, Russian Federation, Somalia, 
+                I certify that I am NOT (and NOT under the control of),
+                a citizen or resident of or entity formed under the laws of any of the following countries
+                and/or territories and that I am NOT currently located in any thereof:
+                Afghanistan, Belarus, Bosnia and Herzegovina, Côte d’Ivoire, Central African Republic,
+                Crimea (Region of Ukraine), Cuba, Democratic Republic of the Congo,
+                Democratic People's Republic of Korea, Eritrea, Ethiopia, Guinea-Bissau, Iran, Iraq,
+                Japan, Myanmar, Libya, Lebanon, Liberia, Russian Federation, Somalia,
                 South Sudan, Sudan, Syria, Uganda, United States of America, Vanuatu, Venezuela, Yemen, Zimbabwe.
               </label>
             </div>
@@ -132,7 +134,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="">Privacy Policy</a>.
+                  I have read and understood the <a href="docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
                 </b>
               </label>
             </div>

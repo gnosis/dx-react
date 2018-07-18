@@ -1,11 +1,29 @@
 import React from 'react'
 import appInfo from '../../../package.json'
+import { connect } from 'react-redux'
+import { State } from 'types'
+
+import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+
+interface FooterProps {
+  network: string;
+}
 
 // TODO: add content for footer
-const Footer = () =>
+const Footer = ({ network }: FooterProps) =>
     <footer>
         <p>
-            Trading on DutchX carries a risk to your capital. Please read our full <a href="#">Risk Disclaimer</a>, <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> before trading. – <a href="#">Imprint</a>
+            {
+                network === 'RINKEBY'
+                    ?
+                <>
+                    This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk. Please read the <a href="docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                </>
+                    :
+                <>
+                    Trading on DutchX carries a risk to your capital. Please read our full <a href="#">Risk Disclaimer</a>, <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> before trading. – <a href="#">Imprint</a>
+                </>
+            }
         </p>
         <div>
           <i>DX-React: {appInfo.version}</i>
@@ -13,4 +31,8 @@ const Footer = () =>
         </div>
     </footer>
 
-export default Footer
+const mapState = ({ blockchain: { providers } }: State) => ({
+  network: providers.METAMASK && providers.METAMASK.network ? providers.METAMASK.network : 'UNKNOWN NETWORK',
+})
+
+export default connect(mapState)(Footer)
