@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { handleKeyDown } from 'utils/helpers'
 import { Link, NavLink } from 'react-router-dom'
+import { URLS } from 'globals'
 
 interface HamburgerProps {}
 interface HamburgerState {
@@ -33,14 +34,17 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             onClick={this.handleClick}>
           </button>
           {window && window.location.pathname !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
-          <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How It Works </NavLink>
-          <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink>
+          <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
+          {/* <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink> */}
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
           <NavLink to="/content/Fees" onClick={this.handleClick}> Fees </NavLink>
           <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
-          <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink>
-          <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink>
+          {/* <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink> */}
+          {/* <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink> */}
           <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
+          <a href={URLS.MARKET_MAKERS} target="_blank" onClick={this.handleClick}> Market Makers </a>
+          <a href={URLS.LISTING_A_TOKEN} target="_blank" onClick={this.handleClick}> Listing a Token </a>
+          <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" onClick={this.handleClick}> DutchX Devs & API </a>
         </nav>
       </div>
     )

@@ -157,7 +157,8 @@
   }
 
   section a {
-    color: $white;
+    color: $blue;
+    cursor: pointer;
     text-decoration: underline;
   }
 
@@ -252,3 +253,13 @@
     }
   }
 } // end .contentPage
+
+.underline {
+  text-decoration: underline;
+}
+
+.sectionLink {
+  color: $blue;
+  cursor: pointer;
+  text-decoration: underline;
+}

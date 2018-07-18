@@ -2,14 +2,17 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 
 import * as ContentPages from 'components/ContentPage'
+import { push } from 'connected-react-router'
+import { connect } from 'react-redux'
 
 export interface ContentPageContainerProps {
   match: {
     params: {
       contentPage: string,
     },
-  },
-  children?: JSX.Element
+  };
+  children?: JSX.Element;
+  push({}): () => any;
 }
 
 interface EventTarget {
@@ -19,14 +22,16 @@ interface EventTarget {
   currentTarget: HTMLElement;
 }
 
-class ContentPageContainer extends React.Component<ContentPageContainerProps> {
+const grabElementID = (id: string) => document.getElementById(id)
+
+class ContentPageContainer extends React.Component<ContentPageContainerProps & any> {
   outerDiv: HTMLElement
-  
+
   /* componentDidMount() {
     this.outerDiv && this.outerDiv.focus()
   } */
 
-  renderContentPage = (name: string, props?: any) => {  
+  renderContentPage = (name: string, props?: any) => {
     const Component = ContentPages[name]
     return <Component {...props}/>
   }
@@ -36,17 +41,30 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
     e.currentTarget.classList.toggle('active')
   }
 
+  handleSectionMove = async (sectionID: string, outsidePage?: string) => {
+    if (outsidePage) {
+      await this.props.push(`/content/${outsidePage}`)
+    }
+
+    if (Array.from(grabElementID(sectionID).classList).some((className: string) => className === 'active')) {
+      return grabElementID(sectionID).scrollIntoView()
+    }
+
+    grabElementID(sectionID).classList.toggle('active')
+    return grabElementID(sectionID).scrollIntoView()
+  }
+
   render() {
     const { match: { params: { contentPage } } } = this.props
     return (
       ContentPages[contentPage]
       ?
-        <div 
-          className="contentPage" 
+        <div
+          className="contentPage"
           /* ref={c => this.outerDiv = c} */
-          tabIndex={1} 
-        > 
-          {this.renderContentPage(contentPage, { handleClick: this.handleClick })}
+          tabIndex={1}
+        >
+          {this.renderContentPage(contentPage, { handleClick: this.handleClick, handleSectionMove: this.handleSectionMove })}
         </div>
       :
         <Redirect to="/404" />
@@ -54,4 +72,4 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 }
 
-export default ContentPageContainer
+export default connect(undefined, { push })(ContentPageContainer)
