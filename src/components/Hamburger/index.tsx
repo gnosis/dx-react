@@ -41,10 +41,10 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
           {/* <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink> */}
           {/* <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink> */}
-          <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
           <a href={URLS.MARKET_MAKERS} target="_blank" onClick={this.handleClick}> Market Makers </a>
           <a href={URLS.LISTING_A_TOKEN} target="_blank" onClick={this.handleClick}> Listing a Token </a>
           <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" onClick={this.handleClick}> DutchX Devs & API </a>
+          <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
         </nav>
       </div>
     )

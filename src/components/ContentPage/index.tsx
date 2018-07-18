@@ -358,10 +358,11 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>How can I lower my fees?</h3>
       <span>
-      <p>
-        Your fees will be lowered automatically for you if you hold <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
-      </p>
-      <table>
+        <p>
+          Your fees will be lowered automatically for you if you hold <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
+        </p>
+        {/*TODO: add <img id='fee-reduction-image'> */}
+        <table>
           <thead>
             <tr>
               <th>Percentage of Magnolia you hold (of the entire Magnolia market)</th>
@@ -392,101 +393,148 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
           </tbody>
         </table>
         <p>
-        Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the same wallet that you are participating with on the DutchX .
-        Magnolia tokens are inflationary as the creation is based on the volume traded on the DutchX—there is no mechanism to diminish their volume.
+          Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the <span className="underline">same wallet</span> that you are participating with on the DutchX.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Where do I see my fees?</h3>
+      <span>
+        <p>In the header bar of the interface, your fee level is displayed. Note that this is a snapshot in time and due to the changing Magnolia market volume, this number should be seen as an estimate.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I obtain Magnolia (MGN)?</h3>
+      <span>
+      <p>
+        You may either generate Magnolia by trading on the DutchX (with a whitelisted trading pair). For more info, see the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span>.
+        Alternatively, you could also purchase MGN since they are freely tradable. This may be particularly beneficial if you are close to the <span className="sectionLink" onClick={() => handleSectionMove('fee-reduction-image')}>next fee reduction level</span>.
       </p>
     </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
-      <h3>Where can I see my fee level?</h3>
+      <h3>How do I trade Magnolia?</h3>
       <span>
-      <p>On the header of the interface, the approximate fee level is provided for your convenience. Note that this is a snapshot in time and due to the changing Magnolia market, this number should be viewed as an approximation.</p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>How do I obtain Magnolia?</h3>
-      <span>
-      <p>You may either generate Magnolia by trading on the DutchX (within a whitelisted trading pair): 1 MGN (or fraction of MGN) is generated and automatically attributed for every 1 ETH (or fraction of ETH) worth of trade.
-      Or alternatively, MGN are freely tradable and can theoretically be purchased. This may be particularly beneficial if you are close to the next fee reduction level. </p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>How do I transfer Magnolia?</h3>
-      <span>
-      <p>To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be transferred and locked again to make use of the fee reduction model. Currently this is not offered on the interface.</p>
+      <p>To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction model. Currently, however, this function is not yet supported by this interface but will be available in the next version.</p>
     </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
       <h3>Why is it beneficial to hold a lot of Magnolia?</h3>
       <span>
-      <p>The more Magnolia you hold as a percentage of the total Magnolia market volume, the lower your fee (if within the relevant percentages). This provides an incentivize for a continuous use of the DutchX. Additionally, it becomes lucrative to be an active participant on the DutchX from the beginning, since the Magnolia you hold are relative to the entire Magnolia market. </p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>How do I pay up to half of fees with OWL?</h3>
-      <span>
-      <p>After the fee reduction using Magnolia (which is done automatically), you may (but do not have to) pay up to half of the remainder of fees in OWL. One OWL can be used to pay for the equivalent of one USD in fees.
-        If you set an allowance on the first pop-up modal when going through transactions, fee payment in OWL is done automatically for you and OWL is deducted from the wallet you are connected with. The pop-up modal only appears if you hold OWL.
-      OWL used to pay for fees are not credited to any particular party but are instead consumed (“burned”).</p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>How do I pay my fees?</h3>
-      <span>
-      <p>Fees (or remaining fees in case you choose to partially pay with OWL) are automatically deducted from the token you are participating with (and then attributed to the auction you are participating in). </p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>So what does the step-by-step fee calculation look like?</h3>
-      <span>
-      <p>Imagine you are taking part with a volume of 20 Token A.<br/>
-        The DutchX calculates your fee level based on the MGN you hold, e.g. 4%. This information is displayed for you in the header (e.g. 0.8 Token A)<br/><br/>
-        From this fee level (e.g. 4%), you have the option to pay half in OWL (if you own OWL in the wallet you are participating with).
-        If you choose to pay half in OWL (in this example 2%; 2% of your participating volume (=0.4 TokenA) is translated into USD. Note that 1OWL is accepted as 1USD on the DutchX.<br/><br/>
-        If you do not choose to pay in OWL or you do not have OWL, 4% (in this example) are deducted from your participating Token.<br/>
-        The remainder of the fees is paid in the participating token<br/><br/>
-        In the case of not paying in OWL; the remainder is 0.8 -0 = 0.8.<br/><br/>
-        In the case of paying with OWL, the remainder is 0.8-0.4= 0.4.<br/><br/>
-        <strong>What gets attributed to the auction?</strong><br/>
-        In the case of not paying in OWL: 20-0.8=19.2 A Token are attributed to the sellVolume.
-      In the case of paying in OWL: 20-0.4=19.6 A Token are attributed to the sellVolume.</p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>Who obtains the fees?</h3>
-      <span>
-      <p>Fees in the DutchX do not go to any specific party!
-        Fees paid in OWL are consumed (i.e. burned) and not credited to anyone.
-      Fees paid in the Token the user is participating with will go into the next running auction for the same token-pairing to be auctioned off as an extra balance (always as sellTokens). Fees are redistributed within the DutchX ecosystems and go towards high-volume users!</p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick}>
-      <h3>What is the reasoning for the fees to go into the next auction?</h3>
-      <span>
-      <p>We would like to keep the fees in the DutchX ecosystems. That means that users, and especially frequent users benefit as they not only lower their fees, but get credited part of the fees!</p>
+        <p>
+          The more Magnolia you hold as a percentage of the total Magnolia market volume, the lower is your fee (if within the relevant percentages). This provides an incentive to remain on the DutchX. Additionally, it pays off to be an active participant on the DutchX from the beginning, since the amount by which your fees are lowered depends on how much Magnolia you hold relative to the entire Magnolia market.
+        </p>
     </span>
     </section>
 
     <section className="drawer" id="what-are-owl" onClick={handleClick}>
       <h3>What are OWL?</h3>
       <span>
-      <p>Read up on OWL and the initial OWL generation.</p>
-    </span>
+        <p>
+          OWL gives the <a href={URLS.GNO_TOKEN_ETHERSCAN_URL}>GNO token</a> its utility: it is generated by locking GNO and may be used on some applications created or run by Gnosis to pay for fees. Read up on <a href={URLS.OWL_BLOG_URL}>OWL</a> and the<a href={URLS.INITIAL_OWL_GENERATION_BLOG_URL}> initial OWL generation</a>.
+        </p>
+        <p>
+          Note that OWL is not needed to use the DutchX.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What are OWL used for on the DutchX?</h3>
+      <span>
+        <p>
+          You can pay for half of the fees in OWL. You will be prompted to pay fees in OWL in case you have OWL available in your wallet. The other half of the fees, however, always have to be covered in the token you are depositing.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How much is OWL worth?</h3>
+      <span>
+        <p>
+          OWL can be used for 1USD in fees on the DutchX.
+          OWL may be freely tradable (it is a fungible token and not personalized).
+        </p>
+      </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
       <h3>Why would I want to pay my fees in OWL?</h3>
       <span>
-      <p>Firstly, if you are a GNO holder, you obtain OWL by locking your GNO. Secondly, one OWL can be used to pay one USD worth of fees (this is fixed on the platform). </p>
+        <p>Firstly, if you are a GNO holder, you obtain OWL by locking your GNO. Secondly, one OWL can be used to pay one USD worth of fees (this is fixed on the DutchX). Thirdly, it is likely cheaper as the OWL may be obtained for less than one USD.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I use OWL to pay for fees?</h3>
+      <span>
+        <p>
+          The interface will prompt you automatically during the trading process and ask if you would like to use OWL to pay for fees. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to pay for your fees and you will be prompted again the next time.
+          Note that you might not be prompted because you have no OWL in your wallet! To create a great user experience for you on this interface, you are only prompted if you have OWL in your connected wallet.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What happens to the OWL used to pay for fees?</h3>
+      <span>
+        <p>
+          OWL used to pay for fees are not credited to anyone! They are instead consumed (“burned”). Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I pay my fees?</h3>
+      <span>
+        <p>
+          This is all done automatically for you! Fees (or remaining fees in case you choose to partially pay with OWL) are automatically deducted from the token you are participating with on the DutchX.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Step-by-step fee calculation</h3>
+      <span>
+        <p>Imagine you are taking part with a volume of 20 Token A.</p>
+        <br/>
+        <ol>
+          <li>The DutchX calculates your fee level based on the MGN you hold. Let's assume your fee level is currently 0.4%. This information is displayed in the header bar.</li>
+          <li>You owe 0.8A in fee.</li>
+          <li>From this fee, you have the option to pay half in OWL (if you hold OWL in the wallet you are participating with). If you choose to pay half in OWL, this is 0.4A. 0.4A will be translated into USD, where 1 OWL is accepted as 1 USD on the DutchX.</li>
+          <li>
+            The remainder of the fees is paid in the participating token
+            <ul>
+              <li>In the case of paying with OWL, the remainder is 0.8-0.4 = 0.4A.</li>
+              <li>In the case of not paying in OWL; the remainder is 0.8-0 = 0.8A.</li>
+            </ul>
+          </li>
+          <li>
+            What gets deposited into the auction?
+            <ul>
+              <li>In the case of paying in OWL: 20-0.4=19.6 A Tokens are placed on your behalf into the next running auction.</li>
+              <li>In the case of not paying in OWL: 20-0.8=19.2 A Tokens are placed on your behalf into the next running auction.</li>
+            </ul>
+          </li>
+        </ol>
+    </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What happens to fees paid in a token (not in OWL)?</h3>
+      <span>
+      <p>These fees remain in the DutchX ecosystem and are redistributed among participants (mainly high-volume users will benefit from this fee redistribution model). Fees will <span className="underline">go into the next running auction</span> for the same token pair as an extra deposit-balance.</p>
+    </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is the reasoning for the fees to go into the next auction?</h3>
+      <span>
+      <p>Users of the DutchX should be the main beneficiaries of this decentralized trading protocol. Hence, the fees should remain in the DutchX ecosystem. This means that users, and especially frequent users, benefit as they not only lower their fees, but get credited part of the fees!</p>
     </span>
     </section>
 
@@ -500,8 +548,8 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>Do I also have to pay a gas price?</h3>
       <span>
-      <p>Yes, you do! For all transactions on the Ethereum blockchain, gas has to be paid. The amount of gas to be paid depends on the current transactions being processed on Ethereum. Both sellers and bidders have to pay gas for a) executing the bid or sellOrder, and b) to claim the exchanged token. Your wallet provider will show you the gas estimation for each transactions and you may set a gas fee.</p>
-    </span>
+        <p>Yes, you do! For all transactions on the Ethereum blockchain, gas has to be paid. The amount of gas cost to be paid depends on the current transactions being processed on Ethereum. Gas is needed to execute your order and claim your new tokens. Your wallet provider will provide you with a gas estimate for each transaction, and you may set a gas price.</p>
+      </span>
     </section>
 
   </article>

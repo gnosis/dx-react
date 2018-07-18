@@ -69,4 +69,8 @@ export const URLS = {
   MARKET_MAKERS: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Market_Makers.pdf',
   LISTING_A_TOKEN: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Handbook_New_Tokens.pdf',
   DUTCHX_DEVS_AND_API: 'http://dutchx.readthedocs.io/',
+
+  GNO_TOKEN_ETHERSCAN_URL: 'https://etherscan.io/token/0x6810e776880c02933d47db1b9fc05908e5386b96',
+  OWL_BLOG_URL: 'https://blog.gnosis.pm/wiz-turns-owl-813555100010',
+  INITIAL_OWL_GENERATION_BLOG_URL: 'https://blog.gnosis.pm/generate-your-first-owl-using-gno-2205eb098f8',
 }
