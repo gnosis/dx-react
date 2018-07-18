@@ -77,7 +77,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="how-do-i-claim-tokens" onClick={handleClick}>
       <h3>How do I claim my new tokens?</h3>
       <span>
         <p>
@@ -308,7 +308,7 @@ export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="what-are-whitelisted-tokens" onClick={handleClick}>
       <h3>What are whitelisted tokens?</h3>
       <span>
         <p>
@@ -644,7 +644,7 @@ export const OpenPlatform = () =>
 {/* END DutchX as an Open Platform - page */}
 
 {/* FAQ - page */}
-export const FAQ = ({ handleClick }: ContentPages) =>
+/* export const FAQ = ({ handleClick }: ContentPages) =>
   <article>
     <h1>FAQ</h1>
 
@@ -989,6 +989,392 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <span>
       <p>No, there is not.</p>
     </span>
+    </section>
+
+  </article> */
+
+export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
+  <article>
+    <h1>FAQ</h1>
+    <section className="content">
+      <p>Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX was designed. Check out especially: <a href="https://blog.gnosis.pm/the-main-benefits-of-the-dutchx-mechanism-6fc2ef6ee8b4" target="_blank">Main Benefits of the DutchX Mechanism.</a></p>
+    </section>
+    <section className="drawer" id="what-is-erc20" onClick={handleClick}>
+      <h3>What is ERC20?</h3>
+      <span>
+        <p>
+          ERC20 is a technical token standard used for smart contracts on the Ethereum blockchain. All tokens of this standard are compatible with the DutchX. You may check <a href="https://etherscan.io/" target="_blank">Etherscan</a> for a list of <a href="https://etherscan.io/tokens" target="_blank">ERC20 Token Contracts</a>.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Do I need an account on the DutchX?</h3>
+      <span>
+        <p>
+          No account is needed.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which wallets are compatible with the DutchX?</h3>
+      <span>
+        <p>
+          Currently, the only wallet that has been tested is <a href={URLS.METAMASK} target="_blank">Metamask</a>. Thus, the use of Metamask is highly recommended. However, other wallet providers holding ERC20 tokens might likely be compatible but will not guarantee a flawless user experience.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I link my wallet to the DutchX?</h3>
+      <span>
+        <p>Your wallet is automatically linked to the DutchX. In case you are not logged into your wallet, you need to log in first.</p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What if I have multiple wallets?</h3>
+      <span>
+        <p>It is recommended that you hold your relevant tokens, i.e. (1) those you want to participate with in the DutchX and (2) OWL in one wallet. (3) Additionally, it is recommended that you have your locked Magnolia stored in the same wallet: don’t spread your Magnolia over more wallet addresses as they are important for reducing your fees!</p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What if I have multiple wallets, which wallet is linked to the DutchX?</h3>
+      <span>
+        <p>It depends on which wallet connects to the browser first. If you want to participate with a different wallet, simply log out of the ones you do not want to participate with in the DutchX, and refresh your browser. Check out “Which wallets are compatible with the DutchX?”.</p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What else do I need to know about my wallet?</h3>
+      <span>
+        <p>Very important—you need to have access to your private key! It's possible to send tokens to the DutchX from an address for which you do not have access to the private key. Please keep in mind that you can only claim tokens with the address you have sent tokens from!
+          Furthermore, it is recommended that you always use the same wallet address in order to accumulate your fee reduction associated with that address.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why do I not see all tokens that I hold in my wallet on the DutchX header?</h3>
+      <span>
+        <p>The DutchX interface only displays those tokens that you can trade on this interface.</p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why do I see 0.0000 of a particular token in the header of the DutchX?</h3>
+      <span>
+        <p>The DutchX interface only display four decimals. In case you have an available balance which is less that 0.00009, the interface will only display '0.0000'.</p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which browsers are compatible with the DutchX?</h3>
+      <span>
+        <p>
+          Only browsers supported by Metamask have been tested so far. It is highly recommended that you use one of those—<a href="https://www.google.com/chrome/" target="_blank">Chrome</a> would probably be the one that's most commonly used.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Is it safe to trade in the DutchX?</h3>
+      <span>
+        <p>It is as safe as it gets! The DutchX is a non-custodial trading protocol. Your funds are only ever held in audited smart contracts. There still is a public bug bounty running and no bugs have been discovered. However, you need to make sure that you are the only one who has access to your private key! Still beware of phishing attacks.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Is there a minimum deposit (order)?</h3>
+      <span>
+        <p>No, there is not.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Is there a maximum deposit (order)?</h3>
+      <span>
+        <p>No, there is not.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I participate in more than one auction?</h3>
+      <span>
+        <p>Yes, definitely! You may participate in as many auctions as you would like. Note that for a specific token pair, there is only ever one auction running at a time. If you submit two separate orders for the same pair, and the auction had not started after your first order submission, your deposits will be placed into the same auction (and an accumulated amount will be displayed).
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I participate more than once in the same auction?</h3>
+      <span>
+        <p>Yes, definitely! This will happen automatically if you submit two separate orders for the same pair, and the auction had not started after your first order. In this case, both your deposits will be placed into the same auction (and an accumulated amount will be displayed).
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why did my trade not generate Magnolia (MGN)?</h3>
+      <span>
+        <p>If your trade does not generate Magnolia, that is because one (or both) of the tokens part of the auction might not be whitelisted. Learn more on the topic in the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>'Magnolia'</span> and <span className="sectionLink" onClick={() => handleSectionMove('what-are-whitelisted-tokens', URLS.TOKENS)}>'whitelisted tokens'</span>.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>When/how do I get Magnolia (MGN) credited?</h3>
+      <span>
+        <p>If your trade generated Magnolia, you are credited these automatically once you <span className="sectionLink" onClick={() => handleSectionMove('how-do-i-claim-tokens', URLS.HOW_IT_WORKS)}>claim</span> your new tokens (funds) from the auction. However, you will not see MGN as a balance in your wallet, as they are still locked. For your convenience, the amount of locked MGN is displayed in the header of the DutchX interface.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why do I not see Magnolia (MGN) as a balance in my wallet?</h3>
+      <span>
+        <p>Magnolia are locked by default and can only then be used for fee reduction. Once you have claimed your new tokens, your MGN will be automatically credited to the wallet address used for the trade and are displayed in the header of the interface.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why can I not see my Magnolia (MGN) in the header?</h3>
+      <span>
+        <p>Make sure you are connected with the same wallet you participated with in the trade that generated those Magnolia (see section 'whitelisted tokens').
+          It is recommended to make all trades from the same wallet exactly for this reason. The more MGN you have, the less fees you pay.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Is Magnolia (MGN) tradable?</h3>
+      <span>
+        <p>In theory, absolutely! MGN is an ERC20 token. However, please note that MGN are locked by default in order for you to make use of the fee reduction inherent to the DutchX. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on this interface. However, you will be in the next version of the DutchX.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I claim back my deposits (before or during an auction)?</h3>
+      <span>
+        <p>No, you cannot. Once you have placed your deposit into an auction, you will have to wait for the next auction to run and to close before you may claim the token you receive. In other words: after the final submission (“Order Confirmation” screen with your wallet provider), you cannot cancel your order and you cannot receive your deposit back.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What do I do when I am not happy with the amount received?</h3>
+      <span>
+        <p>Unfortunately, there is nothing to do about it. You have received the fair market price at that time.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>How can I claim my new tokens (funds)?
+      </h3>
+      <span>
+        <p>As a seller, you may claim the tokens you received once the auction has cleared. The price and your amount deposited will give you the amount of tokens you will receive. You can claim your tokens at any point after the auction clears—there is no rush! Just go back to the DutchX website, make sure you are logged into the same wallet you participated with in the auction and you will see which of your auctions have ended and where you can claim the tokens received.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I receive a notification indicating I can claim my new tokens (funds)?
+      </h3>
+      <span>
+        <p>Unfortunately not at this point. However, this is work in progress! For now, you will have to come back to the interface and check whether your new tokens are ready to be claimed. You will be alerted by a red “claim” button if there are claimable tokens connected to your linked wallet address.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Am I able to participate in the DutchX using fiat (e.g. USD, EUR)?
+      </h3>
+      <span>
+        <p>Unfortunately, you cannot trade anything but <span className="sectionLink" onClick={() => handleSectionMove('what-is-erc20', URLS.FAQ)}>ERC20 tokens</span> and ETH on this interface.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is wrapped Ether (W-ETH) and why do I need it?
+      </h3>
+      <span>
+        <p>
+          Ether (or "ETH")—the native currency built on the Ethereum blockchain—is not ERC20 compatible. <a href={URLS.WETH_TOKEN_URL} target="_blank">Wrapped Ether</a>, however, is Ether that is compliant with the ERC20 standard and hence can be traded on the DutchX. Keep in mind that you still need ETH to pay for your gas costs, though.
+          <br/>
+          Wrapped Ether is worth the same as ETH and can of course be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> again anytime.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I trade both Ether and wrapped Ether?
+      </h3>
+      <span>
+        <p>
+          Yes! For a smooth user experience, the interface will wrap ETH for you in case you don't have any wrapped ETH available. In this case, wrapping your ETH is the first transaction you will have to approve before proceeding with the deposit.
+          <br/>
+          However, the <span className="underline">DutchX will not unwrap ETH for you—</span>if you exchange a token for ETH, you will always receive W-ETH. Make sure to add the W-ETH token address to your wallet: (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2). W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped on many platforms</a>.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>I have received W-ETH instead of ETH, what happened?
+      </h3>
+      <span>
+        <p>
+          W-ETH is the ERC20 compatible version of ETH. The interface provides no unwrapping at this time. W-ETH is worth the same as ETH and can of course be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> again on various platforms.
+        </p>
+      </span>
+    </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>I have claimed my ETH, but can't find them in my wallet—what happened?
+      </h3>
+      <span>
+        <p>
+          If you exchange a token for ETH, you will always receive W-ETH in the DutchX. Thus, make sure to add the W-ETH token address to your wallet (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2).
+          <br/>
+          W-ETH is the ERC20 compatible version of ETH. Since the DutchX interface provides no unwrapping at this time, you will always receive W-ETH instead of ETH. W-ETH is worth the same as ETH and can of course be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> again on various platforms.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What does “approve this trade only” and “approve also for future trades” mean?</h3>
+      <span>
+        <p>
+          This is a little technical and has to do with the fact that the DutchX operates on the blockchain.
+          <br />
+          If you choose "approve this trade only", you will approve for the DutchX to take the amount of the current trade out of your wallet. This also means that you will have to sign a transfer confirmation <span className="underline">and</span> an order confirmation for all future trades. You will spend transaction cost on each of these two separate transaction.
+          <br />
+          If you "approve also for future trades", you allow the DutchX to take this specific token for future trades as well. The DutchX won't take any tokens from your wallet until you confirm your order. You will use the same amount of funds, but you will save transaction costs on future trades because you will need to send fewer transactions to the blockchain going forward. In terms of transaction cost, this option is better for you. However, it carries the small risk that if the DutchX contract would be maliciously updated (there would always be a time lag and other safeguards in place), it could theoretically be re-designed to access more funds. This will certainly not happen, but every user should decide for themselves.
+          <br />
+          If you are unclear on this, please only approve the current trade.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why are exactly these tokens available on the interface?
+      </h3>
+      <span>
+        <p>The curation is based on tokens for which liquidity is provided for both sides of the market. Apart from that, the token must not be considered a security by any authority, law firm, or decentralized or centralized exchange. Other developers may provide an interface enabling more/other tokens to be traded. </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What are the requirements for a token to be part of the curated list on the DutchX?
+      </h3>
+      <span>
+        <p>It is expected that a minimal liquidity provision is guaranteed. Apart from that, the token must not be considered a security by any authority, law firm or any decentral or central exchange. A certain market cap should also weigh in for sufficient liquidity. For more information, please <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.HELP)}>reach out</span>.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is my best strategy as a seller?
+      </h3>
+      <span>
+        <p>This is the great thing about the DutchX—you don’t need any strategy. Simply deposit (sell) your token at any point in time. It will then be placed in the next running auction. The Dutch auction mechanism is designed to incentivize a fair price finding mechanism.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>I don’t know beforehand how much of a token I will receive —will I get the fair amount?</h3>
+      <span>
+        <p>You do not know exactly how much of a token you will receive when you deposit your token— the interface will only show you an estimation based on the last auction outcome. Of course, prices may be volatile (up and down) and may change until your auction closes. However, at that point in time, it will be a fair price. To ensure that right incentives are set, we have implemented a few other safeguards beyond the mere auction design: 1) auctions only start once a threshold is reached to incentivize participation, 2) the market mechanisms applied have been explained to many market makers, 3) the tokens listed on this interface were curated based on minimal liquidity provision. This ensures that the seller always obtains at least a comparable market price as s/he would on a exchange (at auction closing time).
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How does the DutchX apply batch auctions?</h3>
+      <span>
+        <p>Instead of trading continuously, the DutchX collects the sell orders as batches until the auction starts, and clears them at the end of the auction all at once.
+          By accumulating orders that are executed at the same time, a batch auction not only represents a better price finding mechanism than an order book, but also eliminates the inherent flaw of the order book exchange: front-running.
+          On the DutchX, your orders will get batched so that you benefit from these advantages. However, batching orders comes at the expense of speedy trading as the order execution time is slow.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which data do you collect?</h3>
+      <span>
+        <p>Whenever you take part in a trade on the DutchX, transactions are stored on immutable public blockchains. For more information, please refer to the Privacy Policy in the footer.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How can I be sure that the price I receive is fair?</h3>
+      <span>
+        <p>The DutchX mechanism is as fair as it gets! However, it reflects the current market price. Of course, the mechanism only works if there is a critical mass participating. This is why an automated trading service will guarantee that the price does not drop significantly below the market price of other trading platforms.
+          You can safely take part in the DutchX from day one!
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How is liquidity provided?</h3>
+      <span>
+        <p>To ensure that a critical trading mass is reached and markets work well, there will be an automated trading service at the beginning, ensuring that the market price does not drop significantly below the market price of other trading platforms. Where markets develop sufficient liquidity, the automated trading service is expected to cease.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How high will my gas costs be?</h3>
+      <span>
+        <p>For every transaction to the blockchain, you will incur gast costs. As an example: In order to trade a token (depositing and claiming back) it will be a total of about 175k gas. The total cost depends on the gas price you set. At 10Gwei (and an assumed ETH-USD rate of 400), this would equal 0.70 USD.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is the preselected gas price?</h3>
+      <span>
+        <p>The interface does not override your wallet provider’s suggestion for a gas price. It will be using the default rate of your wallet provider. You may change it directly on your wallet provider's interface.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which gas price should I set?</h3>
+      <span>
+        <p>For transactions that are not time critical (and for which you do not mind waiting), you can set the gas price low to save gas costs.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Do I have an advantage with a higher gas price?</h3>
+      <span>
+        <p>No, not really—the mechanism of the DutchX is to batch orders and execute them at the same clearing price. What could happen with a lower gas price is that your order then gets submitted to the subsequent auction—but the logic here is the same! Hence, the only consequence would be that claiming your new tokens will get delayed. Also note that the processing of transactions takes time, hence you might need to wait longer until your order has gone through.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Something has gone wrong with my transaction, what happened?</h3>
+      <span>
+        <p>If a transaction fails, usually your wallet provider will tell you what happened. These errors will relate to the nature of the blockchain. Possible explanations include (but are not limited to): (1) you did not have sufficient ETH to pay for your gas costs, or (2) the gas price you had set was too low and thus the transaction was not mined. However, rest assured that you will not incur a loss of funds if a transaction hasn't gone through.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What price feed is the DutchX using?</h3>
+      <span>
+        <p>
+          The DutchX is built in such a way that only <span className="underline">one</span> external price feed is used, namely the ETH/USD price feed, derived from the reliable and accurate <a href="https://developer.makerdao.com/feeds/" target="_blank">MakerDAO</a> on-chain price feed (which is a median of many price feeds).
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What does the DutchX need the ETH/USD price feed for?</h3>
+      <span>
+        <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>fees</span> in USD or OWL.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Can I copy, alter, and use the code of the DutchX?</h3>
+      <span>
+        <p>You may do everything that is allowed based on the licenses attached to the code. This is not to be considered legal advice and no further information can be given.</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I participate as a buyer?</h3>
+      <span>
+        <p>Unfortunately, there is currently no interface to participate in the bidding as development work was focused on providing this interface for you. If there is the demand for it, a bidder interface will be created in the future.
+          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What happens in case of downtime?</h3>
+      <span>
+        <p>Unfortunately, there is no guarantee of keeping this interface available to you at all times. If the interface is down for maintenance, it will be communicated early on.In case the site is down due to unforeseen reasons, this will be communicated via the DutchX Twitter account (@DutchX_).
+          It’s important to note that funds can always be claimed: interaction with the DutchX smart contract is always possible as all the DutchX smart contracts are stored on the Ethereum blockchain.
+        </p>
+      </span>
     </section>
 
   </article>
