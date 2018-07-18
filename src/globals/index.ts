@@ -61,10 +61,12 @@ export const ALLOWED_NETWORK = 'Rinkeby Test Network'
 export const FIXED_DECIMALS = 4
 
 export const URLS = {
-  METAMASK: 'https://metamask.io ',
+  METAMASK: 'https://metamask.io',
+  HOW_IT_WORKS: '/content/HowItWorks',
+  TOKENS: '/content/Tokens',
+  FEES: '/content/Fees',
+  FAQ: '/content/FAQ',
   MARKET_MAKERS: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Market_Makers.pdf',
   LISTING_A_TOKEN: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Handbook_New_Tokens.pdf',
   DUTCHX_DEVS_AND_API: 'http://dutchx.readthedocs.io/',
-  FEES: '/content/Fees',
-  FAQ: '/content/FAQ',
 }

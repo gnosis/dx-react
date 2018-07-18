@@ -43,8 +43,10 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps & a
 
   handleSectionMove = async (sectionID: string, outsidePage?: string) => {
     if (outsidePage) {
-      await this.props.push(`/content/${outsidePage}`)
+      await this.props.push(outsidePage)
     }
+
+    if (!sectionID) return
 
     if (Array.from(grabElementID(sectionID).classList).some((className: string) => className === 'active')) {
       return grabElementID(sectionID).scrollIntoView()

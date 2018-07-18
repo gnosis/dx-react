@@ -7,244 +7,251 @@ interface ContentPages {
 }
 
 export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => (
-<article>
-  <h1>How the DutchX works</h1>
+  <article>
+    <h1>How the DutchX works</h1>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>The DutchX in short</h3>
-    <span>
-      <p>
-        The DutchX is a fully decentralized exchange for ERC-20 token pairings, based on the Dutch auction principle.
-        Using this interface, you will participate in the next running auction.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>The DutchX in short</h3>
+      <span>
+        <p>
+          The DutchX is a fully decentralized exchange for ERC-20 token pairings, based on the Dutch auction principle.
+          Using this interface, you will participate in the next running auction.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>What is the DutchX exactly?</h3>
-    <span>
-      <p>
-        The DutchX is a decentralized, open trading protocol for ERC20 token pairs, based on the Dutch auction principle.
-        Taking the traditional order book model to the blockchain makes little sense: problems such as front-running are magnified in discrete time.
-        The mechanism of the DutchX is designed such that sellers deposit their tokens ahead of an auction.
-        Then, the auction starts with a high price which falls until the market for the specific token-pair clears.
-        Bidders submit their bids during the auction, but pay the <span className="underline">same</span> final price.
-        Hence, the dominant strategy for bidders to reveal their true willingness to pay will result in fair market prices.
-        Coupled with a pure on-chain design, the DutchX may function as a price oracle and is also usable for other smart contracts to exchange tokens.
-        Participants benefit from the redistribution of fees within the DutchX ecosystem as well.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is the DutchX exactly?</h3>
+      <span>
+        <p>
+          The DutchX is a decentralized, open trading protocol for ERC20 token pairs, based on the Dutch auction principle.
+          Taking the traditional order book model to the blockchain makes little sense: problems such as front-running are magnified in discrete time.
+          The mechanism of the DutchX is designed such that sellers deposit their tokens ahead of an auction.
+          Then, the auction starts with a high price which falls until the market for the specific token-pair clears.
+          Bidders submit their bids during the auction, but pay the <span className="underline">same</span> final price.
+          Hence, the dominant strategy for bidders to reveal their true willingness to pay will result in fair market prices.
+          Coupled with a pure on-chain design, the DutchX may function as a price oracle and is also usable for other smart contracts to exchange tokens.
+          Participants benefit from the redistribution of fees within the DutchX ecosystem as well.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>How does a Dutch auction work?</h3>
-    <span>
-      <p>
-      While there are some variations to the mechanism, the main concept of a Dutch auction is that it starts with a high but falling price.
-      The first person to make a bid will purchase the auctioned item for the current price at the bidding time.
-      If there are multiple fungible items in one auction (e.g. shares or tokens), then the auction only ends when all the items have been allocated to bidders. Each successful bidder will receive their purchase at the same final (lowest!) price.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>How does a Dutch auction work?</h3>
+      <span>
+        <p>
+        While there are some variations to the mechanism, the main concept of a Dutch auction is that it starts with a high but falling price.
+        The first person to make a bid will purchase the auctioned item for the current price at the bidding time.
+        If there are multiple fungible items in one auction (e.g. shares or tokens), then the auction only ends when all the items have been allocated to bidders. Each successful bidder will receive their purchase at the same final (lowest!) price.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>What are the specific characteristics of the DutchX?</h3>
-    <span>
-      <p>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What are the specific characteristics of the DutchX?</h3>
+      <span>
+        <p>
+          There is always only one auction for a particular pair (e.g. ETH-RDN) at any point in time.
+          Taking part in the DutchX has a lot of advantages: you may reduce your fees, benefit from the fees of other participants, and you will get a fair price for tokens.
+          However, it comes with the drawback of slower order execution!
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How long does an auction take?</h3>
+      <span>
+        <p>
+          The duration of an auction is unknown ahead of time. However, a typical auction is expected to run for about 6 hours (in which the bidding to take place). After 6 hours, the auction reaches the prior closing price, which serves as an indication for length and price (the last available market price). Due to potential fluctuations (especially in the realm of cryptocurrencies), the auction may close earlier or run longer. It is important to stress that the auction price reflects the current fair market price.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>When do I claim my tokens?</h3>
+      <span>
+        <p>
+          Once you have placed the tokens that you want to sell in the auction (=submitted your deposit/order), you will take part in the next auction that runs. The next auction might start right away, or only in a couple of hours time if there is still an auction running for your chosen token pair. Once your auction has started, it might take around 6 hours to finish. Therefore, it could take some time until you can receive the tokens that you want for the trade (=claim your new tokens)—but it’s definitely worth the wait. You can be assured to get a fair price for your tokens.
+          At the moment, there is no notification once your auction has closed, which means that you have to revisit this interface. A red claim button will alert you that you are able to claim your new tokens.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>How do I claim my new tokens?</h3>
+      <span>
+        <p>
+          The interface provides you with two options to claim your new tokens:
+          The first option is on top of the page in Your Auctions. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from all prior auctions you have participated in for that token pair (please note: you might need to sign two transactions with your wallet provider).
+          <br/>
+          <br/>
+          The second option is via the specific URL for the auction pair (auction overview page). You will automatically access the URL at the end of the order process. From there, you may claim the new token particular to that specific auction (you will only need to sign one transaction with your wallet provider).
+          Note that you have to be connected to the same wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <span className="sectionLink" onClick={() => handleSectionMove('step-by-step-claiming')}>step-by-step guide</span> about claiming tokens.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>When do auctions start?</h3>
+      <span>
+        <p>
         There is always only one auction for a particular pair (e.g. ETH-RDN) at any point in time.
-        Taking part in the DutchX has a lot of advantages: you may reduce your fees, benefit from the fees of other participants, and you will get a fair price for tokens.
-        However, it comes with the drawback of slower order execution!
-      </p>
-    </span>
-  </section>
+        They start at least 10 minutes after the prior auction finish and only if the volume (i.e. deposit) of one of the auctions is worth more than 1,000 USD. Therefore, it is hard to estimate when exactly they will start as they depend on the prior auctions' closing time.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>How long does an auction take?</h3>
-    <span>
-      <p>
-        The duration of an auction is unknown ahead of time. However, a typical auction is expected to run for about 6 hours (in which the bidding to take place). After 6 hours, the auction reaches the prior closing price, which serves as an indication for length and price (the last available market price). Due to potential fluctuations (especially in the realm of cryptocurrencies), the auction may close earlier or run longer. It is important to stress that the auction price reflects the current fair market price.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>When do auctions end?</h3>
+      <span>
+        <p>Auctions end when all deposits (<i>sellTokens</i>) have been bought and thus are allocated to bidders at the auction clearing price. The auction clearing price is the price that all <i>sellTokens</i> are traded at (i.e. <i>bidVolume</i> x price = <i>sellVolume</i>).</p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>When do I claim my tokens?</h3>
-    <span>
-      <p>
-        Once you have placed the tokens that you want to sell in the auction (=submitted your deposit/order), you will take part in the next auction that runs. The next auction might start right away, or only in a couple of hours time if there is still an auction running for your chosen token pair. Once your auction has started, it might take around 6 hours to finish. Therefore, it could take some time until you can receive the tokens that you want for the trade (=claim your new tokens)—but it’s definitely worth the wait. You can be assured to get a fair price for your tokens.
-        At the moment, there is no notification once your auction has closed, which means that you have to revisit this interface. A red claim button will alert you that you are able to claim your new tokens.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which tokens can I trade?</h3>
+      <span>
+        <p>
+          You may find the tokens available to trade in the token list on this interface (click on either the <i>deposit</i> or <i>receive</i> token). Note that all tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>How do I claim my new tokens?</h3>
-    <span>
-      <p>
-        The interface provides you with two options to claim your new tokens:
-        The first option is on top of the page in Your Auctions. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from all prior auctions you have participated in for that token pair (please note: you might need to sign two transactions with your wallet provider).
+    <section className="drawer" id="what-do-i-need-to-trade-on-dx" onClick={handleClick}>
+      <h3>What do I need to trade a token on the DutchX?</h3>
+      <span>
+        <p>You only need three things:</p>
+        <ol>
+          <li>A compatible (and connected) wallet. Currently only <a href={URLS.METAMASK} target="_blank">MetaMask</a> is supported.</li>
+          <li>An <span className="sectionLink" onClick={() => handleSectionMove('what-is-erc20', URLS.FAQ)}>ERC20</span> token or ETH. To see a list of tokens that you can currently trade on this interface, click on the <i>deposit</i> or <i>receive</i> token. </li>
+          <li>ETH in your wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li>
+        </ol>
+        <p>No other tokens are needed!</p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Step-by-step guide to submit a deposit (=order):</h3>
+      <span>
+        <p>
+          <strong>This is the screen flow you will go through on this interface:</strong>
+        </p>
+        <ol>
+          <li>Pick the token you want to sell (=deposit) and the token you would like to receive</li>
+          <li>Specify the amount of the token you would like to deposit (note that you will see an <span className="underline">estimated</span> amount to receive, which is based on the last closing price of the prior auction)</li>
+          <li>
+            Proceed via your wallet provider’s screens to place your deposit into the next running auction. To make this process easier to follow, tutorials are provided alongside the wallet screens:
+            <ul>
+              <li>
+                Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your wallet provider.
+              </li>
+              <li>
+                Paying for fees in OWL: If you have <span className="sectionLink" onClick={() => handleSectionMove('what-are-owl', URLS.FEES)}>OWL</span> in your linked wallet, you will be asked whether you would like to pay for half of your <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>fees</span> in OWL (as long as you have a positive OWL balance).
+              </li>
+              <li>
+                Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
+              </li>
+              <li>
+                Approving the token transfer (confirm with your wallet provider).
+              </li>
+              <li>
+                Confirming deposit (confirm with your wallet provider).
+              </li>
+            </ul>
+          </li>
+          <li>
+            Once your deposit has been submitted, you will be provided with the auction status and a link to more information. The auction is also added to “Your Auctions” at the top of the page—no need to save the URL. Come back to the DutchX with your linked wallet at any time to view your auctions.
+          </li>
+          <li>
+            Don’t forget to claim your new tokens when the auction has closed.
+          </li>
+        </ol>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>Why do I not know in advance how many tokens I am receiving?</h3>
+      <span>
+        <p>
+          This is because your tokens are deposited into an auction. Only the auction clearing price will define how much tokens you are receiving. This is ideal for a fair price finding mechanism. An estimation of how many tokens you will receive based on the last auction closing price will be provided. Your (deposit) order is essentially a safely (slowly) executed market order.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" id="step-by-step-claiming" onClick={handleClick}>
+      <h3>Step-by-step guide to claim your new tokens:</h3>
+      <span>
+        <p>
+          Once you have submitted your deposit and the next auction has started (you can see that an auction has started in the specific auction URL you were provided with after you submitted your deposit) and closed, you may proceed to claim your new tokens. At the moment, there is no notification of a closing auction, which means that you have to revisit this interface. A red claim button will alert you to claim your <i>Receive</i> token.
+          <br/>
+          The interface provides you with two different options to claim your new tokens:
+        </p>
+        <ul>
+          <li>At the top of the page in the section <i>“Your Auctions”</i>. Clicking the claim button in the <a>Your Auctions</a> section will claim the tokens from all prior auctions of that particular pair in which you have participated. Once clicked on the red claim button, you will see your wallet provider’s screens. You may need to confirm twice (this is to claim and withdraw back to your wallet).</li>
+          <li>The second option is via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process. From there, you may claim the token particularly to that specific auction. You will only need to sign once.</li>
+        </ul>
+
+        <p><strong>Important: If your trade generated <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia (MGN)</span>, you will be credited those automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of the interface.</strong></p>
         <br/>
-        <br/>
-        The second option is via the specific URL for the auction pair (auction overview page). You will automatically access the URL at the end of the order process. From there, you may claim the new token particular to that specific auction (you will only need to sign one transaction with your wallet provider).
-        Note that you have to be connected to the same wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <span className="sectionLink" onClick={() => handleSectionMove('step-by-step-claiming')}>step-by-step guide</span> about claiming tokens.
-      </p>
-    </span>
-  </section>
+        <p><strong>Note that you have to be connected to the same wallet that you participated with in order to claim!</strong></p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>When do auctions start?</h3>
-    <span>
-      <p>
-      There is always only one auction for a particular pair (e.g. ETH-RDN) at any point in time.
-      They start at least 10 minutes after the prior auction finish and only if the volume (i.e. deposit) of one of the auctions is worth more than 1,000 USD. Therefore, it is hard to estimate when exactly they will start as they depend on the prior auctions' closing time.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is displayed in “Your Auctions”?</h3>
+      <span>
+        <p>You can see three statuses:</p>
+        <ul>
+          <li>Auctions in which you have placed a deposit but which have not started yet (including the amount you have deposited).</li>
+          <li>Auctions that are currently running (including your deposited amount).</li>
+          <li>Auctions that have closed but for which you have not yet claimed your new tokens.</li>
+        </ul>
+        <p>
+          If none of the three above apply to you, you will see the note: “No Auctions to show”.
+          Note that the first token is the token you are selling (have deposited) and the second token is the one you will receive.The link to the auction pair will always take you to the last auction you have participated in (even if you have participated in multiple auctions in a row).
+          In case you participating in many auctions of the same pairing (e.g. one that is running, one that hasn’t started and one which has ended and you may claim), you will see only the amount for the currently running one (and a claim button for the one that has ended).
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>When do auctions end?</h3>
-    <span>
-      <p>Auctions end when all deposits (<i>sellTokens</i>) have been bought and thus are allocated to bidders at the auction clearing price. The auction clearing price is the price that all <i>sellTokens</i> are traded at (i.e. <i>bidVolume</i> x price = <i>sellVolume</i>).</p>
-    </span>
-  </section>
+    <section className="drawer" id="what-is-mgn" onClick={handleClick}>
+      <h3>What is Magnolia (MGN)?</h3>
+      <span>
+        <p>
+          MGN is the abbreviation for the Magnolia token. Locked MGN reduce your fee level. One MGN is automatically created for every ETH-worth of whitelisted token trades you make. You will receive them automatically upon claiming your new tokens. The more you trade, the more MGN you will receive, the lower your fee.
+          For more info, check out the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span>.
+          In the header bar of the interface, the amount of locked MGN associated with your linked wallet is displayed. However, you will not see this amount in your wallet.
+          Of course, you do not need to hold any MGN to participate in the DutchX!
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>Which tokens can I trade?</h3>
-    <span>
-      <p>
-        You may find the tokens available to trade in the token list on this interface (click on either the <i>deposit</i> or <i>receive</i> token). Note that all tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
-      </p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What is my fee level?</h3>
+      <span>
+        <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>Fee</span> section.</p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>What do I need to trade a token on the DutchX?</h3>
-    <span>
-      <p>You only need three things:</p>
-      <ol>
-        <li>A compatible (and connected) wallet. Currently only <a href={URLS.METAMASK} target="_blank">MetaMask</a> is supported.</li>
-        <li>An <span className="sectionLink" onClick={() => handleSectionMove('what-is-erc20', URLS.FAQ)}>ERC20</span> token or ETH. To see a list of tokens that you can currently trade on this interface, click on the <i>deposit</i> or <i>receive</i> token. </li>
-        <li>ETH in your wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li>
-      </ol>
-      <p>No other tokens are needed!</p>
-    </span>
-  </section>
+    <section className="drawer" onClick={handleClick}>
+      <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
+      <span>
+        <p>This message is to inform you about whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. Find more information on this process <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>here</span>. You can still use the trading interface in the same manner for tokens that do and do not generate Magnolia.</p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>Step-by-step guide to submit a deposit (=order):</h3>
-    <span>
-      <p>
-        <strong>This is the screen flow you will go through on this interface:</strong>
-      </p>
-      <ol>
-        <li>Pick the token you want to sell (=deposit) and the token you would like to receive</li>
-        <li>Specify the amount of the token you would like to deposit (note that you will see an <span className="underline">estimated</span> amount to receive, which is based on the last closing price of the prior auction)</li>
-        <li>
-          Proceed via your wallet provider’s screens to place your deposit into the next running auction. To make this process easier to follow, tutorials are provided alongside the wallet screens:
-          <ul>
-            <li>
-              Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your wallet provider.
-            </li>
-            <li>
-              Paying for fees in OWL: If you have <span className="sectionLink" onClick={() => handleSectionMove('what-are-owl', URLS.FEES)}>OWL</span> in your linked wallet, you will be asked whether you would like to pay for half of your <span className="sectionLink" onClick={() => handleSectionMove('', URLS.FEES)}>fees</span> in OWL (as long as you have a positive OWL balance).
-            </li>
-            <li>
-              Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
-            </li>
-            <li>
-              Approving the token transfer (confirm with your wallet provider).
-            </li>
-            <li>
-              Confirming deposit (confirm with your wallet provider).
-            </li>
-          </ul>
-        </li>
-        <li>
-          Once your deposit has been submitted, you will be provided with the auction status and a link to more information. The auction is also added to “Your Auctions” at the top of the page—no need to save the URL. Come back to the DutchX with your linked wallet at any time to view your auctions.
-        </li>
-        <li>
-          Don’t forget to claim your new tokens when the auction has closed.
-        </li>
-      </ol>
-    </span>
-  </section>
+    <section className="drawer" id="claiming" onClick={handleClick}>
+      <h3>What does “Note: this token pair won’t generate MGN tokens” mean?</h3>
+      <span>
+        <p>This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use the trading interface in the same manner for tokens that do and do not generate Magnolia. Find more information on this <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>here</span>.
+          <br />
+          <br />
+          Want to bid in an auction? This is currently only possible for technical participants: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+        </p>
+      </span>
+    </section>
 
-  <section className="drawer" onClick={handleClick}>
-    <h3>Why do I not know in advance how many tokens I am receiving?</h3>
-    <span>
-      <p>
-        This is because your tokens are deposited into an auction. Only the auction clearing price will define how much tokens you are receiving. This is ideal for a fair price finding mechanism. An estimation of how many tokens you will receive based on the last auction closing price will be provided. Your (deposit) order is essentially a safely (slowly) executed market order.
-      </p>
-    </span>
-  </section>
-
-  <section className="drawer" id="step-by-step-claiming" onClick={handleClick}>
-    <h3>Step-by-step guide to claim your new tokens:</h3>
-    <span>
-      <p>
-        Once you have submitted your deposit and the next auction has started (you can see that an auction has started in the specific auction URL you were provided with after you submitted your deposit) and closed, you may proceed to claim your new tokens. At the moment, there is no notification of a closing auction, which means that you have to revisit this interface. A red claim button will alert you to claim your <i>Receive</i> token.
-        <br/>
-        The interface provides you with two different options to claim your new tokens:
-      </p>
-      <ul>
-        <li>At the top of the page in the section <i>“Your Auctions”</i>. Clicking the claim button in the <a>Your Auctions</a> section will claim the tokens from all prior auctions of that particular pair in which you have participated. Once clicked on the red claim button, you will see your wallet provider’s screens. You may need to confirm twice (this is to claim and withdraw back to your wallet).</li>
-        <li>The second option is via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process. From there, you may claim the token particularly to that specific auction. You will only need to sign once.</li>
-      </ul>
-
-      <p><strong>Important: If your trade generated <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn')}>Magnolia (MGN)</span>, you will be credited those automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of the interface.</strong></p>
-      <br/>
-      <p><strong>Note that you have to be connected to the same wallet that you participated with in order to claim!</strong></p>
-    </span>
-  </section>
-
-  <section className="drawer" onClick={handleClick}>
-    <h3>What is displayed in “Your Auctions”?</h3>
-    <span>
-      <p>You can see three statuses:</p>
-      <ul>
-        <li> Auctions in which you have placed an order but have not started (including the amount you have committed). </li>
-        <li>Auctions  that are running currently (including the committed amount). </li>
-        <li>Auctions that have finished but you have not claimed your funds yet. </li>
-      </ul>
-      <p>If you have none of the three mentioned, you will see a message “No Auctions to show”.
-        Note that the first token shows you the token you are selling and the second token is the one you will receive.The link to the auction pairing will always take you to the last one you have participated in (even if you have participated in more auctions in a row).
-      </p>
-    </span>
-  </section>
-
-  <section className="drawer" id="what-is-mgn" onClick={handleClick}>
-    <h3>What is MGN?</h3>
-    <span>
-      <p>MGN is short for the Magnolia token. Magnolia token reduce your Fee level: For more info, check out Magnolia within the token section.</p>
-    </span>
-  </section>
-
-  <section className="drawer" onClick={handleClick}>
-    <h3>What is my fee level?</h3>
-    <span>
-      <p>By default, your fee level is 0.5%. You may lower your fees by trading frequently or owning Magnolia. For more info, check out the Fee section.</p>
-    </span>
-  </section>
-
-  <section className="drawer" onClick={handleClick}>
-    <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
-    <span>
-      <p>With this, we display for you if the Token creates Magnolia (which is used for fee-reduction) when you exchange it. Find more information on this here. You can still take part in auctions in the normal way.</p>
-    </span>
-  </section>
-
-  <section className="drawer" id="claiming" onClick={handleClick}>
-    <h3>What does “Note: this token pair won’t generate MGN tokens” mean?</h3>
-    <span>
-      <p>With this, we display for you if the token pair creates Magnolia (which is used for fee-reduction) when you exchange it. If one token does not generate Magnolia, the entire token pair will not create magnolia. Find more information on this here. You can still take part in auctions in the normal way.
-        <br />
-        Watch the screencast for the details!
-        To participate as a technical bidder, read up on the documentation here.
-      </p>
-    </span>
-  </section>
-
-</article>
+  </article>
 )
 
 {/* SCREENCAST - page */}
@@ -257,88 +264,103 @@ export const Screencast = () =>
   </article>
 
 {/* TOKENS - page */}
-export const Tokens = ({ handleClick }: ContentPages) =>
+export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
 
     <section className="drawer" onClick={handleClick}>
+      <h3>Which token pairs are currently traded on the DutchX?</h3>
       <span>
-      <h3>Which token pairings are exchanged on the DutchX?</h3>
-      <p>Check out the token list (click on either Sell or Receive token) to see the tokens on this interface. All tokens on the list can always be exchanged with ETH (and wrapped ETH).
-        However, on a technical level, there might be more tokens available on smart contract level. Technical readers are referred to the section on <a href="#">Technical &amp; API</a>.</p>
+        <p>
+          Check out the token list (click on either Deposit or Receive token) to see the tokens that can be traded on this interface. All tokens on the list can always be traded with ETH (and wrapped ETH).
+          <br/>
+          However, there might be more tokens available on the smart contract level. Technical readers should read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+        </p>
       </span>
-      </section>
+    </section>
 
-      <section className="drawer" onClick={handleClick}>
-        <h3>Which token pairings can be exchanged on the DutchX? </h3>
-        <span>
-        <p>In theory, all Ethereum tokens compatible with the ERC-20 standard may theoretically be exchanged on the DutchX. Before they become available to trade, they will need to be added to the exchange. The conditions for adding tokens are defined in the smart contract governing the DutchX. For more and very detailed information, read the Section on <a href="#">Listing a Token</a>.
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which token pairs can be traded on the DutchX?</h3>
+      <span>
+        <p>
+          Theoretically, all tokens compatible with the ERC20 standard may be traded on the DutchX. Before they become available to trade, they will need to be added to the DutchX. The conditions for adding tokens are defined in the smart contract governing the DutchX. For more and very detailed information, read <a href={URLS.LISTING_A_TOKEN} target="_blank">Listing a Token</a>.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick}>
+      <h3>What token do I need to be active on the DutchX?</h3>
+      <span>
+      <p>
+        You do not need to own any particular token to trade on the DutchX! However, keep in mind that you need ETH to pay for gas costs. Check out "<span className="sectionLink" onClick={() => handleSectionMove('what-do-i-need-to-trade-on-dx', URLS.HOW_IT_WORKS)}>What do I need to trade a token on the DutchX</span>"?
       </p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
-      <h3>What are the required tokens to trade on the DutchX?</h3>
+    <section className="drawer" id="what-is-mgn" onClick={handleClick}>
+      <h3>What are Magnolia (MGN)?</h3>
       <span>
-      <p>You do not need to own any particular token to trade on the DutchX! Goes without saying, that you of course need the token to trade and ETH to pay for gas costs. Check out <a href="#">What do I need to exchange a token on the DutchX?</a></p>
-    </span>
+        <p>
+          Magnolia (MGN) tokens lower the fees on the DutchX. MGN are <span className="underline">automatically</span> generated and credited to DutchX users: one MGN is credited for trading one ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
+          Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your wallet is <span className="underline">only visible on the interface</span>.
+          Of course, it is not required to hold any Magnolia (MGN) to participate in the DutchX.
+        </p>
+      </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
-      <h3>Magnolia (MGN)</h3>
+      <h3>What are whitelisted tokens?</h3>
       <span>
-      <p>Magnolia (MGN) tokens lower the platform fees on the DutchX. MGN are automatically generated and credited to platform users: One MGN is generated for trading one ETH worth of any whitelisted token-pair (and of course trading any fraction of ETH generates the same fraction of MGN).
-        Note that you will need to add the MGN address to your wallet in order to see it: [INCLUDE DYNAMIC MGN TOKEN ADDRESS].
-        Of course, you do not need to have any Magnolia (MGN) to participate in the DutchX! MGN are locked by default and can then be used for <a href="#">fee reduction</a> when locked. In theory, there might be an MGN market also - they are fungible and not personalized.</p>
+        <p>
+          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX with the mere intention to create Magnolia and benefit from lower fees.
+        </p>
       </span>
-      </section>
+    </section>
 
-      <section className="drawer" onClick={handleClick}>
-        <h3>What are whitelisted tokens?</h3>
-        <span>
-        <p>Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. The idea of whitelisted tokens is that no token can be added to the DutchX with the mere intention to create Magnolia and benefit from lower fees.</p>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Does my trade generate Magnolia?</h3>
+      <span>
+        <p>
+          Trades only generate Magnolia if both tokens traded are whitelisted. To see if a token that is tradable on this interface is whitelisted, check the token list by clicking on the Deposit or Receive token. You will see a message displayed if the token is not whitelisted: “Any auction with [Token] won’t generate MGN”. Once you proceed to the next screen, you will see “Note: this token pair won't generate MGN tokens” as this auction pair then will not generate Magnolia.
+        </p>
       </span>
-      </section>
+    </section>
 
-      <section className="drawer" onClick={handleClick}>
-        <h3>Which tokens are currently whitelisted?</h3>
-        <span>
-        <p>To see if a token that is tradable on this interface is whitelisted, check the token list by clicking on the sell or receive token. You will find an information if the token is not whitelisted “Any auction with [Token] won’t generate MGN”.
-          At launch of the DutchX, the top 150 ERC20-tokens (based on the market cap) were pre-whitelisted from <a href="#">Etherscan</a> on 11 May 2018. Technical readers are referred to the section on <a href="#">Technical &amp; API</a>.</p>
-        </span>
-      </section>
-
-      <section className="drawer" onClick={handleClick}>
-        <h3>How can a further token be whitelisted?</h3>
-        <span>
-        <p>You will find a section on whitelisting within the section <a href="#">Listing a token</a>.</p>
+    <section className="drawer" onClick={handleClick}>
+      <h3>Which tokens are currently whitelisted?</h3>
+      <span>
+        <p>
+          To find out whether a token that is tradable on this interface is whitelisted, check the token list by clicking on the Deposit or Receive token. You will see a message displayed if the token is not whitelisted: “Any auction with [Token] won’t generate MGN”.
+          Technical readers may refer to <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+        </p>
       </span>
-      </section>
+    </section>
 
-      <section className="drawer" onClick={handleClick}>
-        <h3>Does my trade generate Magnolia?</h3>
-        <span>
-        <p>Trades only generate Magnolia if both tokens are whitelisted. To see if a token that is tradable on this interface is whitelisted, check the token list by clicking on the sell or receive token. You will find an information if the token is not whitelisted “Any auction with [Token] won’t generate MGN”. Once you proceed to the next screen, you will find another message only in the case that no Magnolia are generated: “any auction with [Token] won’t generate MGN”.
-        In any case, you may proceed to trade those tokens in the same manner.</p>
+    <section className="drawer" onClick={handleClick}>
+      <h3>How can a token be whitelisted?</h3>
+      <span>
+        <p>Please read <a href={URLS.LISTING_A_TOKEN} target="_blank">Listing a Token</a>.</p>
       </span>
-      </section>
+    </section>
 
   </article>
 
-export const Fees = ({ handleClick }: ContentPages) =>
+export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
   <article>
     <h1>Fees</h1>
     <section className="drawer" onClick={handleClick}>
       <h3>What fees do I have to pay?</h3>
       <span>
-      <p>Both sellers and bidders pay the same amount of fees which equals <strong>0.5%</strong> of their trading volume. However, fees can be lowered down to <strong>0%</strong>.</p>
-    </span>
+        <p>The default fee is 0.5% of your trading volume. While this might seem high at first glance, fees can be lowered down to 0%. You may also benefit from other participants’ fees, which are kept in the DutchX ecosystem.</p>
+      </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
       <h3>How can I lower my fees?</h3>
       <span>
-      <p>In fact, the fee will be lowered automatically if you hold Magnolia tokens. The amount by which the fee is lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:</p>
+      <p>
+        Your fees will be lowered automatically for you if you hold <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
+      </p>
       <table>
           <thead>
             <tr>
@@ -586,16 +608,18 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     <section className="drawer" id="what-is-erc20" onClick={handleClick}>
       <h3>What is ERC20?</h3>
       <span>
-      <p>ERC20 is a technical token standard used for smart contracts on the Ethereum blockchain. All tokens of this standard are compatible with the DutchX. You may check, e.g. Etherscan for a list of <a href="https://etherscan.io/tokens">ERC20 Token Contracts</a>.
-      </p>
-    </span>
+        <p>
+          ERC20 is a technical token standard used for smart contracts on the Ethereum blockchain. All tokens of this standard are compatible with the DutchX. You may check, e.g. Etherscan for a list of <a href="https://etherscan.io/tokens">ERC20 Token Contracts</a>.
+        </p>
+      </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
       <h3>Which wallets are compatible?</h3>
       <span>
-      <p>Currently the only tested wallet is Metamask. We recommend the use of Metamask. However, other wallet providers
-  Tested ERC20 compatible cryptocurrency wallets are ONLY Metamask (www.metamask.io). Other wallets may likely work (give that both, GNO and OWL tokens are ERC20 compatible).  However, the interface was not scrutinised with other wallets, whereas Metamask was tested and is highly recommended for use.
+      <p>
+        Currently the only tested wallet is Metamask. We recommend the use of Metamask. However, other wallet providers
+        Tested ERC20 compatible cryptocurrency wallets are ONLY Metamask (www.metamask.io). Other wallets may likely work (give that both, GNO and OWL tokens are ERC20 compatible).  However, the interface was not scrutinised with other wallets, whereas Metamask was tested and is highly recommended for use.
       </p>
     </span>
     </section>
@@ -646,11 +670,12 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>How is the starting price determined?</h3>
       <span>
-      <p>As we run the opposite auctions at the same time, the auctions may have different closing prices. We take the weighted average (depending on the volume) to create a reliable price for the token-pairing. <br/>
-  We start the next token auctions at twice the weighted average price. E.g. if the final weighted average price was 2:1 for Token A:Token B we start the Token A / Token B auction at 1:1 and the Token B / Token A auction at 1:4. <br/>
-  Why do we do this? This has mainly a couple of reason: one, the duration of the auction should be such that bidders have time to bid. During this time frame, sellers can already deposit their tokens into the next auction. Two, this way we allow for large price fluctuations.
-  </p>
-</span>
+        <p>
+          As we run the opposite auctions at the same time, the auctions may have different closing prices. We take the weighted average (depending on the volume) to create a reliable price for the token-pairing. <br/>
+          We start the next token auctions at twice the weighted average price. E.g. if the final weighted average price was 2:1 for Token A:Token B we start the Token A / Token B auction at 1:1 and the Token B / Token A auction at 1:4. <br/>
+          Why do we do this? This has mainly a couple of reason: one, the duration of the auction should be such that bidders have time to bid. During this time frame, sellers can already deposit their tokens into the next auction. Two, this way we allow for large price fluctuations.
+        </p>
+      </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
