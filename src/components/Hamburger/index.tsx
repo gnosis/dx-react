@@ -15,8 +15,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
   }
 
   handleClick = () => {
-    // const { isOpen } = this.state
-    document && document.body.classList.toggle('noScroll')
+    document && document.body && document.body.classList.toggle('noScroll')
 
     return this.setState({
       isOpen: !this.state.isOpen,
