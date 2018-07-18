@@ -68,7 +68,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     {button &&
     <button
       className="modalButton"
-      onClick={closeModal}
+      onClick={() => closeModal()}
     >
       CLOSE
     </button>
