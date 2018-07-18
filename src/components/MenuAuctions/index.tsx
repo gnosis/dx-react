@@ -45,10 +45,8 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                     return (
                       <Fragment
                         key={`${auction.sell.address}-${auction.buy.address}-${i}`}
-                        // @ts-ignore
-                        onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}
                       >
-                        <tr>
+                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`)}>
                           <td>
                             <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`}>
                               {`${auction.sell.symbol}/${auction.buy.symbol}`}
@@ -59,7 +57,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           </td>
                           {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                         </tr>
-                        <tr>
+                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}>>
                           <td>{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
                           <td>
                             {auction.balancePerIndexInverse.last() &&
