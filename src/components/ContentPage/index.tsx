@@ -1021,13 +1021,17 @@ export const Downtime = () =>
   </article>
 
 {/* Help - page */}
-export const Help = () =>
+export const Help = ({ handleSectionMove }: ContentPages) =>
   <article>
     <h1>Help</h1>
     <section className="content">
-      <p>Haven’t found the answer in the <a href="#">FAQ?</a> <br/>
-      For all questions from and for developers, go to the <a href="#">Gitter channel</a>. <br/>
-      You may also reach us at <a href="#">support.dx@gnosis.pm</a><br/>
+      <p>Haven’t found the answer to your question in the <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FAQ)}>FAQ</span>?
+      <br/>
+      For all questions from and for developers, get in touch on the <a href={URLS.GITTER_URL} target="_blank">Gitter channel</a>.
+      <br/>
+      If you would like to take part in the discussion, post in <a href={URLS.ETHRESEARCH_URL} target="_blank">ethresear.ch</a>.
+      <br/>
+      To stay informed, follow <a href={URLS.DUTCHX_TWITTER_URL} target="_blank">DutchX Twitter</a>.
       </p>
     </section>
   </article>

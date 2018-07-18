@@ -73,4 +73,8 @@ export const URLS = {
   GNO_TOKEN_ETHERSCAN_URL: 'https://etherscan.io/token/0x6810e776880c02933d47db1b9fc05908e5386b96',
   OWL_BLOG_URL: 'https://blog.gnosis.pm/wiz-turns-owl-813555100010',
   INITIAL_OWL_GENERATION_BLOG_URL: 'https://blog.gnosis.pm/generate-your-first-owl-using-gno-2205eb098f8',
+
+  GITTER_URL: 'https://gitter.im/gnosis/DutchX',
+  ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
+  DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 }
