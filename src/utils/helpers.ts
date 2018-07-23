@@ -47,3 +47,15 @@ export const handleKeyDown = ({ key }: { key: string }, fn: Function, codeCheck:
   if (key === codeCheck) return fn()
   return
 }
+
+// compare object properties
+export const shallowDifferent = (obj1: object, obj2: object) => {
+  if (!obj1 || !obj2) return true
+
+  const keys1 = Object.keys(obj1)
+  const keys2 = Object.keys(obj2)
+
+  if (keys1.length !== keys2.length) return true
+
+  return keys1.some(key => obj1[key] !== obj2[key])
+}
