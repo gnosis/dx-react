@@ -40,7 +40,7 @@ const initialState: Blockchain = {
 }
 
 const reducer = handleActions({
-  [setConnectionStatus as any]: (state, action) => {
+  [setConnectionStatus.toString()]: (state, action) => {
     const { connected } = action.payload
     return {
       ...state,
@@ -48,14 +48,14 @@ const reducer = handleActions({
       connectionTried: true,
     }
   },
-  [setDutchXInitialized as any]: (state: any, action: any) => {
+  [setDutchXInitialized.toString()]: (state: any, action: any) => {
     const { initialized } = action.payload
     return {
       ...state,
       dutchXInitialized: initialized,
     }
   },
-  [registerProvider as any]: (state: any, action: any) => {
+  [registerProvider.toString()]: (state: any, action: any) => {
     const { provider: name, ...provider } = action.payload
     return {
       ...state,
@@ -69,7 +69,7 @@ const reducer = handleActions({
       },
     }
   },
-  [updateProvider as any]: (state: any, action: any) => {
+  [updateProvider.toString()]: (state: any, action: any) => {
     const { provider: name, ...provider } = action.payload
 
     return {
@@ -85,15 +85,15 @@ const reducer = handleActions({
       providersLoaded: true,
     }
   },
-  [setActiveProvider as any]: (state: any, action: any) => ({
+  [setActiveProvider.toString()]: (state: any, action: any) => ({
     ...state,
     activeProvider: action.payload,
   }),
-  [setCurrentAccountAddress as any]: (state: any, action: any) => ({
+  [setCurrentAccountAddress.toString()]: (state: any, action: any) => ({
     ...state,
     currentAccount: action.payload.currentAccount,
   }),
-  [setCurrentBalance as any]: (state: any, action: any) => ({
+  [setCurrentBalance.toString()]: (state: any, action: any) => ({
     ...state,
     currentBalance: action.payload.currentBalance,
   }),
