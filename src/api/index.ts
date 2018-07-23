@@ -9,7 +9,7 @@ import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Rece
 import { promisedContractsMap } from './contracts'
 import { ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
 
-const promisedAPI = (window as any).AP = initAPI()
+const promisedAPI = /* (window as any).AP = */ initAPI()
 
 /* =================================================================
 ====================================================================
@@ -876,6 +876,7 @@ export const getSellerOngoingAuctions = async (
     return Promise.all(auctionsArray)
   } catch (e) {
     console.warn(e)
+    return []
   }
 }
 
@@ -937,11 +938,15 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
 }
 
 async function initAPI(): Promise<dxAPI> {
-  const [web3, Tokens, DutchX] = await Promise.all([
-    promisedWeb3,
-    promisedTokens,
-    promisedDutchX,
-  ])
-  console.log('INDEX API => ', { web3, Tokens, DutchX })
-  return { web3, Tokens, DutchX }
+  try {
+    const [web3, Tokens, DutchX] = await Promise.all([
+      promisedWeb3,
+      promisedTokens,
+      promisedDutchX,
+    ])
+    console.log('INDEX API => ', { web3, Tokens, DutchX })
+    return { web3, Tokens, DutchX }
+  } catch (err) {
+    console.error('Error in init - API has not been initialised')
+  }
 }
