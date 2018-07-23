@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import AuctionStatus from 'components/AuctionStatus'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
-
+import { toBN as toBigNumber } from 'web3-utils'
 import { State } from 'types'
 
 const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
@@ -14,6 +13,5 @@ const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
   timeLeft: 73414,
   status: 'initialising',
 })
-
 
 export default connect(mapStateToProps)(AuctionStatus)

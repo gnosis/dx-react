@@ -17,7 +17,7 @@ import {
   getUnclaimedSellerFunds,
 } from 'api'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 import { WATCHER_INTERVAL } from 'integrations/initialize'
 

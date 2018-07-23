@@ -1,6 +1,6 @@
 import createStoreWithHistory from 'store'
 import createHistory from 'history/createBrowserHistory'
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 import { State } from 'types'
 import { ProviderName } from 'globals'
 

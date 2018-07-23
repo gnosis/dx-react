@@ -7,7 +7,7 @@ import { makeCenterDecorator } from './helpers'
 import AuctionStatus, { AuctionStatusProps } from 'components/AuctionStatus'
 import { AuctionStatus as Status } from 'globals'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 const CenterDecor = makeCenterDecorator({
   style: {

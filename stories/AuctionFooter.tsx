@@ -1,5 +1,5 @@
 import React from 'react'
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 import { storiesOf } from '@storybook/react'
 import { text, boolean, number } from '@storybook/addon-knobs'
 import { makeCenterDecorator } from './helpers'

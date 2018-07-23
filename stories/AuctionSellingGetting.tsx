@@ -5,7 +5,7 @@ import { number, object } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import { makeCenterDecorator/*, storeInit, bcMetamask, makeProviderDecorator */ } from './helpers'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 const CenterDecorator = makeCenterDecorator({
   style: {
