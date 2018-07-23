@@ -1,14 +1,14 @@
 import { ProviderInterface } from './types'
-import { windowLoaded, promisify } from './utils'
+import { windowLoaded } from './utils'
 import { Account } from 'types'
 import Web3 from 'web3'
 
 const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
-    return window.web3.currentProvider
+    return new Web3.providers.WebsocketProvider('ws://localhost:8545')
   }
 
-  return new Web3.providers.HttpProvider('http://localhost:8545')
+  return new Web3.setProvider('ws://localhost:8545')
 }
 
 const setupWeb3 = async () => {
@@ -24,13 +24,14 @@ async function init(): Promise<ProviderInterface> {
     if ((typeof navigator !== 'undefined' && !navigator.onLine) || typeof window.web3  === 'undefined') throw 'Web3 connectivity issues due to client network connectivity loss'
 
     const web3 = await setupWeb3()
+    console.log('​web3', web3)
 
-    const getAccounts = promisify(web3.eth.getAccounts, web3.eth)
-    const getBalance = promisify(web3.eth.getBalance, web3.eth)
+    const getAccounts = web3.eth.getAccounts
+    const getBalance = web3.eth.getBalance
 
-    const getBlock = promisify(web3.eth.getBlock, web3.eth)
-    const getTransaction = promisify(web3.eth.getTransaction, web3.eth)
-    const getTransactionReceipt = promisify(web3.eth.getTransactionReceipt, web3.eth)
+    const getBlock = web3.eth.getBlock
+    const getTransaction = web3.eth.getTransaction
+    const getTransactionReceipt = web3.eth.getTransactionReceipt
 
     const getCurrentAccount = async () => {
       const [account] = await getAccounts()
@@ -44,18 +45,20 @@ async function init(): Promise<ProviderInterface> {
       return inETH ? web3.fromWei(wei, 'ether') : wei
     }
 
-    const getNetwork = promisify(web3.version.getNetwork, web3.version)
+    const getNetwork = async () => web3.eth.net.getId()
 
-    const isConnected = web3.isConnected.bind(web3)
+    // const isConnected = web3.isConnected.bind(web3)
+
+    const isListening = async (): Promise<boolean> => web3.eth.net.isListening()
 
     const setProvider = web3.setProvider.bind(web3)
 
-    const isAddress = web3.isAddress.bind(web3)
+    const isAddress = (address: Account) => web3.utils.isAddress(address)
 
     const resetProvider = () => setProvider(getProvider())
 
     const getTimestamp = async (block = 'latest') => {
-      const blockData = await promisify(web3.eth.getBlock, web3.eth)(block)
+      const blockData = await web3.eth.getBlock(block)
 
       return blockData.timestamp
     }
@@ -68,8 +71,9 @@ async function init(): Promise<ProviderInterface> {
       getTransactionReceipt,
       getETHBalance,
       getNetwork,
-      isConnected,
+      // isConnected,
       isAddress,
+      isConnected: isListening,
       get currentProvider() {
         return web3.currentProvider
       },

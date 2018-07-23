@@ -10,7 +10,6 @@ import { ETHEREUM_NETWORKS } from './constants'
 import MetamaskProvider from './metamask'
 import { WalletProvider } from 'integrations/types'
 import { networkById } from 'integrations/initialize'
-import { promisify } from 'api/utils'
 import { getTime } from 'api'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
@@ -29,21 +28,21 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
-    const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
+    const [account] = await provider.web3.eth.getAccounts()
 
     return account
   }
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
-    const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+    const networkId = await provider.web3.eth.net.getId()
     return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
 
-    const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
+    const balance = await provider.web3.eth.getBalance(account)
 
-    return provider.web3.fromWei(balance, 'ether').toString()
+    return provider.web3.utils.fromWei(balance, 'ether').toString()
   }
 
   // get Provider state
@@ -64,7 +63,7 @@ export default async function walletIntegration(store: Store<any>) {
   try {
     const provider = MetamaskProvider
 
-    provider.initialize()
+    provider.initialize('Websocket')
     // dispatch action to save provider name and priority
     dispatchers.regProvider(provider.providerName, { priority: provider.priority })
 

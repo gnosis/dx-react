@@ -45,7 +45,7 @@ export interface ProviderInterface {
   getTransactionReceipt(tx: Hash): Promise<TransactionReceipt | null>,
   getETHBalance(account: Account, inETH?: boolean): Promise<BigNumber>,
   getNetwork(): Promise<number>,
-  isConnected(): boolean,
+  isConnected(): Promise<boolean>,
   isAddress(address: Account): boolean,
   currentProvider: Function,
   web3: any,
@@ -93,7 +93,7 @@ export interface TransactionReceipt {
 }
 
 type TokensInterfaceExtended = {
-  [K in keyof TokensInterface]: TokensInterface[K] extends (...args: any[]) => Promise<Receipt> ? 
+  [K in keyof TokensInterface]: TokensInterface[K] extends (...args: any[]) => Promise<Receipt> ?
     TokensInterface[K] & {sendTransaction?: TokensInterface<Hash>[K]} :
     TokensInterface[K]
 }
@@ -183,6 +183,7 @@ export interface SimpleContract {
   address: Account | void,
   contractName: string,
   at<T = SimpleContract>(address: Account): T,
+  currentProvider: any,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
   abi?: ABI,
@@ -212,7 +213,7 @@ export interface GNOInterface extends ERC20Interface {
 }
 
 type ETHInterfaceExtended = {
-  [K in keyof ETHInterface]: ETHInterface[K] extends (...args: any[]) => Promise<Receipt> ? 
+  [K in keyof ETHInterface]: ETHInterface[K] extends (...args: any[]) => Promise<Receipt> ?
     ETHInterface[K] & {sendTransaction?: ETHInterface<Hash>[K]} :
     ETHInterface[K]
 }
@@ -286,7 +287,7 @@ export interface Receipt {
 }
 
 type DXAuctionExtended = {
-  [K in keyof DXAuction]: DXAuction[K] extends (...args: any[]) => Promise<Receipt> ? 
+  [K in keyof DXAuction]: DXAuction[K] extends (...args: any[]) => Promise<Receipt> ?
     DXAuction[K] & {sendTransaction: DXAuction<Hash>[K]} :
     DXAuction[K]
 }
@@ -492,7 +493,7 @@ interface DXAuction<T = Receipt> {
 }
 
 type DutchExchangeExtended = {
-  [K in keyof DutchExchange]: DutchExchange[K] extends (...args: any[]) => Promise<Receipt> ? 
+  [K in keyof DutchExchange]: DutchExchange[K] extends (...args: any[]) => Promise<Receipt> ?
     DutchExchange[K] & {sendTransaction?: DutchExchange<Hash>[K]} :
     DutchExchange[K]
 }
