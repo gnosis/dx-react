@@ -118,7 +118,6 @@ if (process.env.NODE_ENV === 'development') {
 const Contracts: SimpleContract[] = ContractsArtifacts.map(
   art => TruffleContract(art),
 )
-console.log('​Contracts', Contracts)
 
 // name => contract mapping
 export const contractsMap = contractNames.reduce((acc, name, i) => {
@@ -142,8 +141,7 @@ async function init() {
     const { currentProvider } = await promisedWeb3
     setProvider(currentProvider)
 
-    const instances = await getPromisedIntances()
-    console.log('​instances', instances)
+    const instances = await getPromisedIntances().catch(console.error)
 
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
@@ -167,9 +165,12 @@ async function init() {
     if (process.env.NODE_ENV !== 'production') {
       console.log(deployedContracts)
     }
+    console.warn(`
+      API/CONTRACT SETUP FINISHED
+    `)
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)
-    // throw err
+    throw err
   }
 }

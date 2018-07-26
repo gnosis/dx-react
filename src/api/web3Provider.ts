@@ -2,13 +2,14 @@ import { ProviderInterface } from './types'
 import { windowLoaded } from './utils'
 import { Account } from 'types'
 import Web3 from 'web3'
+import { toBigNumber } from 'api'
 
 const getProvider = () => {
   if (typeof window !== 'undefined' && window.web3) {
-    return new Web3.providers.WebsocketProvider('ws://localhost:8545')
+    return new Web3(window.web3.currentProvider)
   }
 
-  return new Web3.setProvider('ws://localhost:8545')
+  return new Web3.setProvider('http://localhost:8545')
 }
 
 const setupWeb3 = async () => {
@@ -24,7 +25,6 @@ async function init(): Promise<ProviderInterface> {
     if ((typeof navigator !== 'undefined' && !navigator.onLine) || typeof window.web3  === 'undefined') throw 'Web3 connectivity issues due to client network connectivity loss'
 
     const web3 = await setupWeb3()
-    console.log('​web3', web3)
 
     const getAccounts = web3.eth.getAccounts
     const getBalance = web3.eth.getBalance
@@ -42,7 +42,7 @@ async function init(): Promise<ProviderInterface> {
     const getETHBalance = async (account: Account, inETH?: boolean) => {
       const wei = await getBalance(account)
 
-      return inETH ? web3.fromWei(wei, 'ether') : wei
+      return inETH ? toBigNumber(web3.utils.fromWei(wei, 'ether')) : toBigNumber(wei)
     }
 
     const getNetwork = async () => web3.eth.net.getId()
@@ -62,7 +62,9 @@ async function init(): Promise<ProviderInterface> {
 
       return blockData.timestamp
     }
-
+    console.warn(`
+      API/WEB3 SETUP FINISHED
+    `)
     return {
       getCurrentAccount,
       getAccounts,

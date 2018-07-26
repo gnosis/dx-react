@@ -214,6 +214,10 @@ async function init(): Promise<DutchExchange> {
 
   const allEvents: DutchExchange['allEvents'] = dx.allEvents.bind(dx)
 
+  console.warn(`
+    API/DUTCHX SETUP FINISHED
+  `)
+
   return {
     get address() {
       return dx.address
