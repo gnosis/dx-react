@@ -82,3 +82,8 @@ export const URLS = {
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 }
+
+export const CANCEL_TX_ERROR = 'TRANSACTION CANCELLED: User denied transaction signature. Transaction will not be submitted to the blockchain.'
+export const NO_INTERNET_TX_ERROR = 'TRANSACTION CANCELLED: Internet connection issues detected. Please check your connection and try again. Transaction will not be submitted to the blockchain.'
+export const LOW_GAS_ERROR = 'TRANSACTION CANCELLED: Gas limit set too low. Please try transaction again with a higher gas limit.'
+export const DEFAULT_ERROR = 'TRANSACTION CANCELLED: Please check your developer console for more information.'

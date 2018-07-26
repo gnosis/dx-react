@@ -1,9 +1,13 @@
 import { connect } from 'react-redux'
+
 import OrderPanel from 'components/OrderPanel'
-import { State, BigNumber } from 'types'
-import { getSellTokenBalance } from 'selectors'
-import { EMPTY_TOKEN } from 'globals'
 import { RedirectHomeIfNoAccountHOC } from 'components/RedirectIf'
+
+import { pushAndMoveToElement } from 'actions'
+import { getSellTokenBalance } from 'selectors'
+
+import { State, BigNumber } from 'types'
+import { EMPTY_TOKEN } from 'globals'
 
 const isTokenApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
   (approvedTokens.has(sell.address) && approvedTokens.has(buy.address)) || (sell.isETH || buy.isETH)
@@ -26,4 +30,4 @@ const mapStateToProps = (state: State) => {
   }
 }
 
-export default connect(mapStateToProps)(RedirectHomeIfNoAccountHOC(OrderPanel))
+export default connect(mapStateToProps, { pushAndMoveToElement })(RedirectHomeIfNoAccountHOC(OrderPanel))

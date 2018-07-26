@@ -1,120 +1,21 @@
-import localForage from 'localforage'
 import { Store, Dispatch } from 'redux'
-
-import initialize from './initialize'
 
 import {
   registerProvider,
   updateProvider,
-  initDutchX,
-  updateMainAppState,
-  resetMainAppState,
-  setDefaultTokenList,
-  setCustomTokenList,
-  setIPFSFileHashAndPath,
-  setApprovedTokens,
-  setAvailableAuctions,
-  setTokenListType,
 } from 'actions'
 
-import { promisedIPFS } from 'api/IPFS'
-import { checkTokenListJSON } from 'api/utils'
-import { getAllTokenDecimals, getApprovedTokensFromAllTokens, getAvailableAuctionsFromAllTokens } from 'api'
-
-import { DefaultTokens, DefaultTokenObject } from 'api/types'
-import tokensMap from 'api/apiTesting'
-
-import { State } from 'types'
-import { ConnectedInterface } from './types'
+import { State, Balance } from 'types'
 import { ETHEREUM_NETWORKS } from './constants'
+import MetamaskProvider from './metamask'
+import { WalletProvider } from 'integrations/types'
+import { networkById } from 'integrations/initialize'
+import { promisify } from 'api/utils'
+import { getTime } from 'api'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
-export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
-
-  let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
-    localForage.getItem('defaultTokens'),
-    localForage.getItem('customTokens'),
-    localForage.getItem('customListHash'),
-  ])
-  const { ipfsFetchFromHash } = await promisedIPFS
-  const isDefaultTokensAvailable = !!(defaultTokens)
-
-  if (!isDefaultTokensAvailable) {
-    network = network || (window.web3 && window.web3.version.network) || 'NONE'
-
-    console.log('Current Network =', network)
-
-    // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-    /* if (process.env.NODE_ENV === 'development') {
-      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
-    } else {
-      // TODO: change for prod
-      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
-    } */
-
-    switch (network) {
-      case '4' || ETHEREUM_NETWORKS.RINKEBY:
-        console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
-        defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
-        console.log('Rinkeby Token List -> ', defaultTokens.elements)
-        break
-
-      case '1' || ETHEREUM_NETWORKS.MAIN:
-        console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
-        // TODO: fix for Mainnet
-        defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
-        console.warn(`
-          Ethereum Mainnet not supported - please try another network.
-          Removing tokens from local forage ...
-        `)
-        break
-
-      case 'NONE':
-        console.error('No Web3 instance detected - please check your wallet provider.')
-        break
-
-      default:
-        console.log(`Detected connection to an UNKNOWN network -- localhost?`)
-        defaultTokens = await tokensMap()
-        console.log('LocalHost Token List -> ', defaultTokens.elements)
-        break
-    }
-
-    // set tokens to localForage
-    await localForage.setItem('defaultTokens', defaultTokens)
-  }
-
-  // IPFS hash for tokens exists in localForage
-  if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
-
-  if (customTokens) {
-    const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
-
-    // reset localForage customTokens w/decimals filled in
-    localForage.setItem('customTokens', customTokensWithDecimals)
-    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-    dispatch(setTokenListType({ type: 'CUSTOM' }))
-  }
-  else if (customListHash) {
-    const fileContent = await ipfsFetchFromHash(customListHash)
-
-    const json = fileContent
-    await checkTokenListJSON(json as DefaultTokenObject[])
-
-    const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
-    localForage.setItem('customTokens', customTokensWithDecimals)
-
-    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
-    dispatch(setTokenListType({ type: 'CUSTOM' }))
-  }
-  // set defaulTokenList && setDefaulTokenPair visible when in App
-  dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
-
-  return getState().tokenList
-}
-
 export default async function walletIntegration(store: Store<any>) {
-  const { dispatch, getState }: { dispatch: Dispatch<any>, getState: () => State } = store
+  const { dispatch }: { dispatch: Dispatch<any>, getState: () => State } = store
   // wraps actionCreator in dispatch
   const dispatchProviderAction = (actionCreator: any) =>
     async (provider: any, data: any) => dispatch(actionCreator({
@@ -122,12 +23,69 @@ export default async function walletIntegration(store: Store<any>) {
       ...data,
     }))
 
+  const dispatchers = {
+    regProvider: dispatchProviderAction(registerProvider),
+    updateProvider: dispatchProviderAction(updateProvider),
+  }
+
+  const getAccount = async (provider: WalletProvider): Promise<Account> => {
+    const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
+
+    return account
+  }
+
+  const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
+    const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+    return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
+  }
+
+  const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
+
+    const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
+
+    return provider.web3.fromWei(balance, 'ether').toString()
+  }
+
+  // get Provider state
+  const grabProviderState = async (provider: WalletProvider) => {
+    const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
+        getAccount(provider),
+        getNetwork(provider),
+        getTime(),
+      ]),
+      balance = account && await getBalance(provider, account),
+      available = provider.walletAvailable,
+      unlocked = !!(available && account),
+      newState = { account, network, balance, available, unlocked, timestamp }
+
+    return newState
+  }
+
+  try {
+    const provider = MetamaskProvider
+
+    provider.initialize()
+    // dispatch action to save provider name and priority
+    dispatchers.regProvider(provider.providerName, { priority: provider.priority })
+
+    const newState = await grabProviderState(provider)
+
+    dispatchers.updateProvider(provider.providerName, { ...newState })
+  } catch (error) {
+    // console.warn(error.message || error)
+    throw error
+  }
+}
+
+/* export default async function walletIntegration(store: Store<any>) {
+  const { dispatch, getState }: { dispatch: Dispatch<any>, getState: () => State } = store
+  // wraps actionCreator in dispatch
+  const dispatchProviderAction = (actionCreator: any) =>
+    async (provider: any, data: any) => dispatch(actionCreator({
+      provider,
+      ...data,
   const providerOptions: ConnectedInterface = {
     getState,
-    updateProvider: dispatchProviderAction(updateProvider),
-    registerProvider: dispatchProviderAction(registerProvider),
-    updateMainAppState: dispatchProviderAction(updateMainAppState),
-    resetMainAppState: () => dispatch(resetMainAppState()),
     initDutchX: dispatchProviderAction(initDutchX),
   }
 
@@ -156,4 +114,4 @@ export default async function walletIntegration(store: Store<any>) {
   } catch (error) {
     console.warn(error.message || error)
   }
-}
+} */

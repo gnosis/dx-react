@@ -134,14 +134,15 @@ const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deplo
 export const promisedContractsMap = init()
 
 async function init() {
-  const { currentProvider } = await promisedWeb3
-  setProvider(currentProvider)
+  try {
+    const { currentProvider } = await promisedWeb3
+    setProvider(currentProvider)
 
-  const instances = await getPromisedIntances()
+    const instances = await getPromisedIntances()
 
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
-  const deployedContracts = contractNames.reduce((acc, name, i) => {
+    const deployedContracts = contractNames.reduce((acc, name, i) => {
     if (name === 'TokenFRT') {
       acc['TokenMGN'] = instances[i]
     } else {
@@ -150,16 +151,20 @@ async function init() {
     return acc
   }, {}) as ContractsMapWProxy
 
-  const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
-  deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
+    const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
+    deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
 
-  const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
-  deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
-  delete deployedContracts.DutchExchangeProxy
-  delete deployedContracts.TokenOWLProxy
+    const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
+    deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
+    delete deployedContracts.DutchExchangeProxy
+    delete deployedContracts.TokenOWLProxy
 
-  if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
     console.log(deployedContracts)
   }
-  return deployedContracts as ContractsMap
+    return deployedContracts as ContractsMap
+  } catch (err) {
+    console.error('Contract initialisation error: ', err)
+    // throw err
+  }
 }

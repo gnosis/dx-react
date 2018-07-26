@@ -5,6 +5,7 @@ import { network2URL } from 'globals'
 
 import Loader from 'components/Loader'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
+import { displayUserFriendlyError } from 'utils/helpers'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -63,7 +64,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     </div>}
     {error &&
     <p className="modalError">
-      {`${error.slice(0, 300)}...`}
+      {displayUserFriendlyError(error)}
     </p>}
     {button &&
     <button

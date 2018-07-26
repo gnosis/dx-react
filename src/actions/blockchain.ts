@@ -1,7 +1,11 @@
 import { push } from 'connected-react-router'
+import { Dispatch } from 'react-redux'
 import { createAction } from 'redux-actions'
 import { batchActions } from 'redux-batched-actions'
 
+import localForage from 'localforage'
+
+import { findDefaultProvider } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
 import {
@@ -26,7 +30,15 @@ import {
   getLockedMGNBalance,
   claimSellerFundsAndWithdraw,
   getSellerBalance,
+  getAllTokenDecimals,
+  getApprovedTokensFromAllTokens,
+  getAvailableAuctionsFromAllTokens,
 } from 'api'
+
+import { promisedContractsMap, contractsMap } from 'api/contracts'
+import tokensMap from 'api/apiTesting'
+import { getDecoderForABI, checkTokenListJSON } from 'api/utils'
+import { promisedIPFS } from 'api/IPFS'
 
 import {
   openModal,
@@ -36,19 +48,23 @@ import {
   setClosingPrice,
   setOngoingAuctions,
   selectTokenPair,
+  setCustomTokenList,
+  setDefaultTokenList,
+  setIPFSFileHashAndPath,
+  setTokenListType,
+  setApprovedTokens,
+  setAvailableAuctions,
 } from 'actions'
-
-import { findDefaultProvider } from 'selectors/blockchain'
 
 import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
-import { promisedContractsMap, contractsMap } from 'api/contracts'
-import { DefaultTokenObject, Web3EventLog } from 'api/types'
-import { Dispatch } from 'react-redux'
-import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT } from 'globals'
+import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } from 'api/types'
+
 import { waitForTx } from 'integrations/filterChain'
-import { getDecoderForABI } from 'api/utils'
+import { ETHEREUM_NETWORKS } from 'integrations/constants'
+
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT } from 'globals'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -92,6 +108,8 @@ const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   }
 }
 
+// resets app state if disconnection or exceptions caught
+// this function causes the App flashes
 export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   dispatch(resetAppState())
   const state = getState()
@@ -99,6 +117,7 @@ export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState:
   setActiveProviderHelper(dispatch, state)
 }
 
+// Updates main aspects of state relevant to user - called in polling functions in AppValidator
 export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
   const defaultList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
@@ -147,7 +166,6 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   return status
 }
 
-// CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
 /**
  * (Re)-Initializes DutchX connection according to current providers settings
  */
@@ -199,6 +217,111 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     dispatch(setConnectionStatus({ connected: false }))
     throw error
   }
+}
+
+export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenList) => async (dispatch: Dispatch<any>) => {
+  console.log('​exportsetApprovedTokensAndAvailableAuctions -> tokenList', tokenList)
+  const [approvedTokenAddresses, availableAuctions] = await Promise.all([
+    getApprovedTokensFromAllTokens(tokenList),
+    getAvailableAuctionsFromAllTokens(tokenList),
+  ])
+
+  console.log(`
+    APPROVED TOKEN ADDRESSES: ${JSON.stringify(approvedTokenAddresses, undefined, 2)}
+    AVAILABLE AUCTIONS: ${JSON.stringify(availableAuctions, undefined, 2)}
+  `)
+
+  dispatch(setApprovedTokens(approvedTokenAddresses))
+  dispatch(setAvailableAuctions(availableAuctions))
+}
+
+export const getTokenList = (network?: number | string) => async (dispatch: Dispatch<any>, getState: () => State) => {
+
+  let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
+    localForage.getItem('defaultTokens'),
+    localForage.getItem('customTokens'),
+    localForage.getItem('customListHash'),
+  ])
+  const { ipfsFetchFromHash } = await promisedIPFS
+
+  // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
+  // meaning this would be FALSE on network change and app reset
+  const isDefaultTokensAvailable = !!(defaultTokens)
+
+  if (!isDefaultTokensAvailable) {
+    network = network || 'NONE'
+
+    // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
+    /* if (process.env.NODE_ENV === 'development') {
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } else {
+      // TODO: change for prod
+      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
+    } */
+
+    switch (network) {
+      case '4':
+      case ETHEREUM_NETWORKS.RINKEBY:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
+        defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
+        console.log('Rinkeby Token List -> ', defaultTokens.elements)
+        break
+
+      case '1':
+      case ETHEREUM_NETWORKS.MAIN:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
+        // TODO: fix for Mainnet
+        defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
+        console.warn(`
+          Ethereum Mainnet not supported - please try another network.
+          Removing tokens from local forage ...
+        `)
+        break
+
+      case 'NONE':
+        console.error('No Web3 instance detected - please check your wallet provider.')
+        break
+
+      default:
+        console.log(`Detected connection to an UNKNOWN network -- localhost?`)
+        defaultTokens = await tokensMap()
+        console.log('LocalHost Token List -> ', defaultTokens.elements)
+        break
+    }
+
+    // set tokens to localForage
+    await localForage.setItem('defaultTokens', defaultTokens)
+  }
+
+  // IPFS hash for tokens exists in localForage
+  if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
+
+  if (customTokens) {
+    const customTokensWithDecimals = await getAllTokenDecimals(customTokens)
+
+    // reset localForage customTokens w/decimals filled in
+    localForage.setItem('customTokens', customTokensWithDecimals)
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  else if (customListHash) {
+    const fileContent = await ipfsFetchFromHash(customListHash)
+
+    const json = fileContent
+    await checkTokenListJSON(json as DefaultTokenObject[])
+
+    const customTokensWithDecimals = await getAllTokenDecimals(json  as DefaultTokenObject[])
+    localForage.setItem('customTokens', customTokensWithDecimals)
+
+    dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
+    dispatch(setTokenListType({ type: 'CUSTOM' }))
+  }
+  // set defaulTokenList && setDefaulTokenPair visible when in App
+  dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
+
+  // set approved list, available auctions
+  const { combinedTokenList: finalTokenList } = getState().tokenList
+  return dispatch(setApprovedTokensAndAvailableAuctions(finalTokenList))
 }
 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {

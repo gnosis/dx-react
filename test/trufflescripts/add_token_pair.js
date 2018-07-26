@@ -9,6 +9,8 @@ const Proxy = artifacts.require('DutchExchangeProxy')
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
+const { mineCurrentBlock } = require('./utils')(web3)
+
 /**
  * truffle exec test/trufflescripts/add_token_pair.js
  * adds a new TokenPair as master account by default
@@ -99,4 +101,5 @@ module.exports = async () => {
     { from: account },
   )
   console.log('Auction Index AFTER == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
+  return mineCurrentBlock()
 }

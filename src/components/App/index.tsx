@@ -11,6 +11,7 @@ import walletIntegrationCallback from 'integrations/'
 import createStoreWithHistory from 'store'
 
 import ModalContainer from 'containers/Modals'
+import AppValidator from 'containers/AppValidator'
 
 import { asyncLoadSettings } from 'actions'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
@@ -21,8 +22,8 @@ export const store = createStoreWithHistory(history)
 // load data from localstorage
 store.dispatch({ type: 'INIT' })
 
-export const loadSettings = () => store.dispatch(asyncLoadSettings())
-export const initializer = () => walletIntegrationCallback(store)
+export const loadLocalSettings = () => store.dispatch(asyncLoadSettings())
+export const initializeWallet = () => walletIntegrationCallback(store)
 
 interface AppProps {
   disabled?: boolean;
@@ -32,9 +33,11 @@ interface AppProps {
 
 const App = (props: AppProps): any =>
   <Provider store={store}>
-    <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
-      <AppRouter disabled={props.disabled} history={history} />
-    </ModalContainer>
+    <AppValidator>
+      <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
+        <AppRouter disabled={props.disabled} history={history} />
+      </ModalContainer>
+    </AppValidator>
   </Provider>
 
 export default App

@@ -2,7 +2,6 @@ import React from 'react'
 import { TokenCode, TokenName, Account, DefaultTokenObject, TokenPair } from 'types'
 import { BigNumber } from 'bignumber.js'
 import { AuctionStatus } from 'globals'
-// import { promisedDutchX } from 'api/dutchx'
 import {
   getLatestAuctionIndex,
   getClosingPrice,

@@ -4,13 +4,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 
-import App, { initializer, loadSettings } from 'components/App'
+import App, { loadLocalSettings, initializeWallet } from 'components/App'
 
 import blocked_codes from './blocked_codes.json'
 import { ALLOWED_NETWORK } from 'globals'
-
-// run Event Listeners from events.ts
-import 'integrations/events'
+import fireListeners from 'integrations/events'
 
 // set last () => any on Array prototype
 Array.prototype.last = function getLast() {
@@ -21,12 +19,19 @@ Array.prototype.last = function getLast() {
 const rootElement = document.getElementById('root')
 
 const renderApp = async () => {
-  await Promise.all([
-    loadSettings(),
-    initializer(),
-  ])
+  fireListeners()
+  try {
+    // load localForage settings
+    // register provider + update provider state
+    await Promise.all([
+      loadLocalSettings(),
+      initializeWallet(),
+    ])
 
-  ReactDOM.render(<App />, rootElement)
+    ReactDOM.render(<App />, rootElement)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 const geoBlockedCountryCodes = new Set(blocked_codes)
@@ -42,7 +47,7 @@ const isGeoBlocked = async () => {
 
     return geoBlockedCountryCodes.has(country_code)
   } catch (error) {
-    console.error(error)
+    console.error('Geo Blocking check is unavailable:', error.message || error, 'This is most likely a client side network connectivity issue - please retry connecting to the internet and refreshing the page.')
 
     // this does NOT block if there is a network error, e.g. URL is blocked
     return false
@@ -93,6 +98,6 @@ async function blockIf() {
     window.history.replaceState(null, '', '/')
     rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
   } else {
-    await renderApp()
+    await renderApp().catch(console.error)
   }
 }
