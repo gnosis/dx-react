@@ -83,7 +83,7 @@
     "@gnosis.pm/util-contracts": "^1.0.1",
     "autobind-decorator": "^2.1.0",
     "await-delay": "^1.0.0",
-    "bignumber.js": "^5.0.0",
+    "bignumber.js": "git+https://github.com/frozeman/bignumber.js-nolookahead.git",
     "blockies": "0.0.2",
     "classnames": "^2.2.5",
     "connected-react-router": "^4.2.3",
