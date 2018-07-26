@@ -1,5 +1,6 @@
 import { WALLET_PROVIDER } from 'integrations/constants'
 import Web3 from 'web3'
+import { CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, DEFAULT_ERROR, LOW_GAS_ERROR } from 'globals'
 
 export const getDutchXOptions = (provider: any) => {
   console.log('FIRING getDutchXOptions')
@@ -58,4 +59,16 @@ export const shallowDifferent = (obj1: object, obj2: object) => {
   if (keys1.length !== keys2.length) return true
 
   return keys1.some(key => obj1[key] !== obj2[key])
+}
+
+export const displayUserFriendlyError = (error: string) => {
+  if (typeof error !== 'string') return DEFAULT_ERROR
+
+  const err = error.toLowerCase()
+
+  if (err.includes('user denied transaction signature')) return CANCEL_TX_ERROR
+  else if (err.includes('failed to fetch')) return NO_INTERNET_TX_ERROR
+  else if (err.includes('intrinsic gas too low')) return LOW_GAS_ERROR
+
+  return DEFAULT_ERROR
 }
