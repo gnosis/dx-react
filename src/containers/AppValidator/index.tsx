@@ -1,18 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-// import { loadSettings } from 'components/App';
-
 import watcher from 'integrations/watcher'
 // import fireListeners from 'integrations/events';
 import MetamaskProvider from 'integrations/metamask'
 
-import { updateMainAppState, resetMainAppState, updateProvider, registerProvider, initDutchX, setApprovedTokens, setAvailableAuctions } from 'actions'
+import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
 
 import { State } from 'types'
 import { getTokenList } from 'actions'
-import { getApprovedTokensFromAllTokens, getAvailableAuctionsFromAllTokens } from 'api'
-// import fireListeners from 'integrations/events';
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
 const offlineBanner: React.CSSProperties = {
@@ -41,7 +37,7 @@ class AppValidator extends React.Component<any> {
 
   async componentWillMount() {
     // const provider = MetamaskProvider,
-    const { setApprovedTokens, setAvailableAuctions, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
+    const { network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
 
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
@@ -57,20 +53,7 @@ class AppValidator extends React.Component<any> {
         // dispatch action to save provider name and priority
         registerProvider({ provider: provider.providerName, priority: provider.priority }) */
 
-        const { combinedTokenList } = await getTokenList()
-
-        const [approvedTokenAddresses, availableAuctions] = await Promise.all([
-          getApprovedTokensFromAllTokens(combinedTokenList),
-          getAvailableAuctionsFromAllTokens(combinedTokenList),
-        ])
-
-        console.log(`
-          APPROVED TOKEN ADDRESSES: ${JSON.stringify(approvedTokenAddresses, undefined, 2)}
-          AVAILABLE AUCTIONS: ${JSON.stringify(availableAuctions, undefined, 2)}
-        `)
-
-        setApprovedTokens(approvedTokenAddresses)
-        setAvailableAuctions(availableAuctions)
+        await getTokenList(network)
 
         await watcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState })
         await initDutchX()
@@ -78,7 +61,9 @@ class AppValidator extends React.Component<any> {
         this.setState({
           SET_UP_COMPLETE: true,
         })
-
+        console.warn(`
+          APPVALIDATOR MOUNT FINISHED
+        `)
         return this.startPolling()
       }
 
@@ -87,10 +72,14 @@ class AppValidator extends React.Component<any> {
       `)
 
     } catch (err) {
-      console.error('AppValidator mounting error - please check connection/Web3/network and refresh the page. Error:', err)
       this.setState({
         SET_UP_COMPLETE: false,
       })
+      if (this.state.online) {
+        console.warn('AppValidator mounting error - please make sure your wallet is available and unlocked then refresh the page.')
+        console.error(err)
+      }
+      this.startPolling(1000)
     }
   }
 
@@ -98,6 +87,21 @@ class AppValidator extends React.Component<any> {
     removeListeners(['online', 'offline'], [this.connect, this.disconnect])
 
     clearInterval(this.dataPollerID)
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    if (nextProps.unlocked !== this.props.unlocked) {
+      console.log(`
+        Wallet lock status change detected.
+        Unlocked before?: ${this.props.unlocked}
+        Unlocked now?:    ${nextProps.unlocked}
+      `)
+      // if app mount failed and nextProps detect an unlocked wallet
+      // reload the page
+      if (!this.state.SET_UP_COMPLETE && nextProps.unlocked) {
+        window.location.reload()
+      }
+    }
   }
 
   connect = () => {
@@ -118,9 +122,11 @@ class AppValidator extends React.Component<any> {
     }
   }
 
-  startPolling = () => {
+  startPolling = (pollTime: number = 5000) => {
     const { updateMainAppState, updateProvider, resetMainAppState } = this.props
-    return this.dataPollerID = setInterval(() => watcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState }), 5000)
+
+    console.log('AppValidator: Polling started')
+    return this.dataPollerID = setInterval(() => watcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState }), pollTime)
   }
 
   stopPolling = () => clearInterval(this.dataPollerID)
@@ -128,7 +134,7 @@ class AppValidator extends React.Component<any> {
   renderOfflineApp = ({ online, SET_UP_COMPLETE }: { online: boolean, SET_UP_COMPLETE?: boolean }) =>
     <>
       { !online && <h2 style={offlineBanner}> App is currently offline - please your check internet connection and refresh the page </h2> }
-      { !SET_UP_COMPLETE && <h2 style={{ ...offlineBanner, ...{ backgroundColor: 'orange' } }}> App init failed - please check connection + provider and refresh the page </h2> }
+      { !SET_UP_COMPLETE && <h2 style={{ ...offlineBanner, ...{ backgroundColor: 'orange' } }}> App initialisation failed. Please make sure your wallet is unlocked and refresh the page </h2> }
       {this.props.children}
     </>
 
@@ -140,16 +146,14 @@ class AppValidator extends React.Component<any> {
 
 const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
   activeProvider,
+  network: providers.METAMASK && providers.METAMASK.network,
   unlocked: providers.METAMASK && providers.METAMASK.unlocked,
 })
 
 export default connect(mapState, {
   getTokenList,
-  setApprovedTokens,
-  setAvailableAuctions,
   initDutchX,
   updateMainAppState,
   updateProvider,
   resetMainAppState,
-  registerProvider,
 })(AppValidator)
