@@ -82,3 +82,5 @@ export const URLS = {
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 }
+
+export const RINKEBY_WEBSOCKET = /* 'ws://localhost:8546' */ 'wss://rinkeby.infura.io/_ws'
