@@ -5,7 +5,7 @@ import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
 interface ContentPages {
   handleClick: () => any;
-  handleSectionMove(sectionID: string, sectionPage?: string): () => any;
+  handleSectionMove: (id: string, url?: string) => void;
 }
 
 export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => (
@@ -148,7 +148,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your wallet provider.
               </li>
               <li>
-                Paying for fees in OWL: If you have <span className="sectionLink" onClick={() => handleSectionMove('what-are-owl', URLS.FEES)}>OWL</span> in your linked wallet, you will be asked whether you would like to pay for half of your <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>fees</span> in OWL (as long as you have a positive OWL balance).
+                Paying for fees in OWL: If you have <span className="sectionLink" onClick={() => handleSectionMove('what-are-owl', URLS.FEES)}>OWL</span> in your linked wallet, you will be asked whether you would like to pay for half of your <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>fees</span> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -231,7 +231,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
     <section className="drawer" onClick={handleClick}>
       <h3>What is my fee level?</h3>
       <span>
-        <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>Fee</span> section.</p>
+        <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>Fee</span> section.</p>
       </span>
     </section>
 
@@ -348,7 +348,7 @@ export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
   </article>
 
 export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
-  <article>
+  <article id="fees">
     <h1>Fees</h1>
     <section className="drawer" onClick={handleClick}>
       <h3>What fees do I have to pay?</h3>
@@ -647,7 +647,7 @@ export const OpenPlatform = () =>
 
 {/* FAQ - page */}
 export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
-  <article>
+  <article id="FAQ">
     <h1>FAQ</h1>
     <section className="content">
       <p>Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX was designed. Check out especially: <a href="https://blog.gnosis.pm/the-main-benefits-of-the-dutchx-mechanism-6fc2ef6ee8b4" target="_blank">Main Benefits of the DutchX Mechanism.</a></p>
@@ -1001,7 +1001,7 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>What does the DutchX need the ETH/USD price feed for?</h3>
       <span>
-        <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FEES)}>fees</span> in USD or OWL.</p>
+        <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>fees</span> in USD or OWL.</p>
       </span>
     </section>
 
@@ -1064,7 +1064,7 @@ export const Help = ({ handleSectionMove }: ContentPages) =>
   <article>
     <h1>Help</h1>
     <section className="content">
-      <p>Haven’t found the answer to your question in the <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.FAQ)}>FAQ</span>?
+      <p>Haven’t found the answer to your question in the <span className="sectionLink" onClick={() => handleSectionMove('faqs', URLS.FAQ)}>FAQ</span>?
       <br/>
       For all questions from and for developers, get in touch on the <a href={URLS.GITTER_URL} target="_blank">Gitter channel</a>.
       <br/>
