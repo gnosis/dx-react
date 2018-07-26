@@ -10,7 +10,7 @@ import { ETHEREUM_NETWORKS } from './constants'
 import MetamaskProvider from './metamask'
 import { WalletProvider } from 'integrations/types'
 import { networkById } from 'integrations/initialize'
-import { getTime } from 'api'
+// import { getTime } from 'api'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
 export default async function walletIntegration(store: Store<any>) {
@@ -39,7 +39,6 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
-
     const balance = await provider.web3.eth.getBalance(account)
 
     return provider.web3.utils.fromWei(balance, 'ether').toString()
@@ -47,29 +46,37 @@ export default async function walletIntegration(store: Store<any>) {
 
   // get Provider state
   const grabProviderState = async (provider: WalletProvider) => {
-    const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
+    try {
+      // TODO: Broken here
+      const [account, network] = await Promise.all<Account, ETHEREUM_NETWORKS>([
         getAccount(provider),
         getNetwork(provider),
-        getTime(),
-      ]),
-      balance = account && await getBalance(provider, account),
-      available = provider.walletAvailable,
-      unlocked = !!(available && account),
-      newState = { account, network, balance, available, unlocked, timestamp }
+      ])
 
-    return newState
+      const balance = account && await getBalance(provider, account),
+        available = provider.walletAvailable,
+        unlocked = !!(available && account),
+        newState = { account, network, balance, available, unlocked }
+
+      return newState
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   try {
     const provider = MetamaskProvider
-
-    provider.initialize('Websocket')
+    provider.initialize()
     // dispatch action to save provider name and priority
     dispatchers.regProvider(provider.providerName, { priority: provider.priority })
 
     const newState = await grabProviderState(provider)
 
-    dispatchers.updateProvider(provider.providerName, { ...newState })
+    console.warn(`
+      WALLETINTEGRATION FINISHED
+    `)
+
+    return dispatchers.updateProvider(provider.providerName, { ...newState })
   } catch (error) {
     // console.warn(error.message || error)
     throw error
