@@ -12,6 +12,7 @@ import tokenBalances from './tokenBalances'
 import tokenList from './tokenList'
 import tokenOverlay from './tokenOverlay'
 import tokenPair from './tokenPair'
+import { reducer as LOGS_AND_EVENTS } from 'actions/events'
 
 const reducers = combineReducers<State>({
   form: formReducer,
@@ -26,6 +27,7 @@ const reducers = combineReducers<State>({
   tokenList,
   tokenOverlay,
   tokenPair,
+  LOGS_AND_EVENTS,
 })
 
 const rootReducer: Reducer<State> = (state, action) => {

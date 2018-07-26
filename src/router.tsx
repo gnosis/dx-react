@@ -15,6 +15,8 @@ import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 
+import TransactionPanel from 'containers/TransactionPanel'
+
 interface AppRouterProps {
   history: History;
   disabled?: boolean;
@@ -23,6 +25,7 @@ interface AppRouterProps {
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
 const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, content?: boolean) => (props: any) => (
   <>
+    <TransactionPanel />
     <Header content={content}/>
     <Component {...props}/>
     <Footer />
@@ -70,6 +73,5 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   </ConnectedRouter>
   )
 }
-
 
 export default hot(module)(AppRouter)

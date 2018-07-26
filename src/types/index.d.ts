@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
@@ -226,4 +226,5 @@ export interface State {
   tokenOverlay: TokenOverlay,
   approvedTokens: AccountsSet,
   settings: Settings,
+  LOGS_AND_EVENTS: any,
 }
