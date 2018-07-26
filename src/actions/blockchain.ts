@@ -251,8 +251,6 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
   if (!isDefaultTokensAvailable) {
     network = network || 'NONE'
 
-    console.log('Current Network =', network)
-
     // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
     /* if (process.env.NODE_ENV === 'development') {
       defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
@@ -262,13 +260,15 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
     } */
 
     switch (network) {
-      case 'RINKEBY' || '4' || ETHEREUM_NETWORKS.RINKEBY:
+      case '4':
+      case ETHEREUM_NETWORKS.RINKEBY:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
         defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
         console.log('Rinkeby Token List -> ', defaultTokens.elements)
         break
 
-      case '1' || ETHEREUM_NETWORKS.MAIN:
+      case '1':
+      case ETHEREUM_NETWORKS.MAIN:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
         // TODO: fix for Mainnet
         defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
