@@ -7,6 +7,7 @@ import AuctionSellingGetting from 'containers/AuctionSellingGetting'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 import TokenOverlay from 'containers/TokenOverlay'
+import { URLS } from 'globals'
 
 interface OrderPanelProps {
   sellTokenSymbol: string,
@@ -14,9 +15,11 @@ interface OrderPanelProps {
   validSellAmount: boolean,
   generatesMGN: boolean,
   overlayOpen: boolean,
+
+  pushAndMoveToElement: (id: string, url?: string) => void
 }
 
-const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN, overlayOpen }) => (
+const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN, overlayOpen, pushAndMoveToElement }) => (
   <AuctionContainer auctionDataScreen="amount">
     {overlayOpen && <TokenOverlay />}
     <AuctionHeader backTo="/">
@@ -24,7 +27,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
-    {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>}
+    {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN">Note: this token pair <span className="sectionLink" onClick={() => pushAndMoveToElement('what-is-mgn', URLS.TOKENS)}>won't generate MGN tokens</span></div>}
     {/* END */}
 
     <TokenPair />
