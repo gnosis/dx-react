@@ -31,6 +31,8 @@ import {
   claimSellerFundsAndWithdraw,
   getSellerBalance,
   getAllTokenDecimals,
+  getApprovedTokensFromAllTokens,
+  getAvailableAuctionsFromAllTokens,
 } from 'api'
 
 import { promisedContractsMap, contractsMap } from 'api/contracts'
@@ -50,12 +52,14 @@ import {
   setDefaultTokenList,
   setIPFSFileHashAndPath,
   setTokenListType,
+  setApprovedTokens,
+  setAvailableAuctions,
 } from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
 
 import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
-import { DefaultTokenObject, Web3EventLog, DefaultTokens } from 'api/types'
+import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } from 'api/types'
 
 import { waitForTx } from 'integrations/filterChain'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
@@ -104,6 +108,8 @@ const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   }
 }
 
+// resets app state if disconnection or exceptions caught
+// this function causes the App flashes
 export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   dispatch(resetAppState())
   const state = getState()
@@ -111,6 +117,7 @@ export const resetMainAppState = () => async (dispatch: Dispatch<any>, getState:
   setActiveProviderHelper(dispatch, state)
 }
 
+// Updates main aspects of state relevant to user - called in polling functions in AppValidator
 export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch<any>, getState: () => State) => {
   const { tokenList } = getState()
   const defaultList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
@@ -159,7 +166,6 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   return status
 }
 
-// CONSIDER: moving this OUT of blockchain into index or some INITIALIZATION action module.
 /**
  * (Re)-Initializes DutchX connection according to current providers settings
  */
@@ -213,7 +219,23 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
   }
 }
 
-export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenList) => async (dispatch: Dispatch<any>) => {
+  console.log('​exportsetApprovedTokensAndAvailableAuctions -> tokenList', tokenList)
+  const [approvedTokenAddresses, availableAuctions] = await Promise.all([
+    getApprovedTokensFromAllTokens(tokenList),
+    getAvailableAuctionsFromAllTokens(tokenList),
+  ])
+
+  console.log(`
+    APPROVED TOKEN ADDRESSES: ${JSON.stringify(approvedTokenAddresses, undefined, 2)}
+    AVAILABLE AUCTIONS: ${JSON.stringify(availableAuctions, undefined, 2)}
+  `)
+
+  dispatch(setApprovedTokens(approvedTokenAddresses))
+  dispatch(setAvailableAuctions(availableAuctions))
+}
+
+export const getTokenList = (network?: number | string) => async (dispatch: Dispatch<any>, getState: () => State) => {
 
   let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
     localForage.getItem('defaultTokens'),
@@ -227,7 +249,7 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
   const isDefaultTokensAvailable = !!(defaultTokens)
 
   if (!isDefaultTokensAvailable) {
-    network = network || (window.web3 && window.web3.version.network) || 'NONE'
+    network = network || 'NONE'
 
     console.log('Current Network =', network)
 
@@ -240,7 +262,7 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
     } */
 
     switch (network) {
-      case '4' || ETHEREUM_NETWORKS.RINKEBY:
+      case 'RINKEBY' || '4' || ETHEREUM_NETWORKS.RINKEBY:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
         defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
         console.log('Rinkeby Token List -> ', defaultTokens.elements)
@@ -297,7 +319,9 @@ export const getTokenList = (network?: string) => async (dispatch: Dispatch<any>
   // set defaulTokenList && setDefaulTokenPair visible when in App
   dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
 
-  return getState().tokenList
+  // set approved list, available auctions
+  const { combinedTokenList: finalTokenList } = getState().tokenList
+  return dispatch(setApprovedTokensAndAvailableAuctions(finalTokenList))
 }
 
 export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: any) => {
