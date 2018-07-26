@@ -185,7 +185,7 @@
     "eslint-plugin-react": "7.4.0",
     "expect": "^21.2.1",
     "exports-loader": "^0.6.4",
-    "favicons-webpack-plugin": "0.0.7",
+    "favicons-webpack-plugin": "0.0.9",
     "file-loader": "^1.1.5",
     "husky": "^0.14.3",
     "imports-loader": "^0.7.1",
