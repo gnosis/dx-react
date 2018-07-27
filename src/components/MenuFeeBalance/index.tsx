@@ -8,13 +8,13 @@ import { Balance } from 'types'
 export interface MenuFeeBalanceProps {
   feeRatio: number,
   mgnSupply: Balance,
-  noWallet: boolean,
+  showFeeRatio: boolean,
 }
 
-const MenuFeeBalance = ({ feeRatio, mgnSupply, noWallet }: MenuFeeBalanceProps) =>
+const MenuFeeBalance = ({ feeRatio, mgnSupply, showFeeRatio }: MenuFeeBalanceProps) =>
   <div className="menuFeeBalance">
-    <p>MGN <strong>{!noWallet && mgnSupply && feeRatio ? mgnSupply : 0}</strong></p>
-    <p>Fee level <strong>{`${!noWallet && mgnSupply && feeRatio ? feeRatio * 100 : 0.5}%`}</strong></p>
+    <p>MGN <strong>{showFeeRatio ? mgnSupply : 'N/A'}</strong></p>
+    <p>Fee level <strong>{`${showFeeRatio ? feeRatio * 100 : 'N/A'}%`}</strong></p>
   </div>
 
 export default MenuFeeBalance

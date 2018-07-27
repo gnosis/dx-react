@@ -7,7 +7,7 @@ import { State } from 'types'
 const mapState = ({ blockchain: { currentAccount, feeRatio, mgnSupply } }: State) => ({
   feeRatio,
   mgnSupply,
-  noWallet: !currentAccount,
+  showFeeRatio: currentAccount && mgnSupply && typeof feeRatio === 'number',
 })
 
 export default connect(mapState)(MenuFeeBalance)
