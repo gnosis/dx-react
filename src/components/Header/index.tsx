@@ -33,4 +33,6 @@ const mapState = ({ blockchain: { providers } }: State) => ({
   network: providers.METAMASK && providers.METAMASK.network,
 })
 
-export default withRouter(connect<HeaderState>(mapState)(Header) as ComponentClass<any>) as ComponentClass<{content: boolean}>
+export default withRouter(
+  connect<HeaderState>(mapState)(Header) as ComponentClass<any>,
+) as ComponentClass<HeaderProps>
