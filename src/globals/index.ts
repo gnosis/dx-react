@@ -56,12 +56,24 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
   address: '',
 }
 
-export const IPFS_TOKENS_HASH = 'QmWTuHWwmeLT359SkXfvENpnevCbHE1Cdxx2NAGjMfqEGo'
+// Network token list hashes (latest versions)
+export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
+export const RINKEBY_TOKEN_LIST_HASH = 'QmQN7tJSVTbREv7Gd6FWZhno9RPRcFNDNkcgni6xe6wDBo'
+export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
+
+export const TokenListHashMap = {
+  RINKEBY: RINKEBY_TOKEN_LIST_HASH,
+  MAIN: MAINNET_TOKEN_LIST_HASH,
+}
+
+// Allowed network
 export const ALLOWED_NETWORK = 'Rinkeby Test Network'
 
+// BigNumber fixed decimal places to sow
 export const FIXED_DECIMALS = 4
 
+// Content page URLS
 export const URLS = {
   METAMASK: 'https://metamask.io',
   HOW_IT_WORKS: '/content/HowItWorks',
@@ -83,6 +95,7 @@ export const URLS = {
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 }
 
+// Error messages during TXs
 export const CANCEL_TX_ERROR = 'TRANSACTION CANCELLED: User denied transaction signature. Transaction will not be submitted to the blockchain.'
 export const NO_INTERNET_TX_ERROR = 'TRANSACTION CANCELLED: Internet connection issues detected. Please check your connection and try again. Transaction will not be submitted to the blockchain.'
 export const LOW_GAS_ERROR = 'TRANSACTION CANCELLED: Gas limit set too low. Please try transaction again with a higher gas limit.'
