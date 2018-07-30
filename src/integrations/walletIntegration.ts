@@ -12,6 +12,7 @@ import { WalletProvider } from 'integrations/types'
 import { networkById } from 'integrations/initialize'
 import { promisify } from 'api/utils'
 import { getTime } from 'api'
+import { timeoutCondition } from 'utils/helpers'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
 export default async function walletIntegration(store: Store<any>) {
@@ -48,11 +49,16 @@ export default async function walletIntegration(store: Store<any>) {
 
   // get Provider state
   const grabProviderState = async (provider: WalletProvider) => {
-    const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
+    const promisedState = await Promise.race<[Account, ETHEREUM_NETWORKS, number] | {}>([
+      Promise.all([
         getAccount(provider),
         getNetwork(provider),
         getTime(),
       ]),
+      timeoutCondition(8000, 'Provider setup timeout. Please check that you are properly logged in and that your network choice is correct.'),
+    ])
+
+    const [account, network, timestamp] = promisedState as [Account, ETHEREUM_NETWORKS, number],
       balance = account && await getBalance(provider, account),
       available = provider.walletAvailable,
       unlocked = !!(available && account),
@@ -65,6 +71,7 @@ export default async function walletIntegration(store: Store<any>) {
     const provider = MetamaskProvider
 
     provider.initialize()
+
     // dispatch action to save provider name and priority
     dispatchers.regProvider(provider.providerName, { priority: provider.priority })
 
@@ -72,46 +79,6 @@ export default async function walletIntegration(store: Store<any>) {
 
     dispatchers.updateProvider(provider.providerName, { ...newState })
   } catch (error) {
-    // console.warn(error.message || error)
-    throw error
+    console.error(error.message || error)
   }
 }
-
-/* export default async function walletIntegration(store: Store<any>) {
-  const { dispatch, getState }: { dispatch: Dispatch<any>, getState: () => State } = store
-  // wraps actionCreator in dispatch
-  const dispatchProviderAction = (actionCreator: any) =>
-    async (provider: any, data: any) => dispatch(actionCreator({
-      provider,
-      ...data,
-  const providerOptions: ConnectedInterface = {
-    getState,
-    initDutchX: dispatchProviderAction(initDutchX),
-  }
-
-  try {
-    // init Provider first - set a watcher for 6000 ms to check changes
-    await initialize(providerOptions)
-
-    const { combinedTokenList } = await dispatch(getTokenList())
-
-    // TODO: fetch approvedTokens list from api
-    // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
-    // then only dispatch that list
-    // const [ETH, GNO] = defaultTokenList
-    // dispatch(setApprovedTokens([ETH.address, GNO.address]))
-
-    const [approvedTokenAddresses, availableAuctions] = await Promise.all([
-      getApprovedTokensFromAllTokens(combinedTokenList),
-      getAvailableAuctionsFromAllTokens(combinedTokenList),
-    ])
-    dispatch(setApprovedTokens(approvedTokenAddresses))
-    dispatch(setAvailableAuctions(availableAuctions))
-
-    // await dispatch(initDutchX())
-    // set state in app
-    // return dispatch(updateMainAppState())
-  } catch (error) {
-    console.warn(error.message || error)
-  }
-} */

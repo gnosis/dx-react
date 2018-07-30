@@ -16,32 +16,31 @@ export const watcherLogger = ({ logType = 'log', status, info, updateState }: { 
 let prevTime: number
 
 // Fired on setInterval every 10 seconds
-const watcher = async (provider: WalletProvider, { updateMainAppState, updateProvider, resetMainAppState }: any) => {
-  console.log('​watcher -> provider', provider)
+const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppState, updateProvider, resetMainAppState }: any) => {
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
-      const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
+    const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
 
-      return account
-    }
+    return account
+  }
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
-      const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
-      return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
-    }
+    const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+    return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
+  }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
 
-      const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
+    const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
 
-      return provider.web3.fromWei(balance, 'ether').toString()
-    }
+    return provider.web3.fromWei(balance, 'ether').toString()
+  }
     // set block timestamp to provider state and compare
   try {
-      if (!provider.checkAvailability() || (window.navigator && !window.navigator.onLine)) throw new Error('Provider and/or internet issues')
-      provider.state.timestamp = prevTime
+    if (!provider.checkAvailability() || (window.navigator && !window.navigator.onLine)) throw new Error('Provider and/or internet issues')
+    provider.state.timestamp = prevTime
 
-      const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
+    const [account, network, timestamp] = await Promise.all<Account, ETHEREUM_NETWORKS, number>([
           getAccount(provider),
           getNetwork(provider),
           getTime(),
@@ -52,7 +51,7 @@ const watcher = async (provider: WalletProvider, { updateMainAppState, updatePro
         newState = { account, network, balance, available, unlocked, timestamp }
 
       // if data changed
-      if (shallowDifferent(provider.state, newState)) {
+    if (shallowDifferent(provider.state, newState)) {
         console.log('app state is different')
         console.log('was: ', newState)
         console.log('now: ', provider.state)
@@ -71,7 +70,7 @@ const watcher = async (provider: WalletProvider, { updateMainAppState, updatePro
             updateState: false,
           })
           // if wallet locked, throw
-          throw 'Wallet locked during polling'
+          throw 'Wallet locked'
         }
         else {
           watcherLogger({
@@ -83,20 +82,21 @@ const watcher = async (provider: WalletProvider, { updateMainAppState, updatePro
           await updateMainAppState()
         }
       }
-    } catch (err) {
-      console.warn(err)
+  } catch (err) {
+    console.warn(err)
       // if error
       // connection lost or provider no longer returns data (locked/logged out)
       // reset all data associated with account
-      resetMainAppState()
+    resetMainAppState()
 
-      if (provider.walletAvailable) {
+    if (provider.walletAvailable) {
         // disable internal provider
         provider.state.unlocked = false
         // and dispatch action with { available: false }
         updateProvider({ provider })
       }
-    }
+    throw err
+  }
 }
 
-export default watcher
+export default providerInitAndWatcher
