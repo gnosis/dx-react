@@ -19,19 +19,16 @@ Array.prototype.last = function getLast() {
 const rootElement = document.getElementById('root')
 
 const renderApp = async () => {
+  // fire provider network change listener
   fireListeners()
-  try {
-    // load localForage settings
-    // register provider + update provider state
-    await Promise.all([
-      loadLocalSettings(),
-      initializeWallet(),
-    ])
+  // load localForage settings
+  // register provider + update provider state
+  await Promise.all([
+    loadLocalSettings(),
+    initializeWallet(),
+  ])
 
-    ReactDOM.render(<App />, rootElement)
-  } catch (err) {
-    console.error(err)
-  }
+  ReactDOM.render(<App />, rootElement)
 }
 
 const geoBlockedCountryCodes = new Set(blocked_codes)

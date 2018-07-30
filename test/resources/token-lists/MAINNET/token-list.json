@@ -1,0 +1,37 @@
+{
+  "elements": [
+    {
+      "symbol": "ETH",
+      "name": "Ether",
+      "address": "0x0",
+      "decimals": 18,
+      "isETH": true
+    },
+    {
+      "symbol": "RDN",
+      "name": "Raiden Tokens",
+      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
+      "decimals": 18
+    },
+    {
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "decimals": 18
+    }
+  ],
+  "pagination": {
+    "endingBefore": null,
+    "startingAfter": null,
+    "limit": 20,
+    "order": [
+      {
+        "param": "symbol",
+        "direction": "ASC"
+      }
+    ],
+    "previousUri": null,
+    "nextUri": null
+  },
+  "version": "1.0"
+}

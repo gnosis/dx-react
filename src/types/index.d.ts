@@ -141,6 +141,7 @@ export interface TokenList {
   combinedTokenList: DefaultTokenObject[];
   type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
   allowUpload: boolean;
+  version: number;
 }
 
 /**
