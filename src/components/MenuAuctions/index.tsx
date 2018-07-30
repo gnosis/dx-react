@@ -76,7 +76,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                         <td>
                           {auction.balancePerIndexInverse.last() &&
                             <p>
-                              {`${auction.balancePerIndexInverse.last()} ${auction.sell.symbol}`}
+                              {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
                             </p>}
                         </td>
                         {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
