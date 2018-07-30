@@ -54,6 +54,7 @@ import {
   setTokenListType,
   setApprovedTokens,
   setAvailableAuctions,
+  setTokenListVersion,
 } from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
@@ -64,7 +65,7 @@ import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } fro
 import { waitForTx } from 'integrations/filterChain'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
-import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap } from 'globals'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -235,46 +236,59 @@ export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenLis
   dispatch(setAvailableAuctions(availableAuctions))
 }
 
-export const getTokenList = (network?: number | string) => async (dispatch: Dispatch<any>, getState: () => State) => {
-
-  let [defaultTokens, customTokens, customListHash] = await Promise.all<DefaultTokens, DefaultTokens['elements'], string>([
+export const getTokenList = (network?: number | string) => async (dispatch: Dispatch<any>, getState: () => State): Promise<void> => {
+  let [defaultTokens, customTokens, customListHash] = await Promise.all<{ hash: string, tokens: DefaultTokens}, DefaultTokens['elements'], string>([
     localForage.getItem('defaultTokens'),
     localForage.getItem('customTokens'),
     localForage.getItem('customListHash'),
   ])
+
   const { ipfsFetchFromHash } = await promisedIPFS
 
   // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
   // meaning this would be FALSE on network change and app reset
-  const isDefaultTokensAvailable = !!(defaultTokens)
+  // check that localForage has both something in defaultTokens AND that the localForage hash === the local latest hash in globals
+  const areTokensAvailableAndUpdated = defaultTokens && defaultTokens.hash === TokenListHashMap[network]
 
-  if (!isDefaultTokensAvailable) {
-    network = network || 'NONE'
+  if (!areTokensAvailableAndUpdated) {
+    network = network || window.web3.version.network || 'NONE'
 
-    // grab tokens from IPFSHash or api/apiTesting depending on NODE_ENV
-    /* if (process.env.NODE_ENV === 'development') {
-      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
-    } else {
-      // TODO: change for prod
-      defaultTokens = await ipfsFetchFromHash(IPFS_TOKENS_HASH) as DefaultTokens
-    } */
+    // user has tokens in localStorage BUT hash is not updated
+    if (defaultTokens) await localForage.removeItem('defaultTokens')
 
     switch (network) {
       case '4':
       case ETHEREUM_NETWORKS.RINKEBY:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
-        defaultTokens = require('../../test/resources/token-lists/RINKEBY/token-list.js')
-        console.log('Rinkeby Token List -> ', defaultTokens.elements)
+        defaultTokens = {
+          hash: RINKEBY_TOKEN_LIST_HASH,
+          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${RINKEBY_TOKEN_LIST_HASH}`)
+          .then(tokenList => tokenList.json())
+          .catch(err => {
+            console.error(err, 'IPFS fetch error - defaulting to local tokens')
+            return require('../../test/resources/token-lists/RINKEBY/token-list.json')
+          }),
+        }
+        console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
 
       case '1':
       case ETHEREUM_NETWORKS.MAIN:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
         // TODO: fix for Mainnet
-        defaultTokens = require('../../test/resources/token-lists/MAIN/token-list.js')
+
+        defaultTokens = {
+          hash: MAINNET_TOKEN_LIST_HASH,
+          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${MAINNET_TOKEN_LIST_HASH}`)
+          .then(tokenList => tokenList.json())
+          .catch(err => {
+            console.error(err, 'IPFS fetch error - defaulting to local tokens')
+            return require('../../test/resources/token-lists/MAINNET/token-list.json')
+          }),
+        }
+
         console.warn(`
           Ethereum Mainnet not supported - please try another network.
-          Removing tokens from local forage ...
         `)
         break
 
@@ -284,8 +298,11 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
 
       default:
         console.log(`Detected connection to an UNKNOWN network -- localhost?`)
-        defaultTokens = await tokensMap()
-        console.log('LocalHost Token List -> ', defaultTokens.elements)
+        defaultTokens = {
+          hash: 'local',
+          tokens: await tokensMap('1.0'),
+        }
+        console.log('LocalHost Token List: ', defaultTokens.tokens.elements)
         break
     }
 
@@ -293,7 +310,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
     await localForage.setItem('defaultTokens', defaultTokens)
   }
 
-  // IPFS hash for tokens exists in localForage
+  // Set user's custom IPFS hash for tokens exists in localForage
   if (customListHash) dispatch(setIPFSFileHashAndPath({ fileHash: customListHash }))
 
   if (customTokens) {
@@ -317,7 +334,10 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
     dispatch(setTokenListType({ type: 'CUSTOM' }))
   }
   // set defaulTokenList && setDefaulTokenPair visible when in App
-  dispatch(setDefaultTokenList({ defaultTokenList: defaultTokens.elements }))
+  dispatch(batchActions([
+    setDefaultTokenList({ defaultTokenList: defaultTokens.tokens.elements }),
+    setTokenListVersion({ version: defaultTokens.tokens.version }),
+  ]))
 
   // set approved list, available auctions
   const { combinedTokenList: finalTokenList } = getState().tokenList
