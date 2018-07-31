@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { ComponentClass } from 'react'
 
 import MenuWallet from 'containers/MenuWallet'
 import MenuAuctions from 'containers/MenuAuctions'
@@ -7,6 +7,7 @@ import MenuFeeBalance from 'containers/MenuFeeBalance'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { State } from 'types'
+import { withRouter } from 'react-router'
 
 interface HeaderProps {
   content?: boolean;
@@ -32,4 +33,6 @@ const mapState = ({ blockchain: { providers } }: State) => ({
   network: providers.METAMASK && providers.METAMASK.network,
 })
 
-export default connect<HeaderState>(mapState)(Header)
+export default withRouter(
+  connect<HeaderState>(mapState)(Header) as ComponentClass<any>,
+) as ComponentClass<HeaderProps>
