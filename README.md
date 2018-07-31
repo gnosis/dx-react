@@ -66,12 +66,12 @@
     });
     ```
 
-    ### NETWORKS
+    #### NETWORKS
     `returns string ('development' | 'rinkeby' | 'main', 'kovan' | 'ropsten')`
     
     As mentioned above, can be used to grab network info in migrations flow. Conditional migrating, for example
 
-    ### ACCOUNTS
+    #### ACCOUNTS
     `returns string[]`
     
     Use to migrate/deploy contracts with certain addresses. On local these are the accounts first listed in `ganache-cli`
