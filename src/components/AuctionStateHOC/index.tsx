@@ -19,6 +19,7 @@ import {
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import { WATCHER_INTERVAL } from 'integrations/initialize'
+import { shallowDifferent } from 'utils/helpers'
 
 // depends on router injecting match
 export interface AuctionStateProps {
@@ -132,15 +133,31 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       }
       (window as any).updateAuctionState = this.updateAuctionState.bind(this)
 
-      this.interval = window.setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
+      this.startWatching()
+    }
+
+    startWatching = () => this.interval = window.setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
+
+    stopWatching = () => window.clearInterval(this.interval)
+
+    restartWatching = async (props = this.props) => {
+      this.stopWatching()
+
+      await this.updateAuctionState(props)
+
+      this.startWatching()
     }
 
     async componentWillReceiveProps(nextProps: any) {
+      if (shallowDifferent(nextProps.match.params, this.props.match.params)) {
+        console.log('AUCTION PARAMS changed')
+        return this.restartWatching(nextProps)
+      }
       if (nextProps.symbol2Token || nextProps.address2Token) return this.updateAuctionState()
     }
 
-    async updateAuctionState() {
-      const { match, address2Token, symbol2Token } = this.props
+    async updateAuctionState(props = this.props) {
+      const { match, address2Token, symbol2Token } = props
       const { sell, buy, index: indexParam } = match.params
       const index = +indexParam
 
@@ -263,7 +280,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
     }
 
     componentWillUnmount() {
-      window.clearInterval(this.interval)
+      this.stopWatching()
     }
 
     claimSellerFunds = () => {
