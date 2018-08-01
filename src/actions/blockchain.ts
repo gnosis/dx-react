@@ -884,6 +884,10 @@ export function errorHandling(error: Error, goHome = true) {
     console.error(error.message)
     // close to unmount
     dispatch(closeModal())
+
+    // reset sellAmount
+    dispatch(setSellTokenAmount({ sellAmount: '0' }))
+
     // go home stacy
     if (goHome) dispatch(push('/'))
     dispatch(openModal({

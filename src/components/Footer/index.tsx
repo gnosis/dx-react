@@ -17,7 +17,7 @@ const Footer = ({ network }: FooterProps) =>
                 network === 'RINKEBY'
                     ?
                 <>
-                    This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk. Please read the <a href="docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                    This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk. Please read the <a href="/docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
                 </>
                     :
                 <>
