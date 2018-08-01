@@ -357,7 +357,7 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="fee-reduction-image" onClick={handleClick}>
       <h3>How can I lower my fees?</h3>
       <span>
         <p>
