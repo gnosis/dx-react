@@ -123,8 +123,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {footer.msg || null}
           <br/>
           <br/>
-          {/* why not use Link here? */}
-          For more information, read the <a href={footer.url || './content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
+          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
         </i>
       </p>}
   </div>

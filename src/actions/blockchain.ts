@@ -454,7 +454,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             },
             footer: {
               msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
-              url: './content/FAQ',
+              url: '#/content/FAQ',
               urlMsg: 'FAQ',
             },
             onClick: accept,
@@ -487,7 +487,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                 },
               },
               footer: {
-                url: './content/Fees',
+                url: '#/content/Fees',
                 urlMsg: 'Fees',
               },
               onClick: accept,
