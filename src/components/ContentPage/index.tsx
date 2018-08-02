@@ -1,5 +1,6 @@
 import React from 'react'
 import { URLS } from 'globals'
+import { Link } from 'react-router-dom'
 
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
@@ -8,7 +9,7 @@ interface ContentPages {
   handleSectionMove: (id: string, url?: string) => void;
 }
 
-export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => (
+export const HowItWorks = ({ handleClick }: ContentPages) => (
   <article>
     <h1>How the DutchX works</h1>
 
@@ -88,7 +89,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
           <br/>
           <br/>
           The second option is via the specific URL for the auction pair (auction overview page). You will automatically access the URL at the end of the order process. From there, you may claim the new token particular to that specific auction (you will only need to sign one transaction with your wallet provider).
-          Note that you have to be connected to the same wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <span className="sectionLink" onClick={() => handleSectionMove('step-by-step-claiming')}>step-by-step guide</span> about claiming tokens.
+          Note that you have to be connected to the same wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <Link to="#step-by-step-claiming">step-by-step guide</Link> about claiming tokens.
         </p>
       </span>
     </section>
@@ -125,7 +126,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
         <p>You only need three things:</p>
         <ol>
           <li>A compatible (and connected) wallet. Currently only <a href={URLS.METAMASK} target="_blank">MetaMask</a> is supported.</li>
-          <li>An <span className="sectionLink" onClick={() => handleSectionMove('what-is-erc20', URLS.FAQ)}>ERC20</span> token or ETH. To see a list of tokens that you can currently trade on this interface, click on the <i>deposit</i> or <i>receive</i> token. </li>
+          <li>An <Link to={URLS.FAQ + '#what-is-erc20'}>ERC20</Link> token or ETH. To see a list of tokens that you can currently trade on this interface, click on the <i>deposit</i> or <i>receive</i> token. </li>
           <li>ETH in your wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li>
         </ol>
         <p>No other tokens are needed!</p>
@@ -148,7 +149,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your wallet provider.
               </li>
               <li>
-                Paying for fees in OWL: If you have <span className="sectionLink" onClick={() => handleSectionMove('what-are-owl', URLS.FEES)}>OWL</span> in your linked wallet, you will be asked whether you would like to pay for half of your <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>fees</span> in OWL (as long as you have a positive OWL balance).
+                Paying for fees in OWL: If you have <Link to={URLS.FEES + '#what-are-owl'}>OWL</Link> in your linked wallet, you will be asked whether you would like to pay for half of your <Link to={URLS.FEES + '#fees'}>fees</Link> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -193,7 +194,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
           <li>The second option is via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process. From there, you may claim the token particularly to that specific auction. You will only need to sign once.</li>
         </ul>
 
-        <p><strong>Important: If your trade generated <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia (MGN)</span>, you will be credited those automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of the interface.</strong></p>
+        <p><strong>Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, you will be credited those automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of the interface.</strong></p>
         <br/>
         <p><strong>Note that you have to be connected to the same wallet that you participated with in order to claim!</strong></p>
       </span>
@@ -221,7 +222,7 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
       <span>
         <p>
           MGN is the abbreviation for the Magnolia token. Locked MGN reduce your fee level. One MGN is automatically created for every ETH-worth of whitelisted token trades you make. You will receive them automatically upon claiming your new tokens. The more you trade, the more MGN you will receive, the lower your fee.
-          For more info, check out the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span>.
+          For more info, check out the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
           In the header bar of the interface, the amount of locked MGN associated with your linked wallet is displayed. However, you will not see this amount in your wallet.
           Of course, you do not need to hold any MGN to participate in the DutchX!
         </p>
@@ -231,21 +232,21 @@ export const HowItWorks = ({ handleClick, handleSectionMove }: ContentPages) => 
     <section className="drawer" onClick={handleClick}>
       <h3>What is my fee level?</h3>
       <span>
-        <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>Fee</span> section.</p>
+        <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <Link to={URLS.FEES + '#fees'}>Fee</Link> section.</p>
       </span>
     </section>
 
     <section className="drawer" onClick={handleClick}>
       <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
       <span>
-        <p>This message is to inform you about whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. Find more information on this process <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>here</span>. You can still use the trading interface in the same manner for tokens that do and do not generate Magnolia.</p>
+        <p>This message is to inform you about whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. Find more information on this process <Link to={URLS.TOKENS + '#what-is-mgn'}>here</Link>. You can still use the trading interface in the same manner for tokens that do and do not generate Magnolia.</p>
       </span>
     </section>
 
     <section className="drawer" id="claiming" onClick={handleClick}>
       <h3>What does “Note: this token pair won’t generate MGN tokens” mean?</h3>
       <span>
-        <p>This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use the trading interface in the same manner for tokens that do and do not generate Magnolia. Find more information on this <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>here</span>.
+        <p>This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use the trading interface in the same manner for tokens that do and do not generate Magnolia. Find more information on this <Link to={URLS.TOKENS + '#what-is-mgn'}>here</Link>.
           <br />
           <br />
           Want to bid in an auction? This is currently only possible for technical participants: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
@@ -266,7 +267,7 @@ export const Screencast = () =>
   </article>
 
 {/* TOKENS - page */}
-export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
+export const Tokens = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
 
@@ -294,7 +295,7 @@ export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
       <h3>What token do I need to be active on the DutchX?</h3>
       <span>
       <p>
-        You do not need to own any particular token to trade on the DutchX! However, keep in mind that you need ETH to pay for gas costs. Check out "<span className="sectionLink" onClick={() => handleSectionMove('what-do-i-need-to-trade-on-dx', URLS.HOW_IT_WORKS)}>What do I need to trade a token on the DutchX</span>"?
+        You do not need to own any particular token to trade on the DutchX! However, keep in mind that you need ETH to pay for gas costs. Check out "<Link to={URLS.HOW_IT_WORKS + '#what-do-i-need-to-trade-on-dx'}>What do I need to trade a token on the DutchX</Link>"?
       </p>
     </span>
     </section>
@@ -347,7 +348,7 @@ export const Tokens = ({ handleClick, handleSectionMove }: ContentPages) =>
 
   </article>
 
-export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
+export const Fees = ({ handleClick }: ContentPages) =>
   <article id="fees">
     <h1>Fees</h1>
     <section className="drawer" onClick={handleClick}>
@@ -361,7 +362,7 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
       <h3>How can I lower my fees?</h3>
       <span>
         <p>
-          Your fees will be lowered automatically for you if you hold <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
+          Your fees will be lowered automatically for you if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
         </p>
         {/*TODO: add <img id='fee-reduction-image'> */}
         <table>
@@ -411,8 +412,8 @@ export const Fees = ({ handleClick, handleSectionMove }: ContentPages) =>
       <h3>How do I obtain Magnolia (MGN)?</h3>
       <span>
       <p>
-        You may either generate Magnolia by trading on the DutchX (with a whitelisted trading pair). For more info, see the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>Magnolia</span>.
-        Alternatively, you could also purchase MGN since they are freely tradable. This may be particularly beneficial if you are close to the <span className="sectionLink" onClick={() => handleSectionMove('fee-reduction-image')}>next fee reduction level</span>.
+        You may either generate Magnolia by trading on the DutchX (with a whitelisted trading pair). For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
+        Alternatively, you could also purchase MGN since they are freely tradable. This may be particularly beneficial if you are close to the <Link to="#fee-reduction-image">next fee reduction level</Link>.
       </p>
     </span>
     </section>
@@ -646,7 +647,7 @@ export const OpenPlatform = () =>
 {/* END DutchX as an Open Platform - page */}
 
 {/* FAQ - page */}
-export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
+export const FAQ = ({ handleClick }: ContentPages) =>
   <article id="FAQ">
     <h1>FAQ</h1>
     <section className="content">
@@ -760,14 +761,14 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>Why did my trade not generate Magnolia (MGN)?</h3>
       <span>
-        <p>If your trade does not generate Magnolia, that is because one (or both) of the tokens part of the auction might not be whitelisted. Learn more on the topic in the section on <span className="sectionLink" onClick={() => handleSectionMove('what-is-mgn', URLS.TOKENS)}>'Magnolia'</span> and <span className="sectionLink" onClick={() => handleSectionMove('what-are-whitelisted-tokens', URLS.TOKENS)}>'whitelisted tokens'</span>.
+        <p>If your trade does not generate Magnolia, that is because one (or both) of the tokens part of the auction might not be whitelisted. Learn more on the topic in the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>'Magnolia'</Link> and <Link to={URLS.TOKENS + '#what-are-whitelisted-tokens'}>'whitelisted tokens'</Link>.
         </p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick}>
       <h3>When/how do I get Magnolia (MGN) credited?</h3>
       <span>
-        <p>If your trade generated Magnolia, you are credited these automatically once you <span className="sectionLink" onClick={() => handleSectionMove('how-do-i-claim-tokens', URLS.HOW_IT_WORKS)}>claim</span> your new tokens (funds) from the auction. However, you will not see MGN as a balance in your wallet, as they are still locked. For your convenience, the amount of locked MGN is displayed in the header of the DutchX interface.
+        <p>If your trade generated Magnolia, you are credited these automatically once you <Link to={URLS.HOW_IT_WORKS + '#how-do-i-claim-tokens'}>claim</Link> your new tokens (funds) from the auction. However, you will not see MGN as a balance in your wallet, as they are still locked. For your convenience, the amount of locked MGN is displayed in the header of the DutchX interface.
         </p>
       </span>
     </section>
@@ -827,7 +828,7 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
       <h3>Am I able to participate in the DutchX using fiat (e.g. USD, EUR)?
       </h3>
       <span>
-        <p>Unfortunately, you cannot trade anything but <span className="sectionLink" onClick={() => handleSectionMove('what-is-erc20', URLS.FAQ)}>ERC20 tokens</span> and ETH on this interface.
+        <p>Unfortunately, you cannot trade anything but <Link to={URLS.FAQ + '#what-is-erc20'}>ERC20 tokens</Link> and ETH on this interface.
         </p>
       </span>
     </section>
@@ -901,7 +902,7 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
       <h3>What are the requirements for a token to be part of the curated list on the DutchX?
       </h3>
       <span>
-        <p>It is expected that a minimal liquidity provision is guaranteed. Apart from that, the token must not be considered a security by any authority, law firm or any decentral or central exchange. A certain market cap should also weigh in for sufficient liquidity. For more information, please <span className="sectionLink" onClick={() => handleSectionMove(undefined, URLS.HELP)}>reach out</span>.</p>
+        <p>It is expected that a minimal liquidity provision is guaranteed. Apart from that, the token must not be considered a security by any authority, law firm or any decentral or central exchange. A certain market cap should also weigh in for sufficient liquidity. For more information, please <Link to={URLS.HELP}>reach out</Link>.</p>
       </span>
     </section>
 
@@ -1001,7 +1002,7 @@ export const FAQ = ({ handleClick, handleSectionMove }: ContentPages) =>
     <section className="drawer" onClick={handleClick}>
       <h3>What does the DutchX need the ETH/USD price feed for?</h3>
       <span>
-        <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <span className="sectionLink" onClick={() => handleSectionMove('fees', URLS.FEES)}>fees</span> in USD or OWL.</p>
+        <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <Link to={URLS.FEES + '#fees'}>fees</Link> in USD or OWL.</p>
       </span>
     </section>
 
@@ -1060,11 +1061,11 @@ export const Downtime = () =>
   </article>
 
 {/* Help - page */}
-export const Help = ({ handleSectionMove }: ContentPages) =>
+export const Help = () =>
   <article>
     <h1>Help</h1>
     <section className="content">
-      <p>Haven’t found the answer to your question in the <span className="sectionLink" onClick={() => handleSectionMove('faqs', URLS.FAQ)}>FAQ</span>?
+      <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
       <br/>
       For all questions from and for developers, get in touch on the <a href={URLS.GITTER_URL} target="_blank">Gitter channel</a>.
       <br/>
