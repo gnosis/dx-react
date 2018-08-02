@@ -12,7 +12,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   <article>
     <h1>How the DutchX works</h1>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="dutchx-in-short" onClick={handleClick}>
       <h3>The DutchX in short</h3>
       <span>
         <p>
@@ -22,7 +22,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="what-is-dutchx" onClick={handleClick}>
       <h3>What is the DutchX exactly?</h3>
       <span>
         <p>
@@ -38,7 +38,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="how-dutch-auction-works" onClick={handleClick}>
       <h3>How does a Dutch auction work?</h3>
       <span>
         <p>
@@ -49,7 +49,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="dutchx-characteristics" onClick={handleClick}>
       <h3>What are the specific characteristics of the DutchX?</h3>
       <span>
         <p>
@@ -60,7 +60,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="how-long-auction-takes" onClick={handleClick}>
       <h3>How long does an auction take?</h3>
       <span>
         <p>
@@ -69,7 +69,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="when-do-i-claim-tokens" onClick={handleClick}>
       <h3>When do I claim my tokens?</h3>
       <span>
         <p>
@@ -93,7 +93,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="when-auctions-start" onClick={handleClick}>
       <h3>When do auctions start?</h3>
       <span>
         <p>
@@ -103,14 +103,14 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="when-auctions-end" onClick={handleClick}>
       <h3>When do auctions end?</h3>
       <span>
         <p>Auctions end when all deposits (<i>sellTokens</i>) have been bought and thus are allocated to bidders at the auction clearing price. The auction clearing price is the price that all <i>sellTokens</i> are traded at (i.e. <i>bidVolume</i> x price = <i>sellVolume</i>).</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="which-tokens-can-trade" onClick={handleClick}>
       <h3>Which tokens can I trade?</h3>
       <span>
         <p>
@@ -132,7 +132,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="step-by-step-submit-deposit" onClick={handleClick}>
       <h3>Step-by-step guide to submit a deposit (=order):</h3>
       <span>
         <p>
@@ -171,7 +171,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="why-not-know-how-many-tokens-will-receive" onClick={handleClick}>
       <h3>Why do I not know in advance how many tokens I am receiving?</h3>
       <span>
         <p>
@@ -199,7 +199,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="hwhat-is-in-your-auctions" onClick={handleClick}>
       <h3>What is displayed in “Your Auctions”?</h3>
       <span>
         <p>You can see three statuses:</p>
@@ -228,14 +228,14 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="what-is-fee-level" onClick={handleClick}>
       <h3>What is my fee level?</h3>
       <span>
         <p>By default, your fee level is 0.5% of your trading volume. It taken from the deposited amount. You may lower your fees by trading frequently or holding MGN. For more info, check out the <Link to={URLS.FEES + '#fees'}>Fee</Link> section.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" id="what-is-wont-generate-mgn" onClick={handleClick}>
       <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
       <span>
         <p>This message is to inform you about whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. Find more information on this process <Link to={URLS.TOKENS + '#what-is-mgn'}>here</Link>. You can still use the trading interface in the same manner for tokens that do and do not generate Magnolia.</p>
