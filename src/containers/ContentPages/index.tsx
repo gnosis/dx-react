@@ -27,7 +27,7 @@ interface EventTarget {
 
 export const grabElementID = (id: string) => document.getElementById(id)
 
-class ContentPageContainer extends React.Component<ContentPageContainerProps & any> {
+class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   outerDiv: HTMLElement
 
   /* componentDidMount() {
@@ -63,6 +63,7 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps & a
 }
 
 const mapDispatch = (dispatch: Dispatch<any>) => ({
+  // why use bindActionCreators?
   pushAndMoveToElement: bindActionCreators(pushAndMoveToElement, dispatch),
 })
 
