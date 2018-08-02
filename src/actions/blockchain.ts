@@ -765,11 +765,7 @@ export const claimSellerFundsFromSeveral = (
     console.log('withdraw tx logs', withdrawLogs)
 
     // Find the 'NewWithdrawal' log
-    let withdrawEvents
-    // loop until sellBalance drops to 0
-    while (!withdrawEvents) {
-      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
-    }
+    const withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
 
     console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
 
