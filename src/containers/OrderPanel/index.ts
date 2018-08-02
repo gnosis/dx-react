@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import OrderPanel from 'components/OrderPanel'
 import { RedirectHomeIfNoAccountHOC } from 'components/RedirectIf'
 
-import { pushAndMoveToElement } from 'actions'
 import { getSellTokenBalance } from 'selectors'
 
 import { State, BigNumber } from 'types'
@@ -30,4 +29,4 @@ const mapStateToProps = (state: State) => {
   }
 }
 
-export default connect(mapStateToProps, { pushAndMoveToElement })(RedirectHomeIfNoAccountHOC(OrderPanel))
+export default connect(mapStateToProps, null)(RedirectHomeIfNoAccountHOC(OrderPanel))

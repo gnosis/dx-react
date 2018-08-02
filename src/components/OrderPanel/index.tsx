@@ -16,8 +16,6 @@ interface OrderPanelProps {
   validSellAmount: boolean,
   generatesMGN: boolean,
   overlayOpen: boolean,
-
-  pushAndMoveToElement: (id: string, url?: string) => void
 }
 
 const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbol, validSellAmount, generatesMGN, overlayOpen }) => (

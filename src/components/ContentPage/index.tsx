@@ -6,7 +6,6 @@ import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
 interface ContentPages {
   handleClick: () => any;
-  handleSectionMove: (id: string, url?: string) => void;
 }
 
 export const HowItWorks = ({ handleClick }: ContentPages) => (
