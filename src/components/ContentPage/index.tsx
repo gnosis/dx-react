@@ -270,7 +270,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="token-pairs-currently-traded">
       <h3>Which token pairs are currently traded on the DutchX?</h3>
       <span>
         <p>
@@ -281,7 +281,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="token-pairs-can-be-traded">
       <h3>Which token pairs can be traded on the DutchX?</h3>
       <span>
         <p>
@@ -290,7 +290,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="token-needed-to-trade">
       <h3>What token do I need to be active on the DutchX?</h3>
       <span>
       <p>
@@ -319,7 +319,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="does-trade-generate-mgn">
       <h3>Does my trade generate Magnolia?</h3>
       <span>
         <p>
@@ -328,7 +328,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="token-currently-whitelisted">
       <h3>Which tokens are currently whitelisted?</h3>
       <span>
         <p>
@@ -338,7 +338,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-whitelist-token">
       <h3>How can a token be whitelisted?</h3>
       <span>
         <p>Please read <a href={URLS.LISTING_A_TOKEN} target="_blank">Listing a Token</a>.</p>
@@ -350,14 +350,14 @@ export const Tokens = ({ handleClick }: ContentPages) =>
 export const Fees = ({ handleClick }: ContentPages) =>
   <article id="fees">
     <h1>Fees</h1>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-fees-need-to-pay">
       <h3>What fees do I have to pay?</h3>
       <span>
         <p>The default fee is 0.5% of your trading volume. While this might seem high at first glance, fees can be lowered down to 0%. You may also benefit from other participants’ fees, which are kept in the DutchX ecosystem.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-lower-fees">
       <h3>How can I lower my fees?</h3>
       <span>
         <p>
@@ -400,14 +400,14 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="where-to-see-fees">
       <h3>Where do I see my fees?</h3>
       <span>
         <p>In the header bar of the interface, your fee level is displayed. Note that this is a snapshot in time and due to the changing Magnolia market volume, this number should be seen as an estimate.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-get-mgn">
       <h3>How do I obtain Magnolia (MGN)?</h3>
       <span>
       <p>
@@ -417,14 +417,14 @@ export const Fees = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-trade-mgn">
       <h3>How do I trade Magnolia?</h3>
       <span>
       <p>To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction model. Currently, however, this function is not yet supported by this interface but will be available in the next version.</p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-hold-mgn">
       <h3>Why is it beneficial to hold a lot of Magnolia?</h3>
       <span>
         <p>
@@ -445,7 +445,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-to-use-owl-for">
       <h3>What are OWL used for on the DutchX?</h3>
       <span>
         <p>
@@ -454,7 +454,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-much-is-owl-worth">
       <h3>How much is OWL worth?</h3>
       <span>
         <p>
@@ -464,14 +464,14 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-pay-fees-in-owl">
       <h3>Why would I want to pay my fees in OWL?</h3>
       <span>
         <p>Firstly, if you are a GNO holder, you obtain OWL by locking your GNO. Secondly, one OWL can be used to pay one USD worth of fees (this is fixed on the DutchX). Thirdly, it is likely cheaper as the OWL may be obtained for less than one USD.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-pay-fees-in-owl">
       <h3>How do I use OWL to pay for fees?</h3>
       <span>
         <p>
@@ -481,7 +481,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-happens-to-owl-used-for-fees">
       <h3>What happens to the OWL used to pay for fees?</h3>
       <span>
         <p>
@@ -490,7 +490,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-pay-fees">
       <h3>How do I pay my fees?</h3>
       <span>
         <p>
@@ -499,7 +499,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="fee-calculation">
       <h3>Step-by-step fee calculation</h3>
       <span>
         <p>Imagine you are taking part with a volume of 20 Token A.</p>
@@ -526,28 +526,28 @@ export const Fees = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-happens-to-fees-paid-in-a-token">
       <h3>What happens to fees paid in a token (not in OWL)?</h3>
       <span>
       <p>These fees remain in the DutchX ecosystem and are redistributed among participants (mainly high-volume users will benefit from this fee redistribution model). Fees will <span className="underline">go into the next running auction</span> for the same token pair as an extra deposit-balance.</p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-fees-go-into-next-auction">
       <h3>What is the reasoning for the fees to go into the next auction?</h3>
       <span>
       <p>Users of the DutchX should be the main beneficiaries of this decentralized trading protocol. Hence, the fees should remain in the DutchX ecosystem. This means that users, and especially frequent users, benefit as they not only lower their fees, but get credited part of the fees!</p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-are-owls-burned">
       <h3>How are OWLs burned?</h3>
       <span>
       <p>Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.</p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="do-i-have-to-pay-for-gas">
       <h3>Do I also have to pay a gas price?</h3>
       <span>
         <p>Yes, you do! For all transactions on the Ethereum blockchain, gas has to be paid. The amount of gas cost to be paid depends on the current transactions being processed on Ethereum. Gas is needed to execute your order and claim your new tokens. Your wallet provider will provide you with a gas estimate for each transaction, and you may set a gas price.</p>
@@ -559,7 +559,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
 export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Auction Mechanisms</h1>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="dutchx">
       <h3>DutchX</h3>
       <span>
       <p>The DutchX is a decentralized exchange for ERC20 token pairings, based on the Dutch auction principle. Taking the traditional order book model to the blockchain makes little sense: problems such as front-running are magnified in discrete time. The mechanism of the DutchX is designed such that sellers submit their tokens ahead of an auction. Then, the auction starts with a high price which falls until the market for the specific token-pairing clears. Bidders submit their bids during the auction, but pay the same final price. Hence, the dominant strategy for bidders to reveal their true willingness to pay will result in fair market prices. Coupled with a pure on-chain design, the DutchX may function as a price oracle and is also usable for other smart contracts to convert tokens. Participants benefit from the redistribution of fees within the DutchX ecosystem as well.
@@ -567,7 +567,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-dutchx-works">
       <h3>How a Dutch auction works</h3>
       <span>
       <p>While there are some variations to the mechanism, the main concept of a Dutch auction is that it starts with a high but falling price. The first person to make a bid will purchase the auctioned item for the current price at the bidding time.
@@ -576,7 +576,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-is-batch-auction">
       <h3>What is a batch auction?</h3>
       <span>
       <p>Instead of trading continuously, the exchange collects the sell orders as batches until the auction starts, and clear them at the end of the auction all at once.<br/><br/>
@@ -586,7 +586,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="dutchx-in-detail">
       <h3>The DutchX in detail</h3>
       <span>
       <p>The DutchX for a particular token-pairing (e.g. exchange Token A for Token B) changes between two states: (i) before the particular auction starts, and (ii) when an auction is running.
@@ -604,7 +604,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="auction-over-time">
       <h3>What does each auction look like over time?</h3>
       <span>
       <p>Only one auction of the same pairing is run at the same time. Note that opposite auctions (i.e. opposite auction of Token A as sellToken and Token B as bidToken is Token B as sellToken and Token A as bidToken) run at the same time (they start simultaneously and finishing at their individual times).<br/><br/>
@@ -660,7 +660,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="do-i-need-account">
       <h3>Do I need an account on the DutchX?</h3>
       <span>
         <p>
@@ -668,7 +668,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="which-wallets-compatible">
       <h3>Which wallets are compatible with the DutchX?</h3>
       <span>
         <p>
@@ -676,25 +676,25 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-link-wallet">
       <h3>How do I link my wallet to the DutchX?</h3>
       <span>
         <p>Your wallet is automatically linked to the DutchX. In case you are not logged into your wallet, you need to log in first.</p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-if-multiple-wallets">
       <h3>What if I have multiple wallets?</h3>
       <span>
         <p>It is recommended that you hold your relevant tokens, i.e. (1) those you want to participate with in the DutchX and (2) OWL in one wallet. (3) Additionally, it is recommended that you have your locked Magnolia stored in the same wallet: don’t spread your Magnolia over more wallet addresses as they are important for reducing your fees!</p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="which-wallet-is-linked">
       <h3>What if I have multiple wallets, which wallet is linked to the DutchX?</h3>
       <span>
         <p>It depends on which wallet connects to the browser first. If you want to participate with a different wallet, simply log out of the ones you do not want to participate with in the DutchX, and refresh your browser. Check out “Which wallets are compatible with the DutchX?”.</p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="need-to-know-about-wallet">
       <h3>What else do I need to know about my wallet?</h3>
       <span>
         <p>Very important—you need to have access to your private key! It's possible to send tokens to the DutchX from an address for which you do not have access to the private key. Please keep in mind that you can only claim tokens with the address you have sent tokens from!
@@ -702,19 +702,19 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-not-all-tokens-in-wallet-shown">
       <h3>Why do I not see all tokens that I hold in my wallet on the DutchX header?</h3>
       <span>
         <p>The DutchX interface only displays those tokens that you can trade on this interface.</p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-0.0000-shown">
       <h3>Why do I see 0.0000 of a particular token in the header of the DutchX?</h3>
       <span>
         <p>The DutchX interface only display four decimals. In case you have an available balance which is less that 0.00009, the interface will only display '0.0000'.</p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="which-browsers-compatible">
       <h3>Which browsers are compatible with the DutchX?</h3>
       <span>
         <p>
@@ -722,63 +722,63 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="is-it-safe-to-trade">
       <h3>Is it safe to trade in the DutchX?</h3>
       <span>
         <p>It is as safe as it gets! The DutchX is a non-custodial trading protocol. Your funds are only ever held in audited smart contracts. There still is a public bug bounty running and no bugs have been discovered. However, you need to make sure that you are the only one who has access to your private key! Still beware of phishing attacks.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="is-there-minimum-deposit">
       <h3>Is there a minimum deposit (order)?</h3>
       <span>
         <p>No, there is not.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="is-there-maximum-deposit">
       <h3>Is there a maximum deposit (order)?</h3>
       <span>
         <p>No, there is not.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="participate-in-more-acutions">
       <h3>Can I participate in more than one auction?</h3>
       <span>
         <p>Yes, definitely! You may participate in as many auctions as you would like. Note that for a specific token pair, there is only ever one auction running at a time. If you submit two separate orders for the same pair, and the auction had not started after your first order submission, your deposits will be placed into the same auction (and an accumulated amount will be displayed).
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="participate-more-than-once">
       <h3>Can I participate more than once in the same auction?</h3>
       <span>
         <p>Yes, definitely! This will happen automatically if you submit two separate orders for the same pair, and the auction had not started after your first order. In this case, both your deposits will be placed into the same auction (and an accumulated amount will be displayed).
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-no-mgn-generated">
       <h3>Why did my trade not generate Magnolia (MGN)?</h3>
       <span>
         <p>If your trade does not generate Magnolia, that is because one (or both) of the tokens part of the auction might not be whitelisted. Learn more on the topic in the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>'Magnolia'</Link> and <Link to={URLS.TOKENS + '#what-are-whitelisted-tokens'}>'whitelisted tokens'</Link>.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="when-how-mgn-is-credited">
       <h3>When/how do I get Magnolia (MGN) credited?</h3>
       <span>
         <p>If your trade generated Magnolia, you are credited these automatically once you <Link to={URLS.HOW_IT_WORKS + '#how-do-i-claim-tokens'}>claim</Link> your new tokens (funds) from the auction. However, you will not see MGN as a balance in your wallet, as they are still locked. For your convenience, the amount of locked MGN is displayed in the header of the DutchX interface.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-no-mgn-balance-displayed">
       <h3>Why do I not see Magnolia (MGN) as a balance in my wallet?</h3>
       <span>
         <p>Magnolia are locked by default and can only then be used for fee reduction. Once you have claimed your new tokens, your MGN will be automatically credited to the wallet address used for the trade and are displayed in the header of the interface.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-no-mgn-in-header">
       <h3>Why can I not see my Magnolia (MGN) in the header?</h3>
       <span>
         <p>Make sure you are connected with the same wallet you participated with in the trade that generated those Magnolia (see section 'whitelisted tokens').
@@ -786,28 +786,28 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="is-mgn-tradable">
       <h3>Is Magnolia (MGN) tradable?</h3>
       <span>
         <p>In theory, absolutely! MGN is an ERC20 token. However, please note that MGN are locked by default in order for you to make use of the fee reduction inherent to the DutchX. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on this interface. However, you will be in the next version of the DutchX.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="can-claim-deposits">
       <h3>Can I claim back my deposits (before or during an auction)?</h3>
       <span>
         <p>No, you cannot. Once you have placed your deposit into an auction, you will have to wait for the next auction to run and to close before you may claim the token you receive. In other words: after the final submission (“Order Confirmation” screen with your wallet provider), you cannot cancel your order and you cannot receive your deposit back.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="unhappy-with-amount-received">
       <h3>What do I do when I am not happy with the amount received?</h3>
       <span>
         <p>Unfortunately, there is nothing to do about it. You have received the fair market price at that time.
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-claim-new-tokens">
       <h3>How can I claim my new tokens (funds)?
       </h3>
       <span>
@@ -815,7 +815,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="notification-to-claim">
       <h3>Can I receive a notification indicating I can claim my new tokens (funds)?
       </h3>
       <span>
@@ -823,7 +823,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="participate-with-fiat">
       <h3>Am I able to participate in the DutchX using fiat (e.g. USD, EUR)?
       </h3>
       <span>
@@ -831,7 +831,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-is-weth">
       <h3>What is wrapped Ether (W-ETH) and why do I need it?
       </h3>
       <span>
@@ -842,7 +842,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="trade-eth-and-weth">
       <h3>Can I trade both Ether and wrapped Ether?
       </h3>
       <span>
@@ -853,7 +853,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-received-weth">
       <h3>I have received W-ETH instead of ETH, what happened?
       </h3>
       <span>
@@ -862,7 +862,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         </p>
       </span>
     </section>
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="no-claimed-eth-in-wallet">
       <h3>I have claimed my ETH, but can't find them in my wallet—what happened?
       </h3>
       <span>
@@ -874,7 +874,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="approve-choices-meaning">
       <h3>What does “approve this trade only” and “approve also for future trades” mean?</h3>
       <span>
         <p>
@@ -889,7 +889,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-these-tokens-available">
       <h3>Why are exactly these tokens available on the interface?
       </h3>
       <span>
@@ -897,7 +897,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="requirements-to-add-token">
       <h3>What are the requirements for a token to be part of the curated list on the DutchX?
       </h3>
       <span>
@@ -905,7 +905,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="best-seller-strategy">
       <h3>What is my best strategy as a seller?
       </h3>
       <span>
@@ -913,15 +913,15 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-much-will-receive">
       <h3>I don’t know beforehand how much of a token I will receive —will I get the fair amount?</h3>
       <span>
-        <p>You do not know exactly how much of a token you will receive when you deposit your token— the interface will only show you an estimation based on the last auction outcome. Of course, prices may be volatile (up and down) and may change until your auction closes. However, at that point in time, it will be a fair price. To ensure that right incentives are set, we have implemented a few other safeguards beyond the mere auction design: 1) auctions only start once a threshold is reached to incentivize participation, 2) the market mechanisms applied have been explained to many market makers, 3) the tokens listed on this interface were curated based on minimal liquidity provision. This ensures that the seller always obtains at least a comparable market price as s/he would on a exchange (at auction closing time).
+        <p>You do not know exactly how much of a token you will receive when you deposit your token— the interface will only show you an estimation based on the last auction outcome. Of course, prices may be volatile (up and down) and may change until your auction closes. However, at that point in time, it will be a fair price. To ensure that right incentives are set, we have implemented a few other safeguards beyond the mere auction design: 1) auctions only start once a threshold is reached to incentivize participation, 2) the market mechanisms applied have been explained to many market makers, 3) the tokens listed on this interface were curated based on minimal liquidity provision. This ensures that the seller always obtains at least a comparable market price as s/he would on an exchange (at auction closing time).
         </p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-batch-auctions-are-applied">
       <h3>How does the DutchX apply batch auctions?</h3>
       <span>
         <p>Instead of trading continuously, the DutchX collects the sell orders as batches until the auction starts, and clears them at the end of the auction all at once.
@@ -931,14 +931,14 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="which-data-is-collected">
       <h3>Which data do you collect?</h3>
       <span>
         <p>Whenever you take part in a trade on the DutchX, transactions are stored on immutable public blockchains. For more information, please refer to the <a href="../docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a> in the footer.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="price-fairness">
       <h3>How can I be sure that the price I receive is fair?</h3>
       <span>
         <p>The DutchX mechanism is as fair as it gets! However, it reflects the current market price. Of course, the mechanism only works if there is a critical mass participating. This is why an automated trading service will guarantee that the price does not drop significantly below the market price of other trading platforms.
@@ -947,49 +947,49 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-is-liquidoty-provided">
       <h3>How is liquidity provided?</h3>
       <span>
         <p>To ensure that a critical trading mass is reached and markets work well, there will be an automated trading service at the beginning, ensuring that the market price does not drop significantly below the market price of other trading platforms. Where markets develop sufficient liquidity, the automated trading service is expected to cease.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-high-are-gas-costs">
       <h3>How high will my gas costs be?</h3>
       <span>
         <p>For every transaction to the blockchain, you will incur gast costs. As an example: In order to trade a token (depositing and claiming back) it will be a total of about 175k gas. The total cost depends on the gas price you set. At 10Gwei (and an assumed ETH-USD rate of 400), this would equal 0.70 USD.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-is-preselected-gas-price">
       <h3>What is the preselected gas price?</h3>
       <span>
         <p>The interface does not override your wallet provider’s suggestion for a gas price. It will be using the default rate of your wallet provider. You may change it directly on your wallet provider's interface.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="which-gas-price-to-set">
       <h3>Which gas price should I set?</h3>
       <span>
         <p>For transactions that are not time critical (and for which you do not mind waiting), you can set the gas price low to save gas costs.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="high-gas-price-advantage">
       <h3>Do I have an advantage with a higher gas price?</h3>
       <span>
         <p>No, not really—the mechanism of the DutchX is to batch orders and execute them at the same clearing price. What could happen with a lower gas price is that your order then gets submitted to the subsequent auction—but the logic here is the same! Hence, the only consequence would be that claiming your new tokens will get delayed. Also note that the processing of transactions takes time, hence you might need to wait longer until your order has gone through.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="transaction-problems">
       <h3>Something has gone wrong with my transaction, what happened?</h3>
       <span>
         <p>If a transaction fails, usually your wallet provider will tell you what happened. These errors will relate to the nature of the blockchain. Possible explanations include (but are not limited to): (1) you did not have sufficient ETH to pay for your gas costs, or (2) the gas price you had set was too low and thus the transaction was not mined. However, rest assured that you will not incur a loss of funds if a transaction hasn't gone through.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-price-feed-is-used">
       <h3>What price feed is the DutchX using?</h3>
       <span>
         <p>
@@ -998,21 +998,21 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="why-price-feed-is-needed">
       <h3>What does the DutchX need the ETH/USD price feed for?</h3>
       <span>
         <p>The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of <Link to={URLS.FEES + '#fees'}>fees</Link> in USD or OWL.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="can-i-use-dutchx-code">
       <h3>Can I copy, alter, and use the code of the DutchX?</h3>
       <span>
         <p>You may do everything that is allowed based on the licenses attached to the code. This is not to be considered legal advice and no further information can be given.</p>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="how-to-participate-as-buyer">
       <h3>How do I participate as a buyer?</h3>
       <span>
         <p>Unfortunately, there is currently no interface to participate in the bidding as development work was focused on providing this interface for you. If there is the demand for it, a bidder interface will be created in the future.
@@ -1021,7 +1021,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick}>
+    <section className="drawer" onClick={handleClick} id="what-happens-in-case-of-downtime">
       <h3>What happens in case of downtime?</h3>
       <span>
         <p>Unfortunately, there is no guarantee of keeping this interface available to you at all times. If the interface is down for maintenance, it will be communicated early on.In case the site is down due to unforeseen reasons, this will be communicated via the DutchX Twitter account (@DutchX_).
