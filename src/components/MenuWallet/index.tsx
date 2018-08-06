@@ -10,14 +10,13 @@ export interface WalletProps {
   addressToSymbolDecimal: {},
   balance: BigNumber,
   tokens: TokenBalances,
+  dxBalances: TokenBalances,
+  dxBalancesAvailable: boolean,
+
+  withdrawFromDutchX: ({ name, address }: { name: string, address: string }) => void;
 }
 
-// TODO: use below to map addressToSymbolMap[token] = token name or symbol
-/* addressToSymbolMap: {
-  0x1234: 'ETH'
-} */
-
-export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens }) => (
+export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens, dxBalances, dxBalancesAvailable, withdrawFromDutchX }) => (
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
@@ -34,7 +33,8 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
           <thead>
             <tr>
               <th>Token</th>
-              <th>Balance</th>
+              <th>{dxBalancesAvailable && 'Wallet '}Balance</th>
+              {dxBalancesAvailable && <th>DX Balance</th>}
             </tr>
           </thead>
           <tbody>
@@ -46,6 +46,18 @@ export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDec
                 <tr key={addressKey}>
                   <td>{name || 'Unknown'}</td>
                   <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(FIXED_DECIMALS)}</td>
+
+                  {// Conditionally render dxBalances column
+                  dxBalancesAvailable &&
+                    <td className={dxBalances[addressKey] && dxBalances[addressKey].gt(0) ? 'withPic' : ''}>
+                      {dxBalances[addressKey] && dxBalances[addressKey].div(10 ** decimals).toFixed(FIXED_DECIMALS)}
+                      {dxBalances[addressKey] && dxBalances[addressKey].gt(0) &&
+                        <img
+                          src={require('assets/claim.svg')}
+                          onClick={() => withdrawFromDutchX({ name, address: addressKey })}
+                        />
+                      }
+                    </td>}
                 </tr>
               )
             })}

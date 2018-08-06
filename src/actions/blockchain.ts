@@ -66,6 +66,7 @@ import { waitForTx } from 'integrations/filterChain'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
 import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap } from 'globals'
+import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -142,21 +143,24 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
    */
 
   // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
-  const [ongoingAuctions, tokenBalances, feeRatio, mgnLockedBalance] = await Promise.all([
+  const [ongoingAuctions, tokenBalances, feeRatio, mgnLockedBalance, dxTokenBalances] = await Promise.all([
     getSellerOngoingAuctions(mainList as DefaultTokenObject[], currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
     getFeeRatio(currentAccount),
     getLockedMGNBalance(currentAccount),
+    getAllDXTokenInfo(mainList as DefaultTokenObject[], currentAccount),
   ])
   const { balance } = tokenBalances.find((t: typeof tokenBalances[0]) => t.address === ETH_ADDRESS)
 
   // TODO: remove
-  console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio)
+  console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio, 'DXTokenBalances: ', dxTokenBalances.map(({ symbol, address, balance: i }: any) => ({ symbol, address, balance: i.div(10 ** 18).toFixed(4) })))
 
   // dispatch Actions
   dispatch(batchActions([
     ...tokenBalances.map((token: typeof tokenBalances[0]) =>
-    setTokenBalance({ address: token.address, balance: token.balance })),
+      setTokenBalance({ address: token.address, balance: token.balance })),
+    ...dxTokenBalances.map(({ address, balance }: typeof tokenBalances[0]) =>
+      setDxBalances({ address, balance })),
     setOngoingAuctions(ongoingAuctions),
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(FIXED_DECIMALS) }),
@@ -454,7 +458,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             },
             footer: {
               msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
-              url: './content/FAQ',
+              url: '#/content/FAQ',
               urlMsg: 'FAQ',
             },
             onClick: accept,
@@ -487,7 +491,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                 },
               },
               footer: {
-                url: './content/Fees',
+                url: '#/content/Fees',
                 urlMsg: 'Fees',
               },
               onClick: accept,
@@ -667,6 +671,45 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
   }
 }
 
+export const withdrawFromDutchX = ({ name, address }: { name: string, address: string }) => async (dispatch: Dispatch<any>, getState: () => State) => {
+  const { blockchain: { activeProvider } } = getState(),
+    { DutchExchange } = contractsMap,
+    decoder = getDecoderForABI(DutchExchange.abi)
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: `Withdrawing Funds`,
+        body: `You are withdrawing ${name} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+        loader: true,
+      },
+    }))
+
+    // await withdraw(address)
+
+    const withdrawHash = await withdraw.sendTransaction(address)
+    // get receipt or throw TIMEOUT
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    console.log('Withdraw TX receipt: ', withdrawReceipt)
+
+    // next line unreachable in case of TIMEOUT
+    // @ts-ignore
+    const withdrawLogs = decoder(withdrawReceipt.logs)
+    console.log('withdraw tx logs', withdrawLogs)
+
+    // Find the 'NewWithdrawal' log
+    let withdrawEvents
+    // loop until sellBalance drops to 0
+    while (!withdrawEvents) {
+      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
+    }
+
+    return dispatch(closeModal())
+  } catch (error) {
+    dispatch(errorHandling(error))
+  }
+}
+
 export const claimSellerFundsAndWithdrawFromAuction = (
   pair: TokenPair,
   index: number,
@@ -734,7 +777,7 @@ export const claimSellerFundsFromSeveral = (
     console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
 
     // >>> ============= >>>
-    // END CLAIMING TX WATCHING
+    // END CLAIMING TX
     // >>> ============= >>>
 
     dispatch(openModal({
@@ -755,7 +798,7 @@ export const claimSellerFundsFromSeveral = (
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT
-    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)
 
     decoder = getDecoderForABI(DutchExchange.abi)
@@ -765,11 +808,7 @@ export const claimSellerFundsFromSeveral = (
     console.log('withdraw tx logs', withdrawLogs)
 
     // Find the 'NewWithdrawal' log
-    let withdrawEvents
-    // loop until sellBalance drops to 0
-    while (!withdrawEvents) {
-      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
-    }
+    const withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
 
     console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
 
@@ -841,6 +880,10 @@ export function errorHandling(error: Error, goHome = true) {
     console.error(error.message)
     // close to unmount
     dispatch(closeModal())
+
+    // reset sellAmount
+    dispatch(setSellTokenAmount({ sellAmount: '0' }))
+
     // go home stacy
     if (goHome) dispatch(push('/'))
     dispatch(openModal({
