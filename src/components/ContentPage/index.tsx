@@ -356,8 +356,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
         <p>The default fee is 0.5% of your trading volume. While this might seem high at first glance, fees can be lowered down to 0%. You may also benefit from other participants’ fees, which are kept in the DutchX ecosystem.</p>
       </span>
     </section>
-
-    <section className="drawer" onClick={handleClick} id="how-to-lower-fees">
+    <section className="drawer" id="fee-reduction-image" onClick={handleClick}>
       <h3>How can I lower my fees?</h3>
       <span>
         <p>

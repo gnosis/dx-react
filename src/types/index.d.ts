@@ -222,6 +222,7 @@ export interface State {
   ipfs: IPFS,
   ratioPairs: RatioPairs
   tokenBalances: TokenBalances,
+  dxBalances: TokenBalances,
   tokenList: TokenList,
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
