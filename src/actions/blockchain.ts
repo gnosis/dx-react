@@ -454,7 +454,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
             },
             footer: {
               msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
-              url: './content/FAQ',
+              url: '#/content/FAQ',
               urlMsg: 'FAQ',
             },
             onClick: accept,
@@ -487,7 +487,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
                 },
               },
               footer: {
-                url: './content/Fees',
+                url: '#/content/Fees',
                 urlMsg: 'Fees',
               },
               onClick: accept,
@@ -765,11 +765,7 @@ export const claimSellerFundsFromSeveral = (
     console.log('withdraw tx logs', withdrawLogs)
 
     // Find the 'NewWithdrawal' log
-    let withdrawEvents
-    // loop until sellBalance drops to 0
-    while (!withdrawEvents) {
-      withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
-    }
+    const withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
 
     console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
 
