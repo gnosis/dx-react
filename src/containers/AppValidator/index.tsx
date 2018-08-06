@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import providerWatcher from 'integrations/providerWatcher'
-// import fireListeners from 'integrations/events';
 import MetamaskProvider from 'integrations/metamask'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
@@ -11,15 +10,7 @@ import { State } from 'types'
 import { getTokenList } from 'actions'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
-const offlineBanner: React.CSSProperties = {
-  position: 'relative',
-  backgroundColor: '#f78484',
-  lineHeight: 'initial',
-  textAlign: 'center',
-  width: '100%',
-  fontWeight: 300,
-  padding: '5px 0px',
-}
+
 const removeListeners = (listeners: string[], actors: EventListenerOrEventListenerObject[]) => {
   listeners.forEach((l, i) => window.removeEventListener(l, actors[i]))
 }
@@ -137,8 +128,8 @@ class AppValidator extends React.Component<any> {
 
   renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, online: boolean, SET_UP_COMPLETE?: boolean }) =>
     <>
-      { !online && <h2 style={offlineBanner}> App is currently offline - please your check internet connection and refresh the page </h2> }
-      { (!SET_UP_COMPLETE || !this.props.unlocked) && <h2 style={{ ...offlineBanner, ...{ backgroundColor: 'orange' } }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
+      { !online && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
+      { (!SET_UP_COMPLETE || !this.props.unlocked) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
       {this.props.children}
     </>
 
