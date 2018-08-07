@@ -127,7 +127,7 @@ export const waitForEvent = async (txHash: string, eventToFind: string) => {
         Looking for event : ${eventToFind}
         `)
         if (event.event === eventToFind && event.transactionHash === txHash) {
-          store.dispatch(removeTransaction({ txHash }))
+          // store.dispatch(removeTransaction({ txHash }))
           accept(event)
         } else {
           console.log('Not the correct EVENT and/or TX_HASH')
