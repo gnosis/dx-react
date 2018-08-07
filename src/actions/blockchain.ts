@@ -563,12 +563,13 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 
     dispatch(closeModal())
 
-    // const { LOGS_AND_EVENTS: transactionsPending } = getState()
+    dispatch(push('/'))
 
-    const receipt = await waitForEvent(hash, 'NewSellOrder')
-    console.log('PostSellOrder tx receipt: ', receipt)
+    // wait here for sellOrder to complete
+    // const sellReceipt = await waitForEvent(hash, 'NewSellOrder')
+    // console.log('PostSellOrder tx receipt: ', sellReceipt)
 
-    const { returnValues: { auctionIndex } } = receipt
+    // const { returnValues: { auctionIndex } } = sellReceipt
 
     // let receipt
     // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
@@ -584,10 +585,10 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // }
     // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
 
-    console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
+    // console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     // dispatch(closeModal())
     // jump to Auction Page
-    dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
+    // dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
 
     // // grab balance of sold token after sale
     // const balance = await getTokenBalance(sell.address, currentAccount)
