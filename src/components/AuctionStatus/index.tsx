@@ -11,6 +11,7 @@ export interface AuctionStatusProps {
   buyToken: DefaultTokenObject,
   sellAmount: BigNumber,
   buyAmount: BigNumber,
+  auctionStart: BigNumber,
   timeLeft: number,
   status: Status,
   completed: boolean,
@@ -89,6 +90,64 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
 
 const ShowStatusWithClaiming = TokenClaimingHOC(ShowStatus)
 
+const AUCTION_RUN_TIME = 6.5 * 60 * 60 * 1000 // 6.5 hours in ms
+const WAITING_PERIOD = 10 * 60 * 1000 // 10 min in ms
+
+const getHours = (ms: number) => new Date(ms).getUTCHours()
+
+type ShowTimingProps = Pick<AuctionStatusProps, 'auctionStart' | 'status' | 'sellToken'>
+
+const ShowTiming: React.SFC<ShowTimingProps> = ({ auctionStart, status, sellToken }) => {
+  const sToken = sellToken.symbol || sellToken.name || sellToken.address
+  const auctionStartMs = auctionStart.mul(1000)
+
+  if (auctionStartMs.gt(Date.now())) {
+    // auctionStart in the future
+    const timeTillNext = auctionStartMs.sub(Date.now()).toNumber()
+    const claimableIn = timeTillNext + AUCTION_RUN_TIME
+
+    return (
+      <p>
+        Your auction will start in {getHours(timeTillNext)} hours and will run for approx 6 hours
+        <br/>
+        The {sToken} tokens will be claimable in approximately {getHours(claimableIn)} hours
+      </p>
+    )
+  } else {
+    // auctionStart in the past
+
+    // index corresponds to a future auction
+    if (status === Status.PLANNED) {
+      const timeTillNext = auctionStartMs.add(AUCTION_RUN_TIME + WAITING_PERIOD).sub(Date.now()).toNumber()
+      const claimableIn = timeTillNext + AUCTION_RUN_TIME
+
+      return (
+        <p>
+          Your auction will start in {getHours(timeTillNext)} hours and will run for approx 6 hours
+          <br/>
+          The {sToken} tokens will be claimable in approximately {getHours(claimableIn)} hours
+        </p>
+      )
+    }
+
+    // index corresponds to an active auction
+    if (status === Status.ACTIVE) {
+      const timeSinceStart = Date.now() - auctionStartMs.toNumber()
+      const claimableIn = timeSinceStart + AUCTION_RUN_TIME
+
+      return (
+        <p>
+          Your auction started {getHours(timeSinceStart)} hours ago and will run for approx 6 hours
+          <br/>
+          The {sToken} tokens will be claimable in approximately {getHours(claimableIn)} hours
+        </p>
+      )
+    }
+  }
+
+  return null
+}
+
 const AuctionStatus: React.SFC<AuctionStatusProps> = props => {
   const { sellToken, buyToken, status } = props
 
@@ -108,6 +167,7 @@ const AuctionStatus: React.SFC<AuctionStatusProps> = props => {
       </span>
 
       <ShowStatusWithClaiming {...props}/>
+      <ShowTiming {...props}/>
     </div>
   )
 }
