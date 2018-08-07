@@ -141,16 +141,16 @@ async function init() {
     const { currentProvider } = await promisedWeb3
     setProvider(currentProvider)
 
-    const instances = await getPromisedIntances().catch(console.error)
+    const instances = await getPromisedIntances()
 
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
     const deployedContracts = contractNames.reduce((acc, name, i) => {
       if (name === 'TokenFRT') {
-        acc['TokenMGN'] = instances[i]
-      } else {
-        acc[filename2ContractNameMap[name] || name] = instances[i]
-      }
+      acc['TokenMGN'] = instances[i]
+    } else {
+      acc[filename2ContractNameMap[name] || name] = instances[i]
+    }
       return acc
     }, {}) as ContractsMapWProxy
 
@@ -165,12 +165,9 @@ async function init() {
     if (process.env.NODE_ENV !== 'production') {
       console.log(deployedContracts)
     }
-    console.warn(`
-      API/CONTRACT SETUP FINISHED
-    `)
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)
-    throw err
+    // throw err
   }
 }

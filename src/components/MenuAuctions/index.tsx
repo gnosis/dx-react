@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { OngoingAuctions } from 'types'
-import { Link } from 'react-router-dom'
 import { DefaultTokenObject } from 'api/types'
 import { Action } from 'redux'
 
@@ -47,18 +46,14 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                         key={`${auction.sell.address}-${auction.buy.address}-${i}`}
                       >
                         <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`)}>
-                          <td>
-                            <Link to={`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`}>
-                              {`${auction.sell.symbol}/${auction.buy.symbol}`}
-                            </ Link>
-                          </td>
+                          <td className="sectionLink">{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
                           <td>
                             {auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}
                           </td>
                           {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                         </tr>
                         <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}>
-                          <td>{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
+                          <td className="sectionLink">{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
                           <td>
                             {auction.balancePerIndexInverse.last() &&
                               <p>
@@ -77,11 +72,11 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                         key={`${auction.buy.address}-${auction.sell.address}-${i}`}
                         onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}
                       >
-                        <td>{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
+                        <td className="sectionLink">{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
                         <td>
                           {auction.balancePerIndexInverse.last() &&
                             <p>
-                              {`${auction.balancePerIndexInverse.last()} ${auction.sell.symbol}`}
+                              {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
                             </p>}
                         </td>
                         {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
@@ -94,7 +89,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                       key={`${auction.sell.address}-${auction.buy.address}-${i}`}
                       onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`)}
                     >
-                      <td>{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
+                      <td className="sectionLink">{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
                       <td>{auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}</td>
                       {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
                     </tr>

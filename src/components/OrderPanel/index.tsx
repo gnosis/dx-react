@@ -7,6 +7,8 @@ import AuctionSellingGetting from 'containers/AuctionSellingGetting'
 import ButtonCTA from 'components/ButtonCTA'
 import TokenPair from 'containers/TokenPair'
 import TokenOverlay from 'containers/TokenOverlay'
+import { URLS } from 'globals'
+import { Link } from 'react-router-dom'
 
 interface OrderPanelProps {
   sellTokenSymbol: string,
@@ -24,7 +26,7 @@ const OrderPanel: React.SFC<OrderPanelProps> = ({ sellTokenSymbol, buyTokenSymbo
     </AuctionHeader>
 
     {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
-    {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN">Note: this token pair won't generate MGN tokens</div>}
+    {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN">Note: this token pair <Link to={URLS.TOKENS + '#what-is-mgn'}>won't generate MGN tokens</Link></div>}
     {/* END */}
 
     <TokenPair />

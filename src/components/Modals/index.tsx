@@ -5,6 +5,7 @@ import { network2URL } from 'globals'
 
 import Loader from 'components/Loader'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
+import { displayUserFriendlyError } from 'utils/helpers'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -63,12 +64,12 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     </div>}
     {error &&
     <p className="modalError">
-      {`${error.slice(0, 300)}...`}
+      {displayUserFriendlyError(error)}
     </p>}
     {button &&
     <button
       className="modalButton"
-      onClick={() => closeModal()}
+      onClick={closeModal}
     >
       CLOSE
     </button>
@@ -122,7 +123,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {footer.msg || null}
           <br/>
           <br/>
-          For more information, read the <a href={footer.url || './content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
+          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
         </i>
       </p>}
   </div>

@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import watcher from 'integrations/watcher'
-// import fireListeners from 'integrations/events';
+import providerWatcher from 'integrations/providerWatcher'
 import MetamaskProvider from 'integrations/metamask'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
@@ -11,15 +10,6 @@ import { State } from 'types'
 import { getTokenList } from 'actions'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
-const offlineBanner: React.CSSProperties = {
-  position: 'relative',
-  backgroundColor: '#f78484',
-  lineHeight: 'initial',
-  textAlign: 'center',
-  width: '100%',
-  fontWeight: 300,
-  padding: '5px 0px',
-}
 const removeListeners = (listeners: string[], actors: EventListenerOrEventListenerObject[]) => {
   listeners.forEach((l, i) => window.removeEventListener(l, actors[i]))
 }
@@ -33,6 +23,7 @@ class AppValidator extends React.Component<any> {
   state = {
     online: inBrowser ? navigator.onLine : true,
     SET_UP_COMPLETE: true,
+    error: '',
   }
 
   async componentWillMount() {
@@ -41,29 +32,31 @@ class AppValidator extends React.Component<any> {
 
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
-      // await fireListeners()
 
       if (this.state.online) {
+
         console.warn(`
           App Status: ONLINE
         `)
 
-        /* // TODO: make into init function
-        provider.initialize()
-        // dispatch action to save provider name and priority
-        registerProvider({ provider: provider.providerName, priority: provider.priority }) */
-
+        // Grabs network relevant token list
+        // Sets available auctions relevant to that list
         await getTokenList(network)
 
-        await watcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState })
+        // Initiate Provider
+        await providerWatcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState })
+
+        // initialise basic user state
         await initDutchX()
 
         this.setState({
           SET_UP_COMPLETE: true,
         })
+
         console.warn(`
           APPVALIDATOR MOUNT FINISHED
         `)
+        // start polling for changes and update user state
         return this.startPolling()
       }
 
@@ -71,15 +64,16 @@ class AppValidator extends React.Component<any> {
         App Status: OFFLINE
       `)
 
-    } catch (err) {
+    } catch (error) {
       this.setState({
         SET_UP_COMPLETE: false,
+        error,
       })
       if (this.state.online) {
         console.warn('AppValidator mounting error - please make sure your wallet is available and unlocked then refresh the page.')
-        console.error(err)
+        console.error(error)
       }
-      this.startPolling(1000)
+      this.startPolling(3000)
     }
   }
 
@@ -106,7 +100,7 @@ class AppValidator extends React.Component<any> {
 
   connect = () => {
     if (!this.state.online) {
-      console.log('​Detected new connection. Starting poll.')
+      console.log('​Detected new connection')
 
       this.startPolling()
       return this.setState({ online: true })
@@ -115,7 +109,7 @@ class AppValidator extends React.Component<any> {
 
   disconnect = () => {
     if (this.state.online) {
-      console.log('​Detected connection loss. Stopping poll.')
+      console.log('​Detected connection loss')
 
       this.stopPolling()
       return this.setState({ online: false })
@@ -126,21 +120,21 @@ class AppValidator extends React.Component<any> {
     const { updateMainAppState, updateProvider, resetMainAppState } = this.props
 
     console.log('AppValidator: Polling started')
-    return this.dataPollerID = setInterval(() => watcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState }), pollTime)
+    return this.dataPollerID = setInterval(() => providerWatcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState }), pollTime)
   }
 
-  stopPolling = () => clearInterval(this.dataPollerID)
+  stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
 
-  renderOfflineApp = ({ online, SET_UP_COMPLETE }: { online: boolean, SET_UP_COMPLETE?: boolean }) =>
+  renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, online: boolean, SET_UP_COMPLETE?: boolean }) =>
     <>
-      { !online && <h2 style={offlineBanner}> App is currently offline - please your check internet connection and refresh the page </h2> }
-      { !SET_UP_COMPLETE && <h2 style={{ ...offlineBanner, ...{ backgroundColor: 'orange' } }}> App initialisation failed. Please make sure your wallet is unlocked and refresh the page </h2> }
+      { !online && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
+      { (!SET_UP_COMPLETE || !this.props.unlocked) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
       {this.props.children}
     </>
 
   render() {
-    const { children } = this.props
-    return this.state.online && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
+    const { children, unlocked } = this.props
+    return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
   }
 }
 

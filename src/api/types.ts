@@ -6,6 +6,7 @@ export interface DefaultTokens {
   elements: DefaultTokenList;
   page: number,
   hasMorePages: boolean;
+  version: number;
 }
 export interface DefaultTokenObject {
   name: TokenName;
@@ -506,7 +507,7 @@ interface DutchExchange<T = Receipt> {
   isTokenApproved(tokenAddress: Account): Promise<boolean>,
   getApprovedAddressesOfList(tokenAddresses: Account[]): Promise<boolean[]>,
 
-  getBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
+  getDXTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
   getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,

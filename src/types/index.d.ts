@@ -141,6 +141,7 @@ export interface TokenList {
   combinedTokenList: DefaultTokenObject[];
   type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'];
   allowUpload: boolean;
+  version: number;
 }
 
 /**
@@ -221,6 +222,7 @@ export interface State {
   ipfs: IPFS,
   ratioPairs: RatioPairs
   tokenBalances: TokenBalances,
+  dxBalances: TokenBalances,
   tokenList: TokenList,
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,

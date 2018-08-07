@@ -96,28 +96,17 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   try {
-    // init Provider first - set a watcher for 6000 ms to check changes
-    await initialize(providerOptions)
+    const provider = MetamaskProvider
 
-    const { combinedTokenList } = await dispatch(getTokenList())
+    provider.initialize()
 
-    // TODO: fetch approvedTokens list from api
-    // then after getting tokensJSON in getDefaultTokens create a list of approved TokenCodes
-    // then only dispatch that list
-    // const [ETH, GNO] = defaultTokenList
-    // dispatch(setApprovedTokens([ETH.address, GNO.address]))
+    // dispatch action to save provider name and priority
+    dispatchers.regProvider(provider.providerName, { priority: provider.priority })
 
-    const [approvedTokenAddresses, availableAuctions] = await Promise.all([
-      getApprovedTokensFromAllTokens(combinedTokenList),
-      getAvailableAuctionsFromAllTokens(combinedTokenList),
-    ])
-    dispatch(setApprovedTokens(approvedTokenAddresses))
-    dispatch(setAvailableAuctions(availableAuctions))
+    const newState = await grabProviderState(provider)
 
-    // await dispatch(initDutchX())
-    // set state in app
-    // return dispatch(updateMainAppState())
+    dispatchers.updateProvider(provider.providerName, { ...newState })
   } catch (error) {
-    console.warn(error.message || error)
+    console.error(error.message || error)
   }
 } */

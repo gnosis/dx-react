@@ -3,7 +3,7 @@ import { promisedContractsMap } from 'api/contracts'
 import { DefaultTokens } from 'api/types'
 import { ETH_ADDRESS } from 'globals'
 
-export default async () => {
+export default async (version?: string | number) => {
   const {
     TokenETH,
     TokenGNO,
@@ -55,5 +55,6 @@ export default async () => {
     ],
     page: 1,
     hasMorePages: false,
+    version,
   } as DefaultTokens
 }

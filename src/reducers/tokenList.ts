@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-import { setDefaultTokenList, setCustomTokenList, setTokenListType } from 'actions'
+import { setDefaultTokenList, setCustomTokenList, setTokenListType, setTokenListVersion } from 'actions'
 import { DefaultTokenObject } from 'api/types'
 
 import { createSelector } from 'reselect'
@@ -36,7 +36,7 @@ export default handleActions(
     [setDefaultTokenList.toString()]: (state: any, action: any) => ({
       ...state,
       defaultTokenList: action.payload.defaultTokenList,
-      combinedTokenList: combine(state,action),
+      combinedTokenList: combine(state, action),
     }),
     [setCustomTokenList.toString()]: (state: any, action: any) => ({
       ...state,
@@ -47,6 +47,10 @@ export default handleActions(
       ...state,
       type: action.payload.type,
     }),
+    [setTokenListVersion.toString()]: (state, action) => ({
+      ...state,
+      version: action.payload.version,
+    }),
   },
   {
     defaultTokenList:   [],
@@ -54,5 +58,6 @@ export default handleActions(
     combinedTokenList:  [],
     type: 'DEFAULT',
     allowUpload: false,     // TODO: centralized version - set to true in reducers/tokenLists.ts when decentralised
+    version: '1.0',
   },
 )

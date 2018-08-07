@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Provider } from 'react-redux'
-import createHistory from 'history/createBrowserHistory'
+import createHistory from 'history/createHashHistory'
 
 import 'styles/global.scss'
 

@@ -73,7 +73,7 @@ img {
 }
 
 section.home, section.auction {
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
   align-items: center;
 
   @media #{$mobile} {
@@ -93,6 +93,8 @@ section.home {
   @media #{$mobile} {
     flex-wrap: wrap;
     height: auto;
+
+    margin-top: 80px;
   }
 }
 

@@ -28,6 +28,8 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
     }
   }
 
+  onFocus = () => this.props.setSellTokenAmount({ sellAmount: '' })
+
   /* Removed as per DX-335 - unsafe UX - keeping commented for now
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const { maxSellAmount, setSellTokenAmount } = this.props
@@ -49,6 +51,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
           name="sellingAmount"
           id="sellingAmount"
           onChange={this.onChange}
+          onFocus={this.onFocus}
           value={sellAmount}
           min="0"
           /* max={maxSellAmount.toString()} */

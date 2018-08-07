@@ -1,18 +1,14 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteProps } from 'react-router-dom'
 
 import * as ContentPages from 'components/ContentPage'
-import { push } from 'connected-react-router'
-import { connect } from 'react-redux'
 
-export interface ContentPageContainerProps {
+export interface ContentPageContainerProps extends RouteProps {
   match: {
     params: {
       contentPage: string,
     },
   };
-  children?: JSX.Element;
-  push({}): () => any;
 }
 
 interface EventTarget {
@@ -22,14 +18,36 @@ interface EventTarget {
   currentTarget: HTMLElement;
 }
 
-const grabElementID = (id: string) => document.getElementById(id)
+export const grabElementID = (id: string) => document.getElementById(id)
 
-class ContentPageContainer extends React.Component<ContentPageContainerProps & any> {
+class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   outerDiv: HTMLElement
 
-  /* componentDidMount() {
-    this.outerDiv && this.outerDiv.focus()
-  } */
+  componentDidMount() {
+    // scroll to element if needed on initial visit
+    this.scrollToHash()
+  }
+
+  componentDidUpdate(prevProps: ContentPageContainerProps) {
+    const { hash, pathname } = this.props.location
+    const { hash: prevHash, pathname: prevPathname } = prevProps.location
+
+    if (hash === prevHash && pathname === prevPathname) return
+    // on path change, check if need to scroll to an element
+    this.scrollToHash()
+  }
+
+  scrollToHash(hash = this.props.location.hash) {
+    if (hash) {
+      const elem = document.querySelector(hash)
+      if (elem) {
+        const { classList } = elem
+        // only apply .active to .drawer
+        if (classList.contains('drawer')) classList.add('active')
+        elem.scrollIntoView()
+      }
+    }
+  }
 
   renderContentPage = (name: string, props?: any) => {
     const Component = ContentPages[name]
@@ -39,21 +57,6 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps & a
   handleClick = (e: EventTarget) => {
     if (e.target.parentElement !== e.currentTarget) return
     e.currentTarget.classList.toggle('active')
-  }
-
-  handleSectionMove = async (sectionID: string, outsidePage?: string) => {
-    if (outsidePage) {
-      await this.props.push(outsidePage)
-    }
-
-    if (!sectionID) return
-
-    if (Array.from(grabElementID(sectionID).classList).some((className: string) => className === 'active')) {
-      return grabElementID(sectionID).scrollIntoView()
-    }
-
-    grabElementID(sectionID).classList.toggle('active')
-    return grabElementID(sectionID).scrollIntoView()
   }
 
   render() {
@@ -66,7 +69,7 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps & a
           /* ref={c => this.outerDiv = c} */
           tabIndex={1}
         >
-          {this.renderContentPage(contentPage, { handleClick: this.handleClick, handleSectionMove: this.handleSectionMove })}
+          {this.renderContentPage(contentPage, { handleClick: this.handleClick })}
         </div>
       :
         <Redirect to="/404" />
@@ -74,4 +77,4 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps & a
   }
 }
 
-export default connect(undefined, { push })(ContentPageContainer)
+export default ContentPageContainer

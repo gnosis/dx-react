@@ -180,7 +180,7 @@ async function init(): Promise<DutchExchange> {
 
   const getApprovedAddressesOfList = (tokenAddresses: Account[]) => dx.getApprovedAddressesOfList.call(tokenAddresses)
 
-  const getBalance = (tokenAddress: Account, userAccount: Account) =>
+  const getDXTokenBalance = (tokenAddress: Account, userAccount: Account) =>
     dx.balances.call(tokenAddress, userAccount)
 
   const getRunningTokenPairs = (tokenList: Account[]) => dx.getRunningTokenPairs.call(tokenList)
@@ -224,7 +224,7 @@ async function init(): Promise<DutchExchange> {
     },
     isTokenApproved,
     getApprovedAddressesOfList,
-    getBalance,
+    getDXTokenBalance,
     getLatestAuctionIndex,
     getAuctionStart,
     getClosingPrice,

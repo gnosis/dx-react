@@ -49,7 +49,7 @@ export const getCurrentAccount = async () => {
   return web3.getCurrentAccount()
 }
 
-const fillDefaultAccount = (account?: Account) => !account ? getCurrentAccount() : account
+export const fillDefaultAccount = (account?: Account) => !account ? getCurrentAccount() : account
 
 export const getAllAccounts = async () => {
   const { web3 } = await promisedAPI
@@ -400,7 +400,7 @@ export const getDXTokenBalance = async (tokenAddress: Account, userAccount?: Acc
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  return DutchX.getBalance(tokenAddress, userAccount)
+  return DutchX.getDXTokenBalance(tokenAddress, userAccount)
 }
 
 /*
@@ -656,7 +656,7 @@ export const withdraw: Withdraw = async (tokenAddress: string, amount?: Balance,
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  const withdrawableBalance = await DutchX.getBalance(tokenAddress, userAccount)
+  const withdrawableBalance = await DutchX.getDXTokenBalance(tokenAddress, userAccount)
   if (withdrawableBalance.lte(0)) throw new Error('Withdraw balance cannot be 0')
 
   return amount ? DutchX.withdraw(tokenAddress, amount, userAccount) : DutchX.withdraw(tokenAddress, withdrawableBalance, userAccount)
@@ -666,8 +666,8 @@ withdraw.sendTransaction = async (tokenAddress: string, amount?: Balance, userAc
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
-  const withdrawableBalance = await DutchX.getBalance(tokenAddress, userAccount)
-  if (withdrawableBalance.lte(0)) throw new Error('Withdraw balance cannot be 0')
+  const withdrawableBalance = await DutchX.getDXTokenBalance(tokenAddress, userAccount)
+  // if (withdrawableBalance.lte(0)) throw new Error('Withdraw balance cannot be 0')
 
   return amount ? DutchX.withdraw.sendTransaction(tokenAddress, amount, userAccount) : DutchX.withdraw.sendTransaction(tokenAddress, withdrawableBalance, userAccount)
 }

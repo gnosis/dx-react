@@ -12,6 +12,8 @@ export const setCustomTokenList = createAction<{ customTokenList: DefaultTokenOb
 
 export const setTokenListType = createAction<{ type: TokenListType['CUSTOM' | 'DEFAULT' | 'UPLOAD'] }>('SET_TOKEN_LIST_TYPE')
 
+export const setTokenListVersion = createAction<{ version: number | string }>('SET_TOKEN_LIST_VERSION')
+
 export const setNewIPFSCustomListAndUpdateBalances = (p1: { customTokenList: DefaultTokenObject[] }) => async (dispatch: Function, getState: () => State) => {
   dispatch(setCustomTokenList(p1))
 

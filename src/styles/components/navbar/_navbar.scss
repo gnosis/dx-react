@@ -362,7 +362,7 @@ header {
     margin: 0;
     z-index: 99;
     cursor: default;
-    width: calc(100% - 24px);
+    min-width: calc(100% - 40px);
     box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
     border: 2px solid transparent;
     max-height: 660px;
@@ -436,10 +436,25 @@ header {
         padding: 6px;
       }
 
-      td {
+      td {        
+        > img {
+          background: $orange;
+          border-radius: 50px;
+          height: 14px;
+          width: 14px;
+          padding: 2px;
+          margin-left: 7px;
+          cursor: pointer;
+        }
+
         @media #{$mobile} {
           padding: 12px;
         }
+      }
+
+      .withPic {
+        display: inline-flex;
+        align-items: center;
       }
     }
   }
