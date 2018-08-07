@@ -503,6 +503,10 @@ $headerHeight: 58px;
     width: 100%;
     flex-basis: 100%;
   }
+
+  > p {
+    text-align: center;
+  }
 }
 
 #claimToken {
@@ -687,14 +691,14 @@ $headerHeight: 58px;
   justify-content: space-around;
   align-items: center;
   transition: 1s all ease-in-out;
-  
+
   > span {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
   }
-  
+
   > span > small {
     opacity: .5;
     letter-spacing: 1px;
@@ -705,12 +709,12 @@ $headerHeight: 58px;
     line-height: 1;
     padding: 0 0 10px;
   }
-  
+
   > span > big {
     font-size: 20px;
     font-weight: normal;
   }
-  
+
   a {
     color: $white;
   }
