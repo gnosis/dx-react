@@ -1,5 +1,4 @@
 import { WalletProvider } from 'integrations/types'
-import { promisify } from 'api/utils'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
 import { Account, Balance } from 'types'
 import { getTime } from 'api'
@@ -19,23 +18,23 @@ let prevTime: number
 const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppState, updateProvider, resetMainAppState }: any) => {
 
   const getAccount = async (provider: WalletProvider): Promise<Account> => {
-    const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
+    const [account] = await provider.web3.eth.getAccounts()
 
     return account
   }
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
-    const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+    const networkId = await provider.web3.eth.net.getId()
     return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
+    const balance = await provider.web3.eth.getBalance(account)
 
-    const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
-
-    return provider.web3.fromWei(balance, 'ether').toString()
+    return provider.web3.utils.fromWei(balance, 'ether').toString()
   }
-    // set block timestamp to provider state and compare
+
+  // set block timestamp to provider state and compare
   try {
     if (!provider.checkAvailability() || (window.navigator && !window.navigator.onLine)) throw new Error('Provider and/or internet issues')
     provider.state.timestamp = prevTime
@@ -63,24 +62,24 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
         // check if initial load or wallet locked
 
       if (!unlocked) {
-          watcherLogger({
+        watcherLogger({
             logType: 'warn',
             status: 'WALLET LOCKED',
             info: 'Please unlock your wallet provider',
             updateState: false,
           })
           // if wallet locked, throw
-          throw 'Wallet locked'
-        }
+        throw 'Wallet locked'
+      }
       else {
-          watcherLogger({
+        watcherLogger({
             logType: 'warn',
             status: 'CONNECTED + WALLET UNLOCKED',
             info: 'Web3 provider connected + wallet unlocked',
             updateState: true,
           })
-          await updateMainAppState()
-        }
+        await updateMainAppState()
+      }
     }
   } catch (err) {
     console.warn(err)
