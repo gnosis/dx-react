@@ -1,5 +1,28 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
 
+export enum ETHEREUM_NETWORKS {
+  MAIN = 'MAIN',
+  MORDEN = 'MORDEN',
+  ROPSTEN = 'ROPSTEN',
+  RINKEBY = 'RINKEBY',
+  KOVAN = 'KOVAN',
+  UNKNOWN = 'UNKNOWN',
+}
+
+export enum WALLET_PROVIDER {
+  METAMASK = 'METAMASK',
+  PARITY = 'PARITY',
+  REMOTE = 'REMOTE',
+}
+
+export const networkById = {
+  1: ETHEREUM_NETWORKS.MAIN,
+  2: ETHEREUM_NETWORKS.MORDEN,
+  3: ETHEREUM_NETWORKS.ROPSTEN,
+  4: ETHEREUM_NETWORKS.RINKEBY,
+  42: ETHEREUM_NETWORKS.KOVAN,
+}
+
 export const code2tokenMap: Code2Name = {
   ETH: 'ETHER',
   WETH: 'WRAPPED ETHER',
@@ -100,3 +123,5 @@ export const CANCEL_TX_ERROR = 'TRANSACTION CANCELLED: User denied transaction s
 export const NO_INTERNET_TX_ERROR = 'TRANSACTION CANCELLED: Internet connection issues detected. Please check your connection and try again. Transaction will not be submitted to the blockchain.'
 export const LOW_GAS_ERROR = 'TRANSACTION CANCELLED: Gas limit set too low. Please try transaction again with a higher gas limit.'
 export const DEFAULT_ERROR = 'TRANSACTION CANCELLED: Please check your developer console for more information.'
+
+export const WATCHER_INTERVAL = 5000

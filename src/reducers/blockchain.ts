@@ -14,7 +14,6 @@ import {
   resetAppState,
 } from 'actions/blockchain'
 
-import { GAS_COST } from 'utils/constants'
 import { Blockchain, Provider } from 'types'
 
 const INITIAL_PROVIDER_STATE: Provider = {
@@ -28,8 +27,6 @@ const INITIAL_PROVIDER_STATE: Provider = {
 }
 
 const initialState: Blockchain = {
-  gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
-  gasPrice: undefined,
   connectionTried: false,
   providers: {},
   activeProvider: null,

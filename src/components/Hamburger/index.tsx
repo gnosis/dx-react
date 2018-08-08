@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { handleKeyDown } from 'utils/helpers'
+import { handleKeyDown } from 'utils'
 import { Link, NavLink } from 'react-router-dom'
 import { URLS } from 'globals'
 

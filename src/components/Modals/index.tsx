@@ -1,11 +1,10 @@
 import React, { CSSProperties } from 'react'
 import { Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS } from 'globals'
 
 import Loader from 'components/Loader'
-import { ETHEREUM_NETWORKS } from 'integrations/constants'
-import { displayUserFriendlyError } from 'utils/helpers'
+import { displayUserFriendlyError } from 'utils'
 
 interface TransactionModalProps {
   activeProvider?: string,

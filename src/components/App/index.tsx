@@ -14,13 +14,10 @@ import ModalContainer from 'containers/Modals'
 import AppValidator from 'containers/AppValidator'
 
 import { asyncLoadSettings } from 'actions'
-import { ETHEREUM_NETWORKS } from 'integrations/constants'
+import { ETHEREUM_NETWORKS } from 'globals'
 
 export const history = createHistory()
 export const store = createStoreWithHistory(history)
-
-// load data from localstorage
-store.dispatch({ type: 'INIT' })
 
 export const loadLocalSettings = () => store.dispatch(asyncLoadSettings())
 export const initializeWallet = () => walletIntegrationCallback(store)

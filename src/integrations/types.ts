@@ -1,5 +1,5 @@
-import { ETHEREUM_NETWORKS, WALLET_PROVIDER } from './constants'
 import { Account, Balance, State } from 'types'
+import { ETHEREUM_NETWORKS, WALLET_PROVIDER } from 'globals'
 
 export interface ProviderState {
   account: Account,

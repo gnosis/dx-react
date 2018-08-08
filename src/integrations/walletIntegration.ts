@@ -6,13 +6,11 @@ import {
 } from 'actions'
 
 import { State, Balance } from 'types'
-import { ETHEREUM_NETWORKS } from './constants'
 import MetamaskProvider from './metamask'
 import { WalletProvider } from 'integrations/types'
-import { networkById } from 'integrations/initialize'
-import { promisify } from 'api/utils'
 import { getTime } from 'api'
-import { timeoutCondition } from 'utils/helpers'
+import { promisify, timeoutCondition } from 'utils'
+import { ETHEREUM_NETWORKS, networkById } from 'globals'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
 export default async function walletIntegration(store: Store<any>) {

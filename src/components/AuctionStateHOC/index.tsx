@@ -18,8 +18,8 @@ import {
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
-import { WATCHER_INTERVAL } from 'integrations/initialize'
-import { shallowDifferent } from 'utils/helpers'
+import { WATCHER_INTERVAL } from 'globals'
+import { shallowDifferent } from 'utils'
 
 // depends on router injecting match
 export interface AuctionStateProps {
