@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { text, number } from '@storybook/addon-knobs'
 import { decorateAction } from '@storybook/addon-actions'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 import TokenItem, { TokenItemProps } from 'components/TokenItem'
 import { code2tokenMap, codeList } from 'globals'

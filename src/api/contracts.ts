@@ -127,6 +127,9 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
 
 export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
+  if (typeof contract.currentProvider.sendAsync !== 'function') {
+    contract.currentProvider.sendAsync = function () { return contract.currentProvider.send.apply(contract.currentProvider, arguments) }
+  }
 })
 
 const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deployed()))
@@ -143,13 +146,13 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
     const deployedContracts = contractNames.reduce((acc, name, i) => {
-    if (name === 'TokenFRT') {
+      if (name === 'TokenFRT') {
       acc['TokenMGN'] = instances[i]
     } else {
       acc[filename2ContractNameMap[name] || name] = instances[i]
     }
-    return acc
-  }, {}) as ContractsMapWProxy
+      return acc
+    }, {}) as ContractsMapWProxy
 
     const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
     deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
@@ -160,8 +163,8 @@ async function init() {
     delete deployedContracts.TokenOWLProxy
 
     if (process.env.NODE_ENV !== 'production') {
-    console.log(deployedContracts)
-  }
+      console.log(deployedContracts)
+    }
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)

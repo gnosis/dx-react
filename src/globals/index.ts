@@ -95,6 +95,7 @@ export const URLS = {
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 }
 
+export const RINKEBY_WEBSOCKET = /* 'ws://localhost:8546' */ 'wss://rinkeby.infura.io/_ws'
 // Error messages during TXs
 export const CANCEL_TX_ERROR = 'TRANSACTION CANCELLED: User denied transaction signature. Transaction will not be submitted to the blockchain.'
 export const NO_INTERNET_TX_ERROR = 'TRANSACTION CANCELLED: Internet connection issues detected. Please check your connection and try again. Transaction will not be submitted to the blockchain.'

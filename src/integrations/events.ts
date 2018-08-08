@@ -1,6 +1,6 @@
 import localForage from 'localforage'
 import { store } from 'components/App'
-import { watch, getBlock } from 'integrations/filterChain'
+// import { watch, getBlock } from 'integrations/filterChain'
 import { promisedWeb3 } from 'api/web3Provider'
 import { code2Network } from 'utils/helpers'
 
@@ -9,15 +9,16 @@ import { code2Network } from 'utils/helpers'
 // ========== //
 
 let netID: string
-
+let web3: any
 // =============== //
 // event listeners //
 // =============== //
 
 const fireListeners = async () => {
   console.log('FIRING LISTENERS')
+  // set up websocket web3
+  web3 = (await promisedWeb3).web3
 
-  const { web3 } = await promisedWeb3
   web3.currentProvider                    &&
   web3.currentProvider.publicConfigStore  &&
   web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
@@ -64,12 +65,12 @@ const fireListeners = async () => {
   })
 
   // TEMP SAMPLE USAGE
-  watch(async (e, bl) => {
-    console.log(' ==> 2: Block watcher fired')
-    if (e) return console.error('Chain watching Error', e)
-    console.log('LATEST BLOCK')
-    console.log(await getBlock(bl))
-  })
+  // watch(async (e, bl) => {
+  //   console.log(' ==> 2: Block watcher fired')
+  //   if (e) return console.error('Chain watching Error', e)
+  //   console.log('LATEST BLOCK')
+  //   console.log(await getBlock(bl))
+  // })
 }
 
 export default fireListeners

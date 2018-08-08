@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import StoryRouter from 'storybook-router'
 import { makeProviderDecorator, storeInit } from './helpers'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 import AuctionContainer from 'components/AuctionContainer'
 import AuctionFooter from 'components/AuctionFooter'

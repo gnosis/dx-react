@@ -44,7 +44,6 @@ import {
   openModal,
   closeModal,
   setTokenBalance,
-  setSellTokenAmount,
   setClosingPrice,
   setOngoingAuctions,
   selectTokenPair,
@@ -54,7 +53,9 @@ import {
   setTokenListType,
   setApprovedTokens,
   setAvailableAuctions,
+  saveTransaction,
   setTokenListVersion,
+  setSellTokenAmount,
 } from 'actions'
 
 import { timeoutCondition } from '../utils/helpers'
@@ -246,7 +247,6 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
     localForage.getItem('customTokens'),
     localForage.getItem('customListHash'),
   ])
-
   const { ipfsFetchFromHash } = await promisedIPFS
 
   // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
@@ -432,9 +432,12 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
       console.log('PROMPTING to start depositETH tx')
       const depositHash = await depositETH.sendTransaction(ETHToWrap.toString(), currentAccount)
       console.log('​depositETH tx hash: ', depositHash)
+      dispatch(saveTransaction({ txName: 'Deposit ETH', txHash: depositHash }))
     }
+
     // if sell or buy is unwrapped ETH replace token with previously WETH
     changeETHforWETH(dispatch, getState, TokenETH.address)
+
     // Check allowance amount for SELLTOKEN
     // if allowance is ok, skip
     const [needSellTokenAllowance, OWLBalance] = await promisedTokensAndOWLBalance
@@ -468,7 +471,6 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
       const choice = await promisedChoice
 
       await dispatch(approveTokens(choice, 'SELLTOKEN'))
-    // Go straight to sell order if deposit && allowance both good
     }
 
     if (OWLBalance.gt(0)) {
@@ -503,6 +505,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
         await dispatch(approveTokens(choice, 'OWLTOKEN'))
       }
     }
+
     return dispatch(submitSellOrder())
   } catch (e) {
     dispatch(errorHandling(e))
@@ -513,6 +516,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
   const {
     tokenPair: { sell, buy, sellAmount, index = 0 },
     blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { network } } },
+    // LOGS_AND_EVENTS: { DX_Events },
   }: State = getState(),
     sellName = getTokenName(sell),
     buyName = getTokenName(buy),
@@ -548,49 +552,54 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       console.log('PROMPTING to start depositAndSell tx')
       hash = await depositAndSell.sendTransaction(sell, buy, nativeSellAmt.toString(), currentAccount)
       console.log('depositAndSell tx hash', hash)
+      dispatch(saveTransaction({ txName: 'Deposit and Sell Order', txHash: hash }))
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-
       console.log('PROMPTING to start depositAndSell tx')
       hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
       console.log('postSellOrder tx hash', hash)
+      dispatch(saveTransaction({ txName: 'Sell Order', txHash: hash }))
     }
-    const receipt = await waitForTx(hash)
-    console.log('postSellOrder tx receipt: ', receipt)
 
-    const { DutchExchange } = contractsMap
-    const decoder = getDecoderForABI(DutchExchange.abi)
-    const logs = decoder(receipt.logs)
-    console.log('postSellOrder tx logs', logs)
-    const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
+    dispatch(closeModal())
+
+    dispatch(push('/'))
+
+    // wait here for sellOrder to complete
+    // const sellReceipt = await waitForEvent(hash, 'NewSellOrder')
+    // console.log('PostSellOrder tx receipt: ', sellReceipt)
+
+    // const { returnValues: { auctionIndex } } = sellReceipt
 
     // let receipt
     // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
     // if (nativeSellAmt.greaterThan(userDXBalance)) {
+    //   // api/DutchX functions
     //   receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
     //   console.log('depositAndSell receipt', receipt)
     // // else User has enough balance on DX for Token and can sell w/o deposit
     // } else {
+    //   // api/DutchX functions
     //   receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
     //   console.log('postSellOrder receipt', receipt)
     // }
     // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
 
-    console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
-    dispatch(closeModal())
+    // console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
+    // dispatch(closeModal())
     // jump to Auction Page
-    dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
+    // dispatch(push(`auction/${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`))
 
-    // grab balance of sold token after sale
-    const balance = await getTokenBalance(sell.address, currentAccount)
+    // // grab balance of sold token after sale
+    // const balance = await getTokenBalance(sell.address, currentAccount)
 
-    // dispatch Actions
-    dispatch(batchActions([
-      setTokenBalance({ address: sell.address, balance }),
-      // set sellAmount back to 0
-      setSellTokenAmount({ sellAmount: '0' }),
-    ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
-    // indicate that submission worked
+    // // dispatch Actions
+    // dispatch(batchActions([
+    //   setTokenBalance({ address: sell.address, balance }),
+    //   // set sellAmount back to 0
+    //   setSellTokenAmount({ sellAmount: '0' }),
+    // ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
+    // // indicate that submission worked
     return true
   } catch (error) {
     dispatch(errorHandling(error))
@@ -627,6 +636,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
+        dispatch(saveTransaction({ txName: `${sellName} Approval`, txHash: tokenApprovalHash }))
       } else {
         dispatch(openModal({
           modalName: 'TransactionModal',
@@ -642,6 +652,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
+        dispatch(saveTransaction({ txName: `${sellName} Approval`, txHash: tokenApprovalHash }))
       }
     // OWL APPROVAL
     } else {
@@ -661,6 +672,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for OWL')
         const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
         console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
+        dispatch(saveTransaction({ txName: 'OWL Approval', txHash: tokenApprovalHash }))
       } else {
         console.log('Disallowing OWL')
         dispatch(closeModal())
@@ -775,6 +787,7 @@ export const claimSellerFundsFromSeveral = (
 
     const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
     console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
+    dispatch(saveTransaction({ txName: 'Claiming Seller Funds', txHash: claimHash }))
 
     // >>> ============= >>>
     // END CLAIMING TX
@@ -797,6 +810,7 @@ export const claimSellerFundsFromSeveral = (
     await waitForTx(claimHash)
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
+    dispatch(saveTransaction({ txName: 'Withdraw Funds', txHash: withdrawHash }))
     // get receipt or throw TIMEOUT
     const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)

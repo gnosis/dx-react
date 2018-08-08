@@ -16,7 +16,7 @@ import {
   getUnclaimedSellerFunds,
 } from 'api'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import { toBN as toBigNumber } from 'web3-utils'
 
 import { WATCHER_INTERVAL } from 'integrations/initialize'
 import { shallowDifferent } from 'utils/helpers'
@@ -261,8 +261,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         status,
         sell: pair.sell,
         buy: pair.buy,
-        price: price.map(n => n.toNumber()),
-        closingPrice: closingPrice.map(n => n.toNumber()),
+        price: price.map((n: BigNumber) => n.toNumber()),
+        closingPrice: closingPrice.map((n: BigNumber) => n.toNumber()),
         timeToCompletion,
         userSelling: sellerBalance,
         userGetting,

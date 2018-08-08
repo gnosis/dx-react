@@ -4,13 +4,12 @@ import { connect } from 'react-redux'
 import providerWatcher from 'integrations/providerWatcher'
 import MetamaskProvider from 'integrations/metamask'
 
-import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
+import { updateMainAppState, resetMainAppState, updateProvider, initDutchX, setupContractEventListening } from 'actions'
 
 import { State } from 'types'
 import { getTokenList } from 'actions'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
-
 const removeListeners = (listeners: string[], actors: EventListenerOrEventListenerObject[]) => {
   listeners.forEach((l, i) => window.removeEventListener(l, actors[i]))
 }
@@ -29,7 +28,7 @@ class AppValidator extends React.Component<any> {
 
   async componentWillMount() {
     // const provider = MetamaskProvider,
-    const { network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
+    const { network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, setupContractEventListening, initDutchX } = this.props
 
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
@@ -46,6 +45,9 @@ class AppValidator extends React.Component<any> {
 
         // Initiate Provider
         await providerWatcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState })
+
+        // Set up event listening on all Token contracts
+        await setupContractEventListening()
 
         // initialise basic user state
         await initDutchX()
@@ -148,6 +150,7 @@ const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
 export default connect(mapState, {
   getTokenList,
   initDutchX,
+  setupContractEventListening,
   updateMainAppState,
   updateProvider,
   resetMainAppState,

@@ -2,12 +2,14 @@ import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
 
-import { toBigNumber } from 'web3/lib/utils/utils.js'
+import BigNum from 'bignumber.js'
 
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject } from 'types'
 import { dxAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
 import { ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
+
+export const toBigNumber = (number: any) => new BigNum(number)
 
 const promisedAPI = /* (window as any).AP = */ initAPI()
 
@@ -17,28 +19,28 @@ WEB3 API
 ====================================================================
 ===================================================================*/
 
-export const toBN = async (x: string | number) => {
-  const { web3: { web3 } } = await promisedAPI
+export const toBN = (x: string | number) => {
+  // const { web3: { web3 } } = await promisedAPI
 
-  return web3.toBigNumber(x)
+  return toBigNumber(x)
 }
 
-export const toNative = async (amt: string | number | BigNumber, decimal: number): Promise<BigNumber> => {
-  const { web3: { web3 } } = await promisedAPI
+export const toNative = (amt: string | number | BigNumber, decimal: number): BigNumber => {
+  // const { web3: { web3 } } = await promisedAPI
 
-  return web3.toBigNumber(amt).mul(10 ** decimal)
+  return toBigNumber(amt).mul(10 ** decimal)
 }
 
 export const toWei = async (amt: string | number | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
 
-  return web3.toBigNumber(web3.toWei(amt))
+  return toBigNumber(web3.utils.toWei(amt))
 }
 
-export const toEth = async (amt: number | string | BigNumber): Promise<string> => {
+export const toEth = async (amt: number | string | BigNumber): Promise<BigNumber> => {
   const { web3: { web3 } } = await promisedAPI
 
-  return web3.toBigNumber(web3.fromWei(amt))
+  return toBigNumber(web3.utils.fromWei(amt))
 }
 
 export const getCurrentAccount = async () => {

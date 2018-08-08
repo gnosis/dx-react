@@ -8,7 +8,7 @@ declare module 'ipfs'
 declare module 'storybook-router'
 declare module 'truffle-contract'
 declare module 'web3'
-declare module 'web3/lib/utils/utils.js'
+declare module 'web3-utils'
 declare module 'ethjs-abi'
 
 declare module '*.svg' {

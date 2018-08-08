@@ -19,7 +19,7 @@ export interface WalletProvider {
   // called first in initialization
   checkAvailability(): boolean,
   // creates ocal web3 instance
-  initialize(): void,
+  initialize(ws?: string): void,
   state?: ProviderState,
   web3?: any,
 }
