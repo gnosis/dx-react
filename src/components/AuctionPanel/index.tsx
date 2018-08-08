@@ -28,6 +28,8 @@ type AuctionPanelProps = AuctionStateState & AuctionStateProps & {
 // const getAuctionProgress = (status: Status) => status2progress[status] || 0
 
 const copyText = (text: string) => () => {
+  // copy can only be called on user selection for secutiry reasons
+  // so we temporarily create an element off screen
   const tempInput = document.createElement('input')
   tempInput.value = text
   tempInput.style.cssText = 'position: absolute; left: -100vw; top: -100vh'
