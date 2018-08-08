@@ -37,7 +37,7 @@ import {
 
 import { promisedContractsMap, contractsMap } from 'api/contracts'
 import tokensMap from 'api/apiTesting'
-import { getDecoderForABI, checkTokenListJSON } from 'api/utils'
+import { getDecoderForABI, checkTokenListJSON, timeoutCondition } from 'utils'
 import { promisedIPFS } from 'api/IPFS'
 
 import {
@@ -57,15 +57,12 @@ import {
   setTokenListVersion,
 } from 'actions'
 
-import { timeoutCondition } from '../utils/helpers'
-
 import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } from 'api/types'
 
 import { waitForTx } from 'integrations/filterChain'
-import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
-import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap, ETHEREUM_NETWORKS } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 
 export enum TypeKeys {
@@ -780,6 +777,9 @@ export const claimSellerFundsFromSeveral = (
     // END CLAIMING TX
     // >>> ============= >>>
 
+    // wait claimHash
+    await waitForTx(claimHash)
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -792,9 +792,6 @@ export const claimSellerFundsFromSeveral = (
     // >>> ======== >>>
     // WITHDRAW TX WATCHING
     // >>> ======== >>>
-
-    // wait claimHash
-    await waitForTx(claimHash)
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT
