@@ -122,7 +122,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {footer.msg || null}
           <br/>
           <br/>
-          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
+          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a>  or <a href="https://tokenallowance.io/" target="_blank">here</a> about token allowance.
         </i>
       </p>}
   </div>
