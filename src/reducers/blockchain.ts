@@ -12,6 +12,7 @@ import {
   setFeeRatio,
   setTokenSupply,
   resetAppState,
+  setOWLPreference,
 } from 'actions/blockchain'
 
 import { Blockchain, Provider } from 'types'
@@ -34,6 +35,7 @@ const initialState: Blockchain = {
   currentBalance: undefined,
   feeRatio: undefined,
   mgnSupply: undefined,
+  useOWL: undefined,
 }
 
 const reducer = handleActions({
@@ -105,6 +107,10 @@ const reducer = handleActions({
   [setTokenSupply.toString()]: (state: Blockchain, action: any) => ({
     ...state,
     mgnSupply: action.payload.mgnSupply,
+  }),
+  [setOWLPreference.toString()]: (state, action) => ({
+    ...state,
+    useOWL: action.payload,
   }),
   [resetAppState.toString()]: (state: Blockchain) => ({
     ...state,
