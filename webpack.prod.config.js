@@ -159,6 +159,9 @@ module.exports = {
     new ExtractTextPlugin('[name].[contenthash].css'),
     new FaviconsWebpackPlugin({
       logo: 'assets/dutchx.png',
+      prefix: '/', // puts favicons into root folder,
+      // which allows for not html content (like pdf) to fetch /favicon.icon from default location
+
       // Generate a cache file with control hashes and
       // don't rebuild the favicons until those hashes change
       persistentCache: true,
