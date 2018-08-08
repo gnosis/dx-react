@@ -63,7 +63,7 @@ import { timeoutCondition } from '../utils/helpers'
 import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } from 'api/types'
 
-import { waitForTx, waitForEvent } from 'integrations/filterChain'
+import { waitForTx } from 'integrations/filterChain'
 import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
 import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap } from 'globals'
@@ -432,7 +432,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
       console.log('PROMPTING to start depositETH tx')
       const depositHash = await depositETH.sendTransaction(ETHToWrap.toString(), currentAccount)
       console.log('​depositETH tx hash: ', depositHash)
-      dispatch(saveTransaction({ txName: 'DEPOSIT_ETHER', txHash: depositHash }))
+      dispatch(saveTransaction({ txName: 'Deposit ETH', txHash: depositHash }))
     }
 
     // if sell or buy is unwrapped ETH replace token with previously WETH
@@ -552,13 +552,13 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       console.log('PROMPTING to start depositAndSell tx')
       hash = await depositAndSell.sendTransaction(sell, buy, nativeSellAmt.toString(), currentAccount)
       console.log('depositAndSell tx hash', hash)
-      dispatch(saveTransaction({ txName: 'DEPOSIT_AND_SELL', txHash: hash }))
+      dispatch(saveTransaction({ txName: 'Deposit and Sell Order', txHash: hash }))
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
       console.log('PROMPTING to start depositAndSell tx')
       hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
       console.log('postSellOrder tx hash', hash)
-      dispatch(saveTransaction({ txName: 'POST_SELL_ORDER', txHash: hash }))
+      dispatch(saveTransaction({ txName: 'Sell Order', txHash: hash }))
     }
 
     dispatch(closeModal())
@@ -636,7 +636,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for MIN', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, nativeSellAmt.toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
-        dispatch(saveTransaction({ txName: 'TOKEN_APPROVAL_MIN', txHash: tokenApprovalHash }))
+        dispatch(saveTransaction({ txName: `${sellName} Approval`, txHash: tokenApprovalHash }))
       } else {
         dispatch(openModal({
           modalName: 'TransactionModal',
@@ -652,7 +652,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
         const tokenApprovalHash = await tokenApproval.sendTransaction(sell.address, ((2 ** 255) - allowanceLeft).toString())
         console.log('tokenApproval tx hash', tokenApprovalHash)
-        dispatch(saveTransaction({ txName: 'TOKEN_APPROVAL_MAX', txHash: tokenApprovalHash }))
+        dispatch(saveTransaction({ txName: `${sellName} Approval`, txHash: tokenApprovalHash }))
       }
     // OWL APPROVAL
     } else {
@@ -672,7 +672,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('PROMPTING to start tokenApproval tx for OWL')
         const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
         console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
-        dispatch(saveTransaction({ txName: 'OWL_TOKEN_APPROVAL', txHash: tokenApprovalHash }))
+        dispatch(saveTransaction({ txName: 'OWL Approval', txHash: tokenApprovalHash }))
       } else {
         console.log('Disallowing OWL')
         dispatch(closeModal())
@@ -787,7 +787,7 @@ export const claimSellerFundsFromSeveral = (
 
     const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
     console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
-    dispatch(saveTransaction({ txName: 'CLAIM_FUNDS_FROM_SEVERAL', txHash: claimHash }))
+    dispatch(saveTransaction({ txName: 'Claiming Seller Funds', txHash: claimHash }))
 
     // >>> ============= >>>
     // END CLAIMING TX
@@ -810,7 +810,7 @@ export const claimSellerFundsFromSeveral = (
     await waitForTx(claimHash)
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
-    dispatch(saveTransaction({ txName: 'WITHDRAW', txHash: withdrawHash }))
+    dispatch(saveTransaction({ txName: 'Withdraw Funds', txHash: withdrawHash }))
     // get receipt or throw TIMEOUT
     const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)

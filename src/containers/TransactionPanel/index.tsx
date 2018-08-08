@@ -7,23 +7,29 @@ interface TransactionPanelProps {
   transactionsPending: any[];
 }
 
-const txPanelCSS: React.CSSProperties = {
-  display: 'flex',
-  flexFlow: 'column',
-  width: '100%',
+class TransactionPanel extends React.Component<TransactionPanelProps> {
+  state = {
+    open: false,
+  }
 
-  background: 'white',
-  color: 'black',
-}
+  handleClick = () => this.setState({ open: !this.state.open })
 
-const TransactionPanel = ({ transactionsPending }: TransactionPanelProps) => {
-  return (
-        <div style={txPanelCSS}>
-            <ol>
-                {transactionsPending.map(({ txName, txHash }: any) => <li key={txHash}>{`${txName}: ${txHash}`}</li>)}
-            </ol>
-        </div>
+  render() {
+    const { transactionsPending }: TransactionPanelProps = this.props
+    return (
+      <div onClick={this.handleClick} className={`txPanel${!this.state.open ? ' closed' : ''}`}>
+          {this.state.open
+          ?
+            transactionsPending.length
+            ?
+              <ol>{transactionsPending.map(({ txName, txHash }: any) => <li key={txHash}>{`${txName}: ${txHash}`}</li>)}</ol>
+            : <div>No pending transactions</div>
+          :
+            <div>Transactions</div>
+          }
+      </div>
     )
+  }
 }
 
 const mapState = (state: State) => ({
