@@ -93,9 +93,10 @@ $headerHeight: 58px;
     vertical-align: sub;
     cursor: pointer;
     margin-left: .5em;
+    transition: filter 0.2s ease-in;
 
     &:hover {
-      filter: drop-shadow(0 0 1px black);
+      filter: drop-shadow(0 0 1px #669ddd);
     }
   }
 }
