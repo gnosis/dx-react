@@ -93,6 +93,12 @@ storiesOf('AuctionContainer', module)
         buyAmount={toBigNumber(number('buyAmt', 100))}
         sellAmount={toBigNumber(number('sellAmt', 100))}
         status={Status.ENDED}
+        auctionStart={toBigNumber(number('auctionStart', 5, {
+          range: true,
+          min: 0,
+          max: (3600 * 6),
+          step: 5,
+        }))}
         timeLeft={number('timeLeft', 5, {
           range: true,
           min: 0,

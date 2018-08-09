@@ -515,6 +515,12 @@ $headerHeight: 58px;
     width: 100%;
     flex-basis: 100%;
   }
+
+  > p {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 0;
+  }
 }
 
 #claimToken {
