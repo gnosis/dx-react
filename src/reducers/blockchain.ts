@@ -58,6 +58,7 @@ const reducer = handleActions({
     const { provider: name, ...provider } = action.payload
     return {
       ...state,
+      activeProvider: name,
       providers: {
         ...state.providers,
         [name]: {

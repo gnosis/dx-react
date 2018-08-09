@@ -1,6 +1,6 @@
 import { State, Provider } from 'types'
 import { ProviderName } from 'globals'
-import { find, orderBy } from 'lodash'
+import { orderBy } from 'lodash'
 
 export const selector = (state: State) => state.blockchain
 
@@ -12,14 +12,21 @@ export const selector = (state: State) => state.blockchain
 // that way we won't even need find/setActiveProvider in actions/blockchain
 export const findDefaultProvider = (state: State): Provider => {
   const providers = orderBy(state.blockchain.providers, ['priority'], ['desc'])
-  // @ts-ignore
-  return find(providers, {
-    name: 'METAMASK',
-    // loaded: true, available: true,
-  })
+
+  return providers[0]
+  // // @ts-ignore
+  // return find(providers, {
+  //   name: 'METAMASK',
+  //   // loaded: true, available: true,
+  // })
 }
 
 export const getActiveProvider = (state: State): ProviderName => selector(state).activeProvider
+export const getActiveProviderObject = (state: State): Provider => {
+  const blockchain = selector(state)
+
+  return blockchain.providers[blockchain.activeProvider]
+}
 
 export const getSelectedProvider = (state: State): Provider | null => (
   selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null

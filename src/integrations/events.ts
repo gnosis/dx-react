@@ -3,6 +3,8 @@ import { store } from 'components/App'
 import { watch, getBlock } from 'integrations/filterChain'
 import { promisedWeb3 } from 'api/web3Provider'
 import { code2Network } from 'utils'
+import { getActiveProviderObject } from 'selectors'
+import { State } from 'types'
 
 // ========== //
 // scope vars //
@@ -21,7 +23,9 @@ const fireListeners = async () => {
   web3.currentProvider                    &&
   web3.currentProvider.publicConfigStore  &&
   web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
-    const { currentAccount: currentAccountFromState, providers: { METAMASK: { network: networkFromState } } } = store.getState().blockchain
+    const state: State = store.getState() as State
+    const { currentAccount: currentAccountFromState } = state.blockchain
+    const networkFromState = getActiveProviderObject(state).network
     const { defaultTokenList } = store.getState().tokenList
 
     console.log(`

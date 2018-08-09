@@ -6,7 +6,7 @@ import {
 } from 'actions'
 
 import { State, Balance } from 'types'
-import MetamaskProvider from './metamask'
+import Provider from './metamask'
 import { WalletProvider } from 'integrations/types'
 import { getTime } from 'api'
 import { promisify, timeoutCondition } from 'utils'
@@ -66,7 +66,7 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   try {
-    const provider = MetamaskProvider
+    const provider = Provider
 
     provider.initialize()
 
