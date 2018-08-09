@@ -126,6 +126,7 @@ const ShowTiming: React.SFC<ShowTimingProps> = ({ auctionStart, status, buyToken
       <p>
         The auction will start soon and run for approx. 6 hours
         <br/>
+        <br/>
         {userParticipates && `You may claim your ${bToken} in approx. 6 hours`}
       </p>
     )
