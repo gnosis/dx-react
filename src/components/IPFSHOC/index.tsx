@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { promisedIPFS } from 'api/IPFS'
-import { checkTokenListJSON } from 'api/utils'
 import { DefaultTokenObject } from 'api/types'
 import { getAllTokenDecimals } from 'api'
 
 import localForage from 'localforage'
-import { timeoutCondition } from 'utils/helpers'
+import { timeoutCondition, checkTokenListJSON } from 'utils'
 
 const IPFS_TIMEOUT = 7000
 

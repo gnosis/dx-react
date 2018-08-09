@@ -12,9 +12,9 @@ import {
   setFeeRatio,
   setTokenSupply,
   resetAppState,
+  setOWLPreference,
 } from 'actions/blockchain'
 
-import { GAS_COST } from 'utils/constants'
 import { Blockchain, Provider } from 'types'
 
 const INITIAL_PROVIDER_STATE: Provider = {
@@ -28,8 +28,6 @@ const INITIAL_PROVIDER_STATE: Provider = {
 }
 
 const initialState: Blockchain = {
-  gasCosts: Object.keys(GAS_COST).reduce((acc, item) => ({ ...acc, [GAS_COST[item]]: undefined }), {}),
-  gasPrice: undefined,
   connectionTried: false,
   providers: {},
   activeProvider: null,
@@ -37,6 +35,7 @@ const initialState: Blockchain = {
   currentBalance: undefined,
   feeRatio: undefined,
   mgnSupply: undefined,
+  useOWL: undefined,
 }
 
 const reducer = handleActions({
@@ -108,6 +107,10 @@ const reducer = handleActions({
   [setTokenSupply.toString()]: (state: Blockchain, action: any) => ({
     ...state,
     mgnSupply: action.payload.mgnSupply,
+  }),
+  [setOWLPreference.toString()]: (state, action) => ({
+    ...state,
+    useOWL: action.payload,
   }),
   [resetAppState.toString()]: (state: Blockchain) => ({
     ...state,

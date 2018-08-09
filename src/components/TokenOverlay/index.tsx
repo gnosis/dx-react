@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { createSelector } from 'reselect'
 
-import TokenOverlayHeader from '../TokenOverlayHeader'
-import TokenList from '../TokenList'
+import TokenOverlayHeader from 'components/TokenOverlayHeader'
+import TokenList from 'components/TokenList'
+import Loader from 'components/Loader'
 
 import { code2tokenMap } from 'globals'
 import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair, Account } from 'types'
-import Loader from '../Loader'
-import { handleKeyDown } from 'utils/helpers'
+import { handleKeyDown } from 'utils'
 
 const getTokenModAndAddress = createSelector(
   (_: TokenOverlayState, { mod }: TokenOverlayProps) => mod,

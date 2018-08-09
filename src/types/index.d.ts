@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
@@ -64,6 +64,7 @@ export interface Blockchain {
   dutchXInitialized?: boolean,
   feeRatio?: number,
   mgnSupply?: Balance,
+  useOWL?: boolean,
 }
 
 export interface Modal {
@@ -87,6 +88,9 @@ export interface Modal {
       tokenB?: DefaultTokenObject,
       sellAmount: Balance | BigNumber,
       network?: 'RINKEBY' | 'MAIN',
+      useOWL?: boolean,
+      feeRatio?: string | number,
+      sellAmountAfterFee?: BigNumber,
     },
     onClick?: (choice: string) => any,
     button?: boolean,

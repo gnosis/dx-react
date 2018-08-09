@@ -1,4 +1,4 @@
-import { WALLET_PROVIDER } from '../constants'
+import { WALLET_PROVIDER } from 'globals'
 import { WalletProvider } from '../types'
 import Web3 from 'web3'
 

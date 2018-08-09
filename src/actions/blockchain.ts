@@ -8,6 +8,8 @@ import localForage from 'localforage'
 import { findDefaultProvider } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
+import { toBigNumber } from 'web3/lib/utils/utils.js'
+
 import {
   getLastAuctionPrice,
   depositAndSell,
@@ -37,7 +39,7 @@ import {
 
 import { promisedContractsMap, contractsMap } from 'api/contracts'
 import tokensMap from 'api/apiTesting'
-import { getDecoderForABI, checkTokenListJSON } from 'api/utils'
+import { getDecoderForABI, checkTokenListJSON, timeoutCondition } from 'utils'
 import { promisedIPFS } from 'api/IPFS'
 
 import {
@@ -57,15 +59,12 @@ import {
   setTokenListVersion,
 } from 'actions'
 
-import { timeoutCondition } from '../utils/helpers'
-
 import { BigNumber, TokenBalances, Account, State, TokenPair } from 'types'
 import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } from 'api/types'
 
 import { waitForTx } from 'integrations/filterChain'
-import { ETHEREUM_NETWORKS } from 'integrations/constants'
 
-import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap, ETHEREUM_NETWORKS } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 
 export enum TypeKeys {
@@ -93,6 +92,7 @@ export const fetchTokens = createAction<{ tokens?: TokenBalances }>('FETCH_TOKEN
 export const setFeeRatio = createAction<{ feeRatio: number }>('SET_FEE_RATIO')
 export const setTokenSupply = createAction<{ mgnSupply: string | BigNumber }>('SET_TOKEN_SUPPLY')
 export const resetAppState = createAction('RESET_APP_STATE')
+export const setOWLPreference = createAction('SET_OWL_PREFERENCE')
 
 const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   try {
@@ -509,10 +509,19 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
   }
 }
 
+export const calculateSellAmountAfterFee = async (sellAmount: string | BigNumber, userAccount: Account) => {
+  const selling: BigNumber = toBigNumber(sellAmount)
+
+  const feeRatio = await getFeeRatio(userAccount)
+  const fee = selling.times(feeRatio)
+
+  return (selling.minus(fee))
+}
+
 export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
   const {
     tokenPair: { sell, buy, sellAmount, index = 0 },
-    blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { network } } },
+    blockchain: { activeProvider, currentAccount, feeRatio, useOWL, providers: { [activeProvider]: { network } } },
   }: State = getState(),
     sellName = getTokenName(sell),
     buyName = getTokenName(buy),
@@ -525,16 +534,23 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // indicate that nothing happened with false return
     if (+sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
 
+    const sellAmountAfterFee = await calculateSellAmountAfterFee(sellAmount, currentAccount)
+
+    console.log('​exportsubmitSellOrder -> sellAmountAfterFee', sellAmountAfterFee)
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
         header: `Order confirmation`,
-        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain. Processing the transaction may take a while. `,
+        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain.`,
         txData: {
           tokenA: { ...sell, ...sellName } as DefaultTokenObject,
           tokenB: { ...buy, ...buyName } as DefaultTokenObject,
-          sellAmount,
+          sellAmount: toBigNumber(sellAmount),
           network,
+          feeRatio,
+          sellAmountAfterFee,
+          useOWL,
         },
         loader: true,
       },
@@ -645,6 +661,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
       }
     // OWL APPROVAL
     } else {
+      dispatch(setOWLPreference(false))
       const { TokenOWL } = await promisedContracts
       if (choice === 'MAX') {
         dispatch(openModal({
@@ -663,7 +680,10 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
       } else {
         console.log('Disallowing OWL')
-        dispatch(closeModal())
+        dispatch(batchActions([
+          setOWLPreference(false),
+          closeModal(),
+        ], 'DISALLOWING_OWL_AND_CLOSING_MODAL'))
       }
     }
   } catch (error) {
@@ -780,6 +800,9 @@ export const claimSellerFundsFromSeveral = (
     // END CLAIMING TX
     // >>> ============= >>>
 
+    // wait claimHash
+    await waitForTx(claimHash)
+
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -792,9 +815,6 @@ export const claimSellerFundsFromSeveral = (
     // >>> ======== >>>
     // WITHDRAW TX WATCHING
     // >>> ======== >>>
-
-    // wait claimHash
-    await waitForTx(claimHash)
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT

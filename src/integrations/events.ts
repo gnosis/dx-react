@@ -2,7 +2,7 @@ import localForage from 'localforage'
 import { store } from 'components/App'
 import { watch, getBlock } from 'integrations/filterChain'
 import { promisedWeb3 } from 'api/web3Provider'
-import { code2Network } from 'utils/helpers'
+import { code2Network } from 'utils'
 
 // ========== //
 // scope vars //

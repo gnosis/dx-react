@@ -18,8 +18,8 @@ import {
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
-import { WATCHER_INTERVAL } from 'integrations/initialize'
-import { shallowDifferent } from 'utils/helpers'
+import { WATCHER_INTERVAL } from 'globals'
+import { shallowDifferent } from 'utils'
 
 // depends on router injecting match
 export interface AuctionStateProps {
@@ -50,6 +50,7 @@ export interface AuctionStateState {
   buy: DefaultTokenObject,
   price: number[],
   closingPrice: number[],
+  auctionStart: BigNumber,
   timeToCompletion: number,
   userSelling: BigNumber,
   userGetting:  BigNumber,
@@ -263,6 +264,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         buy: pair.buy,
         price: price.map(n => n.toNumber()),
         closingPrice: closingPrice.map(n => n.toNumber()),
+        auctionStart,
         timeToCompletion,
         userSelling: sellerBalance,
         userGetting,

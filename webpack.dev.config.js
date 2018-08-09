@@ -75,7 +75,7 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            name: 'docs/[name].[ext]',
+            name: '[name].[ext]',
           },
         },
       },
@@ -149,6 +149,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new FaviconsWebpackPlugin({
       logo: 'assets/dutchx.png',
+      prefix: './',
       // Generate a cache file with control hashes and
       // don't rebuild the favicons until those hashes change
       persistentCache: true,

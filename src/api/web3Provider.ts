@@ -1,5 +1,5 @@
 import { ProviderInterface } from './types'
-import { windowLoaded, promisify } from './utils'
+import { windowLoaded, promisify } from 'utils'
 import { Account } from 'types'
 import Web3 from 'web3'
 

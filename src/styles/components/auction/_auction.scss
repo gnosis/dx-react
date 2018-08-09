@@ -87,6 +87,18 @@ $headerHeight: 58px;
     font-weight: normal;
     color: $blue;
   }
+
+  > h2 > img:last-child {
+    width: 0.9em;
+    vertical-align: sub;
+    cursor: pointer;
+    margin-left: .5em;
+    transition: filter 0.2s ease-in;
+
+    &:hover {
+      filter: drop-shadow(0 0 1px #669ddd);
+    }
+  }
 }
 
 .auctionLastPrice {
@@ -503,6 +515,12 @@ $headerHeight: 58px;
     width: 100%;
     flex-basis: 100%;
   }
+
+  > p {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 0;
+  }
 }
 
 #claimToken {
@@ -687,14 +705,14 @@ $headerHeight: 58px;
   justify-content: space-around;
   align-items: center;
   transition: 1s all ease-in-out;
-  
+
   > span {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
   }
-  
+
   > span > small {
     opacity: .5;
     letter-spacing: 1px;
@@ -705,12 +723,12 @@ $headerHeight: 58px;
     line-height: 1;
     padding: 0 0 10px;
   }
-  
+
   > span > big {
     font-size: 20px;
     font-weight: normal;
   }
-  
+
   a {
     color: $white;
   }
