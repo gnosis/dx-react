@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
-import { Modal } from 'types'
+import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS } from 'globals'
 
 import Loader from 'components/Loader'
 import { displayUserFriendlyError } from 'utils'
@@ -46,21 +46,37 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     <p className="modalHeaderDescriptor">
       { body || `Please check your ${activeProvider || 'Provider'} notifications in extensions bar of your browser.` }
     </p>
-    {txData && <div className="modalTXDataDiv">
-      <ul>
-        <li>{`Amount deposited:    ${txData.sellAmount}`}</li>
-        {(txData.tokenA.symbol || txData.tokenA.name) &&
-        <li>{`Token depositing:  ${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</li>
-        }
-        <li>{`Deposit token address:  ${txData.tokenA.address}`}</li>
-        <br />
-        {(txData.tokenB.symbol || txData.tokenB.name) &&
-        <li>{`Token receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${(txData.tokenB.name && txData.tokenB.symbol) && ' (' + txData.tokenB.name + ')'}`}</li>
-        }
-        <li>{`Receiving token address:  ${txData.tokenB.address}`}</li>
-        <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></li>
-      </ul>
-    </div>}
+    {txData &&
+      <div className="modalTXDataDiv">
+        <ul>
+            <li>{`Total participation: ${txData.sellAmount}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
+            <li>{`Fee level: ${txData.feeRatio}%`}</li>
+            {txData.useOWL && <li>{`Fees paid in OWL: ${(((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS)}OWL (=${((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name})`}</li>}
+            <li>{`Fees paid in ${txData.tokenA.symbol || txData.tokenA.name}: ${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
+            <li>{`Amount deposited into auction: ${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
+        </ul>
+      </div>
+    }
+    {txData &&
+      <>
+        <p className="modalHeaderDescriptor">Processing the transaction may take a while.</p>
+        <div className="modalTXDataDiv">
+          <ul>
+            <li>{`Amount deposited:    ${txData.sellAmount} (without fees applied)`}</li>
+            {(txData.tokenA.symbol || txData.tokenA.name) &&
+            <li>{`Token depositing:  ${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</li>
+            }
+            <li>{`Deposit token address:  ${txData.tokenA.address}`}</li>
+            <br />
+            {(txData.tokenB.symbol || txData.tokenB.name) &&
+            <li>{`Token receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${(txData.tokenB.name && txData.tokenB.symbol) && ' (' + txData.tokenB.name + ')'}`}</li>
+            }
+            <li>{`Receiving token address:  ${txData.tokenB.address}`}</li>
+            <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></li>
+          </ul>
+        </div>
+      </>
+    }
     {error &&
     <p className="modalError">
       {displayUserFriendlyError(error)}
@@ -122,7 +138,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {footer.msg || null}
           <br/>
           <br/>
-          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a> page.
+          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a>  or <a href="https://tokenallowance.io/" target="_blank">here</a> about token allowance.
         </i>
       </p>}
   </div>

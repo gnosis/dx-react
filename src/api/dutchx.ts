@@ -62,7 +62,7 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
+  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount })
 
   postSellOrder.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -83,20 +83,20 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postBuyOrder(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
+  ) => dx.postBuyOrder(t1, t2, index, amount, { from: userAccount })
 
   postBuyOrder.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postBuyOrder.call(t1, t2, index, amount, { from: userAccount, gas: 4712388 })
+  ) => dx.postBuyOrder.call(t1, t2, index, amount, { from: userAccount })
 
   const claimSellerFunds = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount, gas: 4712388 })
+  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount })
 
   claimSellerFunds.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
