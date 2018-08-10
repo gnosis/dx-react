@@ -24,11 +24,11 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
     const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+
     return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
-
     const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
 
     return provider.web3.fromWei(balance, 'ether').toString()

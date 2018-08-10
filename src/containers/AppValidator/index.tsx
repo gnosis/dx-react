@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import providerWatcher from 'integrations/providerWatcher'
-import Provider from 'integrations/metamask'
+import Provider from 'integrations/provider'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
 

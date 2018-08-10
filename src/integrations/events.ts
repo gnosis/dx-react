@@ -10,7 +10,7 @@
 // scope vars //
 // ========== //
 
-let netID: string
+// let netID: string
 
 // =============== //
 // event listeners //

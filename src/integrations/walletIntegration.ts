@@ -6,7 +6,7 @@ import {
 } from 'actions'
 
 import { State, Balance } from 'types'
-import Provider from './metamask'
+import Provider from 'integrations/provider'
 import { WalletProvider } from 'integrations/types'
 import { getTime } from 'api'
 import { promisify/* , timeoutCondition */ } from 'utils'
@@ -35,11 +35,11 @@ export default async function walletIntegration(store: Store<any>) {
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
     const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+
     return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
-
     const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
 
     return provider.web3.fromWei(balance, 'ether').toString()
@@ -64,7 +64,7 @@ export default async function walletIntegration(store: Store<any>) {
 
     // const [account, network, timestamp] = promisedState as [Account, ETHEREUM_NETWORKS, number],
     const balance = account && await getBalance(provider, account)
-    const available = true || provider.walletAvailable
+    const available = provider.walletAvailable
     const unlocked = !!(available && account)
     const newState = { account, network, balance, available, unlocked, timestamp }
 
