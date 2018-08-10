@@ -122,7 +122,7 @@ class AppValidator extends React.Component<any> {
     const { updateMainAppState, updateProvider, resetMainAppState } = this.props
 
     console.log('AppValidator: Polling started')
-    return this.dataPollerID = setInterval(() => providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState }), pollTime)
+    return this.dataPollerID = setInterval(() => providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
   }
 
   stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))

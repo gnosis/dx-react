@@ -66,6 +66,7 @@ import { waitForTx } from 'integrations/filterChain'
 
 import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap, ETHEREUM_NETWORKS } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
+import { promisedWeb3 } from 'api/web3Provider'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -249,6 +250,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
   ])
 
   const { ipfsFetchFromHash } = await promisedIPFS
+  const { getNetwork } = await promisedWeb3
 
   // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
   // meaning this would be FALSE on network change and app reset
@@ -256,7 +258,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
   const areTokensAvailableAndUpdated = defaultTokens && defaultTokens.hash === TokenListHashMap[network]
 
   if (!areTokensAvailableAndUpdated) {
-    network = network || window.web3.version.network || 'NONE'
+    network = network || await getNetwork() || 'NONE'
 
     // user has tokens in localStorage BUT hash is not updated
     if (defaultTokens) await localForage.removeItem('defaultTokens')

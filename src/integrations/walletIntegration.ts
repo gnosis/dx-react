@@ -9,7 +9,7 @@ import { State, Balance } from 'types'
 import Provider from './metamask'
 import { WalletProvider } from 'integrations/types'
 import { getTime } from 'api'
-import { promisify, timeoutCondition } from 'utils'
+import { promisify/* , timeoutCondition */ } from 'utils'
 import { ETHEREUM_NETWORKS, networkById } from 'globals'
 // import { IPFS_TOKENS_HASH } from 'globals'
 
@@ -47,20 +47,26 @@ export default async function walletIntegration(store: Store<any>) {
 
   // get Provider state
   const grabProviderState = async (provider: WalletProvider) => {
-    const promisedState = await Promise.race<[Account, ETHEREUM_NETWORKS, number] | {}>([
-      Promise.all([
-        getAccount(provider),
-        getNetwork(provider),
-        getTime(),
-      ]),
-      timeoutCondition(8000, 'Provider setup timeout. Please check that you are properly logged in and that your network choice is correct.'),
-    ])
+    // const promisedState = await Promise.race<[Account, ETHEREUM_NETWORKS, number] | {}>([
+    //   Promise.all([
+    //     getAccount(provider),
+    //     getNetwork(provider),
+    //     getTime(),
+    //   ]),
+    //   timeoutCondition(8000, 'Provider setup timeout. Please check that you are properly logged in and that your network choice is correct.'),
+    // ])
+    const account = await getAccount(provider)
+    console.log('​grabProviderState -> account', account)
+    const network = await getNetwork(provider)
+    console.log('​grabProviderState -> network', network)
+    const timestamp = await getTime()
+    console.log('​grabProviderState -> ', timestamp)
 
-    const [account, network, timestamp] = promisedState as [Account, ETHEREUM_NETWORKS, number],
-      balance = account && await getBalance(provider, account),
-      available = provider.walletAvailable,
-      unlocked = !!(available && account),
-      newState = { account, network, balance, available, unlocked, timestamp }
+    // const [account, network, timestamp] = promisedState as [Account, ETHEREUM_NETWORKS, number],
+    const balance = account && await getBalance(provider, account)
+    const available = true || provider.walletAvailable
+    const unlocked = !!(available && account)
+    const newState = { account, network, balance, available, unlocked, timestamp }
 
     return newState
   }
@@ -77,6 +83,6 @@ export default async function walletIntegration(store: Store<any>) {
 
     dispatchers.updateProvider(provider.providerName, { ...newState })
   } catch (error) {
-    console.error(error.message || error)
+    console.error(new Error(error))
   }
 }

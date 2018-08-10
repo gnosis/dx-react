@@ -7,6 +7,7 @@ const Provider: WalletProvider = {
     if (!this.checkAvailability()) return null
 
     if (window.web3.currentProvider.isMetaMask) return 'METAMASK'
+    if ((window as any).mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
 
     return window.web3.currentProvider.constructor.name
   },

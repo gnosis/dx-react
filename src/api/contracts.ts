@@ -135,6 +135,7 @@ export const promisedContractsMap = init()
 
 async function init() {
   try {
+    // MetaMaskInpageProvider || EthereumProvider etc.
     const { currentProvider } = await promisedWeb3
     setProvider(currentProvider)
 
@@ -143,13 +144,13 @@ async function init() {
   // name => contract instance mapping
   // e.g. TokenETH => deployed TokenETH contract
     const deployedContracts = contractNames.reduce((acc, name, i) => {
-    if (name === 'TokenFRT') {
+      if (name === 'TokenFRT') {
       acc['TokenMGN'] = instances[i]
     } else {
       acc[filename2ContractNameMap[name] || name] = instances[i]
     }
-    return acc
-  }, {}) as ContractsMapWProxy
+      return acc
+    }, {}) as ContractsMapWProxy
 
     const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
     deployedContracts.DutchExchange = contractsMap.DutchExchange.at(proxyAddress)
@@ -160,11 +161,10 @@ async function init() {
     delete deployedContracts.TokenOWLProxy
 
     if (process.env.NODE_ENV !== 'production') {
-    console.log(deployedContracts)
-  }
+      console.log(deployedContracts)
+    }
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)
-    // throw err
   }
 }

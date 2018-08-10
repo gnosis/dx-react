@@ -62,29 +62,28 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
 
       if (!unlocked) {
         watcherLogger({
-            logType: 'warn',
-            status: 'WALLET LOCKED',
-            info: 'Please unlock your wallet provider',
-            updateState: false,
-          })
+          logType: 'warn',
+          status: 'WALLET LOCKED',
+          info: 'Please unlock your wallet provider',
+          updateState: false,
+        })
           // if wallet locked, throw
-        throw 'Wallet locked'
+        throw new Error('Wallet locked')
       }
       else {
         watcherLogger({
-            logType: 'warn',
-            status: 'CONNECTED + WALLET UNLOCKED',
-            info: 'Web3 provider connected + wallet unlocked',
-            updateState: true,
-          })
+          logType: 'warn',
+          status: 'CONNECTED + WALLET UNLOCKED',
+          info: 'Web3 provider connected + wallet unlocked',
+          updateState: true,
+        })
         await updateMainAppState()
       }
     }
   } catch (err) {
-    console.warn(err)
-      // if error
-      // connection lost or provider no longer returns data (locked/logged out)
-      // reset all data associated with account
+    // if error
+    // connection lost or provider no longer returns data (locked/logged out)
+    // reset all data associated with account
     resetMainAppState()
 
     if (provider.walletAvailable) {
