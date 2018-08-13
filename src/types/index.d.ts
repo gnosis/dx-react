@@ -124,11 +124,14 @@ export type AuctionObject = {
     address: Account,
   },
   claim?: boolean,
-  indicesWithSellerBalance?: string[] | BigNumber[],
-  balancePerIndex?: string[] | BigNumber[],
+  indicesWithSellerBalance?: string[],
+  balancePerIndex?: string[],
   claimInverse?: boolean,
-  indicesWithSellerBalanceInverse?: string[] | BigNumber[],
-  balancePerIndexInverse?: string[] | BigNumber[],
+  indicesWithSellerBalanceInverse?: string[],
+  balancePerIndexInverse?: string[],
+  past: any,
+  current: any,
+  next: any,
 }
 
 export type TokenBalances = { [P in Account]: BigNumber }
