@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { OngoingAuctions } from 'types'
 import { DefaultTokenObject } from 'api/types'
 import { Action } from 'redux'
+import { AuctionStatus } from 'globals'
 
 export interface MenuAuctionProps {
   claimable: any;
@@ -48,7 +49,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                       {auction.current && auction.current.dirRunning && auction.current.participatesNormal && (
                         <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.current.index}`)}>
                           <td className="sectionLink">{auction.sell.symbol}/{auction.buy.symbol}</td>
-                          <td>ONGOING</td>
+                          <td>{auction.current.statusDir.status === AuctionStatus.INIT ? 'NOT STARTED' : 'ONGOING'}</td>
                           <td>
                             <p>{auction.current.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
@@ -74,7 +75,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           </td>
                           {auction.past.claimableNormal &&
                             <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
-                              XX {auction.buy.symbol} <img src={require('assets/claim.svg')} />
+                              {auction.past.claimableBalanceNormal} {auction.buy.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
                         </tr>
@@ -82,7 +83,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                       {auction.current && auction.current.oppRunning && auction.current.participatesInverse && (
                         <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.current.index}`)}>
                           <td className="sectionLink">{auction.buy.symbol}/{auction.sell.symbol}</td>
-                          <td>ONGOING</td>
+                          <td>{auction.current.statusOpp.status === AuctionStatus.INIT ? 'NOT STARTED' : 'ONGOING'}</td>
                           <td>
                             <p>{auction.current.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
@@ -108,7 +109,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           </td>
                           {auction.past.claimableInverse &&
                             <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}>
-                              XX {auction.sell.symbol} <img src={require('assets/claim.svg')} />
+                              {auction.past.claimableBalanceInverse} {auction.sell.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
                         </tr>
