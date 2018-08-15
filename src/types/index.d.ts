@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
-import { ProviderName } from 'globals'
+import { ProviderName, AuctionStatus } from 'globals'
 
 export interface Code2Name {
   ETH: 'ETHER',
@@ -129,9 +129,53 @@ export type AuctionObject = {
   claimInverse?: boolean,
   indicesWithSellerBalanceInverse?: string[],
   balancePerIndexInverse?: string[],
-  past: any,
-  current: any,
-  next: any,
+  past: {
+    indicesNormal: string[],
+    indicesInverse: string[],
+    includesCurrentNormal: boolean,
+    includesCurrentInverse: boolean,
+    dirRunning: boolean,
+    oppRunning: boolean,
+    balanceNormal: string,
+    balanceInverse: string,
+    balancesPerIndexNormal: string[],
+    balancesPerIndexInverse: string[],
+    claimablePerIndexNormal: string[],
+    claimablePerIndexInverse: string[],
+    claimableBalanceNormal: string,
+    claimableBalanceInverse: string,
+    participatedNormal: boolean,
+    participatedInverse: boolean,
+    claimableNormal: boolean,
+    claimableInverse: boolean,
+  },
+  current: {
+    index: string,
+    balanceNormal: string,
+    balanceInverse: string,
+    dirRunning: boolean,
+    oppRunning: boolean,
+    intThePastNormal: boolean,
+    intThePastInverse: boolean,
+    participatesNormal: boolean,
+    participatesInverse: boolean,
+    claimableNormal: boolean,
+    claimableInverse: boolean,
+    claimableBalanceNormal: string,
+    claimableBalanceInverse: string,
+    statusDir: {status: AuctionStatus, theoreticallyClosed?: boolean},
+    statusOpp: {status: AuctionStatus, theoreticallyClosed?: boolean},
+  },
+  next: {
+    index: string,
+    balanceNormal: string,
+    balanceInverse: string,
+    participatesNormal: boolean,
+    participatesInverse: boolean,
+    status: {status: AuctionStatus},
+  },
+  auctionStart?: BigNumber,
+  now?: number,
 }
 
 export type TokenBalances = { [P in Account]: BigNumber }
