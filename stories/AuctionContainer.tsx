@@ -105,6 +105,12 @@ storiesOf('AuctionContainer', module)
           max: (3600 * 6),
           step: 5,
         })}
+        now={number('now', 4, {
+          range: true,
+          min: 0,
+          max: (3600 * 6),
+          step: 5,
+        })}
         completed={boolean('comleted', true)}
         theoreticallyCompleted={boolean('comleted', true)}
         claimSellerFunds={() => {}}
