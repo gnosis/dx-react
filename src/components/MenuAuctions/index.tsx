@@ -3,6 +3,7 @@ import { OngoingAuctions } from 'types'
 import { DefaultTokenObject } from 'api/types'
 import { Action } from 'redux'
 import { AuctionStatus } from 'globals'
+import { getTimingApproximations } from 'components/AuctionStatus'
 
 export interface MenuAuctionProps {
   claimable: any;
@@ -53,7 +54,13 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           <td>
                             <p>{auction.current.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
-                          <td>claim in approx XXX</td>
+                          <td>
+                            claim {getTimingApproximations({
+                              auctionStart: auction.auctionStart,
+                              now: auction.now,
+                              status: auction.current.statusDir.status,
+                            }).claim}
+                          </td>
                         </tr>
                       )}
                       {auction.next && auction.next.participatesNormal && (
@@ -63,7 +70,13 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           <td>
                             <p>{auction.next.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
-                          <td>claim in approx XXX</td>
+                          <td>
+                            claim {getTimingApproximations({
+                              auctionStart: auction.auctionStart,
+                              now: auction.now,
+                              status: auction.next.status.status,
+                            }).claim}
+                          </td>
                         </tr>
                       )}
                       {auction.past && auction.past.participatedNormal && (
@@ -87,7 +100,13 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           <td>
                             <p>{auction.current.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
-                          <td>claim in approx XXX</td>
+                          <td>
+                            claim {getTimingApproximations({
+                              auctionStart: auction.auctionStart,
+                              now: auction.now,
+                              status: auction.current.statusOpp.status,
+                            }).claim}
+                          </td>
                         </tr>
                       )}
                       {auction.next && auction.next.participatesInverse && (
@@ -97,7 +116,13 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                           <td>
                             <p>{auction.next.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
-                          <td>claim in approx XXX</td>
+                          <td>
+                            claim {getTimingApproximations({
+                              auctionStart: auction.auctionStart,
+                              now: auction.now,
+                              status: auction.next.status.status,
+                            }).claim}
+                          </td>
                         </tr>
                       )}
                       {auction.past && auction.past.participatedInverse && (
