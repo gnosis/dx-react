@@ -12,6 +12,7 @@ import createStoreWithHistory from 'store'
 
 import ModalContainer from 'containers/Modals'
 import AppValidator from 'containers/AppValidator'
+import WalletIntegration from 'containers/WalletIntegration'
 
 import { asyncLoadSettings } from 'actions'
 import { ETHEREUM_NETWORKS } from 'globals'
@@ -30,11 +31,13 @@ interface AppProps {
 
 const App = (props: AppProps): any =>
   <Provider store={store}>
-    <AppValidator>
-      <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
-        <AppRouter disabled={props.disabled} history={history} />
-      </ModalContainer>
-    </AppValidator>
+    <WalletIntegration>
+      <AppValidator>
+        <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
+          <AppRouter disabled={props.disabled} history={history} />
+        </ModalContainer>
+      </AppValidator>
+    </WalletIntegration>
   </Provider>
 
 export default App
