@@ -136,6 +136,7 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     historyApiFallback: true,
+    https: true,
     port: 5000,
     host: '0.0.0.0',
     clientLogLevel: 'info',
