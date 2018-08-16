@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import providerWatcher from 'integrations/providerWatcher'
-import Provider from 'integrations/provider'
+import Providers from 'integrations/provider'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
 
@@ -30,8 +30,8 @@ class AppValidator extends React.Component<any> {
 
   async componentWillMount() {
     // const provider = MetamaskProvider,
-    const { network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
-
+    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
+    const currentProvider = Providers[activeProvider]
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
 
@@ -46,7 +46,7 @@ class AppValidator extends React.Component<any> {
         await getTokenList(network)
 
         // Initiate Provider
-        await providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState })
+        await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
 
         // initialise basic user state
         await initDutchX()
@@ -119,10 +119,11 @@ class AppValidator extends React.Component<any> {
   }
 
   startPolling = (pollTime: number = 5000) => {
-    const { updateMainAppState, updateProvider, resetMainAppState } = this.props
+    const { activeProvider, updateMainAppState, updateProvider, resetMainAppState } = this.props,
+      currentProvider = Providers[activeProvider]
 
     console.log('AppValidator: Polling started')
-    return this.dataPollerID = setInterval(() => providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
+    return this.dataPollerID = setInterval(() => providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
   }
 
   stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
@@ -147,7 +148,7 @@ const mapState = (state: State) => {
   return {
     activeProvider,
     network: provider ? provider.network : 'UNKNOWN NETWORK',
-    unlocked: provider ? provider.unlocked : false,
+    unlocked: provider && provider.unlocked,
   }
 }
 
