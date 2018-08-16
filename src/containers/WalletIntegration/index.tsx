@@ -1,60 +1,103 @@
 import React from 'react'
-import { State, Providers } from 'types'
-import { connect/* , Dispatch */ } from 'react-redux'
-import walletIntegration from 'integrations'
-import { store } from 'components/App'
-import { initiateAndSetActiveProvider } from 'actions'
+
+import Providers from 'integrations/provider'
+
+import { promisedContractsMap as connectContracts } from 'api/contracts'
+import { dxAPI as connectDXAPI } from 'api'
+import Loader from 'components/Loader'
+import { setActiveProvider } from 'actions'
+import { connect } from 'react-redux'
+
+import { initializeWallet as registerWallets } from 'components/App'
 
 // const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
 
 // }
 
 interface WalletIntegrationProps {
-  activeProvider: string,
-  providers: Providers,
-  initiateAndSetActiveProvider?: (provider: string) => void,
+  setActiveProvider(providerName: string): void
 }
 
-class WalletIntegration extends React.Component <WalletIntegrationProps> {
+interface WalletIntegrationState {
+  activeProvider: string,
+  error: Error,
+  initialising: boolean,
+  web3: any,
+}
+
+class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
+  state = {
+    activeProvider: undefined,
+    error: undefined,
+    initialising: false,
+    web3: undefined,
+  } as WalletIntegrationState
 
   async componentWillMount() {
-        // const { registerWallets } = this.props
-      return walletIntegration(store)
-    }
+    return registerWallets()
+  }
 
-  onChange = async (providerInfo: any) => this.props.initiateAndSetActiveProvider(providerInfo)
+  onChange = async (providerInfo: 'INJECTED_WALLET' | 'LEDGER') => {
+    const { setActiveProvider } = this.props
+
+    try {
+      this.setState({ initialising: true, error: undefined })
+      // initialize providers and return specific Web3 instances
+      const web3 = await Providers[providerInfo].initialize()
+
+      this.setState({ web3, activeProvider: providerInfo })
+      setActiveProvider(providerInfo)
+
+      // interface with contracts & connect entire DX API
+      await connectContracts(web3.currentProvider)
+      await connectDXAPI(web3.currentProvider)
+
+      return this.setState({ initialising: false })
+    } catch (error) {
+      console.error(error)
+      return this.setState({ error, initialising: false })
+    }
+  }
 
   walletSelector = () => {
-      const { providers } = this.props
-      return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', width: '100%', height: '100%' }}>
-                <h1>Choose a wallet</h1>
-                <div className="walletChooser">
-                    {Object.keys(providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
-                      const providerInfo = providers[provider].name || provider
-                      return (
-                            <label key={i}>
-                                <h4>{`${providerInfo} (${provider})`}</h4>
-                                <input
-                                    type="radio"
-                                    onChange={() => this.onChange(provider)}
-                                />
-                            </label>)
-                    })}
-                </div>
-            </div>
-        )
-    }
+    return (
+      <div className="walletChooser">
+        <Loader
+            hasData={!this.state.initialising}
+            message="Checking wallet is available..."
+            render={() => (
+            <>
+              <div>
+                <h1>Please select a wallet</h1>
+                {Object.keys(Providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
+                  const providerInfo = Providers[provider].providerName || provider
+                  return (
+                    <label key={i}>
+                      <h4
+                        onClick={() => this.onChange(provider)}
+                      >{`${providerInfo} (${provider})`}</h4>
+                    </label>)
+                })}
+              </div>
+            </>
+          )}/>
+          {this.state.error && <h3>{this.state.error.message}</h3>}
+      </div>
+    )
+  }
 
   render() {
-      const { activeProvider, children } = this.props
-      return activeProvider ? children : this.walletSelector()
-    }
+    const { activeProvider, initialising } = this.state,
+      { children } = this.props
+    return activeProvider && !initialising ? children : this.walletSelector()
+  }
 }
 
-const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
-  activeProvider,
-  providers,
-})
+// const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
+//   activeProvider,
+//   providers,
+// })
 
-export default connect(mapState, { initiateAndSetActiveProvider })(WalletIntegration)
+// export default connect(mapState, { initiateAndSetActiveProvider })(WalletIntegration)
+
+export default connect<{}, WalletIntegrationProps>(undefined, { setActiveProvider })(WalletIntegration)
