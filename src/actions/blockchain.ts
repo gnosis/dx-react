@@ -5,7 +5,7 @@ import { batchActions } from 'redux-batched-actions'
 
 import localForage from 'localforage'
 
-import { findDefaultProvider, getActiveProviderObject } from 'selectors/blockchain'
+import { getActiveProviderObject, findDefaultProvider } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -97,11 +97,15 @@ export const setOWLPreference = createAction('SET_OWL_PREFERENCE')
 
 const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   try {
+    // TODO: if user locks wallet, show wallet picker or something
     // determine new provider
-    const newProvider = findDefaultProvider(state)
+    let newProvider = getActiveProviderObject(state)
+    if (!newProvider) newProvider = findDefaultProvider(state)
+
+    // TODO: not necessarry here but keeping as legacy
     if (newProvider) {
       dispatch(batchActions([
-        setActiveProvider(newProvider.name),
+        setActiveProvider(newProvider.type),
         setDutchXInitialized({ initialized: true }),
       ], 'SET_ACTIVE_PROVIDER_AND_INIT_DX_FLAG'))
     }
@@ -125,7 +129,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
   const { tokenList } = getState()
   const defaultList = tokenList.type === 'DEFAULT' ? tokenList.defaultTokenList : tokenList.combinedTokenList
   const [{ TokenMGN }, currentAccount] = await Promise.all([
-    promisedContractsMap,
+    promisedContractsMap(),
     getCurrentAccount(),
   ])
   const mainList = [...defaultList, { symbol: 'MGN', name: 'MAGNOLIA', decimals: 18, address: TokenMGN.address }]
@@ -250,7 +254,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
   ])
 
   const { ipfsFetchFromHash } = await promisedIPFS
-  const { getNetwork } = await promisedWeb3
+  const { getNetwork } = await promisedWeb3()
 
   // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
   // meaning this would be FALSE on network change and app reset
@@ -357,7 +361,7 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   if (!sell || !buy) return console.warn('Sell or buy token not selected. Please make sure both tokens are selected')
 
   if (sell.address === ETH_ADDRESS || buy.address === ETH_ADDRESS) {
-    const { TokenETH } = await promisedContractsMap
+    const { TokenETH } = await promisedContractsMap()
     if (sell.address === ETH_ADDRESS) {
       sell = TokenETH
     } else {
@@ -405,7 +409,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
   } = getState()
   let sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address
   const nativeSellAmt = await toNative(sellAmount, sell.decimals),
-    { TokenOWL, TokenETH } = await promisedContractsMap,
+    { TokenOWL, TokenETH } = await promisedContractsMap(),
     // promised Token Allowance to get back later
     promisedTokensAndOWLBalance = Promise.all<boolean|BigNumber, BigNumber>([
       checkTokenAllowance(sell.isETH ? TokenETH.address : sell.address, nativeSellAmt, currentAccount),
@@ -623,7 +627,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
     blockchain: { activeProvider, currentAccount },
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
-  const promisedContracts = promisedContractsMap
+  const promisedContracts = promisedContractsMap()
   const { symbol: sellName } = getTokenName(sell)
 
   try {
