@@ -510,11 +510,13 @@ export const getUnclaimedSellerFunds = async (pair: TokenPair, index?: Index, ac
   ])
 
   try {
+    // when it breaks error is still output to console inside Metamask
+    // https://github.com/MetaMask/metamask-extension/blob/1f0cf11af1c94e750bbc4c5238c3ee028350a6c6/app/scripts/lib/createErrorMiddleware.js?utf8=%E2%9C%93#L61
     const [claimable] = await DutchX.claimSellerFunds.call(pair, index, account)
     console.log('claimable: ', claimable)
     return claimable as BigNumber
   } catch (e) {
-    console.log('Nothing to claim')
+    console.log('Nothing to claim for', `${pair.sell.symbol}-${pair.buy.symbol}-${index.toString()}`)
     return web3.toBigNumber(0) as BigNumber
   }
 }
@@ -569,9 +571,11 @@ claimSellerFundsFromSeveralAuctions.sendTransaction = async (
   const { DutchX } = await promisedAPI
   userAccount = await fillDefaultAccount(userAccount)
 
+  console.log('{ sell, buy }, userAccount, indices: ', { sell, buy }, userAccount, indices)
   const claimableIndices = (
     await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
   )[0].map(i => i.toNumber())
+  console.log('claimableIndices: ', claimableIndices)
 
   if (claimableIndices.length === 0) return
 
@@ -587,7 +591,7 @@ claimSellerFundsFromSeveralAuctions.sendTransaction = async (
   const sellArr = Array.from({ length }, () => sell.address)
   const buyArr = Array.from({ length }, () => buy.address)
 
-  console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
+  console.log('claimTokensFromSeveralAuctionsAsSeller Params = ', sellArr, buyArr, finalIndices, userAccount)
   return DutchX.claimTokensFromSeveralAuctionsAsSeller.sendTransaction(sellArr, buyArr, finalIndices, userAccount)
 }
 
@@ -848,6 +852,7 @@ export const getSellerOngoingAuctions = async (
         const pair: TokenPair = { sell, buy },
           inversePair: TokenPair = { sell: buy, buy: sell }
         accum.push(pair)
+        console.log('pair, account, indices: ', pair, account, 0)
         promisedClaimableTokensObject.normal.push(
           getIndicesWithClaimableTokensForSellers(pair, account, 0)
           .then(async ([indices, balances]) => {
