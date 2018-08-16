@@ -3,7 +3,7 @@ import { OngoingAuctions } from 'types'
 import { DefaultTokenObject } from 'api/types'
 import { Action } from 'redux'
 import { AuctionStatus } from 'globals'
-import { getTimingApproximations } from 'components/AuctionStatus'
+import { getTimingApproximations } from 'utils/timings'
 
 export interface MenuAuctionProps {
   claimable: any;
