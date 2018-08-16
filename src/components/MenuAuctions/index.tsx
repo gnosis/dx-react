@@ -141,61 +141,6 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                       )}
                     </ Fragment>
                   )
-
-                  // if (auction.balancePerIndex.length && auction.balancePerIndexInverse.length) {
-                  //   return (
-                  //     <Fragment
-                  //       key={`${auction.sell.address}-${auction.buy.address}-${i}`}
-                  //     >
-                  //       <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`)}>
-                  //         <td className="sectionLink">{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
-                  //         <td>
-                  //           {auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}
-                  //         </td>
-                  //         {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
-                  //       </tr>
-                  //       <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}>
-                  //         <td className="sectionLink">{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
-                  //         <td>
-                  //           {auction.balancePerIndexInverse.last() &&
-                  //             <p>
-                  //               {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
-                  //             </p>}
-                  //         </td>
-                  //         {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
-                  //       </tr>
-                  //     </ Fragment>
-                  //   )
-                  // }
-                  // // IF NORMAL === FALSE but INVERSE === TRUE
-                  // if (!auction.balancePerIndex.length && auction.balancePerIndexInverse.length) {
-                  //   return (
-                  //     <tr
-                  //       key={`${auction.buy.address}-${auction.sell.address}-${i}`}
-                  //       onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.indicesWithSellerBalanceInverse.last()}`)}
-                  //     >
-                  //       <td className="sectionLink">{`${auction.buy.symbol}/${auction.sell.symbol}`}</td>
-                  //       <td>
-                  //         {auction.balancePerIndexInverse.last() &&
-                  //           <p>
-                  //             {`${auction.balancePerIndexInverse.last()} ${auction.buy.symbol}`}
-                  //           </p>}
-                  //       </td>
-                  //       {auction.claimInverse && <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}><img src={require('assets/claim.svg')} /></td>}
-                  //     </tr>
-                  //   )
-                  // }
-                  // // IF NORMAL === TRUE but INVERSE === FALSE
-                  // return (
-                  //   <tr
-                  //     key={`${auction.sell.address}-${auction.buy.address}-${i}`}
-                  //     onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.indicesWithSellerBalance.last()}`)}
-                  //   >
-                  //     <td className="sectionLink">{`${auction.sell.symbol}/${auction.buy.symbol}`}</td>
-                  //     <td>{auction.balancePerIndex.last() && <p>{`${auction.balancePerIndex.last()} ${auction.sell.symbol}`}</p>}</td>
-                  //     {auction.claim && <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}><img src={require('assets/claim.svg')} /></td>}
-                  //   </tr>
-                  // )
                 },
               )}
             </tbody>
