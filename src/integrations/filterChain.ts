@@ -19,8 +19,6 @@ interface FilterOptions {
   topics: (string | null)[],
 }
 
-
-
 let mainFilter: Web3Filter
 const accumCB: Error1stCallback<Hash>[] = []
 const mainFilterCB: Error1stCallback<Hash> = (error, blockHash) => {
@@ -32,7 +30,7 @@ const mainFilterCB: Error1stCallback<Hash> = (error, blockHash) => {
 export const getFilter = async (options: BlockN | FilterOptions = 'latest', reuse = true): Promise<Web3Filter> => {
   if (mainFilter && reuse) return mainFilter
 
-  const { web3 } = await promisedWeb3
+  const { web3 } = await promisedWeb3()
   const filter = web3.eth.filter('latest', options)
   if (reuse) mainFilter = filter
 
@@ -41,11 +39,11 @@ export const getFilter = async (options: BlockN | FilterOptions = 'latest', reus
 
 export const watch = async (cb: Error1stCallback<Hash>): Promise<Web3Filter['stopWatching']> => {
   const filter = await getFilter()
-  
+
   const length = accumCB.push(cb)
   // if it's the first callback added
   // start watching
-  if (length === 1) filter.watch(mainFilterCB)  
+  if (length === 1) filter.watch(mainFilterCB)
 
   return () => {
     const cbInd  = accumCB.indexOf(cb)
@@ -68,7 +66,7 @@ export const isTxInBlock = (blockReceipt: BlockReceipt, tx:Hash) => {
 }
 
 export const getBlock = async (bl: Hash, returnTransactionObjects?: boolean) => {
-  const { getBlock } = await promisedWeb3
+  const { getBlock } = await promisedWeb3()
   return getBlock(bl, returnTransactionObjects)
 }
 
@@ -83,9 +81,9 @@ export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
     res = await new Promise<BlockReceipt>(async (resolve, reject) => {
       stopWatchingFunc = await watchFunc(async (e: Error, bl: Hash) => {
         if (e) return reject(e)
-  
+
         const blReceipt = await getBlock(bl)
-  
+
         if (isTxInBlock(blReceipt, hash)) resolve(blReceipt)
       })
     })
@@ -105,7 +103,7 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
 
   let stopWatchingFunc: () => void, res: TransactionReceipt
 
-  const { getTransactionReceipt } = await promisedWeb3
+  const { getTransactionReceipt } = await promisedWeb3()
 
   try {
     console.log('STARTED WATCHING', hash)
@@ -113,10 +111,9 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
     res = await new Promise<TransactionReceipt>(async (resolve, reject) => {
       stopWatchingFunc = await watchFunc(async (e: Error, bl: Hash) => {
         if (e) return reject(e)
-  
-  
+
         const txReceipt = await getTransactionReceipt(hash)
-  
+
         if (txReceipt) {
           console.log(`FOUND ${hash} receipt after block ${bl}`)
           // tx is mined
