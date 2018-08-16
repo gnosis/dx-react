@@ -87,7 +87,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                             <p>{auction.past.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
                           {auction.past.claimableNormal &&
-                            <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
+                            <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}>
                               {auction.past.claimableBalanceNormal} {auction.buy.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
@@ -133,7 +133,7 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                             <p>{auction.past.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
                           {auction.past.claimableInverse &&
-                            <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}>
+                            <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
                               {auction.past.claimableBalanceInverse} {auction.sell.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
