@@ -684,7 +684,7 @@ interface LastAuctionStats {
   balanceNext: { normal: BigNumber, inverse: BigNumber },
   balanceNormal: BigNumber, balanceInverse: BigNumber,
   statusDir: StatusOppDir, statusOpp: StatusOppDir,
-  auctionStart: BigNumber, now: number,
+  auctionStart: BigNumber,
 }
 
 // helper fro getting last index of a token pair and closing price
@@ -709,7 +709,6 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
     balanceNormal,
     balanceInverse,
     auctionStart,
-    now,
   ] = await Promise.all<any>([
     DutchX.getClosingPrice(pair, lastIndex),
     DutchX.getClosingPrice(oppositePair, lastIndex),
@@ -724,7 +723,6 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
     DutchX.getSellerBalances(pair, lastIndex, account),
     DutchX.getSellerBalances(oppositePair, lastIndex, account),
     DutchX.getAuctionStart(pair),
-    getTime(),
   ])
 
   const outstandingVolumeNormal = await getOutstandingVolume(pair, {
@@ -764,7 +762,7 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
     balanceNext: { normal, inverse },
     balanceNormal, balanceInverse,
     statusDir, statusOpp,
-    auctionStart, now,
+    auctionStart,
   }
 }
 
@@ -879,10 +877,11 @@ export const getSellerOngoingAuctions = async (
     // Checks ongoingAuctions Array if each ongoingAuction has claimable Tokens
     // Array indices are lined up
     // @returns => forEach ongoingAuction => (indices[], userBalanceInSpecificAuction[]) => e.g for: ETH/GNO => (indices[], userBalance[])
-    const [claimableTokens, inverseClaimableTokens, lastAuctionsData] = await Promise.all([
+    const [claimableTokens, inverseClaimableTokens, lastAuctionsData, now] = await Promise.all([
       Promise.all(promisedClaimableTokensObject.normal),
       Promise.all(promisedClaimableTokensObject.inverse),
       Promise.all(lastAuctionPerPair),
+      getTime(),
     ])
 
     // consider adding LAST userBalance from claimableTokens to ongoingAuctions object as COMMITTED prop
@@ -908,7 +907,6 @@ export const getSellerOngoingAuctions = async (
         statusDir,
         statusOpp,
         auctionStart,
-        now,
       } = lastAuctionsData[index]
 
       const currAuctionNeverRanDir = balanceNormal.eq(0) && closingPriceDir[1].eq(0)
