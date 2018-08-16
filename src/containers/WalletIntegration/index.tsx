@@ -10,6 +10,8 @@ import { connect } from 'react-redux'
 
 import { initializeWallet as registerWallets } from 'components/App'
 
+import ledgerSVG from 'assets/img/icons/icon_ledger.svg'
+import MMSVG from 'assets/img/icons/icon_metamask3.svg'
 // const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
 
 // }
@@ -67,16 +69,28 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
             message="Checking wallet is available..."
             render={() => (
             <>
-              <div>
-                <h1>Please select a wallet</h1>
+              <h1>Please select a wallet</h1>
+              <div className={!this.state.initialising ? 'lightBlue' : ''}>
                 {Object.keys(Providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
                   const providerInfo = Providers[provider].providerName || provider
                   return (
-                    <label key={i}>
-                      <h4
-                        onClick={() => this.onChange(provider)}
-                      >{`${providerInfo} (${provider})`}</h4>
-                    </label>)
+                    <div
+                      key={i}
+                      onClick={() => this.onChange(provider)}
+                    >
+                      <h4>{providerInfo}</h4>
+                      <br/>
+                      {provider === 'LEDGER'
+                        ?
+                          <img src={ledgerSVG} />
+                        :
+                          <img
+                            src={MMSVG}
+                            style={{ maxWidth: 35, marginTop: -6 }}
+                          />
+                      }
+                    </div>
+                  )
                 })}
               </div>
             </>
