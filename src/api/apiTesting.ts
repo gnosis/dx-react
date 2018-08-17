@@ -10,7 +10,7 @@ export default async (version?: string | number) => {
     TokenMGN,
     // TokenOMG,
     // TokenRDN,
-  } = await promisedContractsMap
+  } = await promisedContractsMap()
 
   // TODO: hard-code actual addresses here
   return {

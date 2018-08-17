@@ -2,10 +2,17 @@ import { promisedContractsMap } from './contracts'
 import { DutchExchange, Index, Filter, ErrorFirstCallback, DutchExchangeEvents } from './types'
 import { TokenPair, Account, Balance, TokenCode } from 'types'
 
-export const promisedDutchX = init()
+let dutchXAPI: DutchExchange
+
+export const promisedDutchX = async () => {
+  if (dutchXAPI) return dutchXAPI
+
+  dutchXAPI = await init()
+  return dutchXAPI
+}
 
 async function init(): Promise<DutchExchange> {
-  const { DutchExchange: dx } = await promisedContractsMap
+  const { DutchExchange: dx } = await promisedContractsMap()
 
   /* const token2Address = Object.keys(tokens).reduce((acc, key) => {
     const contr = tokens[key]

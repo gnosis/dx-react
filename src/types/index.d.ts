@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
-import { ProviderName } from 'globals'
+import { ProviderName, ProviderType } from 'globals'
 
 export interface Code2Name {
   ETH: 'ETHER',
@@ -33,6 +33,8 @@ export interface Network2URL {
 
 export interface Provider {
   name?: ProviderName,
+  // providerName?: ProviderName,
+  type?: ProviderType,
   loaded: boolean,
   available: boolean,
   unlocked: boolean,
@@ -49,7 +51,7 @@ export type Providers = {
 
 export interface Blockchain {
   providers?: Providers,
-  activeProvider?: ProviderName,
+  activeProvider?: ProviderType,
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,

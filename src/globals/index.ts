@@ -13,6 +13,7 @@ export enum WALLET_PROVIDER {
   METAMASK = 'METAMASK',
   PARITY = 'PARITY',
   REMOTE = 'REMOTE',
+  LEDGER = 'LEDGER',
 }
 
 export const networkById = {
@@ -54,6 +55,11 @@ export const network2URL: Network2URL = {
   UNKNOWN: '//localhost:5000/',
 }
 
+export const network2RPCURL = {
+  RINKEBY: 'https://rinkeby.infura.io/',
+  UNKNOWN: 'https://127.0.0.1:8545',
+}
+
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 export enum AuctionStatus {
@@ -64,8 +70,9 @@ export enum AuctionStatus {
   ENDED = 'ended',
 }
 
-export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
-export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
+export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
+export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST', LEDGER = 'LEDGER' }
+export const supportedProviders = new Set(Object.keys(ProviderType)) as Set<ProviderType>
 
 export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 200000
 

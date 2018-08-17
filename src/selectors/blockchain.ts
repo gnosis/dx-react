@@ -1,6 +1,6 @@
 import { State, Provider } from 'types'
-import { ProviderName } from 'globals'
 import { orderBy } from 'lodash'
+import { ProviderType } from 'globals'
 
 export const selector = (state: State) => state.blockchain
 
@@ -21,11 +21,11 @@ export const findDefaultProvider = (state: State): Provider => {
   // })
 }
 
-export const getActiveProvider = (state: State): ProviderName => selector(state).activeProvider
+export const getActiveProvider = (state: State): ProviderType => selector(state).activeProvider
 export const getActiveProviderObject = (state: State): Provider => {
   const blockchain = selector(state)
 
-  return blockchain.providers[blockchain.activeProvider]
+  return blockchain.providers[getActiveProvider(state)]
 }
 
 export const getSelectedProvider = (state: State): Provider | null => (
