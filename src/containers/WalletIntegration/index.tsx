@@ -2,7 +2,7 @@ import React from 'react'
 
 import Providers from 'integrations/provider'
 
-import { promisedContractsMap as connectContracts, promisedContractsMap } from 'api/contracts'
+import { promisedContractsMap as connectContracts } from 'api/contracts'
 import { dxAPI as connectDXAPI, depositETH, depositAndSell } from 'api'
 import Loader from 'components/Loader'
 import { setActiveProvider } from 'actions'
@@ -14,7 +14,6 @@ import ledgerSVG from 'assets/img/icons/icon_ledger.svg'
 import MMSVG from 'assets/img/icons/icon_metamask3.svg'
 import { State } from 'types'
 import { ProviderType } from 'globals'
-import { waitForTx } from 'integrations/filterChain'
 // const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
 
 // }
@@ -132,4 +131,4 @@ const mapState = ({ blockchain: { activeProvider } }: State) => ({
 
 // export default connect(mapState, { initiateAndSetActiveProvider })(WalletIntegration)
 
-export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration)
+export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration as any)

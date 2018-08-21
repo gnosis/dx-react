@@ -81,6 +81,10 @@
     "@gnosis.pm/dx-contracts": "^1.0.2",
     "@gnosis.pm/gno-token": "^1.0.1",
     "@gnosis.pm/util-contracts": "^1.0.1",
+    "@ledgerhq/hw-app-eth": "^4.21.0",
+    "@ledgerhq/hw-transport": "^4.21.0",
+    "@ledgerhq/hw-transport-u2f": "^4.21.0",
+    "@ledgerhq/web3-subprovider": "^4.21.0",
     "autobind-decorator": "^2.1.0",
     "await-delay": "^1.0.0",
     "bignumber.js": "^5.0.0",
@@ -128,6 +132,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "uuid": "^3.1.0",
     "web3": "^0.20.2",
+    "web3-provider-engine": "^14.0.6",
     "webpack": "^3.12.0",
     "whatwg-fetch": "^2.0.3"
   },

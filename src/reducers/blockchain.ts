@@ -26,6 +26,7 @@ const INITIAL_PROVIDER_STATE: Provider = {
   balance: undefined,
   priority: 1,
   type: undefined,
+  keyName: undefined,
 }
 
 const initialState: Blockchain = {

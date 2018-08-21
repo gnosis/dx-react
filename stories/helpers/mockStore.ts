@@ -19,6 +19,7 @@ export const bcMetamask: Partial<State> = {
     providers: {
       METAMASK: {
         name: ProviderName.METAMASK,
+        keyName: undefined,
         loaded: true,
         available: true,
         unlocked: true,
