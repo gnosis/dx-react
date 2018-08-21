@@ -117,6 +117,7 @@ const reducer = handleActions({
   [resetAppState.toString()]: (state: Blockchain) => ({
     ...state,
     ...initialState,
+    activeProvider: state.activeProvider,
     providers: state.providers,
   }),
 },
