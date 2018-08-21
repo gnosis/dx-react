@@ -38,7 +38,7 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
         // reset module timestamp with updated timestamp
       prevTime = timestamp
         // dispatch action with updated provider state
-      updateProvider({ provider: provider.providerType, ...newState })
+      updateProvider({ provider: provider.keyName, ...newState })
         // check if initial load or wallet locked
 
       if (!unlocked) {
@@ -70,8 +70,8 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
     if (provider.walletAvailable) {
         // disable internal provider
       provider.state.unlocked = false
-        // and dispatch action with { available: false }
-      updateProvider({ provider: provider.providerType })
+      // and dispatch action with { available: false }
+      updateProvider({ provider: provider.keyName })
     }
     throw err
   }

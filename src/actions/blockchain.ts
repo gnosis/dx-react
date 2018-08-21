@@ -105,7 +105,7 @@ const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
     // TODO: not necessarry here but keeping as legacy
     if (newProvider) {
       dispatch(batchActions([
-        setActiveProvider(newProvider.type),
+        setActiveProvider(newProvider.keyName),
         setDutchXInitialized({ initialized: true }),
       ], 'SET_ACTIVE_PROVIDER_AND_INIT_DX_FLAG'))
     }
@@ -573,8 +573,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       console.log('depositAndSell tx hash', hash)
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
-
-      console.log('PROMPTING to start depositAndSell tx')
+      console.log('PROMPTING to start postSellOrder tx')
       hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
       console.log('postSellOrder tx hash', hash)
     }

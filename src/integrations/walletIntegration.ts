@@ -17,14 +17,21 @@ export default async function walletIntegration(store: Store<any>) {
     regProvider: dispatchProviderAction(registerProvider),
   }
 
-  Object.keys(Providers).forEach((providerName) => {
-    const provider: WalletProvider = Providers[providerName]
+  Object.keys(Providers).forEach((providerKey) => {
+    const provider: WalletProvider = Providers[providerKey]
 
     provider.checkAvailability()
 
     // check availability
     if (!provider.walletAvailable) return
     // dispatch action to save provider name and priority
-    return dispatchers.regProvider(providerName, { type: provider.providerType, name: provider.providerName, priority: provider.priority })
+    return dispatchers.regProvider(
+      providerKey,
+      {
+        name: provider.providerName,
+        type: provider.providerType,
+        keyName: provider.keyName,
+        priority: provider.priority,
+      })
   })
 }
