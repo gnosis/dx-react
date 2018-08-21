@@ -123,11 +123,12 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
       })
     })
   } catch (error) {
+    console.error(error)
     // don't stop watching the mainFilter
     stopWatchingFunc()
     throw error
   }
-  stopWatchingFunc()
+  // stopWatchingFunc()
   console.log('STOPPED WATCHING', hash)
 
   return res
