@@ -1,6 +1,7 @@
 import { promisedContractsMap } from './contracts'
 import { DutchExchange, Index, Filter, ErrorFirstCallback, DutchExchangeEvents } from './types'
 import { TokenPair, Account, Balance, TokenCode } from 'types'
+import { GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
 
 let dutchXAPI: DutchExchange
 
@@ -69,7 +70,7 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount })
+  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 
   postSellOrder.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -83,7 +84,7 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postSellOrder.sendTransaction(t1, t2, index, amount, { from: userAccount })
+  ) => dx.postSellOrder.sendTransaction(t1, t2, index, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 
   const postBuyOrder = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -162,7 +163,7 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     userAccount: Account,
-  ) => dx.depositAndSell(t1, t2, amount, { from: userAccount })
+  ) => dx.depositAndSell(t1, t2, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 
   depositAndSell.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -174,7 +175,7 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     userAccount: Account,
-  ) => dx.depositAndSell.sendTransaction(t1, t2, amount, { from: userAccount })
+  ) => dx.depositAndSell.sendTransaction(t1, t2, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 
   const claimAndWithdraw = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,

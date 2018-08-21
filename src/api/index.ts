@@ -7,7 +7,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, Provider } from 'types'
 import { dxAPI as dutchXAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
-import { ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
+import { ETH_ADDRESS, FIXED_DECIMALS, GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
 let API: dutchXAPI
 export const dxAPI = /* (window as any).AP = */ async (provider?: Provider) => {
   if (API) return API
@@ -184,7 +184,7 @@ tokenApproval.sendTransaction = async (tokenAddress: Account, amount: Balance, u
   const { DutchX, Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress })
+  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 }
 
 export const tokenSupply = async (tokenAddress: Account) => {
@@ -209,7 +209,7 @@ depositETH.sendTransaction = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount })
+  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 }
 
 /* =================================================================
