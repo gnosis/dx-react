@@ -57,7 +57,7 @@ export const network2URL: Network2URL = {
 
 export const network2RPCURL = {
   RINKEBY: 'https://rinkeby.infura.io/',
-  UNKNOWN: 'https://127.0.0.1:8545',
+  UNKNOWN: 'http://127.0.0.1:8545',
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]
@@ -71,8 +71,8 @@ export enum AuctionStatus {
 }
 
 export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
-export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST', LEDGER = 'LEDGER' }
-export const supportedProviders = new Set(Object.keys(ProviderType)) as Set<ProviderType>
+export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST', LEDGER = 'LEDGER', INJECTED_WALLET = 'INJECTED_WALLET' }
+export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
 export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 200000
 
@@ -102,6 +102,9 @@ export const ALLOWED_NETWORK = 'Rinkeby Test Network'
 
 // BigNumber fixed decimal places to sow
 export const FIXED_DECIMALS = 4
+
+export const GAS_PRICE = 5e9
+export const GAS_LIMIT_TESTING = '4000000'
 
 // Content page URLS
 export const URLS = {

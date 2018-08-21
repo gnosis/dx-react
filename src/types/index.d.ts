@@ -34,6 +34,7 @@ export interface Network2URL {
 export interface Provider {
   name?: ProviderName,
   // providerName?: ProviderName,
+  keyName: ProviderName | ProviderType,
   type?: ProviderType,
   loaded: boolean,
   available: boolean,
@@ -51,7 +52,7 @@ export type Providers = {
 
 export interface Blockchain {
   providers?: Providers,
-  activeProvider?: ProviderType,
+  activeProvider?: ProviderType | ProviderName,
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,
