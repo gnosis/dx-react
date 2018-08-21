@@ -2,6 +2,8 @@
 // import { WalletProvider } from '../types'
 import Web3 from 'web3'
 // @ts-ignore
+import Transport from '@ledgerhq/hw-transport'
+// @ts-ignore
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 // @ts-ignore
 import createLedgerSubprovider from '@ledgerhq/web3-subprovider'
@@ -22,8 +24,6 @@ import { Balance } from 'types'
 import { WalletProvider } from 'integrations/types'
 
 import { ETHEREUM_NETWORKS, networkById, network2RPCURL } from 'globals'
-
-const rpcUrl = network2RPCURL.RINKEBY
 
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -59,11 +59,15 @@ export const grabProviderState = async (provider: WalletProvider) => {
   return newState
 }
 
+const rpcUrl = network2RPCURL.RINKEBY
+const networkId = 4 // parseInt(process.env.REACT_APP_NETWORK_ID || "1337", 10);
+
 const Providers = {
   // runtime providers (METAMASK/MIST/PARITY)
   INJECTED_WALLET: {
     priority: 90,
     providerType: 'INJECTED_WALLET',
+    keyName: 'INJECTED_WALLET',
 
     get providerName() {
       if (!this.checkAvailability()) return null
@@ -92,6 +96,7 @@ const Providers = {
     priority: 80,
     providerName: 'LEDGER',
     providerType: 'HARDWARE_WALLET',
+    keyName: 'LEDGER',
 
     async checkAvailability() {
       if (this.ledger) return this.walletAvailable = true
@@ -101,25 +106,29 @@ const Providers = {
 
     async initialize() {
       try {
-        const device = await (new Eth(await TransportU2F.create(1500, 5000))).getAppConfiguration()
+        const device = await (new Eth(await TransportU2F.create()))
+        if (!device.getAppConfiguration()) throw 'Ledger not available'
 
         const engine = new ProviderEngine()
-        const getTransport = async () => TransportU2F.create(1500, 5000)
+        const getTransport = async () => TransportU2F.create()
         const ledger = createLedgerSubprovider(getTransport, {
-          networkId: '4',
+          networkId,
           accountsLength: 5,
         })
 
-        // set ETH App on ledger to provider object
-        this.device = device
-
         engine.addProvider(ledger)
         engine.addProvider(new RpcSubprovider({ rpcUrl }))
+        engine.addProvider(new FetchSubprovider({ rpcUrl }))
         engine.start()
 
+        // set ETH App on ledger to provider object
+        this.device = device
         this.web3 = new Web3(engine)
         this.state = {}
 
+        console.log('​ETH Device', device)
+        console.log('LEDGER WEB3: ', this.web3)
+        this.device.transport.on('disconnect', (err: Error) => err ? console.error(err) : console.log('LEDGER DISCONNECT DETECTED'))
         return this.web3
       } catch (error) {
         console.error(error)
