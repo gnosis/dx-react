@@ -2,8 +2,8 @@ import React from 'react'
 
 import Providers from 'integrations/provider'
 
-import { promisedContractsMap as connectContracts } from 'api/contracts'
-import { dxAPI as connectDXAPI } from 'api'
+import { promisedContractsMap as connectContracts, promisedContractsMap } from 'api/contracts'
+import { dxAPI as connectDXAPI, depositETH, depositAndSell } from 'api'
 import Loader from 'components/Loader'
 import { setActiveProvider } from 'actions'
 import { connect } from 'react-redux'
@@ -12,12 +12,16 @@ import { initializeWallet as registerWallets } from 'components/App'
 
 import ledgerSVG from 'assets/img/icons/icon_ledger.svg'
 import MMSVG from 'assets/img/icons/icon_metamask3.svg'
+import { State } from 'types'
+import { ProviderType } from 'globals'
+import { waitForTx } from 'integrations/filterChain'
 // const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
 
 // }
 
 interface WalletIntegrationProps {
-  setActiveProvider(providerName: string): void
+  activeProvider: ProviderType,
+  setActiveProvider(providerName: string): void,
 }
 
 interface WalletIntegrationState {
@@ -53,6 +57,21 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       // interface with contracts & connect entire DX API
       await connectContracts(web3.currentProvider)
       await connectDXAPI(web3.currentProvider)
+
+      // TODO: test
+      const testLedger = async () => {
+        const amt = 0.001e18
+        const me = '0x2Ab05c3C37f85ce9e1bE33f035b1B8f2e2432627'
+        const depositHash = await depositETH.sendTransaction(amt.toString(), me)
+        console.log('​depositETH tx hash: ', depositHash)
+        const sell = { name: 'WETH', address: '0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb' }, buy = { name: 'GNO', address: '0x59d3631c86bbe35ef041872d502f218a39fba150' }
+        const receipt = await depositAndSell(sell as any, buy as any, amt / 3  as any, me)
+
+      // const receipt = await waitForTx(hash)
+        console.log('postSellOrder tx receipt: ', receipt)
+      }
+      // await testLedger()
+      (window as any).TEST_LEDGER = testLedger
 
       return this.setState({ initialising: false })
     } catch (error) {
@@ -101,17 +120,16 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
   }
 
   render() {
-    const { activeProvider, initialising } = this.state,
-      { children } = this.props
+    const { initialising } = this.state,
+      { activeProvider, children } = this.props
     return activeProvider && !initialising ? children : this.walletSelector()
   }
 }
 
-// const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
-//   activeProvider,
-//   providers,
-// })
+const mapState = ({ blockchain: { activeProvider } }: State) => ({
+  activeProvider,
+})
 
 // export default connect(mapState, { initiateAndSetActiveProvider })(WalletIntegration)
 
-export default connect<{}, WalletIntegrationProps>(undefined, { setActiveProvider })(WalletIntegration)
+export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration)
