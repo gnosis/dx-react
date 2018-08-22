@@ -24,7 +24,7 @@ interface WalletIntegrationProps {
 }
 
 interface WalletIntegrationState {
-  activeProvider: string,
+  activeProviderSet: boolean,
   error: Error,
   initialising: boolean,
   web3: any,
@@ -32,7 +32,7 @@ interface WalletIntegrationState {
 
 class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
   state = {
-    activeProvider: undefined,
+    activeProviderSet: undefined,
     error: undefined,
     initialising: false,
     web3: undefined,
@@ -50,8 +50,8 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       // initialize providers and return specific Web3 instances
       const web3 = await Providers[providerInfo].initialize()
 
-      this.setState({ web3, activeProvider: providerInfo })
       setActiveProvider(providerInfo)
+      this.setState({ web3, activeProviderSet: true })
 
       // interface with contracts & connect entire DX API
       await connectContracts(web3.currentProvider)
@@ -84,7 +84,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       <div className="walletChooser">
         <Loader
             hasData={!this.state.initialising}
-            message="Checking wallet is available..."
+            message="CHECKING WALLET AVAILABLE..."
             render={() => (
             <>
               <h1>Please select a wallet</h1>
@@ -119,9 +119,9 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
   }
 
   render() {
-    const { initialising } = this.state,
+    const { initialising, activeProviderSet } = this.state,
       { activeProvider, children } = this.props
-    return activeProvider && !initialising ? children : this.walletSelector()
+    return (activeProvider && activeProviderSet) && !initialising ? children : this.walletSelector()
   }
 }
 
