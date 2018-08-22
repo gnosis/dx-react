@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Loader from 'components/Loader'
+
 import providerWatcher from 'integrations/providerWatcher'
 import Providers from 'integrations/provider'
 
@@ -24,6 +26,7 @@ class AppValidator extends React.Component<any> {
   dataPollerID: any | NodeJS.Timer
   state = {
     online: inBrowser ? navigator.onLine : true,
+    loading: false,
     SET_UP_COMPLETE: true,
     error: '',
   }
@@ -37,6 +40,8 @@ class AppValidator extends React.Component<any> {
 
       if (this.state.online) {
 
+        this.setState({ loading: true })
+
         console.warn(`
           App Status: ONLINE
         `)
@@ -44,20 +49,19 @@ class AppValidator extends React.Component<any> {
         // Grabs network relevant token list
         // Sets available auctions relevant to that list
         await getTokenList(network)
-
         // Initiate Provider
         await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
-
         // initialise basic user state
         await initDutchX()
 
+        console.warn(`
+        APPVALIDATOR MOUNT FINISHED
+        `)
+
         this.setState({
+          loading: false,
           SET_UP_COMPLETE: true,
         })
-
-        console.warn(`
-          APPVALIDATOR MOUNT FINISHED
-        `)
         // start polling for changes and update user state
         return this.startPolling()
       }
@@ -68,6 +72,7 @@ class AppValidator extends React.Component<any> {
 
     } catch (error) {
       this.setState({
+        loading: false,
         SET_UP_COMPLETE: false,
         error,
       })
@@ -95,7 +100,8 @@ class AppValidator extends React.Component<any> {
       // if app mount failed and nextProps detect an unlocked wallet
       // reload the page
       if (!this.state.SET_UP_COMPLETE && nextProps.unlocked) {
-        window.location.reload()
+        // window.location.reload()
+        this.setState({ SET_UP_COMPLETE: true })
       }
     }
   }
@@ -128,7 +134,7 @@ class AppValidator extends React.Component<any> {
 
   stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
 
-  renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, online: boolean, SET_UP_COMPLETE?: boolean }) =>
+  renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, loading?: boolean, online: boolean, SET_UP_COMPLETE?: boolean }) =>
     <>
       { !online && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
       { (!SET_UP_COMPLETE || !this.props.unlocked) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
@@ -138,6 +144,7 @@ class AppValidator extends React.Component<any> {
   render() {
     const { children, unlocked, available } = this.props
 
+    if (this.state.loading) return <div className="walletChooser"><Loader hasData={false} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
     if (!available) return children
 
     return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
