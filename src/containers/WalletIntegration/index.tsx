@@ -12,6 +12,8 @@ import { initializeWallet as registerWallets } from 'components/App'
 
 import ledgerSVG from 'assets/img/icons/icon_ledger.svg'
 import MMSVG from 'assets/img/icons/icon_metamask3.svg'
+import gnosisSafeSVG from 'assets/img/icons/icon_gnosis_safe1.svg'
+
 import { State } from 'types'
 import { ProviderType } from 'globals'
 // const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
@@ -103,7 +105,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                           <img src={ledgerSVG} />
                         :
                           <img
-                            src={MMSVG}
+                            src={providerInfo === 'GNOSIS SAFE' ? gnosisSafeSVG : MMSVG}
                             style={{ maxWidth: 35, marginTop: -6 }}
                           />
                       }
