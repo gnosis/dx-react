@@ -136,7 +136,10 @@ class AppValidator extends React.Component<any> {
     </>
 
   render() {
-    const { children, unlocked } = this.props
+    const { children, unlocked, available } = this.props
+
+    if (!available) return children
+
     return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
   }
 }
@@ -149,6 +152,7 @@ const mapState = (state: State) => {
     activeProvider,
     network: provider ? provider.network : 'UNKNOWN NETWORK',
     unlocked: provider && provider.unlocked,
+    available: provider && provider.available,
   }
 }
 

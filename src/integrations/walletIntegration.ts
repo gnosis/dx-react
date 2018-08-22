@@ -32,6 +32,7 @@ export default async function walletIntegration(store: Store<any>) {
         type: provider.providerType,
         keyName: provider.keyName,
         priority: provider.priority,
+        available: provider.checkAvailability(),
       })
   })
 }
