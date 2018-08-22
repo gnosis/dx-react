@@ -229,6 +229,11 @@ header {
   position: relative;
   cursor: pointer;
 
+  .mobileOpen {
+    height: auto;
+    opacity: 1; 
+  }
+
   @media #{$mobile} {
     position: absolute;
     top: 59px;
@@ -389,7 +394,7 @@ header {
     font-weight: $normal;
 
     @media #{$mobile} {
-      padding: 5px 12px 50px;
+      padding: 5px 12px 10px;
     }
 
     tr {
@@ -492,6 +497,12 @@ header {
   cursor: pointer;
   height: 24px;
   font-weight: $bold;
+
+  .mobileOpen {
+    height: auto;
+    opacity: 1;
+    visibility: initial; 
+  }
 
   @media #{$mobile} {
     margin: 0;
@@ -680,7 +691,7 @@ header {
       position: fixed;
       width: 100%;
       top: 59px;
-      padding: 0 0 100px;
+      padding: 0 0 5px;
       box-sizing: border-box;
       border-radius: 0;
       border: 0;
@@ -695,7 +706,7 @@ header {
     line-height: 1;
 
     @media #{$mobile} {
-      padding: 15px 15px 50px;
+      padding: 15px 15px 10px;
     }
 
     tr {
