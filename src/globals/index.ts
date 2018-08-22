@@ -82,7 +82,8 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 // Network token list hashes (latest versions)
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
-export const RINKEBY_TOKEN_LIST_HASH = 'QmQN7tJSVTbREv7Gd6FWZhno9RPRcFNDNkcgni6xe6wDBo'
+// export const RINKEBY_TOKEN_LIST_HASH = 'QmQN7tJSVTbREv7Gd6FWZhno9RPRcFNDNkcgni6xe6wDBo'
+export const RINKEBY_TOKEN_LIST_HASH = 'QmRLt9FQ8gu1Zs9wJEXtBJDagnTHFWbYjrUDuu1mZG8TCw'
 export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
 
 export const TokenListHashMap = {
