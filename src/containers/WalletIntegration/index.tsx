@@ -10,15 +10,9 @@ import { connect } from 'react-redux'
 
 import { initializeWallet as registerWallets } from 'components/App'
 
-import ledgerSVG from 'assets/img/icons/icon_ledger.svg'
-import MMSVG from 'assets/img/icons/icon_metamask3.svg'
-import gnosisSafeSVG from 'assets/img/icons/icon_gnosis_safe1.svg'
-
 import { State } from 'types'
 import { ProviderType } from 'globals'
-// const registerWallets = () => async (dispatch: Dispatch<any>, getState: () => State) => {
-
-// }
+import { provider2SVG } from 'utils'
 
 interface WalletIntegrationProps {
   activeProvider: ProviderType,
@@ -100,15 +94,10 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                     >
                       <h4>{providerInfo}</h4>
                       <br/>
-                      {provider === 'LEDGER'
-                        ?
-                          <img src={ledgerSVG} />
-                        :
-                          <img
-                            src={providerInfo === 'GNOSIS SAFE' ? gnosisSafeSVG : MMSVG}
-                            style={{ maxWidth: 35, marginTop: -6 }}
-                          />
-                      }
+                      {<img
+                        src={provider2SVG(providerInfo)}
+                        style={{ minHeight: 30, maxHeight: 45, marginTop: -6 }}
+                      />}
                     </div>
                   )
                 })}
@@ -130,7 +119,5 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
 const mapState = ({ blockchain: { activeProvider } }: State) => ({
   activeProvider,
 })
-
-// export default connect(mapState, { initiateAndSetActiveProvider })(WalletIntegration)
 
 export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration as any)
