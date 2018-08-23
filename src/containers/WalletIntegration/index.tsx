@@ -96,7 +96,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                       <br/>
                       {<img
                         src={provider2SVG(providerInfo)}
-                        style={{ minHeight: 30, maxHeight: 45, marginTop: -6 }}
+                        style={{ minHeight: 26, maxHeight: 45, marginTop: -6 }}
                       />}
                     </div>
                   )
