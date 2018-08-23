@@ -71,7 +71,15 @@ export enum AuctionStatus {
 }
 
 export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
-export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST', LEDGER = 'LEDGER', INJECTED_WALLET = 'INJECTED_WALLET' }
+export enum ProviderName {
+  METAMASK = 'METAMASK',
+  MIST = 'MIST',
+  STATUS = 'STATUS',
+  'GNOSIS SAFE' = 'GNOSIS SAFE',
+
+  LEDGER = 'LEDGER',
+  INJECTED_WALLET = 'INJECTED_WALLET',
+}
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
 export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 200000

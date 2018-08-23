@@ -75,6 +75,7 @@ const Providers = {
       if (window.web3.currentProvider.constructor.name === 'Web3ProviderEngine') return 'GNOSIS SAFE'
       if (window.web3.currentProvider.isMetaMask) return 'METAMASK'
       if ((window as any).mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
+      if (window.web3.currentProvider.constructor.name === 'StatusHttpProvider') return 'STATUS'
 
       return window.web3.currentProvider.constructor.name
     },
