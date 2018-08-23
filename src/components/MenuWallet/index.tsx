@@ -25,19 +25,23 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
     open: false,
   }
 
+  handleClick = () => {
+    const windowSize = window.innerWidth
+    if (windowSize > 736) return
+
+    this.setState({
+      open: !this.state.open,
+    })
+  }
+
   render () {
     const { account, addressToSymbolDecimal, balance, tokens, dxBalances, dxBalancesAvailable, withdrawFromDutchX } = this.props
     return (
       <div
         className="menuWallet"
-        onClick={() => {
-          const windowSize = window.innerWidth
-          if (windowSize > 736) return
-
-          this.setState({
-            open: !this.state.open,
-          })
-        }}
+        tabIndex={1}
+        onClick={this.handleClick}
+        onBlur={() => this.setState({ open: false })}
       >
         <span>
           <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>

@@ -14,9 +14,17 @@ export interface MenuAuctionProps {
 }
 
 export class MenuAuctions extends React.Component <MenuAuctionProps> {
-
   state = {
     open: false,
+  }
+
+  handleClick = () => {
+    const windowSize = window.innerWidth
+    if (windowSize > 736) return
+
+    this.setState({
+      open: !this.state.open,
+    })
   }
 
   render() {
@@ -31,15 +39,11 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
     return (
       <div
         className="menuAuctions"
-        onClick={() => {
-          const windowSize = window.innerWidth
-          if (windowSize > 736) return
-
-          this.setState({
-            open: !this.state.open,
-          })
-        }}
-      ><img src={require('assets/auction.svg')} />
+        tabIndex={1}
+        onClick={this.handleClick}
+        onBlur={() => this.setState({ open: false })}
+      >
+        <img src={require('assets/auction.svg')} />
         <strong className={claimable ? 'claimable' : null}>{name}</strong>
         {claimable &&
         <span>
