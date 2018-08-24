@@ -45,7 +45,7 @@ const copyText = (text: string) => () => {
 const AuctionPanel: React.SFC<AuctionPanelProps> = ({
   match: { url },
   sell, buy,
-  status, completed, auctionStart, timeToCompletion,
+  status, completed, auctionStart, timeToCompletion, now,
   userSelling, userGetting, userCanClaim,
   progress,
   error,
@@ -70,6 +70,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
             buyAmount={userCanClaim}
             auctionStart={auctionStart}
             timeLeft={timeToCompletion}
+            now={now}
             status={status}
             completed={completed}
             theoreticallyCompleted={theoreticallyCompleted}

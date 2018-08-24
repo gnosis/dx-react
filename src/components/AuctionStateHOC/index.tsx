@@ -62,6 +62,7 @@ export interface AuctionStateState {
   index: number,
   account: Account,
   error: string,
+  now: number,
 }
 
 interface AuctionStatusArgs {
@@ -275,6 +276,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         progress,
         index,
         account,
+        now,
         error: null,
       })
 

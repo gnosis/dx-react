@@ -12,6 +12,7 @@ export interface WalletProps {
   tokens: TokenBalances,
   dxBalances: TokenBalances,
   dxBalancesAvailable: boolean,
+  hasTokenBalances: boolean,
 
   withdrawFromDutchX: ({ name, address }: { name: string, address: string }) => void;
 }
@@ -33,9 +34,9 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
       open: !this.state.open,
     })
   }
-
+  
   render () {
-    const { account, addressToSymbolDecimal, balance, tokens, dxBalances, dxBalancesAvailable, withdrawFromDutchX } = this.props
+    const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, withdrawFromDutchX } = this.props
     return (
       <div
         className="menuWallet"
@@ -47,7 +48,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
           <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
           <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
         </span>
-        {account &&
+        {account && hasTokenBalances &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
           <Loader
           hasData={Object.keys(addressToSymbolDecimal).length > 0}
