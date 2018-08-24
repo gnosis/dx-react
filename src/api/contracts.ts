@@ -122,7 +122,6 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-console.log('ContractsArtifacts: ', ContractsArtifacts)
 const Contracts: SimpleContract[] = ContractsArtifacts.map(
   art => TruffleContract(art),
 )
@@ -132,7 +131,6 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
   acc[filename2ContractNameMap[name] || name] = Contracts[i]
   return acc
 }, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
-console.log('contractsMap: ', contractsMap)
 
 export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
   contract.setProvider(provider)
@@ -153,10 +151,10 @@ async function init() {
   // e.g. TokenETH => deployed TokenETH contract
     const deployedContracts = contractNames.reduce((acc, name, i) => {
       if (name === 'TokenFRT') {
-      acc['TokenMGN'] = instances[i]
-    } else {
-      acc[filename2ContractNameMap[name] || name] = instances[i]
-    }
+        acc['TokenMGN'] = instances[i]
+      } else {
+        acc[filename2ContractNameMap[name] || name] = instances[i]
+      }
       return acc
     }, {}) as ContractsMapWProxy
 
