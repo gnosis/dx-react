@@ -45,6 +45,8 @@ export const tokenSVG = new Set([
   '1ST',
   'GNT',
   'RDN',
+  'DAI',
+  'GEN',
 ])
 
 export const network2URL: Network2URL = {
@@ -82,11 +84,15 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 // Network token list hashes (latest versions)
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
-export const RINKEBY_TOKEN_LIST_HASH = 'QmQN7tJSVTbREv7Gd6FWZhno9RPRcFNDNkcgni6xe6wDBo'
+export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ?
+  'QmRLt9FQ8gu1Zs9wJEXtBJDagnTHFWbYjrUDuu1mZG8TCw' : 'QmbQfGNBEwdJU7rvHQC4ef3UxbegLUL6ZPH7E1Jtxj3zmo'
+
+export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
 export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
 
 export const TokenListHashMap = {
   RINKEBY: RINKEBY_TOKEN_LIST_HASH,
+  KOVAN: KOVAN_TOKEN_LIST_HASH,
   MAIN: MAINNET_TOKEN_LIST_HASH,
 }
 

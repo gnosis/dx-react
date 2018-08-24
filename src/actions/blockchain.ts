@@ -64,7 +64,15 @@ import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } fro
 
 import { waitForTx } from 'integrations/filterChain'
 
-import { ETH_ADDRESS, FIXED_DECIMALS, NETWORK_TIMEOUT, RINKEBY_TOKEN_LIST_HASH, MAINNET_TOKEN_LIST_HASH, TokenListHashMap, ETHEREUM_NETWORKS } from 'globals'
+import { ETH_ADDRESS,
+    FIXED_DECIMALS,
+    NETWORK_TIMEOUT,
+    RINKEBY_TOKEN_LIST_HASH,
+    KOVAN_TOKEN_LIST_HASH,
+    MAINNET_TOKEN_LIST_HASH,
+    TokenListHashMap,
+    ETHEREUM_NETWORKS,
+  } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 
 export enum TypeKeys {
@@ -271,6 +279,21 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
           .catch(err => {
             console.error(err, 'IPFS fetch error - defaulting to local tokens')
             return require('../../test/resources/token-lists/RINKEBY/token-list.json')
+          }),
+        }
+        console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
+        break
+
+      case '42':
+      case ETHEREUM_NETWORKS.KOVAN:
+        console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
+        defaultTokens = {
+          hash: KOVAN_TOKEN_LIST_HASH,
+          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${KOVAN_TOKEN_LIST_HASH}`)
+          .then(tokenList => tokenList.json())
+          .catch(err => {
+            console.error(err, 'IPFS fetch error - defaulting to local tokens')
+            return require('../../test/resources/token-lists/KOVAN/token-list.json')
           }),
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)

@@ -916,19 +916,12 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
       const directPromise =  DutchX.getLatestAuctionIndex({ sell, buy })
         .then((latestAuctionIndexDirect) => {
           if (latestAuctionIndexDirect.gt(0)) {
-            console.log(`${sell.symbol}-${buy.symbol} auction is available, latestIndex = ${latestAuctionIndexDirect}`)
-            auctionPairs.push(`${sell.address}-${buy.address}`)
-          }
-        })
-      const inversePromise = DutchX.getLatestAuctionIndex({ sell: buy, buy: sell })
-        .then((latestAuctionIndexInverse) => {
-          if (latestAuctionIndexInverse.gt(0)) {
-            console.log(`${buy.symbol}-${sell.symbol} auction is available, latestIndex = ${latestAuctionIndexInverse}`)
-            auctionPairs.push(`${buy.address}-${sell.address}`)
+            console.log(`${sell.symbol}-${buy.symbol} / ${buy.symbol}-${sell.symbol} auction is available, latestIndex = ${latestAuctionIndexDirect}`)
+            auctionPairs.push(`${sell.address}-${buy.address}`, `${buy.address}-${sell.address}`)
           }
         })
 
-      auctionPairsPromises.push(directPromise, inversePromise)
+      auctionPairsPromises.push(directPromise)
     }
   }
 

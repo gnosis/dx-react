@@ -78,7 +78,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.44",
     "@digix/tempo": "^0.2.0",
-    "@gnosis.pm/dx-contracts": "^1.0.2",
+    "@gnosis.pm/dx-contracts": "^1.0.5",
     "@gnosis.pm/gno-token": "^1.0.1",
     "@gnosis.pm/util-contracts": "^1.0.1",
     "autobind-decorator": "^2.1.0",
