@@ -3,7 +3,7 @@
   align-items: center; 
   justify-content: center; 
     
-  background: #000000ba; 
+  background-color: #000000ba; 
   color: white; 
     
   width: 100%; 
@@ -36,6 +36,7 @@
       text-align: center;
       
       height: 100px;
+      min-width: 220px;
       border: 2px solid black;
       cursor: pointer;
             
