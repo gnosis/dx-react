@@ -14,6 +14,7 @@ import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
+import Cookies from 'components/Cookies'
 
 interface AppRouterProps {
   history: History;
@@ -35,6 +36,7 @@ const WalletPanelWH = withHeaderAndFooter(WalletPanel)
 const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
 const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
+const CookiesWH = withHeaderAndFooter(Cookies, true)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
@@ -59,7 +61,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
           {/* TODO: check for valid params.addr and redirect if necessary */}
           <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
           <Route path="/disclaimer" component={Disclaimer} />
-
+          <Route path="/cookies" component={CookiesWH} />
           <Route path="/content/:contentPage" component={ContentPageContainerWH} />
           <Redirect from="/content" to="/content/HowItWorks" />
 
@@ -70,6 +72,5 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   </ConnectedRouter>
   )
 }
-
 
 export default hot(module)(AppRouter)
