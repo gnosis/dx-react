@@ -1,11 +1,11 @@
 import React from 'react'
 
-import './_cookies.scss'
-
 import dutchXLogo from 'assets/dutchx.png'
 import ButtonCTA from '../ButtonCTA'
 
 import localForage from 'localforage'
+
+import './_cookies.scss'
 
 class Cookies extends React.Component {
     state = {
@@ -14,6 +14,31 @@ class Cookies extends React.Component {
         necessary: true,
         analytics: false,
       },
+      loading: false,
+      error: undefined,
+    }
+
+    async componentDidMount() {
+      try {
+        this.setState({ loading: true })
+
+        const cookieData = await localForage.getItem('cookieSettings')
+
+        if (!cookieData) return this.setState({ loading: false })
+
+        const { necessary, analytics } = cookieData
+
+        this.setState({
+          cookieSettings: {
+            necessary,
+            analytics,
+          },
+          loading: false,
+        })
+      } catch (err) {
+        console.error(err)
+        this.setState({ error, loading: false })
+      }
     }
 
     handleSubmit = () => {
@@ -30,8 +55,9 @@ class Cookies extends React.Component {
     handleClick = e => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
 
     render() {
-      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics } } = this.state
+      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading, error } = this.state
       return (
+        loading ? null :
         <div className="contentPage">
           <article>
             <div className="cookiePageLogo"><img src={dutchXLogo} /></div>
@@ -49,9 +75,7 @@ class Cookies extends React.Component {
               <div>
                 <div className="disclaimerBox md-checkbox">
                   <input id="disclaimer1" type="checkbox" required defaultChecked={necessary} disabled={necessary} />
-                  <label htmlFor="disclaimer1">
-                                  Necessary
-                  </label>
+                  <label htmlFor="disclaimer1">Necessary</label>
                 </div>
 
                 <div className="disclaimerBox md-checkbox">
@@ -63,9 +87,7 @@ class Cookies extends React.Component {
 
                     onChange={() => this.setState({ cookieSettings: { analytics: !analytics, necessary } })}
                   />
-                  <label htmlFor="disclaimer2">
-                                  Analytics
-                  </label>
+                  <label htmlFor="disclaimer2">Analytics</label>
                 </div>
               </div>
               <button
