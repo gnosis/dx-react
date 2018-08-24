@@ -36,7 +36,19 @@ a.buttonCTA {
 
   &.blue {
     background: $blue;
-    color: $white;
+    color: $white !important;
+    text-align: center;
+  }
+
+  &.alt-blue {
+    background: #396898;
+    color: $white !important;
+    text-align: center;
+  }
+
+  &.light-orange {
+    background: $greyLight;
+    color: $black !important;
     text-align: center;
   }
 
