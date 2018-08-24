@@ -12,17 +12,19 @@ export interface WalletProps {
   tokens: TokenBalances,
   dxBalances: TokenBalances,
   dxBalancesAvailable: boolean,
+  hasTokenBalances: boolean,
 
   withdrawFromDutchX: ({ name, address }: { name: string, address: string }) => void;
 }
 
-export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens, dxBalances, dxBalancesAvailable, withdrawFromDutchX }) => (
+export const MenuWallet: React.SFC<WalletProps> = ({ account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, withdrawFromDutchX }) => (
   <div className="menuWallet">
     <span>
       <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
       <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
     </span>
-    {account && <div>
+    {account && hasTokenBalances &&
+    <div>
       <Loader
       hasData={Object.keys(addressToSymbolDecimal).length > 0}
       message="Enable wallet"

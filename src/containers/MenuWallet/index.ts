@@ -22,6 +22,7 @@ const tokenNamesAndDecimals = createSelector(
 
 const mapStateToProps = (state: State) => {
   const dxBalancesValues = Object.values(state.dxBalances)
+  const tokenBalancesValues = Object.values(state.tokenBalances)
   return {
     account: getAccount(state),
     addressToSymbolDecimal: tokenNamesAndDecimals(state),
@@ -29,6 +30,7 @@ const mapStateToProps = (state: State) => {
     tokens: state.tokenBalances,
     dxBalances: state.dxBalances,
     dxBalancesAvailable: !!(dxBalancesValues.find((i: BigNumber) => i.gt(0))),
+    hasTokenBalances: !!(tokenBalancesValues.find(n => n.gt(0))),
   }
 }
 
