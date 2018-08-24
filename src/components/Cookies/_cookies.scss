@@ -13,7 +13,7 @@
   align-items: center;
   flex-flow: column nowrap;
 
-  background: #1d5d93;
+  background: #b7b9bb54;
   opacity: 1;
   overflow: hidden;
 
@@ -29,9 +29,9 @@
   }
 
   > div {
-    color: #fff;
+    color: #000;
     font-size: 16px;
     line-height: initial;
-    margin: auto;
+    margin: auto auto 0;
   }
 }
