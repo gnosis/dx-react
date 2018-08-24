@@ -45,6 +45,8 @@ export const tokenSVG = new Set([
   '1ST',
   'GNT',
   'RDN',
+  'DAI',
+  'GEN',
 ])
 
 export const network2URL: Network2URL = {
