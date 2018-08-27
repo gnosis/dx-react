@@ -1,37 +1,62 @@
-.cookiePageLogo {
-  width: 100px;
-  margin: auto;
 
-  > img {
-    max-width: 100%;
-  }
-}
+#cookiesArticle {
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 800px;
 
-.cookieSettings {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column nowrap;
-
-  background: #b7b9bb54;
-  opacity: 1;
-  overflow: hidden;
-
-  transition: all 0.4s ease-in-out; 
-
-  &.open {
-    height: 200px;
+  > span > p, ol {
+    font-weight: 100;
   }
 
-  &.closed {
-    height: 0;
-    opacity: 0;
+  .cookiePageLogo {
+    width: 100px;
+    margin: auto;
+  
+    > img {
+      max-width: 100%;
+    }
   }
+  
+  .cookieSettings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+  
+    background: #b7b9bb54;
+    opacity: 1;
+    overflow: hidden;
+  
+    transition: all 0.4s ease-in-out; 
+  
+    &.open {
+      height: 200px;
+    }
+  
+    &.closed {
+      height: 0;
+      opacity: 0;
+    }
+  
+    > div {
+      color: #000;
+      font-size: 16px;
+      line-height: initial;
+      margin: auto auto 0;
+    }
+  }
+  
+  > #appendix {
+    font-weight: 100;
+    line-height: 1.4;
 
-  > div {
-    color: #000;
-    font-size: 16px;
-    line-height: initial;
-    margin: auto auto 0;
+    table>tbody>tr:hover {
+      background: aliceblue;
+      box-shadow: 0 2px 3px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.12);
+    }
+    
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
   }
 }
