@@ -97,7 +97,7 @@ export const TokenListHashMap = {
 }
 
 // Allowed network
-export const ALLOWED_NETWORK = 'Rinkeby Test Network'
+// export const ALLOWED_NETWORK = 'Rinkeby Test Network'
 
 // BigNumber fixed decimal places to sow
 export const FIXED_DECIMALS = 4
@@ -122,6 +122,9 @@ export const URLS = {
   GITTER_URL: 'https://gitter.im/gnosis/DutchX',
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
+
+  DUTCHX_APP_URL_MAIN: 'dutchx.app',
+  DUTCHX_APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
 }
 
 // Error messages during TXs
