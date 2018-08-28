@@ -2,7 +2,8 @@ import React from 'react'
 
 import dutchXLogo from 'assets/dutchx.png'
 import ButtonCTA from '../ButtonCTA'
-// import { Link } from 'react-router-dom'
+
+import { Link } from 'react-router-dom'
 import ScrollToLink from 'components/ScrollToLink'
 
 import localForage from 'localforage'
@@ -99,7 +100,7 @@ class Cookies extends React.Component {
 
             <span>
               <p>
-                As described in our <a href="/privacy">Privacy Policy</a>, For general web-browsing of this website, your personal data is not revealed to us, although certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
+                As described in our <Link to="/privacy">Privacy Policy</Link>, For general web-browsing of this website, your personal data is not revealed to us, although certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
                 This Cookie Policy sets out some further detail on how and why we use these technologies on our website. The terms "Gnosis", "we", "us", and "our" includes Gnosis Ltd. and our affiliates. The terms “you” and “your” includes our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
               </p>
               <p><strong>What are cookies?</strong><br />
@@ -204,7 +205,7 @@ class Cookies extends React.Component {
               </p>
               <p>
                 <strong>Revisions to this Cookie Policy</strong><br />
-                On this website, you can always view the latest version of our <a href="/privacy">Privacy Policy</a> and our Cookie Policy. We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through the our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our <a href="/privacy">Privacy Policy</a> and our <a href="/cookies">Cookie Policy</a> whenever you access or use our website to stay informed about our information practices and the choices available to you.
+                On this website, you can always view the latest version of our <Link to="/privacy">Privacy Policy</Link> and our Cookie Policy. We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through the our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our <Link to="/privacy">Privacy Policy</Link> and our <Link to="/cookies">Cookie Policy</Link> whenever you access or use our website to stay informed about our information practices and the choices available to you.
               </p>
 
             </span>
