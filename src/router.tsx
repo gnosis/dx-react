@@ -15,6 +15,7 @@ import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 import Cookies from 'components/Cookies'
+import Imprint from 'components/Imprint'
 
 interface AppRouterProps {
   history: History;
@@ -37,6 +38,7 @@ const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
 const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
 const CookiesWH = withHeaderAndFooter(Cookies, true)
+const ImprintWH = withHeaderAndFooter(Imprint, true)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   if (disabled) {
@@ -58,10 +60,14 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
           <Route exact path="/" component={HomeWH} />
           <Route path="/order" component={OrderPanelWH} />
           <Route path="/wallet" component={WalletPanelWH} />
+
           {/* TODO: check for valid params.addr and redirect if necessary */}
           <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
+
           <Route path="/disclaimer" component={Disclaimer} />
           <Route path="/cookies" component={CookiesWH} />
+          <Route path="/imprint" component={ImprintWH}/>
+
           <Route path="/content/:contentPage" component={ContentPageContainerWH} />
           <Redirect from="/content" to="/content/HowItWorks" />
 
