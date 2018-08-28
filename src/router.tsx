@@ -52,7 +52,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
 
   return (
     <ConnectedRouter history={history}>
-      <div>
+      <div className="appFlex">
         <RedirectToDisclaimer/>
         <Switch>
           <Route exact path="/" component={HomeWH} />
