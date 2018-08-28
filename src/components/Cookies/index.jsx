@@ -16,14 +16,12 @@ class Cookies extends React.Component {
         necessary: true,
         analytics: false,
       },
-      loading: false,
+      loading: true,
       error: undefined,
     }
 
     async componentDidMount() {
       try {
-        this.setState({ loading: true })
-
         const cookieData = await localForage.getItem('cookieSettings')
 
         if (!cookieData) return this.setState({ loading: false })
