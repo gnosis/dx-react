@@ -42,26 +42,25 @@ conditionalRender()
 async function conditionalRender() {
   let blocked = false, disabledReason, ALLOWED_NETWORK
 
+  /* User's environment does not have access to window API (e.g user on mobile?) */
   if (typeof window === 'undefined') return false
   const { hostname } = window.location
 
-  // allow anything when run locally
+  /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
   if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
-  // don't geoBlock BUT networkBlock
+
+  /* Scenario 3: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
   else if (hostname === URLS.DUTCHX_APP_URL_RINKEBY) {
     ALLOWED_NETWORK = 'Rinkeby Test Network'
-    blocked = await isNetBlocked('4')
+    blocked = await isNetBlocked(['4'])
 
-    if (blocked) {
-      disabledReason = 'networkblock'
-
-      window.history.replaceState(null, '', '/')
-      return rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
-    }
+    if (blocked) disabledReason = 'networkblock'
   }
+
+  /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
   else if (hostname === URLS.DUTCHX_APP_URL_MAIN) {
     ALLOWED_NETWORK = 'Ethereum Mainnet'
-    const netBlockedPromise = isNetBlocked('1')
+    const netBlockedPromise = isNetBlocked(['1'])
     // geoblock gets precedence, checked first
     blocked = await isGeoBlocked()
 
@@ -71,12 +70,13 @@ async function conditionalRender() {
       blocked = await netBlockedPromise
       if (blocked) disabledReason = 'networkblock'
     }
-
-    if (blocked) {
-      window.history.replaceState(null, '', '/')
-      return rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
-    }
   }
-  // all good? render app normally
+
+  if (blocked) {
+    window.history.replaceState(null, '', '/')
+    return rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
+  }
+
+  // all good? render app
   return preAppRender().catch(console.error)
 }

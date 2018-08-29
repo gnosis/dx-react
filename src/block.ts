@@ -20,17 +20,17 @@ export const isGeoBlocked = async () => {
   }
 }
 
-export const isNetBlocked = async (idToAllow: string | number) => {
+export const isNetBlocked = async (idsToAllow: (string | number)[]) => {
   // no walletextension detected, different error - download wallet error
   if (typeof window === 'undefined' || !window.web3) return false
 
   try {
     const id = await new Promise((res, rej) => {
-        window.web3.version.getNetwork((e: Error, r: string) => e ? rej(e) : res(r))
-      })
+      window.web3.version.getNetwork((e: Error, r: string) => e ? rej(e) : res(r))
+    })
       // allow Rinkeby and local testrpc (id = Date.now())
       //                      Apr 29 2018
-    if (id === idToAllow || id > 1525000000000) return false
+    if (idsToAllow.find(netId => netId === id) || id > 1525000000000) return false
   } catch (error) {
     console.error(error)
       // web3 didn't get network, disconnected?
