@@ -134,3 +134,22 @@ export const WATCHER_INTERVAL = 5000
 
 export const AUCTION_RUN_TIME = 6.5 * 60 * 60 * 1000 // 6.5 hours in ms
 export const WAITING_PERIOD = 10 * 60 * 1000 // 10 min in ms
+
+export const BLOCKED_COUNTRIES = {
+  AE: 'Abu Dhabi Global Market',
+  AF: 'Afghanistan',
+  CU: 'Cuba',
+  KP: 'Democratic People\'s Republic of Korea',
+  DE: 'Germany',
+  IR: 'Iran',
+  IQ: 'Iraq',
+  JP: 'Japan',
+  CN: 'People’s Republic of China',
+  RU: 'Russian Federation',
+  SO: 'Somalia',
+  SD: 'Sudan',
+  SY: 'Syria',
+  US: 'United States of America',
+  VU: 'Venezuela',
+  YE: 'Yemen',
+}

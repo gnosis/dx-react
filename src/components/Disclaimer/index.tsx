@@ -7,6 +7,7 @@ import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
+import { BLOCKED_COUNTRIES } from 'globals'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
   accepted: boolean,
@@ -110,7 +111,12 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
-                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of: Abu Dhabi Global Market, Afghanistan, Crimea (Region of Ukraine), Cuba, Democratic People's Republic of Korea, Germany, Iran, Iraq, Japan, People’s Republic of China, Russian Federation, Somalia, Sudan, Syria, United States of America, Venezuela, Yemen.
+                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
+                {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
+                  if (i === 0) return ` ${code}, `
+                  if (array[i] === array.last()) return `${code}.`
+                  return `${code}, `
+                })}
               </label>
             </div>
 
@@ -231,7 +237,12 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
-                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of: Abu Dhabi Global Market, Afghanistan, Crimea (Region of Ukraine), Cuba, Democratic People's Republic of Korea, Germany, Iran, Iraq, Japan, People’s Republic of China, Russian Federation, Somalia, Sudan, Syria, United States of America, Venezuela, Yemen.
+                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
+                {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
+                  if (i === 0) return ` ${code}, `
+                  if (array[i] === array.last()) return `${code}.`
+                  return `${code}, `
+                })}
               </label>
             </div>
 
