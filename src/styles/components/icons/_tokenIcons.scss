@@ -49,6 +49,14 @@ $defaultTokenSize_mobile: 50px;
   }
 }
 
+[data-coin="MKR"] {
+  background: url('#{$images}tokens/MKR.svg') no-repeat center / $defaultTokenSize;
+
+  .tokenOverlay > .tokenList > .tokenItem > & {
+    background-size: 55px;
+  }
+}
+
 [data-coin="DEFAULT_TOKEN"] {
   background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / 80px;
 }
