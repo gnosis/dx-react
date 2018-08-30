@@ -8,8 +8,6 @@ import ScrollToLink from 'components/ScrollToLink'
 
 import localForage from 'localforage'
 
-import './_cookies.scss'
-
 class Cookies extends React.Component {
     state = {
       settingsOpen: false,
@@ -64,7 +62,7 @@ class Cookies extends React.Component {
             <div className="cookiePageLogo"><img src={dutchXLogo} /></div>
             <br />
 
-            <h1>DutchX Cookie Policy</h1>
+            <h1>d.ex OÜ Cookie Policy Cookie Policy</h1>
             <button
               className={`buttonCTA ${settingsOpen ? 'light-orange' : 'alt-blue'}`}
               onClick={this.handleClick}
@@ -101,7 +99,7 @@ class Cookies extends React.Component {
             <span>
               <p>
                 As described in our <Link to="/privacy">Privacy Policy</Link>, For general web-browsing of this website, your personal data is not revealed to us, although certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
-                This Cookie Policy sets out some further detail on how and why we use these technologies on our website. The terms "Gnosis", "we", "us", and "our" includes Gnosis Ltd. and our affiliates. The terms “you” and “your” includes our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
+                This Cookie Policy sets out some further detail on how and why we use these technologies on our website. The terms "we", "us", and "our" includes d.ex OÜ and any affiliates. The terms “you” and “your” includes our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
               </p>
               <p><strong>What are cookies?</strong><br />
               Cookies are a feature of web browser software that allows web servers to recognize the computer or device used to access a website. A cookie is a small text file that a website saves on your computer or mobile device when you visit the site. It enables the website to remember your actions and preferences (such as login, language, font size and other display preferences) over a period of time, so you don't have to keep re-entering them whenever you come back to the site or browse from one page to another.
@@ -196,7 +194,7 @@ class Cookies extends React.Component {
               <p><strong>What if you don’t agree to us monitoring your use of our website (even we don’t collect your personal data)?</strong><br />
               Enabling these cookies is not strictly necessary for our website to work but it will provide you with a better browsing experience. You can delete or block the cookies we set, but if you do that, some features of this website may not work as intended.
               <br /><br />
-              Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse cookies and control and/or delete cookies as you wish – for details, see aboutcookies.org. You can delete all cookies that are already on your device and you can set most browsers to prevent them from being placed. You should be aware that if you do this, you may have to manually adjust some preferences every time you visit an Internet site and some services and functionalities may not work if you do not accept the cookies they send.
+              Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse cookies and control and/or delete cookies as you wish – for details, see <a href="https://aboutcookies.org" target="_blank">aboutcookies.org</a>. You can delete all cookies that are already on your device and you can set most browsers to prevent them from being placed. You should be aware that if you do this, you may have to manually adjust some preferences every time you visit an Internet site and some services and functionalities may not work if you do not accept the cookies they send.
               Advertisers and business partners that you access on or through our website may also send you cookies. We do not control any cookies outside of our website.
               <br /><br />
               If you have any further questions regarding disabling cookies you should consult with your preferred browser’s provider or manufacturer.
@@ -205,7 +203,8 @@ class Cookies extends React.Component {
               </p>
               <p>
                 <strong>Revisions to this Cookie Policy</strong><br />
-                On this website, you can always view the latest version of our <Link to="/privacy">Privacy Policy</Link> and our Cookie Policy. We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through the our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our <Link to="/privacy">Privacy Policy</Link> and our <Link to="/cookies">Cookie Policy</Link> whenever you access or use our website to stay informed about our information practices and the choices available to you.
+                On this website, you can always view the latest version of our <Link to="/privacy">Privacy Policy</Link> and our Cookie Policy. We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through the our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our <Link to="/privacy">Privacy Policy</Link> and our Cookie Policy whenever you access or use our website to stay informed about our information practices and the choices available to you.
+                If you do not accept changes which are made to this Cookie Policy, or take any measures described above to opt-out by removing or rejecting cookies, you may continue to use this website but accept that it may not display and/or function as intended by us. Any social media channels connected to d.ex OÜ and third party applications will be subject to the privacy and cookie policies and practices of the relevant platform providers which, unless otherwise indicated, are not affiliated or associated with d.ex. OÜ. Your exercise of any rights to opt-out may also impact how our information and content is displayed and/or accessible to you on this website and on other websites.
               </p>
 
             </span>
