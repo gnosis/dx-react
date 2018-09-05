@@ -130,12 +130,13 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required disabled={accepted || !termsOfUseScrolled} />
               <label htmlFor="disclaimer3">
-                I have read, understood, and agree to the full Terms of Use:
+                I have read, understood, and agree to the full Terms and Conditions:
               </label>
             </div>
 
             <div className="disclaimerTextbox" onScroll={this.handleTermsScroll}>
               <span>
+                <h4>Terms and Conditions:</h4>
                 <ul className="scrollableDisclaimerList">
                   <li>The DutchX is a decentralized medium for the exchange of ERC20 tokens.</li>
                   <li>The process is governed by a smart contract; there is no intermediary between sellers and bidders. Trades happen directly peer-to-peer.</li>
@@ -262,7 +263,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
 
             <div className="disclaimerTextbox" onScroll={this.handleTermsScroll}>
               <span>
-                <h4>Disclaimer</h4>
+                <h4>Disclaimer:</h4>
                 <ul className="scrollableDisclaimerList">
                   <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
                   <li>You are solely responsible to safekeep your wallet and private information.</li>
