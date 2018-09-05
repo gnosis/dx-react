@@ -7,5 +7,4 @@ const mapStateToProps = ({ settings }: State) => ({
   disclaimer_accepted: settings.disclaimer_accepted,
 })
 
-
 export default connect<Partial<RedirectToDisclaimerProps>>(mapStateToProps, null)(RedirectToDisclaimer)

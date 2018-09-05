@@ -11,9 +11,8 @@ const TopRightDecorator = makeTopDecorator({
 
 import Hamburger from 'components/Hamburger'
 
-storiesOf(`Hamburger`, module)
+storiesOf('Hamburger', module)
   .addDecorator(TopRightDecorator)
   .addWithJSX('Hamburger Component', () =>
     <Hamburger />,
 )
-

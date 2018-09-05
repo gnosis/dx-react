@@ -31,7 +31,6 @@ export const RedirectHomeIfNoAccountHOC = RedirectIfFactory({
   condition: ({ currentAccount }) => currentAccount !== undefined,
 })
 
-
 export interface RedirectToDisclaimerProps extends RouteComponentProps<any> {
   disclaimer_accepted: boolean,
 }

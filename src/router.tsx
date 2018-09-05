@@ -71,5 +71,4 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
   )
 }
 
-
 export default hot(module)(AppRouter)

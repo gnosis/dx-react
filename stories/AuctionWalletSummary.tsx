@@ -23,7 +23,7 @@ const constructKnobs = (connected: boolean) => ({
   connected: boolean('connected', connected),
 })
 
-storiesOf(`AuctionWalletSummary`, module)
+storiesOf('AuctionWalletSummary', module)
   .addDecorator(CenterDecor)
   .addWithJSX('connected', () => (
     <AuctionWalletSummary {...constructKnobs(true) } />

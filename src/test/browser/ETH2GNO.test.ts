@@ -75,7 +75,6 @@ describe('ETH 2 GNO contract standalone', () => {
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
-
   before(async () => {
     dx = await DX.deployed()
     dxa = DX.address
@@ -100,7 +99,6 @@ describe('ETH 2 GNO contract standalone', () => {
     // await eth.transfer(seller, 100, { from: master })
     console.log('seller', seller, 'received 100 ETH')
 
-
     // buyer must have initial balance of GNO
     // allow a transfer
     await gno.approve(buyer, 1000, { from: master })
@@ -121,17 +119,13 @@ describe('ETH 2 GNO contract standalone', () => {
     await checkBalances()
   })
 
-
   it('contracts are deployed', () => {
     expect(dx && eth && gno && tul).toBeTruthy()
   })
 
-
   it('accounts are available', () => {
     [master, seller, buyer].forEach(address => expect(address).toMatch(/^0x\w{40}$/))
   })
-
-
 
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set
@@ -240,7 +234,6 @@ describe('ETH 2 GNO contract standalone', () => {
     expect((now - auctionStart + 18000) * lastDen).toBe(den)
   })
 
-
   it('buyer can submit a buy order', async () => {
     const amount = 10
 
@@ -275,7 +268,6 @@ describe('ETH 2 GNO contract standalone', () => {
     expect(buyerBalancesAfter).toBe(buyVolumeAfter)
   })
 
-
   it('buyer can claim the amount bought', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     const claimed = (await dx.claimedAmounts(auctionIndex, buyer)).toNumber()
@@ -309,7 +301,6 @@ describe('ETH 2 GNO contract standalone', () => {
 
   })
 
-
   it('buyer can\'t claim more at this time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
     try {
@@ -335,7 +326,6 @@ describe('ETH 2 GNO contract standalone', () => {
       expect(error.message).toContain('revert')
     }
   })
-
 
   it('auction ends with time', async () => {
     const auctionIndex = (await dx.auctionIndex()).toNumber()
@@ -365,7 +355,6 @@ describe('ETH 2 GNO contract standalone', () => {
 
       expect(newAuctionIndex).toBe(auctionIndex + 1)
     })
-
 
     await delay(5000)
   })
@@ -414,7 +403,6 @@ describe('ETH 2 GNO contract standalone', () => {
 
   })
 
-
   it('seller can claim funds', async () => {
     await delayFor('seller')
 
@@ -427,7 +415,6 @@ describe('ETH 2 GNO contract standalone', () => {
 
     const returned = claimReceipt.logs[0].args._returned.toNumber()
 
-
     // closing price * balance
     const expectedReturn = Math.floor(sellerBalance * num / den)
     expect(expectedReturn).toBe(returned)
@@ -436,7 +423,6 @@ describe('ETH 2 GNO contract standalone', () => {
     // balance is drained
     expect(sellerBalance).toBe(0)
   })
-
 
   it('seller has some GNO tokens, buyer has some ETH', async () => {
     const buyerETHBalance = (await eth.balanceOf(buyer)).toNumber()

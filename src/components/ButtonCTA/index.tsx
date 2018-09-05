@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom'
 
-
 interface ButtonCTAProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   className?: string,
   onClick?(e: React.MouseEvent<HTMLAnchorElement>): void,
