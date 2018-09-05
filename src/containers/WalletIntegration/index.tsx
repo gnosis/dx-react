@@ -14,6 +14,9 @@ import { State } from 'types'
 import { ProviderType } from 'globals'
 import { provider2SVG } from 'utils'
 
+// import all Provider SVGs
+import 'assets/img/icons/providerIcons'
+
 interface WalletIntegrationProps {
   activeProvider: ProviderType,
   setActiveProvider(providerName: string): void,
