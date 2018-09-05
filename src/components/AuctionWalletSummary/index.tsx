@@ -5,7 +5,7 @@ export interface AuctionWalletSummaryProps {
   address: string,
   provider: string,
   network: string,
-  connected?: boolean
+  connected: boolean
 }
 
 const AuctionWalletSummary: React.SFC<AuctionWalletSummaryProps> = ({ address, provider, network, connected }) => (

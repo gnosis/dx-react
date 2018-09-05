@@ -19,7 +19,7 @@ import { ETHEREUM_NETWORKS } from 'globals'
 export const history = createHistory()
 export const store = createStoreWithHistory(history)
 
-export const loadLocalSettings = () => store.dispatch(asyncLoadSettings())
+export const loadLocalSettings = () => store.dispatch(asyncLoadSettings() as any)
 export const initializeWallet = () => walletIntegrationCallback(store)
 
 interface AppProps {

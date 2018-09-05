@@ -755,12 +755,12 @@ export const getSellerOngoingAuctions = async (
     }, {}) as { [P in TokenCode]: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
 
-    interface promisedClaimableTokensObjectInterface {
+    interface PromisedClaimableTokensObjectInterface {
       normal: Promise<[BigNumber[], BigNumber[]]>[];
       inverse: Promise<[BigNumber[], BigNumber[]]>[];
     }
 
-    const promisedClaimableTokensObject: promisedClaimableTokensObjectInterface = {
+    const promisedClaimableTokensObject: PromisedClaimableTokensObjectInterface = {
       normal: [],
       inverse: [],
     }

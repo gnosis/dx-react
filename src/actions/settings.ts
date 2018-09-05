@@ -6,7 +6,7 @@ import localForage from 'localforage'
 
 export const saveSettings = createAction<Partial<Settings>>('SAVE_SETTINGS')
 
-export const asyncLoadSettings = () => async (dispatch: Dispatch<Settings>) => {
+export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
   const settings = await localForage.getItem('settings') as Settings
 
   if (settings) {
@@ -15,7 +15,7 @@ export const asyncLoadSettings = () => async (dispatch: Dispatch<Settings>) => {
 }
 
 export const asyncSaveSettings = (payload: Partial<Settings>) =>
-  async (dispatch: Dispatch<Settings>, getState: () => State) => {
+  async (dispatch: Dispatch<any>, getState: () => State) => {
     const action = dispatch(saveSettings(payload))
 
     localForage.setItem('settings', getState().settings)

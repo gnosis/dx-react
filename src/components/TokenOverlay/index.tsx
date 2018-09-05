@@ -81,7 +81,7 @@ const filterTokens = createSelector(
       tokens.filter(({
         symbol = '',
         name = code2tokenMap[symbol] || '',
-      }: DefaultTokenObject) => symbol.toUpperCase().includes(filter) || name.toUpperCase().includes(filter))
+      }) => symbol.toUpperCase().includes(filter) || name.toUpperCase().includes(filter))
     :
       tokens,
 )

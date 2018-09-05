@@ -202,7 +202,7 @@ export interface IPFS {
 }
 
 export interface Settings {
-  disclaimer_accepted: boolean,
+  disclaimer_accepted?: boolean,
 }
 
 export type AccountsSet = Set<Account>

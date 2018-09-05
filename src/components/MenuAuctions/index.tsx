@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { OngoingAuctions } from 'types'
 import { DefaultTokenObject } from 'api/types'
-import { Action } from 'redux'
+import { RouterAction } from 'connected-react-router'
 
 export interface MenuAuctionProps {
   claimable: any;
@@ -10,7 +10,7 @@ export interface MenuAuctionProps {
   claimSellerFundsFromSeveral(
     sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
-  push({}): Action;
+  push({}): RouterAction;
 }
 
 export class MenuAuctions extends React.Component <MenuAuctionProps> {
