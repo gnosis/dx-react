@@ -6,6 +6,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 
+import ReactGA from 'react-ga'
+
 import App, { loadLocalSettings, initializeWallet } from 'components/App'
 
 import { isNetBlocked, isGeoBlocked } from 'block'
@@ -45,7 +47,7 @@ async function conditionalRender() {
   /* User's environment does not have access to window API (e.g user on mobile?) */
   if (typeof window === 'undefined') return false
   const { hostname } = window.location
-
+  // const hostname = URLS.DUTCHX_APP_URL_RINKEBY
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
   if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
 
@@ -55,6 +57,9 @@ async function conditionalRender() {
     blocked = await isNetBlocked(['4'])
 
     if (blocked) disabledReason = 'networkblock'
+
+    // init GA
+    ReactGA.initialize('UA-83220550-8')
   }
 
   /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
@@ -70,6 +75,8 @@ async function conditionalRender() {
       blocked = await netBlockedPromise
       if (blocked) disabledReason = 'networkblock'
     }
+    // init GA
+    ReactGA.initialize('UA-83220550-9')
   }
 
   if (blocked) {

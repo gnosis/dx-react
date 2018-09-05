@@ -15,6 +15,8 @@ import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 
+import withTracking from 'components/WithTrackingHOC'
+
 interface AppRouterProps {
   history: History;
   disabled?: boolean;
@@ -53,23 +55,22 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
       <div>
         <RedirectToDisclaimer/>
         <Switch>
-          <Route exact path="/" component={HomeWH} />
-          <Route path="/order" component={OrderPanelWH} />
-          <Route path="/wallet" component={WalletPanelWH} />
+          <Route exact path="/" component={withTracking(HomeWH)} />
+          <Route path="/order" component={withTracking(OrderPanelWH)} />
+          <Route path="/wallet" component={withTracking(WalletPanelWH)} />
           {/* TODO: check for valid params.addr and redirect if necessary */}
-          <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
-          <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/auction/:sell-:buy-:index" component={withTracking(AuctionPanelWH)} />
+          <Route path="/disclaimer" component={withTracking(Disclaimer)} />
 
-          <Route path="/content/:contentPage" component={ContentPageContainerWH} />
+          <Route path="/content/:contentPage" component={withTracking(ContentPageContainerWH)} />
           <Redirect from="/content" to="/content/HowItWorks" />
 
-          <Route path="/404" component={PageNotFound} />
+          <Route path="/404" component={withTracking(PageNotFound)} />
           <Redirect to="/404" />
         </Switch>
       </div>
   </ConnectedRouter>
   )
 }
-
 
 export default hot(module)(AppRouter)
