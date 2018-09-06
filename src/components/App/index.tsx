@@ -23,18 +23,22 @@ export const loadLocalSettings = () => store.dispatch(asyncLoadSettings() as any
 export const initializeWallet = () => walletIntegrationCallback(store)
 
 interface AppProps {
+  analytics: boolean;
   disabled?: boolean;
   disabledReason?: string;
   networkAllowed?: Partial<ETHEREUM_NETWORKS>
 }
 
-const App = (props: AppProps): any =>
-  <Provider store={store}>
-    <AppValidator>
-      <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
-        <AppRouter disabled={props.disabled} history={history} />
-      </ModalContainer>
-    </AppValidator>
-  </Provider>
+const App = (props: AppProps): any => {
+  const { analytics } = store.getState().settings
+  return (
+    <Provider store={store}>
+      <AppValidator>
+        <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>
+          <AppRouter analytics={analytics} disabled={props.disabled} history={history} />
+        </ModalContainer>
+      </AppValidator>
+    </Provider>
+  )}
 
 export default App

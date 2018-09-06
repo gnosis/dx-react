@@ -26,11 +26,10 @@ const backdropActive: CSSProperties = {
 
 const blurred: CSSProperties = {
   filter: 'blur(4px)',
+  height: '100vh',
 
   pointerEvents: 'none', userSelect: 'none',
 }
-
-const Aux = (props: any) => props.children
 
 let unblock : Function
 
@@ -69,10 +68,10 @@ class ModalContainer extends Component<ModalContainerProps> {
     const { children, isOpen } = this.props
 
     return (
-      <Aux>
-        {isOpen ? <div style={blurred}>{children}</div> : children}
+      <>
         {this.renderSpecificModal()}
-      </Aux>
+        {isOpen ? <div style={blurred}>{children}</div> : children}
+      </>
     )
   }
 }

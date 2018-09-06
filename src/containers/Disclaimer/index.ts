@@ -6,8 +6,9 @@ import { State } from 'types'
 
 import Disclaimer from 'components/Disclaimer'
 
-const mapStateToProps = ({ settings }: State) => ({
+const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
   accepted: settings.disclaimer_accepted,
+  network,
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: RouteComponentProps<any>) => ({

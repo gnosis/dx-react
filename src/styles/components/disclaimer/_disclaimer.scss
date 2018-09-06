@@ -100,9 +100,35 @@
   line-height: 1.5;
   margin: -18px 0 18px;
 
-  > p {
+  > p, span {
     color: inherit;
     line-height: inherit;
+  }
+
+  .scrollableDisclaimerList {
+    list-style: initial;
+    margin: 0 0 0 20px;
+    padding: initial;
+  }
+}
+
+.disclaimerCookiePolicy {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  flex-flow: column;
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > div > div.disclaimerBoxCookie {
+      display: flex;
+      margin: auto 10px auto 0;
+      padding: 2px 0;
+      width: auto;
+    }
   }
 }
 
