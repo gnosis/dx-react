@@ -27,7 +27,7 @@ export const TextSquare: React.SFC = () =>
 
       <br /><br />
 
-      <ButtonCTA className="void" to="/content/HowItWorks">How it works</ButtonCTA>
+      <ButtonCTA className="blue" to="/content/HowItWorks">How it works</ButtonCTA>
     </div>
   </div>
 

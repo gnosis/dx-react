@@ -6,8 +6,9 @@ import { State } from 'types'
 
 import Disclaimer from 'components/Disclaimer'
 
-const mapStateToProps = ({ settings }: State) => ({
+const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
   accepted: settings.disclaimer_accepted,
+  network,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, ownProps: RouteComponentProps<any>) => ({
@@ -15,7 +16,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, ownProps: RouteComponentPro
     await dispatch(asyncSaveSettings({
       disclaimer_accepted: true,
     }))
-    
+
     ownProps.history.replace(ownProps.location.state && ownProps.location.state.from || '/')
     window && window.scrollTo(0, 0)
   },
