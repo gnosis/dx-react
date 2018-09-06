@@ -91,6 +91,7 @@
     "name-all-modules-plugin": "^1.0.1",
     "react": "16.4.2",
     "react-dom": "16.4.2",
+    "react-ga": "^2.5.3",
     "react-hot-loader": "4.3.6",
     "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",

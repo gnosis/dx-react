@@ -8,6 +8,6 @@ const reducer = handleActions<Settings>({
     ...state,
     ...action.payload,
   }),
-}, {})
+}, {} as Settings)
 
 export default reducer
