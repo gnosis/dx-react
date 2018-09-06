@@ -47,6 +47,7 @@ export const tokenSVG = new Set([
   'RDN',
   'DAI',
   'GEN',
+  'MKR',
 ])
 
 export const network2URL: Network2URL = {
@@ -85,7 +86,7 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
 export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ?
-  'QmRLt9FQ8gu1Zs9wJEXtBJDagnTHFWbYjrUDuu1mZG8TCw' : 'QmbQfGNBEwdJU7rvHQC4ef3UxbegLUL6ZPH7E1Jtxj3zmo'
+  'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
 export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
@@ -97,7 +98,7 @@ export const TokenListHashMap = {
 }
 
 // Allowed network
-export const ALLOWED_NETWORK = 'Rinkeby Test Network'
+// export const ALLOWED_NETWORK = 'Rinkeby Test Network'
 
 // BigNumber fixed decimal places to sow
 export const FIXED_DECIMALS = 4
@@ -122,6 +123,9 @@ export const URLS = {
   GITTER_URL: 'https://gitter.im/gnosis/DutchX',
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
+
+  DUTCHX_APP_URL_MAIN: 'dutchx.app',
+  DUTCHX_APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
 }
 
 // Error messages during TXs

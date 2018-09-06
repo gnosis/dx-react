@@ -17,8 +17,11 @@ import ContentPageContainer from 'containers/ContentPages'
 import Cookies from 'components/Cookies'
 import Imprint from 'components/Imprint'
 
+import GoogleAnalyticsTracking from 'components/GoogleAnalyticsTracking'
+
 interface AppRouterProps {
   history: History;
+  analytics: boolean;
   disabled?: boolean;
 }
 
@@ -40,7 +43,7 @@ const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
 const CookiesWH = withHeaderAndFooter(Cookies, true)
 const ImprintWH = withHeaderAndFooter(Imprint, true)
 
-const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
+const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
     return (
       <StaticRouter context={{}}>
@@ -73,7 +76,10 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
 
           <Route path="/404" component={PageNotFound} />
           <Redirect to="/404" />
+
         </Switch>
+
+        {analytics && <GoogleAnalyticsTracking />}
       </div>
   </ConnectedRouter>
   )

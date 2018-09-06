@@ -10,21 +10,14 @@ const mapStateToProps = ({ settings }: State) => ({
   accepted: settings.disclaimer_accepted,
 })
 
-// const acceptDisclaimer = async () => {
-//   await asyncSaveSettings({
-//     disclaimer_accepted: true,
-//   })
-// }
-
 const mapDispatchToProps = (dispatch: Dispatch<any>, ownProps: RouteComponentProps<any>) => ({
   acceptDisclaimer: async () => {
     await dispatch(asyncSaveSettings({
       disclaimer_accepted: true,
     }))
     
-    
-    console.log('ownProps: ', ownProps)
     ownProps.history.replace(ownProps.location.state && ownProps.location.state.from || '/')
+    window && window.scrollTo(0, 0)
   },
 })
 
