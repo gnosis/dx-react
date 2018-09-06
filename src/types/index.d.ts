@@ -53,6 +53,7 @@ export interface Blockchain {
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,
+  network?: string,
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: object,
