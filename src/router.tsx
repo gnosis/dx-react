@@ -15,10 +15,11 @@ import AuctionPanel from 'containers/AuctionPanel'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 
-import withTracking from 'components/WithTrackingHOC'
+import GoogleAnalyticsTracking from 'components/GoogleAnalyticsTracking'
 
 interface AppRouterProps {
   history: History;
+  analytics: boolean;
   disabled?: boolean;
 }
 
@@ -38,7 +39,7 @@ const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
 const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
 
-const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
+const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
     return (
       <StaticRouter context={{}}>
@@ -55,19 +56,22 @@ const AppRouter: React.SFC<AppRouterProps> = ({ history, disabled }) => {
       <div>
         <RedirectToDisclaimer/>
         <Switch>
-          <Route exact path="/" component={withTracking(HomeWH)} />
-          <Route path="/order" component={withTracking(OrderPanelWH)} />
-          <Route path="/wallet" component={withTracking(WalletPanelWH)} />
+          <Route exact path="/" component={HomeWH} />
+          <Route path="/order" component={OrderPanelWH} />
+          <Route path="/wallet" component={WalletPanelWH} />
           {/* TODO: check for valid params.addr and redirect if necessary */}
-          <Route path="/auction/:sell-:buy-:index" component={withTracking(AuctionPanelWH)} />
-          <Route path="/disclaimer" component={withTracking(Disclaimer)} />
+          <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
+          <Route path="/disclaimer" component={Disclaimer} />
 
-          <Route path="/content/:contentPage" component={withTracking(ContentPageContainerWH)} />
+          <Route path="/content/:contentPage" component={ContentPageContainerWH} />
           <Redirect from="/content" to="/content/HowItWorks" />
 
-          <Route path="/404" component={withTracking(PageNotFound)} />
+          <Route path="/404" component={PageNotFound} />
           <Redirect to="/404" />
+
         </Switch>
+
+        {analytics && <GoogleAnalyticsTracking />}
       </div>
   </ConnectedRouter>
   )
