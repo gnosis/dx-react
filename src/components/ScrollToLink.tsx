@@ -9,20 +9,20 @@ interface ScrollToLinkProps extends LinkProps {
 export default class ScrollToLink extends React.Component<ScrollToLinkProps> {
 
   handleScrollToHash = (e: any) => {
-      e.preventDefault()
+    e.preventDefault()
 
-      const { children, hash, to } = this.props
-      if (hash) {
-          const elem = document.querySelector(hash)
-          if (elem) elem.scrollIntoView()
-        }
-      return (<Link to={to}>{children}</Link>)
-    }
+    const { children, hash, to } = this.props
+    if (hash) {
+        const elem = document.querySelector(hash)
+        if (elem) elem.scrollIntoView()
+      }
+    return (<Link to={to}>{children}</Link>)
+  }
 
   render() {
-      const { children, hash, to } = this.props
-      if (hash) return <Link onClick={this.handleScrollToHash} to={to}>{children}</Link>
+    const { children, hash, to } = this.props
+    if (hash) return <Link onClick={this.handleScrollToHash} to={to}>{children}</Link>
 
-      return <Link to={to} {...this.props}>{children}</Link>
-    }
+    return <Link to={to} {...this.props}>{children}</Link>
+  }
 }

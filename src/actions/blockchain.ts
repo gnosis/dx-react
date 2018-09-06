@@ -1,5 +1,5 @@
 import { push } from 'connected-react-router'
-import { Dispatch } from 'react-redux'
+import { Dispatch } from 'redux'
 import { createAction } from 'redux-actions'
 import { batchActions } from 'redux-batched-actions'
 
@@ -248,7 +248,7 @@ export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenLis
   dispatch(setAvailableAuctions(availableAuctions))
 }
 
-export const getTokenList = (network?: number | string) => async (dispatch: Dispatch<any>, getState: () => State): Promise<void> => {
+export const getTokenList = (network?: number | string) => async (dispatch: Function, getState: () => State): Promise<void> => {
   let [defaultTokens, customTokens, customListHash] = await Promise.all<{ hash: string, tokens: DefaultTokens}, DefaultTokens['elements'], string>([
     localForage.getItem('defaultTokens'),
     localForage.getItem('customTokens'),
@@ -324,7 +324,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
         break
 
       default:
-        console.log(`Detected connection to an UNKNOWN network -- localhost?`)
+        console.log('Detected connection to an UNKNOWN network -- localhost?')
         defaultTokens = {
           hash: 'local',
           tokens: await tokensMap('1.0'),
@@ -347,8 +347,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Disp
     localForage.setItem('customTokens', customTokensWithDecimals)
     dispatch(setCustomTokenList({ customTokenList: customTokensWithDecimals }))
     dispatch(setTokenListType({ type: 'CUSTOM' }))
-  }
-  else if (customListHash) {
+  } else if (customListHash) {
     const fileContent = await ipfsFetchFromHash(customListHash)
 
     const json = fileContent
@@ -404,7 +403,7 @@ export const getClosingPrice = () => async (dispatch: Dispatch<any>, getState: a
   }
 }
 
-const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenETHAddress: Account) => {
+const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAddress: Account) => {
   let { tokenPair: { sell, buy, sellAmount }, tokenList: { defaultTokenList } } = getState()
   if (sell.isETH || buy.isETH) {
     if (sell.isETH) sell = defaultTokenList.find(token => token.address === TokenETHAddress)
@@ -418,7 +417,7 @@ const changeETHforWETH = (dispatch: Dispatch<any>, getState: () => State, TokenE
  * checkUserStateAndSell()(dispatch, state) => THUNK Action
  *
 */
-export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
     blockchain: { activeProvider, currentAccount },
@@ -501,7 +500,7 @@ export const checkUserStateAndSell = () => async (dispatch: Dispatch<any>, getSt
           dispatch(openModal({
             modalName: 'ApprovalModal',
             modalProps: {
-              header: `Using OWL to pay for fees`,
+              header: 'Using OWL to pay for fees',
               body: `You have the option to pay half of your fees on the DutchX in OWL.
               Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
               `,
@@ -543,7 +542,7 @@ export const calculateSellAmountAfterFee = async (sellAmount: string | BigNumber
 
 export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
   const {
-    tokenPair: { sell, buy, sellAmount, index = 0 },
+    tokenPair: { sell, buy, sellAmount, index = '0' },
     blockchain: { activeProvider, currentAccount, feeRatio, useOWL, providers: { [activeProvider]: { network } } },
   }: State = getState(),
     sellName = getTokenName(sell),
@@ -564,7 +563,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Order confirmation`,
+        header: 'Order confirmation',
         body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain.`,
         txData: {
           tokenA: { ...sell, ...sellName } as DefaultTokenObject,
@@ -591,7 +590,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     } else {
 
       console.log('PROMPTING to start depositAndSell tx')
-      hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
+      hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), +index, currentAccount)
       console.log('postSellOrder tx hash', hash)
     }
     const receipt = await waitForTx(hash)
@@ -656,7 +655,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving token transfer for this trade only`,
+            header: 'Approving token transfer for this trade only',
             body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
@@ -670,7 +669,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving token transfer also for future trades`,
+            header: 'Approving token transfer also for future trades',
             body: `You will no longer need to sign two transactions for future orders with ${sellName} and will save transaction costs. Please confirm with ${activeProvider || 'your wallet provider'}.`,
             loader: true,
           },
@@ -690,8 +689,8 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
         dispatch(openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `Approving use of OWL`,
-            body: `You are approving the use of OWL tokens towards fee reduction - you will not see this message again.`,
+            header: 'Approving use of OWL',
+            body: 'You are approving the use of OWL tokens towards fee reduction - you will not see this message again.',
             loader: true,
           },
         }))
@@ -714,7 +713,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
   }
 }
 
-export const withdrawFromDutchX = ({ name, address }: { name: string, address: string }) => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const withdrawFromDutchX = ({ name, address }: { name: string, address: string }) => async (dispatch: Function, getState: () => State) => {
   const { blockchain: { activeProvider } } = getState(),
     { DutchExchange } = contractsMap,
     decoder = getDecoderForABI(DutchExchange.abi)
@@ -722,7 +721,7 @@ export const withdrawFromDutchX = ({ name, address }: { name: string, address: s
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Withdrawing Funds`,
+        header: 'Withdrawing Funds',
         body: `You are withdrawing ${name} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
@@ -758,7 +757,7 @@ export const claimSellerFundsAndWithdrawFromAuction = (
   index: number,
   amount: BigNumber,
   account: Account,
-) => async (dispatch: Dispatch<any>, getState: () => State) => {
+) => async (dispatch: Function, getState: () => State) => {
   const { sell, buy } = pair
   const { blockchain: { activeProvider } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
@@ -767,7 +766,7 @@ export const claimSellerFundsAndWithdrawFromAuction = (
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Claiming Funds`,
+        header: 'Claiming Funds',
         body: `You are claiming ${buyName} from this ${sellName}-${buyName} auction to your wallet. Please confirm with ${activeProvider}`,
         loader: true,
       },
@@ -794,7 +793,7 @@ export const claimSellerFundsFromSeveral = (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   lastNIndex?: number,
-) => async (dispatch: Dispatch<any>, getState: () => State) => {
+) => async (dispatch: Function, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
@@ -806,7 +805,7 @@ export const claimSellerFundsFromSeveral = (
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Claiming funds`,
+        header: 'Claiming funds',
         body: `You are claiming ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
@@ -829,7 +828,7 @@ export const claimSellerFundsFromSeveral = (
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Withdrawing Claimed Funds`,
+        header: 'Withdrawing Claimed Funds',
         body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
@@ -932,7 +931,7 @@ export function errorHandling(error: Error, goHome = true) {
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
-        header: `Transaction failed / was cancelled`,
+        header: 'Transaction failed / was cancelled',
         body: `${activeProvider || 'Your provider'} has cancelled your transaction. Please see below for more information:`,
         button: true,
         error: errorFind(normError),

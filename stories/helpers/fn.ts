@@ -47,7 +47,7 @@ export const auctionFactory = (amt: number, arr: string[]) => {
  *  'ETH': '0.3434321',
  *  ...
  * } for each token from codeList
- * @param codes 
+ * @param codes
  */
 export const generateTokenBalances = (codes = codeList) => codes.reduce(
   (acc, code) => (acc[code] = (Math.random() * 5).toFixed(9), acc), {},
@@ -83,7 +83,7 @@ const samplePair = (list: any[]): [any, any] => {
 }
 
 /**
- * 
+ *
  * @param codes generates tokenPair = {
  *  sell: 'ETH'
  *  buy: 'GNO'

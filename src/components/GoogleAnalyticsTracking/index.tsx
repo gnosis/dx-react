@@ -32,4 +32,3 @@ const GoogleAnalyticsTracker = withRouter(
 GoogleAnalyticsTracker.displayName = 'GoogleAnalyticsTracker'
 
 export default GoogleAnalyticsTracker
-

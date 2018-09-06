@@ -1,4 +1,3 @@
-import '@babel/polyfill'
 // Array prototypes + others
 import 'utils/prototypes'
 

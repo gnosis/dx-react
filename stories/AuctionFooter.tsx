@@ -30,7 +30,7 @@ const constructKnobs = (auctionEnded: boolean) => {
   }) as AuctionFooterProps
 }
 
-storiesOf(`AuctionFooter`, module)
+storiesOf('AuctionFooter', module)
   .addDecorator(CenterDecor)
   .addWithJSX('connected', () => (
     <AuctionFooter {...constructKnobs(true) } />

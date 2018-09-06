@@ -42,7 +42,7 @@ class ModalContainer extends Component<ModalContainerProps> {
 
     // If MODAL is OPEN block movement
     if (nextProps.isOpen) {
-      unblock = history.block(`Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.` as any)
+      unblock = history.block('Are you sure you want to leave this page? You have not yet confirmed or rejected your sell order.' as any)
     } else {
       // otherwise unblock
       unblock()

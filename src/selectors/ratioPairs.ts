@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 
 /**
  * sorts pairs by ASC and takes top 5
- * @param {typeof ratioPairs} pairs 
+ * @param {typeof ratioPairs} pairs
  * @returns {typeof ratioPairs}
  */
 // TODO: do comparison (+pairs[b] - +pairs[a]) with BigNumber.lt/gt/eq()

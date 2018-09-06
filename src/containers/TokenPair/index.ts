@@ -6,7 +6,7 @@ import { State } from 'types'
 const mapStateToProps = ({
   tokenList: { defaultTokenList, customTokenList, type },
   tokenPair: { sell, buy },
-  tokenBalances: { [sell && sell.address]: sellTokenBalance = 0, [buy && buy.address]: buyTokenBalance = 0 },
+  tokenBalances: { [sell && sell.address]: sellTokenBalance, [buy && buy.address]: buyTokenBalance },
   }: State) => ({
     sellToken: sell,
     buyToken: buy,

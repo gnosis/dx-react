@@ -1,4 +1,4 @@
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { asyncSaveSettings } from 'actions'
 import { RouteComponentProps } from 'react-router'
 
@@ -11,7 +11,7 @@ const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
   network,
 })
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, ownProps: RouteComponentProps<any>) => ({
+const mapDispatchToProps = (dispatch: Function, ownProps: RouteComponentProps<any>) => ({
   acceptDisclaimer: async () => {
     await dispatch(asyncSaveSettings({
       disclaimer_accepted: true,

@@ -6,7 +6,7 @@ import { State } from 'types'
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 import gnosisLogoSVG from 'assets/img/gnosis_logo.svg'
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 interface FooterProps {
   network: string;

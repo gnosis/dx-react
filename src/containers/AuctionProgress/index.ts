@@ -3,7 +3,6 @@ import AuctionProgress from 'components/AuctionProgress'
 // import { State } from 'types'
 import { AuctionStatus as Status } from 'globals'
 
-
 const status2progress = {
   [Status.INIT]: 1,
   [Status.PLANNED]: 2,
@@ -17,6 +16,5 @@ const mapStateToProps = () => ({
   // TODO: populate AuctionStatus in store by querying DutchX regularly or listening for Events
   progress: getAuctionProgress(Status.INIT),
 })
-
 
 export default connect(mapStateToProps)(AuctionProgress)
