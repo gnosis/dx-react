@@ -5,8 +5,9 @@ import { RouteComponentProps } from 'react-router'
 
 interface TrackerProps extends RouteComponentProps<string> {}
 
-export default withRouter(
-  class GoogleAnalyticsTracking extends Component<TrackerProps> {
+const GoogleAnalyticsTracker = withRouter(
+  class extends Component<TrackerProps> {
+    displayName = 'GoogleTrackingComponent'
     trackPage = (page: string) => {
       ReactGA.set({
         page,
@@ -27,3 +28,8 @@ export default withRouter(
 
     render(): null { return null }
   })
+
+GoogleAnalyticsTracker.displayName = 'GoogleAnalyticsTracker'
+
+export default GoogleAnalyticsTracker
+
