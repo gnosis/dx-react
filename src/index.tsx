@@ -47,7 +47,7 @@ async function conditionalRender() {
   /* User's environment does not have access to window API (e.g user on mobile?) */
   if (typeof window === 'undefined') return false
   const { hostname } = window.location
-  // const hostname = URLS.DUTCHX_APP_URL_RINKEBY
+
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
   if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
 
