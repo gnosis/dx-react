@@ -107,6 +107,7 @@
     "react-custom-scroll": "2.0.1",
     "react-datetime": "^2.10.1",
     "react-dom": "^16.2.0",
+    "react-ga": "^2.5.3",
     "react-hot-loader": "^4.0.1",
     "react-intl": "2.4.0",
     "react-modal": "^3.0.0",

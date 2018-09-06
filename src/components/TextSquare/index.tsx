@@ -28,8 +28,8 @@ export const TextSquare: React.SFC = () => {
 
         <br />
         <br />
-        { /*TODO: change this below - defaultProp is hurting this*/ }
-        <ButtonCTA className="void" to="/content/HowItWorks">How the DutchX works</ButtonCTA>
+
+        <ButtonCTA className="blue" to="/content/HowItWorks">How the DutchX works</ButtonCTA>
       </div>
     </div>
   )

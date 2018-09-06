@@ -6,6 +6,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 
+import ReactGA from 'react-ga'
+
 import App, { loadLocalSettings, initializeWallet } from 'components/App'
 
 import { isNetBlocked, isGeoBlocked } from 'block'
@@ -55,6 +57,26 @@ async function conditionalRender() {
     blocked = await isNetBlocked(['4'])
 
     if (blocked) disabledReason = 'networkblock'
+
+    // init GA
+    ReactGA.initialize('UA-83220550-8')
+  }
+
+  /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
+  else if (hostname === URLS.DUTCHX_APP_URL_MAIN) {
+    ALLOWED_NETWORK = 'Ethereum Mainnet'
+    const netBlockedPromise = isNetBlocked(['1'])
+    // geoblock gets precedence, checked first
+    blocked = await isGeoBlocked()
+
+    if (blocked) {
+      disabledReason = 'geoblock'
+    } else {
+      blocked = await netBlockedPromise
+      if (blocked) disabledReason = 'networkblock'
+    }
+    // init GA
+    ReactGA.initialize('UA-83220550-9')
   }
 
   /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
