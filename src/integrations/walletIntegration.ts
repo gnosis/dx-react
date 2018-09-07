@@ -77,7 +77,7 @@ export default async function walletIntegration(store: Store<any>) {
     provider.initialize()
 
     // dispatch action to save provider name and priority
-    dispatchers.regProvider(provider.providerName, { priority: provider.priority })
+    dispatchers.regProvider(provider.providerName, { priority: provider.priority, available: provider.checkAvailability() })
 
     const newState = await grabProviderState(provider)
 

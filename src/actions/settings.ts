@@ -6,16 +6,19 @@ import localForage from 'localforage'
 
 export const saveSettings = createAction<Partial<Settings>>('SAVE_SETTINGS')
 
-export const asyncLoadSettings = () => async (dispatch: Dispatch<Settings>) => {
-  const settings = await localForage.getItem('settings') as Settings
+export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
+  const settings = await Promise.all([
+    localForage.getItem('settings'),
+    localForage.getItem('cookieSettings'),
+  ])
 
   if (settings) {
-    return dispatch(saveSettings(settings))
+    return settings.forEach(setting => dispatch(saveSettings(setting)))
   }
 }
 
 export const asyncSaveSettings = (payload: Partial<Settings>) =>
-  async (dispatch: Dispatch<Settings>, getState: () => State) => {
+  async (dispatch: Dispatch<any>, getState: () => State) => {
     const action = dispatch(saveSettings(payload))
 
     localForage.setItem('settings', getState().settings)

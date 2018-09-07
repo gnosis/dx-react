@@ -10,13 +10,22 @@ const getHhMm = (ms: number) => {
 }
 
 const formatHours = ({ h, m }: { h: number, m: number }) => {
-  let str = h.toString()
-  if (m > 45) str = (h + 1).toString()
-  else if (m > 30) str += ':45'
-  else if (m > 15) str += ':30'
-  else if (m > 0) str += ':15'
+  let hours = h > 0 ? h.toString() : ''
+  let minutes
+  let delim = ''
 
-  return str + 'h'
+  if (m > 45) hours = (h + 1).toString()
+  else if (m > 30) minutes = '45'
+  else if (m > 15) minutes = '30'
+  else if (m > 0) minutes = '15'
+  else minutes = ''
+
+  if (hours) hours += 'h'
+  if (minutes) minutes += 'min'
+
+  if (hours && minutes) delim = ':'
+
+  return hours + delim + minutes
 }
 
 interface TimingApprox {
@@ -48,17 +57,17 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
     // )
 
     if (status === Status.PLANNED) { return {
-      willStart: 'in approx 6:45h',
+      willStart: 'in approx 6h:45min',
       runFor: 'approx. 6h',
-      claim: 'in approx. 12:45h',
+      claim: 'in approx. 12h:45min',
     }
     }
     // Produces in AuctionStatus(
     //   <p>
-    //     The auction will start in approx 6:45h and run for approx. 6 hours
+    //     The auction will start in approx 6h:45min and run for approx. 6 hours
     //     <br/>
     //     <br/>
-    //     {userParticipates && `You may claim your ${bToken} in approx. 12:45h`}
+    //     {userParticipates && `You may claim your ${bToken} in approx. 12h:45min`}
     //   </p>
     // )
   }
@@ -96,11 +105,11 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
       // auctionStart was just set to a waiting period
       // the auction started, but auctionStart is 10min in the future
       if (timeTillNext <= WAITING_PERIOD) {
-        const willEnd = 'in approx 6:30h'
+        const willEnd = 'in approx 6h:30min'
         return { willEnd, claim: willEnd }
       }
       // Produces in AuctionStatus(
-      //   <p>This auction is running and will end in approx 6:30h</p>
+      //   <p>This auction is running and will end in approx 6h:30min</p>
       // )
 
       const hhMmTillNext = getHhMm(timeTillNext)
@@ -129,12 +138,12 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
     const claimableIn = timeTillNext + AUCTION_RUN_TIME
 
     if (timeSinceStart >= AUCTION_RUN_TIME) {
-      return { willStart: 'soon', runFor: 'approx. 6 hours', claim: 'in approx. 6:30 hours' }
+      return { willStart: 'soon', runFor: 'approx. 6 hours', claim: 'in approx. 6h:30min' }
       // Produces in AuctionStatus(
       //   <p>
       //     The auction will start soon and run for approx. 6 hours
       // <br />
-      //     {userParticipates && `You may claim your ${bToken} in approx. 6:30 hours`}
+      //     {userParticipates && `You may claim your ${bToken} in approx. 6h:30min`}
       //   </p>
       // )
     }

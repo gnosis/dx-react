@@ -68,7 +68,7 @@ export default (WrappedComponent: React.SFC<any> | React.ComponentClass<any>) =>
         return openModal({
           modalName: 'TransactionModal',
           modalProps: {
-            header: `IPFS Download Error`,
+            header: 'IPFS Download Error',
             body: 'Please check error message below or open developer console for more details',
             button: true,
             error: error.message || error || 'Unknown error occurred, please open your developer console',

@@ -4,7 +4,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 export const getTokenName = ({ symbol, name, address, isETH }: DefaultTokenObject) => {
   if (address === ETH_ADDRESS && isETH) return { symbol: 'WETH', name: 'Wrapped-Ether' }
-  return { 
+  return {
     name: name && name.toUpperCase() || symbol && symbol.toUpperCase() || address,
     symbol: symbol && symbol.toUpperCase() || name && name.toUpperCase() || address,
   }

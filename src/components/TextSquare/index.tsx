@@ -1,38 +1,34 @@
 import React from 'react'
 import ButtonCTA from 'components/ButtonCTA'
 
-export const TextSquare: React.SFC = () => {
-  return (
-    <div className="intro">
-      <h1>Decentralized Token Auction Exchange</h1>
-      <div className="textSquareInnerContainer">
-        The DutchX is a decentralized exchange for ERC20 tokens and ETH,
-        determining a fair value for tokens based on the Dutch auction principle.
+export const TextSquare: React.SFC = () =>
+  <div className="intro">
+    <h1>Token Auction Platform</h1>
+    <div className="textSquareInnerContainer">
+      <i>Slow & fair</i><br /><br />
+      This trading interface allows you to interact with the DutchX decentralized trading protocol for ERC20 tokens,
+      determining a fair value for tokens based on the Dutch auction principle.
 
-        <br />
-        <br />
+      <br /><br />
 
-        No account needed. Direct trades between peers through smart contracts.
+      No account needed. Direct trades between peers through smart contracts.
 
-        <br />
-        <br />
-        <ol>
-          <li>Choose the tokens you would like to exchange</li>
-          <li>Specify the amount to deposit</li>
-          <li>Submit the order via your wallet provider’s interface</li>
-        </ol>
+      <br /><br />
 
-        <br />
+      <ol>
+        <li>Choose the tokens you would like to trade</li>
+        <li>Specify the amount to deposit</li>
+        <li>Submit the order via your wallet provider</li>
+      </ol>
 
-        Your order is automatically deposited into the next running auction - no strategy needed!
+      <br />
 
-        <br />
-        <br />
-        { /*TODO: change this below - defaultProp is hurting this*/ }
-        <ButtonCTA className="void" to="/content/HowItWorks">How the DutchX works</ButtonCTA>
-      </div>
+      Your order is automatically deposited into the next running auction - no strategy needed!
+
+      <br /><br />
+
+      <ButtonCTA className="blue" to="/content/HowItWorks">How it works</ButtonCTA>
     </div>
-  )
-}
+  </div>
 
 export default TextSquare

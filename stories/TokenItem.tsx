@@ -34,7 +34,6 @@ const stringifyAction = decorateAction([
   args => [JSON.stringify(args[0])],
 ])
 
-
 for (const code of codeList) {
   const name = code2tokenMap[code]
 

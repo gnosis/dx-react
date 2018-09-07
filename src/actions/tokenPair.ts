@@ -1,5 +1,4 @@
 import { createAction } from 'redux-actions'
-import { Dispatch } from 'redux'
 
 import { closingPrice } from 'api'
 import { setClosingPrice, getClosingPrice } from 'actions'
@@ -11,7 +10,7 @@ export const setSellTokenAmount = createAction<{ sellAmount: Balance }>('SET_SEL
 export const swapTokensInAPair = createAction<void>('SWAP_TOKENS_IN_A_PAIR', () => {})
 export const resetTokenPair = createAction<void>('RESET_TOKEN_PAIR', () => {})
 
-export const swapTokensInAPairAndReCalcClosingPrice = () => async (dispatch: Dispatch<any>) => {
+export const swapTokensInAPairAndReCalcClosingPrice = () => async (dispatch: Function) => {
   dispatch(swapTokensInAPair())
 
   return dispatch(getClosingPrice())

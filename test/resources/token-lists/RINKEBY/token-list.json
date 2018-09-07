@@ -18,6 +18,24 @@
       "name": "Wrapped Ether",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
       "decimals": 18
+    },
+    {
+      "symbol": "GEN",
+      "name": "DAOstack",
+      "address": "0x543ff227f64aa17ea132bf9886cab5db55dcaddf",
+      "decimals": 18
+    },
+    {
+      "symbol": "DAI",
+      "name": "Dai Token",
+      "address": "0x62f25065ba60ca3a2044344955a3b2530e355111",
+      "decimals": 18
+    },
+    {
+      "symbol": "MKR",
+      "name": "Maker Token",
+      "address": "0x2D9585690A724BfA29a212295a9E8C714ca694aA",
+      "decimals": 18
     }
   ],
   "pagination": {
@@ -33,5 +51,5 @@
     "previousUri": null,
     "nextUri": null
   },
-  "version": "1.0"
+  "version": "1.0.2"
 }

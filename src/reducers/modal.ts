@@ -2,7 +2,7 @@ import { openModal, closeModal } from 'actions/modal'
 import { handleActions } from 'redux-actions'
 import { Modal } from 'types'
 
-const initialState: Modal = { 
+const initialState: Modal = {
   isOpen: false,
   modalName: undefined,
   modalProps: undefined,
@@ -20,8 +20,8 @@ const reducer = handleActions(
         isOpen: true,
       }
     },
-    [closeModal.toString()]: () => initialState, 
-  }, 
+    [closeModal.toString()]: () => initialState,
+  },
   initialState,
 )
 

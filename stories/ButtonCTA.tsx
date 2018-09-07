@@ -21,7 +21,7 @@ const variants = {
   PANEL3: [text('text', 'Submit order'), <i className="icon icon-walletOK" key="icon"></i>],
 }
 
-const story = storiesOf(`ButtonCTA`, module)
+const story = storiesOf('ButtonCTA', module)
   .addDecorator(StoryRouter())
   .addDecorator(CenterDecor)
 

@@ -25,7 +25,7 @@ const constructKnobs = (account: string, balance: number, tokens: object | any) 
   tokens,
 })
 
-storiesOf(`MenuWallet`, module)
+storiesOf('MenuWallet', module)
   .addDecorator(CenterDecor)
   .addWithJSX('MenuWallet Component', () =>
     <MenuWallet

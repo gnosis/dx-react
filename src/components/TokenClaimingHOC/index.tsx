@@ -45,7 +45,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<Toke
         this.setState({
           isClaiming: false,
         })
-        this.setProgressTo4()  
+        this.setProgressTo4()
       } catch (error) {
         // if fails change isClaiming state and add error
         console.warn('Error claiming tokens', error)

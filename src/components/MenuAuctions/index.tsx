@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import { OngoingAuctions } from 'types'
 import { DefaultTokenObject } from 'api/types'
-import { Action } from 'redux'
 import { AuctionStatus } from 'globals'
 import { getTimingApproximations } from 'utils/timings'
+import { RouterAction } from 'connected-react-router'
 
 export interface MenuAuctionProps {
   claimable: any;
@@ -12,24 +12,47 @@ export interface MenuAuctionProps {
   claimSellerFundsFromSeveral(
     sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
-  push({}): Action;
+  push({}): RouterAction;
 }
 
-export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
-  claimable,
-  name = 'Your Auctions',
-  ongoingAuctions,
-  claimSellerFundsFromSeveral,
-  push,
-}) => (
-    <div className="menuAuctions"><img src={require('assets/auction.svg')} />
-      <strong className={claimable ? 'claimable' : null}>{name}</strong>
-      {claimable &&
-      <span>
-        <span>CLAIM</span>
-        <img src={require('assets/claim.svg')}/>
-      </span>}
-      <div>
+export class MenuAuctions extends React.Component <MenuAuctionProps> {
+  state = {
+    open: false,
+  }
+
+  handleClick = () => {
+    const windowSize = window.innerWidth
+    if (windowSize > 736) return
+
+    this.setState({
+      open: !this.state.open,
+    })
+  }
+
+  render() {
+    const {
+      claimable,
+      name = 'Your Auctions',
+      ongoingAuctions,
+      claimSellerFundsFromSeveral,
+      push,
+    } = this.props
+
+    return (
+      <div
+        className="menuAuctions"
+        tabIndex={1}
+        onClick={this.handleClick}
+        onBlur={() => this.setState({ open: false })}
+      >
+        <img src={require('assets/auction.svg')} />
+        <strong className={claimable ? 'claimable' : null}>{name}</strong>
+        {claimable &&
+        <span>
+          <span>CLAIM</span>
+          <img src={require('assets/claim.svg')}/>
+        </span>}
+        <div className={this.state.open ? 'mobileOpen' : ''}>
         {ongoingAuctions.length ?
           <table>
             <thead>
@@ -152,9 +175,11 @@ export const MenuAuctions: React.SFC<MenuAuctionProps> = ({
                 </tr>
               </tbody>
             </table>
-        }
+          }
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+}
 
 export default MenuAuctions

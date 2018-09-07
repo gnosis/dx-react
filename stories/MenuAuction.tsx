@@ -25,11 +25,10 @@ const constructKnobs = (
   push: () => console.log('Moving to auction') as any,
 })
 
-storiesOf(`MenuAuctions`, module)
+storiesOf('MenuAuctions', module)
   .addDecorator(TopCenterDecor)
   .addWithJSX('MenuAuctionsComponent', () =>
     <MenuAuctions
       {...constructKnobs('YOUR AUCTIONS', auctionFactory(getRandomInt(1, 6), tokenArr)) }
     />,
 )
-

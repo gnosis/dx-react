@@ -11,10 +11,10 @@ install:
   - npm ci --production=false
 matrix:
   include:
-  - if: branch =~ /^(master$|release\/)/
+  - if: branch =~ /^(master$|release\/)/ OR tag IS present
     env: NODE_ENV=production
     node_js: '9'
-  - if: branch =~ /^(master$|release\/)/
+  - if: branch =~ /^(master$|release\/)/ OR tag IS present
     env: NODE_ENV=production
     node_js: '8'
   - if: NOT (branch =~ /^(master$|release\/)/)

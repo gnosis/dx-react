@@ -53,6 +53,7 @@ export interface Blockchain {
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,
+  network?: string,
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: object,
@@ -249,7 +250,9 @@ export interface IPFS {
 }
 
 export interface Settings {
-  disclaimer_accepted: boolean,
+  disclaimer_accepted: boolean;
+  analytics: boolean;
+  cookies: boolean;
 }
 
 export type AccountsSet = Set<Account>

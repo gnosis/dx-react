@@ -32,7 +32,7 @@ const constructKnobs = (status: string) => ({
   status: text('status', status),
 }) as AuctionStatusProps
 
-const story = storiesOf(`AuctionStatus`, module)
+const story = storiesOf('AuctionStatus', module)
   .addDecorator(CenterDecor)
 
 for (const key of Object.keys(Status)) {

@@ -18,7 +18,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#root > div {
+#root div.appFlex {
   display: flex;
   flex-flow: column nowrap;
   min-height: 100vh;
@@ -73,8 +73,8 @@ img {
 }
 
 section.home, section.auction {
-  min-height: calc(100vh - 60px);
   align-items: center;
+  margin: 20px auto;
 
   @media #{$mobile} {
     height: auto;
@@ -94,7 +94,7 @@ section.home {
     flex-wrap: wrap;
     height: auto;
 
-    margin-top: 80px;
+    margin-top: 175px;
   }
 }
 
@@ -115,12 +115,20 @@ footer {
   align-items: center;
   margin: auto auto 0;
 
-  > p {
+  > p:first-child {
     color: $grey;
+
+    text-align: center;
+    width: 75%;
   }
 
   p > a {
     color: $blue;
+    padding: 0 4px;
+  }
+
+  > p > p > img {
+    max-width: 100px;
   }
 
   > div {
@@ -134,4 +142,5 @@ footer {
       padding: 0 3px;
     }
   }
+
 }

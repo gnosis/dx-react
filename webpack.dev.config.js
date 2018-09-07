@@ -17,8 +17,7 @@ const config = require('./src/config.json')
 
 const whitelist = config.developmentWhitelist
 
-const ethereumUrl =
-  process.env.ETHEREUM_URL || `${config.ethereum.protocol}://${config.ethereum.host}:${config.ethereum.port}`
+const ethereumUrl =  process.env.ETHEREUM_URL || `${config.ethereum.protocol}://${config.ethereum.host}:${config.ethereum.port}`
 
 module.exports = {
   context: path.join(__dirname, 'src'),
@@ -80,7 +79,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(less|s?css)$/,
+        test: /\.s?css$/,
         use: [
           {
             loader: 'style-loader',
@@ -102,16 +101,6 @@ module.exports = {
             },
           },
         ],
-      },
-      {
-        test: /\.less$/,
-        use: {
-          loader: 'less-loader',
-          options: {
-            strictMath: true,
-            sourceMap: true,
-          },
-        },
       },
       {
         test: /\.scss$/,
