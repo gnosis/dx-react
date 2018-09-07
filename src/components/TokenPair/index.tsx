@@ -18,8 +18,8 @@ export interface TokenPairProps {
 const TokenPair: React.SFC<TokenPairProps> = ({
   sellToken,
   buyToken,
-  sellTokenBalance,
-  buyTokenBalance,
+  sellTokenBalance = 0,
+  buyTokenBalance = 0,
   openOverlay,
   swapTokensInAPairAndReCalcClosingPrice,
   needsTokens,

@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { DefaultTokens, DefaultTokenObject } from 'api/types'
 export { DefaultTokens, DefaultTokenObject }
 
-import { ProviderName } from 'globals'
+import { ProviderName, AuctionStatus } from 'globals'
 
 export interface Code2Name {
   ETH: 'ETHER',
@@ -53,6 +53,7 @@ export interface Blockchain {
   defaultAccount?: Account,
   currentAccount?: Account,
   currentBalance?: BigNumber,
+  network?: string,
   etherTokens?: object,
   gnosisInitialized?: boolean,
   gasCosts?: object,
@@ -124,11 +125,58 @@ export type AuctionObject = {
     address: Account,
   },
   claim?: boolean,
-  indicesWithSellerBalance?: string[] | BigNumber[],
-  balancePerIndex?: string[] | BigNumber[],
+  indicesWithSellerBalance?: string[],
+  balancePerIndex?: string[],
   claimInverse?: boolean,
-  indicesWithSellerBalanceInverse?: string[] | BigNumber[],
-  balancePerIndexInverse?: string[] | BigNumber[],
+  indicesWithSellerBalanceInverse?: string[],
+  balancePerIndexInverse?: string[],
+  past: {
+    indicesNormal: string[],
+    indicesInverse: string[],
+    includesCurrentNormal: boolean,
+    includesCurrentInverse: boolean,
+    dirRunning: boolean,
+    oppRunning: boolean,
+    balanceNormal: string,
+    balanceInverse: string,
+    balancesPerIndexNormal: string[],
+    balancesPerIndexInverse: string[],
+    claimablePerIndexNormal: string[],
+    claimablePerIndexInverse: string[],
+    claimableBalanceNormal: string,
+    claimableBalanceInverse: string,
+    participatedNormal: boolean,
+    participatedInverse: boolean,
+    claimableNormal: boolean,
+    claimableInverse: boolean,
+  },
+  current: {
+    index: string,
+    balanceNormal: string,
+    balanceInverse: string,
+    dirRunning: boolean,
+    oppRunning: boolean,
+    intThePastNormal: boolean,
+    intThePastInverse: boolean,
+    participatesNormal: boolean,
+    participatesInverse: boolean,
+    claimableNormal: boolean,
+    claimableInverse: boolean,
+    claimableBalanceNormal: string,
+    claimableBalanceInverse: string,
+    statusDir: {status: AuctionStatus, theoreticallyClosed?: boolean},
+    statusOpp: {status: AuctionStatus, theoreticallyClosed?: boolean},
+  },
+  next: {
+    index: string,
+    balanceNormal: string,
+    balanceInverse: string,
+    participatesNormal: boolean,
+    participatesInverse: boolean,
+    status: {status: AuctionStatus},
+  },
+  auctionStart?: BigNumber,
+  now?: number,
 }
 
 export type TokenBalances = { [P in Account]: BigNumber }
@@ -202,7 +250,9 @@ export interface IPFS {
 }
 
 export interface Settings {
-  disclaimer_accepted: boolean,
+  disclaimer_accepted: boolean;
+  analytics: boolean;
+  cookies: boolean;
 }
 
 export type AccountsSet = Set<Account>

@@ -7,7 +7,7 @@ export interface TokenItemProps extends DefaultTokenObject {
   mod?: TokenMod,
   name: TokenName,
   generatesMGN?: boolean,
-  balance: BigNumber,
+  balance: BigNumber | number,
 }
 
 const mod2Title: {[P in TokenMod]: string} = {
@@ -38,7 +38,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ..
 
       <big>{name}</big><code>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
-      <p className={balance ? undefined : 'noBalance'}>{balance.div ? balance.div(10 ** decimals).toFixed(FIXED_DECIMALS) : balance} {symbol}</p>
+      <p className={balance ? undefined : 'noBalance'}>{typeof balance !== 'number' && balance.div ? balance.div(10 ** decimals).toFixed(FIXED_DECIMALS) : balance} {symbol}</p>
       {!generatesMGN && <p className="noMGN">Any auction with <strong>{symbol || address}</strong> won't generate MGN</p>}
     </div>
   )

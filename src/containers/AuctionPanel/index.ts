@@ -25,5 +25,4 @@ const mapStateToProps = (state: State) => ({
   ...makeSets(state),
 })
 
-
 export default connect(mapStateToProps, { claimSellerFundsAndWithdrawFromAuction })(AuctionStateHOC(AuctionPanel))

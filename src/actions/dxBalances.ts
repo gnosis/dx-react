@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions'
 
-import { Account, BigNumber, State } from 'types'
+import { Account, BigNumber, State, TokenBalances } from 'types'
 import { getDXTokenBalance, fillDefaultAccount } from 'api'
 import { Dispatch } from 'redux'
 import { batchActions } from 'redux-batched-actions'
@@ -45,7 +45,7 @@ export const setAllDxBalances = () => async (dispatch: Dispatch<any>, getState: 
 
 const initialState = {}
 
-export default handleActions<GetDXBalances>(
+export default handleActions<TokenBalances, GetDXBalances>(
   {
     [setDxBalances.toString()]: (state, action) => ({
       ...state,

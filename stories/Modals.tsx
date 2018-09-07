@@ -27,7 +27,7 @@ const modalState = {
 
 const Provider = makeProviderDecorator(storeInit(modalState))
 
-storiesOf(`Modal`, module)
+storiesOf('Modal', module)
   .addDecorator(StoryRouter())
   .addDecorator(Provider)
   .addWithJSX('Transaction Modal', () => <TransactionModal {...modalState}/>)

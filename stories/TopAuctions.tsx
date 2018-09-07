@@ -22,7 +22,7 @@ const stringifyAction = decorateAction([
   args => [JSON.stringify(args[0])],
 ])
 
-storiesOf(`TopAuctions`, module)
+storiesOf('TopAuctions', module)
   .addDecorator(CenterDecor)
   .addWithJSX('5 random pairs', () => {
     const top5Pairs = getTop5Pairs(ratioPairs.map((pair, i) => object(`Pair ${i}`, pair)))

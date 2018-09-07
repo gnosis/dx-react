@@ -27,5 +27,4 @@ const mapState = ({
   overlayOpen: open,
 })
 
-export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to' | 'showPair'>>
-  (mapState, { continueToOrder, setTokenListType })(TokenPicker)
+export default connect<Partial<TokenPickerProps>, {}, Pick<TokenPickerProps, 'to' | 'showPair'>>(mapState, { continueToOrder, setTokenListType })(TokenPicker)

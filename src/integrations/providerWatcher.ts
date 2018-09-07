@@ -24,11 +24,11 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
 
   const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
     const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
+
     return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
   }
 
   const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
-
     const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
 
     return provider.web3.fromWei(balance, 'ether').toString()
@@ -61,37 +61,36 @@ const providerInitAndWatcher = async (provider: WalletProvider, { updateMainAppS
         // check if initial load or wallet locked
 
       if (!unlocked) {
-          watcherLogger({
-            logType: 'warn',
-            status: 'WALLET LOCKED',
-            info: 'Please unlock your wallet provider',
-            updateState: false,
-          })
+        watcherLogger({
+          logType: 'warn',
+          status: 'WALLET LOCKED',
+          info: 'Please unlock your wallet provider',
+          updateState: false,
+        })
           // if wallet locked, throw
-          throw 'Wallet locked'
-        }
+        throw new Error('Wallet locked')
+      }
       else {
-          watcherLogger({
-            logType: 'warn',
-            status: 'CONNECTED + WALLET UNLOCKED',
-            info: 'Web3 provider connected + wallet unlocked',
-            updateState: true,
-          })
-          await updateMainAppState()
-        }
+        watcherLogger({
+          logType: 'warn',
+          status: 'CONNECTED + WALLET UNLOCKED',
+          info: 'Web3 provider connected + wallet unlocked',
+          updateState: true,
+        })
+        await updateMainAppState()
+      }
     }
   } catch (err) {
-    console.warn(err)
-      // if error
-      // connection lost or provider no longer returns data (locked/logged out)
-      // reset all data associated with account
+    // if error
+    // connection lost or provider no longer returns data (locked/logged out)
+    // reset all data associated with account
     resetMainAppState()
 
     if (provider.walletAvailable) {
         // disable internal provider
       provider.state.unlocked = false
         // and dispatch action with { available: false }
-      updateProvider({ provider })
+      updateProvider(provider)
     }
     throw err
   }

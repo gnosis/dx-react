@@ -54,5 +54,3 @@ async function init() {
     // ipfsAddFile,
   }
 }
-
-

@@ -4,6 +4,10 @@ import { connect } from 'react-redux'
 import { State } from 'types'
 
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+import { getActiveProviderObject } from 'selectors'
+import gnosisLogoSVG from 'assets/img/gnosis_logo.svg'
+
+import { Link } from 'react-router-dom'
 
 interface FooterProps {
   network: string;
@@ -21,18 +25,21 @@ const Footer = ({ network }: FooterProps) =>
                 </>
                     :
                 <>
-                    Trading on DutchX carries a risk to your capital. Please read our full <a href="#">Risk Disclaimer</a>, <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> before trading. – <a href="#">Imprint</a>
+                    <Link to="/privacy">Privacy Policy</Link><Link to="/cookies">Cookies</Link><Link to="/terms">Terms of Use</Link><Link to="/imprint">Imprint</Link> <p> Protocol built by <img src={gnosisLogoSVG} className="footerLogo"/></p>
                 </>
             }
         </p>
         <div>
-          <i>DX-React: {appInfo.version}</i>
-          <i>DX-Contracts: {appInfo.dependencies['@gnosis.pm/dx-contracts']}</i>
+            <i>{network}</i>
+            <i>DX-React: {appInfo.version}</i>
+            <i>DX-Contracts: {appInfo.dependencies['@gnosis.pm/dx-contracts']}</i>
         </div>
     </footer>
 
-const mapState = ({ blockchain: { providers } }: State) => ({
-  network: providers.METAMASK && providers.METAMASK.network ? providers.METAMASK.network : 'UNKNOWN NETWORK',
-})
+const mapState = (state: State) => {
+  const provider = getActiveProviderObject(state)
+
+  return { network: provider ? provider.network : 'UNKNOWN NETWORK' }
+}
 
 export default connect(mapState)(Footer)

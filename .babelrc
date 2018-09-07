@@ -9,7 +9,6 @@
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
     ["@babel/transform-runtime",
       {
-        "polyfill": false,
         "regenerator": true
       }
     ]

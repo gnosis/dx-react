@@ -26,9 +26,9 @@ const story = storiesOf('ClosingPriceBar', module)
   .addDecorator(AuctionSectionDecorator)
 
 for (const vrs of Object.keys(variations)) {
-  story.addWithJSX(vrs, () => 
+  story.addWithJSX(vrs, () =>
     <AuctionPriceBar
-      buyTokenSymbol={text('buyTokenSymbol','GNO')}
+      buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
       sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
       header={variations[vrs].header}
       sellTokenPrice={text('sellPrice', '0')}
