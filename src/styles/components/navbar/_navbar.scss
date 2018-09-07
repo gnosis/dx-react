@@ -231,7 +231,7 @@ header {
 
   .mobileOpen {
     height: auto;
-    opacity: 1; 
+    opacity: 1;
   }
 
   @media #{$mobile} {
@@ -442,7 +442,7 @@ header {
         padding: 6px;
       }
 
-      td {        
+      td {
         > img {
           background: $orange;
           border-radius: 50px;
@@ -501,7 +501,7 @@ header {
   .mobileOpen {
     height: auto;
     opacity: 1;
-    visibility: initial; 
+    visibility: initial;
   }
 
   @media #{$mobile} {
@@ -678,7 +678,7 @@ header {
     margin: 0;
     z-index: 99;
     cursor: default;
-    left: -25%;
+    left: -71%;
     box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
     border: 2px solid transparent;
     max-height: 660px;
@@ -765,6 +765,7 @@ header {
         }
 
         &:last-of-type {
+          min-width: 100px;
           text-align: center;
         }
       }
