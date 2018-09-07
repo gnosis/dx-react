@@ -6,7 +6,7 @@ You can make sure that the Token is indeed listed in the contract by calling the
 
 Then please submit an issue titled **Add Token Request: <TOKEN_NAME>** to this repo following this template:
 
-```md
+```markdown
 
 I wish to add <Token> to the Rinkeby token list
 
