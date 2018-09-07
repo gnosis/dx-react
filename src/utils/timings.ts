@@ -9,21 +9,25 @@ const getHhMm = (ms: number) => {
   }
 }
 
-const formatHours = ({ h, m }: { h: number, m: number }) => {
+const formatHours = ({ h, m }: {h:number, m:number}) => {
   let hours = h > 0 ? h.toString() : ''
-  let minutes
+  let minutes = ''
   let delim = ''
 
   if (m > 45) hours = (h + 1).toString()
   else if (m > 30) minutes = '45'
   else if (m > 15) minutes = '30'
   else if (m > 0) minutes = '15'
-  else minutes = ''
 
-  if (hours) hours += 'h'
-  if (minutes) minutes += 'min'
+  if (hours && minutes) {
+    delim = ':'
+    hours += 'h'
+    minutes += 'min'
+  } else {
+    if (hours) hours += ' hours'
 
-  if (hours && minutes) delim = ':'
+  	 if (minutes) minutes += 'min'
+  }
 
   return hours + delim + minutes
 }
