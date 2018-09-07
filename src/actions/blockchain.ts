@@ -5,7 +5,7 @@ import { batchActions } from 'redux-batched-actions'
 
 import localForage from 'localforage'
 
-import { findDefaultProvider } from 'selectors/blockchain'
+import { findDefaultProvider, getActiveProviderObject } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -74,6 +74,7 @@ import { ETH_ADDRESS,
     ETHEREUM_NETWORKS,
   } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
+import { promisedWeb3 } from 'api/web3Provider'
 
 export enum TypeKeys {
   SET_GNOSIS_CONNECTION = 'SET_GNOSIS_CONNECTION',
@@ -185,7 +186,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const state = getState(),
     {
-      blockchain: { providers },
+      // blockchain: { providers },
       tokenList: { combinedTokenList: tokenAddresses },
     } = state
 
@@ -200,9 +201,10 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     let tokenBalances:  { address: string, balance: BigNumber }[]
     // runs test executions on gnosisjs
     const getConnection = async () => {
+      const provider = getActiveProviderObject(state)
       try {
-        if (!providers.METAMASK) throw 'MetaMask not detected, please check that you have MetaMask properly installed and configured.'
-        if (!providers.METAMASK.unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
+        if (!provider) throw `${provider.name} not detected, please check that you have ${provider.name} properly installed and configured.`
+        if (!provider.unlocked) throw 'Wallet Provider LOCKED - please unlock your wallet'
         account = await getCurrentAccount();
         ([currentBalance, tokenBalances] = await Promise.all([
           getETHBalance(account, true),
@@ -256,6 +258,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
   ])
 
   const { ipfsFetchFromHash } = await promisedIPFS
+  const { getNetwork } = await promisedWeb3
 
   // when switching Networks, NetworkListeners in events.js should delete localForage tokenList
   // meaning this would be FALSE on network change and app reset
@@ -263,7 +266,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
   const areTokensAvailableAndUpdated = defaultTokens && defaultTokens.hash === TokenListHashMap[network]
 
   if (!areTokensAvailableAndUpdated) {
-    network = network || window.web3.version.network || 'NONE'
+    network = network || await getNetwork() || 'NONE'
 
     // user has tokens in localStorage BUT hash is not updated
     if (defaultTokens) await localForage.removeItem('defaultTokens')

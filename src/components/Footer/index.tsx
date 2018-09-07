@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { State } from 'types'
 
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+import { getActiveProviderObject } from 'selectors'
 import gnosisLogoSVG from 'assets/img/gnosis_logo.svg'
 
 import { Link } from 'react-router-dom'
@@ -35,8 +36,10 @@ const Footer = ({ network }: FooterProps) =>
         </div>
     </footer>
 
-const mapState = ({ blockchain: { providers } }: State) => ({
-  network: providers.METAMASK && providers.METAMASK.network ? providers.METAMASK.network : 'UNKNOWN NETWORK',
-})
+const mapState = (state: State) => {
+  const provider = getActiveProviderObject(state)
+
+  return { network: provider ? provider.network : 'UNKNOWN NETWORK' }
+}
 
 export default connect(mapState)(Footer)

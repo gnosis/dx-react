@@ -13,9 +13,9 @@ export default class ScrollToLink extends React.Component<ScrollToLinkProps> {
 
     const { children, hash, to } = this.props
     if (hash) {
-        const elem = document.querySelector(hash)
-        if (elem) elem.scrollIntoView()
-      }
+      const elem = document.querySelector(hash)
+      if (elem) elem.scrollIntoView()
+    }
     return (<Link to={to}>{children}</Link>)
   }
 

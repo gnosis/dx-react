@@ -8,7 +8,7 @@ import ButtonCTA from 'components/ButtonCTA'
 import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
 export interface WalletPanelProps {
-  checkUserStateAndSell(): Function,
+  checkUserStateAndSell(): void,
 }
 
 const WalletPanel: React.SFC<WalletPanelProps> = ({ checkUserStateAndSell }) => (

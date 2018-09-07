@@ -23,7 +23,8 @@ async function init(): Promise<ProviderInterface> {
   try {
     if ((typeof navigator !== 'undefined' && !navigator.onLine) || typeof window.web3  === 'undefined') throw 'Web3 connectivity issues due to client network connectivity loss'
 
-    const web3 = await setupWeb3()
+    const web3 = window.web3 = await setupWeb3()
+    console.log('​web3', web3)
 
     const getAccounts = promisify(web3.eth.getAccounts, web3.eth)
     const getBalance = promisify(web3.eth.getBalance, web3.eth)

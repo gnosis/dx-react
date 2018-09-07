@@ -31,7 +31,7 @@ export const getFilter = async (options: BlockN | FilterOptions = 'latest', reus
   if (mainFilter && reuse) return mainFilter
 
   const { web3 } = await promisedWeb3
-  const filter = web3.eth.filter('latest', options)
+  const filter = web3.eth.filter(options)
   if (reuse) mainFilter = filter
 
   return filter
@@ -73,7 +73,10 @@ export const getBlock = async (bl: Hash, returnTransactionObjects?: boolean) => 
 // waits for tx hash to appear included in the latest block
 export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
   const filter = await getFilter('latest', reuse)
-  const watchFunc: typeof watch = reuse ? watch : filter.watch.bind(filter)
+  const watchFunc: typeof watch = reuse ? watch : async cb => {
+    filter.watch(cb)
+    return () => filter.stopWatching()
+  }
 
   let stopWatchingFunc: () => void, res: BlockReceipt
 
@@ -87,19 +90,22 @@ export const waitForTxInBlock = async (hash: Hash, reuse: boolean = true) => {
         if (isTxInBlock(blReceipt, hash)) resolve(blReceipt)
       })
     })
+    stopWatchingFunc()
   } catch (error) {
     // don't stop watching the mainFilter
     stopWatchingFunc()
     throw error
   }
-  stopWatchingFunc()
 
   return res
 }
 
-export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
+export const waitForTx = async (hash: Hash, reuse: boolean = false) => {
   const filter = await getFilter('latest', reuse)
-  const watchFunc: typeof watch = reuse ? watch : filter.watch.bind(filter)
+  const watchFunc: typeof watch = reuse ? watch : async cb => {
+    filter.watch(cb)
+    return () => filter.stopWatching()
+  }
 
   let stopWatchingFunc: () => void, res: TransactionReceipt
 
@@ -122,13 +128,15 @@ export const waitForTx = async (hash: Hash, reuse: boolean = true) => {
         } else console.log(`NO ${hash} receipt after block ${bl}`)
       })
     })
+    console.log('STOPPING WATCHING', hash)
+    stopWatchingFunc()
+    console.log('STOPPED WATCHING', hash)
   } catch (error) {
+    console.log('error: ', error)
     // don't stop watching the mainFilter
     stopWatchingFunc()
     throw error
   }
-  stopWatchingFunc()
-  console.log('STOPPED WATCHING', hash)
 
   return res
 }
