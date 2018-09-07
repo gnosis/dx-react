@@ -142,6 +142,7 @@ export const promisedContractsMap = init()
 
 async function init() {
   try {
+    // MetaMaskInpageProvider || EthereumProvider etc.
     const { currentProvider } = await promisedWeb3
     setProvider(currentProvider)
 
@@ -172,6 +173,5 @@ async function init() {
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)
-    // throw err
   }
 }

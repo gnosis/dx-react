@@ -1,6 +1,5 @@
 import { combineReducers, Reducer } from 'redux'
 import { State } from 'types'
-import { reducer as formReducer } from 'redux-form'
 import auctions from './auctions'
 import blockchain from './blockchain'
 import ipfs from './ipfs'
@@ -16,7 +15,6 @@ import tokenPair from './tokenPair'
 import dxBalances from 'actions/dxBalances'
 
 const reducers = combineReducers<State>({
-  form: formReducer,
   auctions,
   blockchain,
   ipfs,

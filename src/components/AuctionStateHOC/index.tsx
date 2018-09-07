@@ -140,7 +140,10 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
     startWatching = () => this.interval = window.setInterval(() => this.updateAuctionState(), WATCHER_INTERVAL)
 
-    stopWatching = () => window.clearInterval(this.interval)
+    stopWatching = () => {
+      window.clearInterval(this.interval)
+      this.interval = null
+    }
 
     restartWatching = async (props = this.props) => {
       this.stopWatching()
@@ -256,6 +259,8 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
         status,
         sellerBalance,
       })
+
+      if (this.interval === null) return true
 
       this.setState({
         completed: status === AuctionStatus.ENDED,

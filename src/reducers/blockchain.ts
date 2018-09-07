@@ -33,6 +33,7 @@ const initialState: Blockchain = {
   activeProvider: null,
   currentAccount: undefined,
   currentBalance: undefined,
+  network: undefined,
   feeRatio: undefined,
   mgnSupply: undefined,
   useOWL: undefined,
@@ -58,6 +59,7 @@ const reducer = handleActions({
     const { provider: name, ...provider } = action.payload
     return {
       ...state,
+      activeProvider: name,
       providers: {
         ...state.providers,
         [name]: {
@@ -73,6 +75,7 @@ const reducer = handleActions({
 
     return {
       ...state,
+      network: provider.network,
       providers: {
         ...state.providers,
         [name]: {

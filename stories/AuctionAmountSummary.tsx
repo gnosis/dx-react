@@ -7,7 +7,6 @@ import AuctionAmountSummary from 'components/AuctionAmountSummary'
 
 import { makeCenterDecorator } from './helpers'
 
-
 const CenterDecor = makeCenterDecorator({
   style: {
     height: null,

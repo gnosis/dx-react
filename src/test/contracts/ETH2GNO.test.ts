@@ -28,7 +28,6 @@ describe.skip('ETH 2 GNO contract', () => {
   // TODO: snapshot testrpc state
   // WORKAROUND: truffle migrate --reset before tests
 
-
   beforeAll(async () => {
     dx = await DX.deployed()
     dxa = DX.address
@@ -44,7 +43,6 @@ describe.skip('ETH 2 GNO contract', () => {
     // same as
     // await eth.transfer(seller, 100, { from: master })
 
-
     // // buyer must have initial balance of GNO
     // // allow a transfer
     await gno.approve(buyer, 1000, { from: master })
@@ -52,17 +50,13 @@ describe.skip('ETH 2 GNO contract', () => {
     await gno.transferFrom(master, buyer, 1000, { from: buyer })
   })
 
-
   it('contracts are deployed', () => {
     expect(dx && eth && gno && tul).toBeTruthy()
   })
 
-
   it('accounts are available', () => {
     [master, seller, buyer].forEach(address => expect(address).toMatch(/^0x\w{40}$/))
   })
-
-
 
   it('contracts are deployed with expected initial data', async () => {
     // initial price is set

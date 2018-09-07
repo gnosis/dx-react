@@ -8,8 +8,10 @@ import { getSellTokenBalance } from 'selectors'
 import { State, BigNumber } from 'types'
 import { EMPTY_TOKEN } from 'globals'
 
-const isTokenApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
-  (approvedTokens.has(sell.address) && approvedTokens.has(buy.address)) || (sell.isETH || buy.isETH)
+const isPairApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
+  (approvedTokens.has(sell.address) && approvedTokens.has(buy.address))
+  || (sell.isETH && approvedTokens.has(buy.address))
+  || (buy.isETH && approvedTokens.has(sell.address))
 
 const mapStateToProps = (state: State) => {
   const { tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN, sellAmount }, tokenOverlay, blockchain } = state
@@ -24,7 +26,7 @@ const mapStateToProps = (state: State) => {
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
     validSellAmount: validTokens && +sellAmount > 0 && maxSellAmount.greaterThanOrEqualTo(sellAmount),
     overlayOpen: tokenOverlay.open,
-    generatesMGN: isTokenApproved(state),
+    generatesMGN: isPairApproved(state),
     currentAccount: blockchain.currentAccount,
   }
 }

@@ -20,5 +20,4 @@ const AuctionPriceBar: React.SFC<AuctionPriceBarProps> = ({ sellTokenSymbol, sel
   )
 }
 
-
 export default AuctionPriceBar

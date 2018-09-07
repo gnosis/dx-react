@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { State } from 'types'
 import { withRouter } from 'react-router'
+import { getActiveProviderObject } from 'selectors'
 
 interface HeaderProps {
   content?: boolean;
@@ -29,9 +30,11 @@ export const Header = ({ content, network }: HeaderProps & HeaderState) => (
   </header>
 )
 
-const mapState = ({ blockchain: { providers } }: State) => ({
-  network: providers.METAMASK && providers.METAMASK.network,
-})
+const mapState = (state: State) => {
+  const provider = getActiveProviderObject(state)
+
+  return { network: provider ? provider.network : 'UNKNOWN NETWORK' }
+}
 
 export default withRouter(
   connect<HeaderState>(mapState)(Header) as ComponentClass<any>,

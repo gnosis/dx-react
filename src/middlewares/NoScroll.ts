@@ -1,10 +1,8 @@
 // document.body.classList.add("home");
 
 import { Middleware, Action } from 'redux'
-import { ThunkAction } from 'redux-thunk'
-import { State } from 'types'
 
-const NoScroll: Middleware = () => next => async (action: Action | ThunkAction<Action, Partial<State>, void>) => {
+const NoScroll = () => (next: Function) => async (action: any) => {
   const { type } = action as Action
 
   if (type !== 'CLOSE_MODAL' && type !== 'OPEN_MODAL') return next(action as Action)
@@ -22,4 +20,4 @@ const NoScroll: Middleware = () => next => async (action: Action | ThunkAction<A
   }
 }
 
-export default NoScroll
+export default NoScroll as Middleware

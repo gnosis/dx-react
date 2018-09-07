@@ -4,6 +4,7 @@ import AuctionStatus from 'components/AuctionStatus'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import { State } from 'types'
+import { AuctionStatus as Status } from 'globals'
 
 const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
   sellToken: sell,
@@ -12,8 +13,7 @@ const mapStateToProps = ({ tokenPair: { sell, buy } }: State) => ({
   buyAmount: toBigNumber(2.5520300),
   // TODO: make sure time and status are populated in the store by DutchX
   timeLeft: 73414,
-  status: 'initialising',
+  status: Status.INIT,
 })
-
 
 export default connect(mapStateToProps)(AuctionStatus)

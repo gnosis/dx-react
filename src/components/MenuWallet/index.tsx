@@ -34,7 +34,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
       open: !this.state.open,
     })
   }
-  
+
   render () {
     const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, withdrawFromDutchX } = this.props
     return (

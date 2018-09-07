@@ -2,12 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import providerWatcher from 'integrations/providerWatcher'
-import MetamaskProvider from 'integrations/metamask'
+import Provider from 'integrations/provider'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
 
 import { State } from 'types'
 import { getTokenList } from 'actions'
+import { getActiveProvider, getActiveProviderObject } from 'selectors'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
 
@@ -45,7 +46,7 @@ class AppValidator extends React.Component<any> {
         await getTokenList(network)
 
         // Initiate Provider
-        await providerWatcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState })
+        await providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState })
 
         // initialise basic user state
         await initDutchX()
@@ -121,7 +122,7 @@ class AppValidator extends React.Component<any> {
     const { updateMainAppState, updateProvider, resetMainAppState } = this.props
 
     console.log('AppValidator: Polling started')
-    return this.dataPollerID = setInterval(() => providerWatcher(MetamaskProvider, { updateMainAppState, updateProvider, resetMainAppState }), pollTime)
+    return this.dataPollerID = setInterval(() => providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
   }
 
   stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
@@ -142,12 +143,17 @@ class AppValidator extends React.Component<any> {
   }
 }
 
-const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
-  activeProvider,
-  network: providers.METAMASK && providers.METAMASK.network,
-  unlocked: providers.METAMASK && providers.METAMASK.unlocked,
-  available: providers.METAMASK && providers.METAMASK.available,
-})
+const mapState = (state: State) => {
+  const activeProvider = getActiveProvider(state)
+  const provider = getActiveProviderObject(state)
+
+  return {
+    activeProvider,
+    network: provider ? provider.network : 'UNKNOWN NETWORK',
+    unlocked: provider ? provider.unlocked : false,
+    available: provider ? provider.available : false,
+  }
+}
 
 export default connect(mapState, {
   getTokenList,

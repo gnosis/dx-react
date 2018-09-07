@@ -30,7 +30,7 @@ const variants = {
   },
 }
 
-const story = storiesOf(`AuctionHeader`, module)
+const story = storiesOf('AuctionHeader', module)
   .addDecorator(CenterDecor)
   .addDecorator(StoryRouter())
 
