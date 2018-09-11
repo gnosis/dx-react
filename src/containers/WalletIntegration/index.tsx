@@ -31,30 +31,40 @@ interface WalletIntegrationState {
 
 class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
   state = {
-    activeProviderSet: undefined,
+    activeProviderSet: false,
     error: undefined,
     initialising: false,
     web3: undefined,
   } as WalletIntegrationState
 
-  async componentWillMount() {
+  async componentDidMount() {
+    const providerObj = Object.values(Providers)
+    if (providerObj.length === 1) return this.onChange(providerObj[0].keyName)
+
     return registerWallets()
   }
 
-  onChange = async (providerInfo: 'INJECTED_WALLET' | 'LEDGER') => {
-    const { setActiveProvider } = this.props
+  initiateAPI = async (web3: any) => {
+    // interface with contracts & connect entire DX API
+    await connectContracts(web3.currentProvider)
+    return connectDXAPI(web3.currentProvider)
+  }
 
+  setActiveAndInitProvider = async (providerInfo: string) => {
+    const { setActiveProvider } = this.props
+    const web3 = await Providers[providerInfo].initialize()
+
+    setActiveProvider(providerInfo)
+    this.setState({ web3, activeProviderSet: true })
+  }
+
+  onChange = async (providerInfo: string) => {
     try {
       this.setState({ initialising: true, error: undefined })
       // initialize providers and return specific Web3 instances
-      const web3 = await Providers[providerInfo].initialize()
-
-      setActiveProvider(providerInfo)
-      this.setState({ web3, activeProviderSet: true })
-
+      await this.setActiveAndInitProvider(providerInfo)
       // interface with contracts & connect entire DX API
-      await connectContracts(web3.currentProvider)
-      await connectDXAPI(web3.currentProvider)
+      await this.initiateAPI(this.state.web3)
 
       return this.setState({ initialising: false })
     } catch (error) {
@@ -68,7 +78,9 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       <div className="walletChooser">
         <Loader
             hasData={!this.state.initialising}
-            message="CHECKING WALLET AVAILABLE..."
+            message="CHECKING WALLET AVAILABILITY..."
+            strokeColor="#fff"
+            strokeWidth={0.35}
             render={() => (
             <>
               <h1>Please select a wallet</h1>
