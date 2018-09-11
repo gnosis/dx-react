@@ -2,12 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-    
+  flex-flow: column nowrap;
+
   background-color: #000000ba;
   color: white;
     
   width: 100%;
-  height: 100%;
+  height: 100vh;
     
   > h1 {
     color: #fff;

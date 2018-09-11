@@ -1,20 +1,11 @@
-// import { WALLET_PROVIDER } from 'globals'
-// import { WalletProvider } from '../types'
 import Web3 from 'web3'
-// @ts-ignore
-import Transport from '@ledgerhq/hw-transport'
-// @ts-ignore
-import TransportU2F from '@ledgerhq/hw-transport-u2f'
-// @ts-ignore
-import createLedgerSubprovider from '@ledgerhq/web3-subprovider'
-// @ts-ignore
-import ProviderEngine from 'web3-provider-engine'
-// @ts-ignore
-import FetchSubprovider from 'web3-provider-engine/subproviders/fetch'
-// @ts-ignore
-import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
-// @ts-ignore
-import Eth from '@ledgerhq/hw-app-eth'
+// import Transport from '@ledgerhq/hw-transport'
+// import TransportU2F from '@ledgerhq/hw-transport-u2f'
+// import createLedgerSubprovider from '@ledgerhq/web3-subprovider'
+// import ProviderEngine from 'web3-provider-engine'
+// import FetchSubprovider from 'web3-provider-engine/subproviders/fetch'
+// import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
+// import Eth from '@ledgerhq/hw-app-eth'
 
 import { getTime } from 'api'
 
@@ -23,7 +14,7 @@ import { promisify } from 'utils'
 import { Balance } from 'types'
 import { WalletProvider } from 'integrations/types'
 
-import { ETHEREUM_NETWORKS, networkById, network2RPCURL } from 'globals'
+import { ETHEREUM_NETWORKS, networkById/* , network2RPCURL */ } from 'globals'
 
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -59,8 +50,11 @@ export const grabProviderState = async (provider: WalletProvider) => {
   return newState
 }
 
-const rpcUrl = network2RPCURL.RINKEBY
-const networkId = 4 // parseInt(process.env.REACT_APP_NETWORK_ID || "1337", 10);
+// ====================================================================================
+// Ledger Wallet info only
+// const rpcUrl = network2RPCURL.RINKEBY
+// const networkId = 4 // parseInt(process.env.REACT_APP_NETWORK_ID || "1337", 10);
+// ====================================================================================
 
 const Providers = {
   // runtime providers (METAMASK/MIST/PARITY)
@@ -94,7 +88,7 @@ const Providers = {
     },
   },
   // Hardware Provider - LEDGER
-  LEDGER: {
+  /* LEDGER: {
     priority: 80,
     providerName: 'LEDGER',
     providerType: 'HARDWARE_WALLET',
@@ -138,7 +132,7 @@ const Providers = {
         throw new Error(error)
       }
     },
-  },
+  }, */
 }
 
 export default Providers
