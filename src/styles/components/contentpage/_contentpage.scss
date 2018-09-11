@@ -12,7 +12,8 @@
   box-sizing: border-box;
 
   @media #{$mobile} {
-    margin: -1px 0 0;
+    margin: 136px 0 0;
+    padding: 0 13px;
   }
 
   a:link, a:visited, a:active, a:focus {
@@ -20,10 +21,16 @@
   }
 
   > article {
+    width: 100%;
     max-width: 600px;
     height: 100%;
     margin: 0 auto;
     padding: 40px 20px 80px;
+
+    @media #{$mobile} {
+      margin: 45px 0;
+      padding: 0;
+    }
   }
 
   > article > h1 {
@@ -36,6 +43,8 @@
     padding: 0 0 25px;
 
     @media #{$mobile} {
+      font-size: 26px;
+      margin-bottom: 26px;
       padding: 0;
     }
   }
@@ -162,6 +171,12 @@
     text-decoration: underline;
   }
 
+  @media #{$mobile} {
+    section.drawer:first-of-type {
+      margin-top: 33px;
+    }
+  }
+
   section.drawer {
     position: relative;
     margin: 0 0 5px;
@@ -171,7 +186,7 @@
     padding: 14px 0 0;
     border-bottom: 1px solid $greyLight;
     overflow: hidden;
-
+    
     &.active {
       border-bottom: 4px solid rgba(0, 114, 207, 0.16);
     }
