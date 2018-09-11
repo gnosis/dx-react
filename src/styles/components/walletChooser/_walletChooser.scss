@@ -1,0 +1,60 @@
+.walletChooser {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    
+  background-color: #000000ba;
+  color: white;
+    
+  width: 100%;
+  height: 100%;
+    
+  > h1 {
+    color: #fff;
+    margin: 20px 0;
+  }
+    
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    width: 80%;
+
+    &.lightBlue {
+      background: #637da7;
+    }
+
+    > div {
+      display: flex;
+      flex-flow: column nowrap;
+      flex: 1 1 26%;
+      justify-content: center;
+      align-items: center;
+      
+      text-align: center;
+      
+      height: 100px;
+      min-width: 220px;
+      border: 2px solid black;
+      cursor: pointer;
+            
+      &:hover {
+        background: #025aa7;
+      }
+
+      transition: all 0.2s ease-in;
+
+      > h4 {
+        margin: 0;
+      }
+    }
+  }
+
+  > h3 {
+    color: red;
+    font-style: italic;
+    margin-top: 20px;
+  }
+}

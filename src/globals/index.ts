@@ -13,6 +13,7 @@ export enum WALLET_PROVIDER {
   METAMASK = 'METAMASK',
   PARITY = 'PARITY',
   REMOTE = 'REMOTE',
+  LEDGER = 'LEDGER',
 }
 
 export const networkById = {
@@ -57,6 +58,11 @@ export const network2URL: Network2URL = {
   UNKNOWN: '//localhost:5000/',
 }
 
+export const network2RPCURL = {
+  RINKEBY: 'https://rinkeby.infura.io/',
+  UNKNOWN: 'http://127.0.0.1:8545',
+}
+
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 export enum AuctionStatus {
@@ -67,8 +73,17 @@ export enum AuctionStatus {
   ENDED = 'ended',
 }
 
-export enum ProviderName { METAMASK = 'METAMASK', MIST = 'MIST' }
-export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName>
+export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
+export enum ProviderName {
+  METAMASK = 'METAMASK',
+  MIST = 'MIST',
+  STATUS = 'STATUS',
+  'GNOSIS SAFE' = 'GNOSIS SAFE',
+
+  LEDGER = 'LEDGER',
+  INJECTED_WALLET = 'INJECTED_WALLET',
+}
+export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
 export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 200000
 
@@ -86,7 +101,6 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
 export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
-  
 
 // PoolX token list for PRODUCTION
 // 'QmXVXUCSV6EEcXf2RKkv8QBLR12SiBgXVUDP1BLcTx8VFr'
@@ -111,6 +125,9 @@ export const TokenListHashMap = {
 
 // BigNumber fixed decimal places to sow
 export const FIXED_DECIMALS = 4
+
+export const GAS_PRICE = 5e9
+export const GAS_LIMIT_TESTING = '4000000'
 
 // Content page URLS
 export const URLS = {

@@ -4,11 +4,18 @@ import { TokensInterface, TransactionObject } from './types'
 import { Account, Balance } from 'types'
 import { ETH_ADDRESS } from 'globals'
 
-export const promisedTokens = init()
+let tokensAPI: TokensInterface
+
+export const promisedTokens = async () => {
+  if (tokensAPI) return tokensAPI
+
+  tokensAPI = await init()
+  return tokensAPI
+}
 
 async function init(): Promise<TokensInterface> {
 
-  const contractsMap = await promisedContractsMap
+  const contractsMap = await promisedContractsMap()
 
   const getToken = (tokenAddress: Account) => {
     if (tokenAddress === ETH_ADDRESS) tokenAddress = contractsMap.TokenETH.address

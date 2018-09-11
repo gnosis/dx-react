@@ -1,5 +1,4 @@
 import TruffleContract from 'truffle-contract'
-import { promisedWeb3 } from './web3Provider'
 import {
   DXAuction,
   ETHInterface,
@@ -10,6 +9,7 @@ import {
   DeployedContract,
   ContractArtifact,
 } from './types'
+import { Provider } from 'types'
 
 const contractNames = [
   'DutchExchange',          // Stays in dx-contracts
@@ -138,13 +138,19 @@ export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToke
 
 const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deployed()))
 
-export const promisedContractsMap = init()
+let contractsAPI: ContractsMap
 
-async function init() {
+export const promisedContractsMap = async (provider?: Provider) => {
+  if (contractsAPI) return contractsAPI
+
+  contractsAPI = await init(provider)
+  return contractsAPI
+}
+
+async function init(provider: Provider) {
   try {
     // MetaMaskInpageProvider || EthereumProvider etc.
-    const { currentProvider } = await promisedWeb3
-    setProvider(currentProvider)
+    setProvider(provider)
 
     const instances = await getPromisedIntances()
 
@@ -170,6 +176,11 @@ async function init() {
     if (process.env.NODE_ENV !== 'production') {
       console.log(deployedContracts)
     }
+
+    console.warn(`
+      CONTRACTS API INITIALISED
+    `)
+
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)

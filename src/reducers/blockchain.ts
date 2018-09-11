@@ -25,6 +25,8 @@ const INITIAL_PROVIDER_STATE: Provider = {
   account: undefined,
   balance: undefined,
   priority: 1,
+  type: undefined,
+  keyName: undefined,
 }
 
 const initialState: Blockchain = {
@@ -59,7 +61,7 @@ const reducer = handleActions({
     const { provider: name, ...provider } = action.payload
     return {
       ...state,
-      activeProvider: name,
+      // activeProvider: name,
       providers: {
         ...state.providers,
         [name]: {
@@ -118,6 +120,7 @@ const reducer = handleActions({
   [resetAppState.toString()]: (state: Blockchain) => ({
     ...state,
     ...initialState,
+    activeProvider: state.activeProvider,
     providers: state.providers,
   }),
 },

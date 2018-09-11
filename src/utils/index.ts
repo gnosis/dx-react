@@ -76,7 +76,7 @@ import { logDecoder } from 'ethjs-abi'
 
 import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog } from 'api/types'
 import { Account } from 'types'
-import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR } from 'globals'
+import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType } from 'globals'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
@@ -161,4 +161,20 @@ export const getDecoderForABI = (abi: ABI): Decoder => {
   const decoder = logDecoder(abi)
   decodersMap.set(abi, decoder)
   return decoder
+}
+
+export const provider2SVG = (providerName: ProviderName | ProviderType) => {
+  switch (providerName) {
+    case 'GNOSIS SAFE':
+      return 'img/icon_gnosis_safe1.svg'
+
+    case 'STATUS':
+      return 'img/icon_status.svg'
+
+    case 'LEDGER':
+      return 'img/icon_ledger.svg'
+
+    default:
+      return 'img/icon_metamask3.svg'
+  }
 }
