@@ -5,7 +5,7 @@ import { batchActions } from 'redux-batched-actions'
 
 import localForage from 'localforage'
 
-import { findDefaultProvider, getActiveProviderObject } from 'selectors/blockchain'
+import { findDefaultProvider, getActiveProviderObject, getSelectedProvider } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -427,7 +427,15 @@ const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAdd
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
-    blockchain: { activeProvider, currentAccount },
+    blockchain: {
+      activeProvider,
+      currentAccount,
+      providers: {
+        [activeProvider]: {
+          name,
+        },
+      },
+    },
   } = getState()
   let sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address
   const nativeSellAmt = await toNative(sellAmount, sell.decimals),
@@ -452,7 +460,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
             ${sellName} is not an ERC20 Token and must be wrapped.
             In case you already have wrapped ${sellName}, you are confirming to wrap the remainder.
 
-            Please confirm with ${activeProvider}.
+            Please confirm with ${name}.
           `,
           loader: true,
         },
@@ -550,7 +558,7 @@ export const calculateSellAmountAfterFee = async (sellAmount: string | BigNumber
 export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
   const {
     tokenPair: { sell, buy, sellAmount, index = '0' },
-    blockchain: { activeProvider, currentAccount, feeRatio, useOWL, providers: { [activeProvider]: { network } } },
+    blockchain: { activeProvider, currentAccount, feeRatio, useOWL, providers: { [activeProvider]: { name, network } } },
   }: State = getState(),
     sellName = getTokenName(sell),
     buyName = getTokenName(buy),
@@ -571,7 +579,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Order confirmation',
-        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${activeProvider || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain.`,
+        body: `Final confirmation: Please confirm/cancel your ${sellName.symbol} order via ${name || 'your wallet provider'}. Your deposit will be placed into the next running auction. You are submitting your order to the blockchain.`,
         txData: {
           tokenA: { ...sell, ...sellName } as DefaultTokenObject,
           tokenB: { ...buy, ...buyName } as DefaultTokenObject,
@@ -646,7 +654,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
 export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN') => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
-    blockchain: { activeProvider, currentAccount },
+    blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { name } } },
   } = getState()
   const promisedNativeSellAmt = toNative(sellAmount, sell.decimals)
   const promisedContracts = promisedContractsMap()
@@ -663,7 +671,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: 'Approving token transfer for this trade only',
-            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${name || 'your wallet provider'}.`,
             loader: true,
           },
         }))
@@ -721,9 +729,9 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
 }
 
 export const withdrawFromDutchX = ({ name, address }: { name: string, address: string }) => async (dispatch: Function, getState: () => State) => {
-  const { blockchain: { activeProvider } } = getState(),
-    { DutchExchange } = contractsMap,
-    decoder = getDecoderForABI(DutchExchange.abi)
+  const { DutchExchange } = contractsMap,
+    decoder = getDecoderForABI(DutchExchange.abi),
+    { name: activeProvider } = getSelectedProvider(getState())
   try {
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -766,7 +774,7 @@ export const claimSellerFundsAndWithdrawFromAuction = (
   account: Account,
 ) => async (dispatch: Function, getState: () => State) => {
   const { sell, buy } = pair
-  const { blockchain: { activeProvider } } = getState(),
+  const { name: activeProvider } = getSelectedProvider(getState()),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
   try {
@@ -801,7 +809,7 @@ export const claimSellerFundsFromSeveral = (
   buy: DefaultTokenObject,
   lastNIndex?: number,
 ) => async (dispatch: Function, getState: () => State) => {
-  const { blockchain: { activeProvider, currentAccount } } = getState(),
+  const { blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { name } } } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
     buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
     { DutchExchange } = contractsMap
@@ -813,7 +821,7 @@ export const claimSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Claiming funds',
-        body: `You are claiming ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+        body: `You are claiming ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${name || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -924,7 +932,7 @@ export function errorHandling(error: Error, goHome = true) {
     return string.slice(place + offset)
   }
   return async (dispatch: Dispatch<any>, getState: Function) => {
-    const { blockchain: { activeProvider } } = getState()
+    const { name: activeProvider } = getSelectedProvider(getState())
     const normError = error.message
     console.error(error.message)
     // close to unmount

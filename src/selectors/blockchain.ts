@@ -23,6 +23,7 @@ export const findDefaultProvider = (state: State): Provider => {
 
 export const getActiveProvider = (state: State): ProviderType | ProviderName => selector(state).activeProvider
 export const getProviderKeyName = (state: State): string => selector(state).providers[getActiveProvider(state)].keyName
+export const getProviderName = (state: State): string => selector(state).providers[getActiveProvider(state)].name
 export const getActiveProviderObject = (state: State): Provider => {
   const blockchain = selector(state)
 
