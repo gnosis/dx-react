@@ -6,6 +6,19 @@
   > span > p, ol {
     font-weight: 100;
   }
+  
+  @media #{$mobile} {
+    font-size: 14px;
+
+    h1 {
+      font-size: 23px;
+    }
+
+    button {
+      font-size: 14px;
+    }
+  }
+  
 
   .cookiePageLogo {
     width: 100px;
@@ -39,7 +52,7 @@
   
     > div {
       color: #000;
-      font-size: 16px;
+      font-size: 14px;
       line-height: initial;
       margin: auto auto 0;
     }
