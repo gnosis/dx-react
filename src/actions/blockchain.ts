@@ -566,7 +566,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     const sellAmountAfterFee = await calculateSellAmountAfterFee(sellAmount, currentAccount)
 
     console.log('​exportsubmitSellOrder -> sellAmountAfterFee', sellAmountAfterFee)
-
+    dispatch(closeModal())
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {

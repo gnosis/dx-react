@@ -5,7 +5,7 @@ import { Middleware, Action } from 'redux'
 const NoScroll = () => (next: Function) => async (action: any) => {
   const { type } = action as Action
 
-  if (type !== 'CLOSE_MODAL' && type !== 'OPEN_MODAL') return next(action as Action)
+  if (action.payload && action.payload.modalProps && action.payload.modalProps.txData || type !== 'CLOSE_MODAL' && type !== 'OPEN_MODAL') return next(action as Action)
 
   try {
     if (type === 'OPEN_MODAL') {
