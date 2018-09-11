@@ -144,7 +144,7 @@ class AppValidator extends React.Component<any> {
   render() {
     const { children, unlocked, available } = this.props
 
-    if (this.state.loading) return <div className="walletChooser"><Loader hasData={false} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
+    if (this.state.loading) return <div className="walletChooser"><Loader hasData={false} strokeColor="#fff" strokeWidth={0.35} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
     if (!available) return children
 
     return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
