@@ -18,15 +18,18 @@ import { provider2SVG } from 'utils'
 import 'assets/img/icons/providerIcons'
 
 interface WalletIntegrationProps {
-  activeProvider: ProviderType,
-  setActiveProvider(providerName: string): void,
+  activeProvider: ProviderType;
+  providers: {};
+
+  setActiveProvider(providerName: string): void;
 }
 
 interface WalletIntegrationState {
-  activeProviderSet: boolean,
-  error: Error,
-  initialising: boolean,
-  web3: any,
+  activeProviderSet: boolean;
+  error: Error;
+  initialising: boolean;
+  noProvidersDetected: boolean;
+  web3: any;
 }
 
 class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
@@ -34,14 +37,16 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
     activeProviderSet: false,
     error: undefined,
     initialising: false,
+    noProvidersDetected: false,
     web3: undefined,
   } as WalletIntegrationState
 
   async componentDidMount() {
     const providerObj = Object.values(Providers)
-    if (providerObj.length === 1) return this.onChange(providerObj[0].keyName)
+    await registerWallets()
 
-    return registerWallets()
+    if (!this.props.providers) return this.setState({ noProvidersDetected: true })
+    if (providerObj.length === 1) return this.initAppWithProvider(providerObj[0].keyName)
   }
 
   initiateAPI = async (web3: any) => {
@@ -58,7 +63,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
     this.setState({ web3, activeProviderSet: true })
   }
 
-  onChange = async (providerInfo: string) => {
+  initAppWithProvider = async (providerInfo: string) => {
     try {
       this.setState({ initialising: true, error: undefined })
       // initialize providers and return specific Web3 instances
@@ -90,7 +95,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                   return (
                     <div
                       key={i}
-                      onClick={() => this.onChange(provider)}
+                      onClick={() => this.initAppWithProvider(provider)}
                     >
                       <h4>{providerInfo}</h4>
                       <br/>
@@ -110,14 +115,15 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
   }
 
   render() {
-    const { initialising, activeProviderSet } = this.state,
+    const { initialising, activeProviderSet, noProvidersDetected } = this.state,
       { activeProvider, children } = this.props
-    return (activeProvider && activeProviderSet) && !initialising ? children : this.walletSelector()
+    return noProvidersDetected || ((activeProvider && activeProviderSet) && !initialising) ? children : this.walletSelector()
   }
 }
 
-const mapState = ({ blockchain: { activeProvider } }: State) => ({
+const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
   activeProvider,
+  providers,
 })
 
 export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration as any)

@@ -38,7 +38,8 @@ class AppValidator extends React.Component<any> {
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
 
-      if (this.state.online) {
+      // fire up app if user is actively connected to internet AND has provider set
+      if (this.state.online && activeProvider) {
 
         this.setState({ loading: true })
 
@@ -82,6 +83,7 @@ class AppValidator extends React.Component<any> {
       }
       this.startPolling(3000)
     }
+    // If here, no wallets have been detected and app loads in non-provider state
   }
 
   componentWillUnmount() {

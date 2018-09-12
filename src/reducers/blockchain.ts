@@ -31,7 +31,7 @@ const INITIAL_PROVIDER_STATE: Provider = {
 
 const initialState: Blockchain = {
   connectionTried: false,
-  providers: {},
+  providers: undefined,
   activeProvider: null,
   currentAccount: undefined,
   currentBalance: undefined,

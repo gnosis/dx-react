@@ -72,10 +72,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
   handleTermsScroll = ({ target }: any) => {
     const bottom = target.scrollHeight - target.scrollTop === target.clientHeight
 
-    if (bottom) {
-      console.warn('BOTTOM BOTTOM')
-      return this.setState({ termsOfUseScrolled: true })
-    }
+    if (bottom) return this.setState({ termsOfUseScrolled: true })
   }
 
   renderMainnetDisclaimer() {

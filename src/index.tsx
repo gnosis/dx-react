@@ -7,25 +7,21 @@ import ReactDOMServer from 'react-dom/server'
 
 import ReactGA from 'react-ga'
 
-import App, { loadLocalSettings, initializeWallet } from 'components/App'
+import App, { loadLocalSettings } from 'components/App'
 
 import { isNetBlocked, isGeoBlocked } from 'block'
 
 import { URLS } from 'globals'
-import fireListeners from 'integrations/events'
 
 /* global document */
 const rootElement = document.getElementById('root')
 
 const preAppRender = async () => {
   // fire provider network change listener
-  fireListeners()
+  // fireListeners()
   // load localForage settings
   // register provider + update provider state
-  await Promise.all([
-    loadLocalSettings(),
-    initializeWallet(),
-  ])
+  await loadLocalSettings()
 
   ReactDOM.render(<App />, rootElement)
 }

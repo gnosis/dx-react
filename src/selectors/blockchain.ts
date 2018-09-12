@@ -22,17 +22,11 @@ export const findDefaultProvider = (state: State): Provider => {
 }
 
 export const getActiveProvider = (state: State): ProviderType | ProviderName => selector(state).activeProvider
-export const getProviderKeyName = (state: State): string => selector(state).providers[getActiveProvider(state)].keyName
-export const getProviderName = (state: State): string => selector(state).providers[getActiveProvider(state)].name
-export const getActiveProviderObject = (state: State): Provider => {
-  const blockchain = selector(state)
+export const getProviderKeyName = (state: State): string => selector(state).providers ? selector(state).providers[getActiveProvider(state)].keyName : null
+export const getProviderName = (state: State): string => selector(state).providers ? selector(state).providers[getActiveProvider(state)].name : null
+export const getActiveProviderObject = (state: State): Provider => selector(state).providers ? selector(state).providers[getProviderKeyName(state)] : null
 
-  return blockchain.providers[getProviderKeyName(state)]
-}
-
-export const getSelectedProvider = (state: State): Provider | null => (
-  selector(state).providers !== undefined ? selector(state).providers[selector(state).activeProvider] : null
-)
+export const getSelectedProvider = (state: State): Provider | null => selector(state).providers ? selector(state).providers[selector(state).activeProvider] : null
 
 export const getDefaultAccount = (state: State) => selector(state).defaultAccount
 
