@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
+import stepByStepFeeCalc from 'assets/content/step_by_step_fee_calculation.png'
+import feeReductionModel from 'assets/content/fee_reduction_model_dutchX.png'
+
 interface ContentPages {
   handleClick: () => any;
 }
@@ -185,7 +188,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <span>
         <p>
           Once you have submitted your deposit and the next auction has started (you can see that an auction has started in the specific auction URL you were provided with after you submitted your deposit) and closed, you may proceed to claim your new tokens. At the moment, there is no notification of a closing auction, which means that you have to revisit this interface. A red claim button will alert you to claim your <i>Receive</i> token.
-          <br/>
+          <br />
           The interface provides you with two different options to claim your new tokens:
         </p>
         <ul>
@@ -194,7 +197,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         </ul>
 
         <p><strong>Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, you will be credited those automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of the interface.</strong></p>
-        <br/>
+        <br />
         <p><strong>Note that you have to be connected to the same wallet that you participated with in order to claim!</strong></p>
       </span>
     </section>
@@ -256,7 +259,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   </article>
 )
 
-{/* SCREENCAST - page */}
+{/* SCREENCAST - page */ }
 export const Screencast = () =>
   <article>
     <h1>Screencast</h1>
@@ -265,7 +268,7 @@ export const Screencast = () =>
     </section>
   </article>
 
-{/* TOKENS - page */}
+{/* TOKENS - page */ }
 export const Tokens = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
@@ -275,7 +278,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           To see which tokens are currently supported on slow.trade, check out the token list by clicking<strong> on either <em>Deposit</em> </strong>or<strong> <em>Receive</em> token</strong>. All tokens on the list can always be traded with ETH (or wrapped ETH).
-          <br/>
+          <br />
           Unrelated to our offering, there may be more tokens available on the smart contract level. Technical readers may refer to the documentation linked at <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
         </p>
       </span>
@@ -304,11 +307,11 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <span>
         <p>
         Magnolia (MGN) tokens lower the fees on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
-        <br/>
+        <br />
         Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
-        <br/>
+        <br />
         Of course, you are not required to hold any Magnolia (MGN) to participate on slow.trade or interact with the DutchX Protocol.
-        <br/>
+        <br />
         <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
@@ -319,7 +322,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <span>
         <p>
         Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from lower fees.
-        <br/>
+        <br />
         <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
@@ -330,7 +333,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <span>
         <p>
         Trades only generate Magnolia if both tokens traded are <Link to="#what-are-whitelisted-tokens">whitelisted</Link>. To see if a token that is tradable on slow.trade is whitelisted, check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token. Where a token is not whitelisted, the following message will be displayed: "Any auction with [Token] won't generate MGN". Once you proceed to the next screen, you will see "Note: this token pair won't generate MGN tokens".
-        <br/>
+        <br />
         <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
@@ -341,7 +344,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <span>
         <p>
         To find out whether a token that is tradable on slow.trade is whitelisted, <strong>check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token.</strong> If the token is not whitelisted, you will see the following message displayed: "Any auction with [Token] won't generate MGN".
-        <br/>
+        <br />
         <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
       </span>
@@ -352,51 +355,34 @@ export const Tokens = ({ handleClick }: ContentPages) =>
 export const Fees = ({ handleClick }: ContentPages) =>
   <article id="fees">
     <h1>Fees</h1>
-    <section className="drawer" onClick={handleClick} id="what-fees-need-to-pay">
-      <h3>What fees do I have to pay?</h3>
+
+    <section className="drawer" onClick={handleClick} id="what-fees-are-due">
+      <h3>What fees are due on slow.trade?</h3>
       <span>
-        <p>The default fee is 0.5% of your trading volume. While this might seem high at first glance, fees can be lowered down to 0%. You may also benefit from other participants’ fees, which are kept in the DutchX ecosystem.</p>
+        <p>
+          <strong>No fees</strong> are levied on the slow.trade Platform. However, you will still need to pay the fees that are due on the DutchX Protocol level. For more information please see the next question.
+        </p>
       </span>
     </section>
+
+    <section className="drawer" onClick={handleClick} id="what-fees-need-to-pay">
+      <h3>What fees do I have to pay to be active on the DutchX Protocol?</h3>
+      <span>
+        <p>
+          Fee level is one of the most interesting aspects of the DutchX Protocol. If you hold enough Magnolia (MGN), your fee is 0. Fees normally start at 0.5% of your trading volume, and are gradually reduced depending on the amount of MGN you hold. <strong>Fees paid are redistributed to all users of the DutchX Protocol! </strong>
+        </p>
+      </span>
+    </section>
+
     <section className="drawer" id="fee-reduction-image" onClick={handleClick}>
       <h3>How can I lower my fees?</h3>
       <span>
         <p>
-          Your fees will be lowered automatically for you if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this neat step function:
+          Your fees will be lowered automatically if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this step function integrated within the DutchX Protocol:
         </p>
-        {/*TODO: add <img id='fee-reduction-image'> */}
-        <table>
-          <thead>
-            <tr>
-              <th>Percentage of Magnolia you hold (of the entire Magnolia market)</th>
-              <th>Your fee as a percentage of your trading volume</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Less than 0.0001%</td>
-              <td>0.5%</td>
-            </tr>
-            <tr>
-              <td>0.001%</td>
-              <td>0.4%</td>
-            </tr>
-            <tr>
-              <td>0.1%</td>
-              <td>0.2%</td>
-            </tr>
-            <tr>
-              <td>1%</td>
-              <td>0.1%</td>
-            </tr>
-            <tr>
-              <td>>=10%</td>
-              <td>0%</td>
-            </tr>
-          </tbody>
-        </table>
+        <a href={feeReductionModel} target="_blank"><img src={feeReductionModel}/></a>
         <p>
-          Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the <span className="underline">same wallet</span> that you are participating with on the DutchX.
+        Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the<strong> same Wallet</strong> that you are using for the auction.
         </p>
       </span>
     </section>
@@ -404,7 +390,20 @@ export const Fees = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="where-to-see-fees">
       <h3>Where do I see my fees?</h3>
       <span>
-        <p>In the header bar of the interface, your fee level is displayed. Note that this is a snapshot in time and due to the changing Magnolia market volume, this number should be seen as an estimate.</p>
+        <p>
+        <strong>Your fee level is displayed on the header bar of slow.trade</strong>. Note that this figure is subject to change as the Magnolia market volume changes. For this reason, this number should be considered an estimate.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="what-is-magnolia-generation-inactive">
+      <h3>What does it mean that Magnolia generation is inactive for this version?</h3>
+      <span>
+        <p>
+        Currently no token is whitelisted to generate Magnolia and no Magnolia tokens are in circulation. When the DutchX smart contracts are released again by a decentralized autonomous organisation (a DAO), the Magnolia fee reduction will be activated. We have kept the explanatory notes for you to learn about this mechanism.
+        <br/>
+        Note that the absence of Magnolia does not impact the <strong>fee redistribution, which is fully functioning.</strong> All fees remain within the DutchX Protocol and go to all its users.
+        </p>
       </span>
     </section>
 
@@ -412,8 +411,9 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How do I obtain Magnolia (MGN)?</h3>
       <span>
       <p>
-        You may either generate Magnolia by trading on the DutchX (with a whitelisted trading pair). For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
-        Alternatively, you could also purchase MGN since they are freely tradable. This may be particularly beneficial if you are close to the <Link to="#fee-reduction-image">next fee reduction level</Link>.
+        You may either generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair),for example via slow.trade. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
+        <br/>
+        Alternatively, you may purchase MGN as they are freely tradable. This may be particularly useful if you are close to the next fee reduction level.
       </p>
     </span>
     </section>
@@ -421,15 +421,19 @@ export const Fees = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="how-to-trade-mgn">
       <h3>How do I trade Magnolia?</h3>
       <span>
-      <p>To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction model. Currently, however, this function is not yet supported by this interface but will be available in the next version.</p>
+        <p>
+        To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction. Currently, it is not possible to trade MGN on slow.trade.
+        </p>
     </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="why-hold-mgn">
-      <h3>Why is it beneficial to hold a lot of Magnolia?</h3>
+      <h3>Why is it beneficial to hold a lot of Magnolia (MGN)?</h3>
       <span>
         <p>
-          The more Magnolia you hold as a percentage of the total Magnolia market volume, the lower is your fee (if within the relevant percentages). This provides an incentive to remain on the DutchX. Additionally, it pays off to be an active participant on the DutchX from the beginning, since the amount by which your fees are lowered depends on how much Magnolia you hold relative to the entire Magnolia market.
+        <strong>Magnolia</strong> (MGN) tokens <strong>reduce your fees</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your fee is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your fees are lowered depends on how much MGN you hold relative to the entire MGN market.
+        <br/>
+        <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
     </span>
     </section>
@@ -439,6 +443,8 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           OWL gives the <a href={URLS.GNO_TOKEN_ETHERSCAN_URL}>GNO token</a> its utility: it is generated by locking GNO and may be used on some applications created or run by Gnosis to pay for fees. Read up on <a href={URLS.OWL_BLOG_URL}>OWL</a> and the<a href={URLS.INITIAL_OWL_GENERATION_BLOG_URL}> initial OWL generation</a>.
+        <br/>
+        OWL is not needed to use slow.trade or the DutchX Protocol.
         </p>
         <p>
           Note that OWL is not needed to use the DutchX.
@@ -447,10 +453,10 @@ export const Fees = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="what-to-use-owl-for">
-      <h3>What are OWL used for on the DutchX?</h3>
+      <h3>What are OWL used for on the DutchX Protocol?</h3>
       <span>
         <p>
-          You can pay for half of the fees in OWL. You will be prompted to pay fees in OWL in case you have OWL available in your wallet. The other half of the fees, however, always have to be covered in the token you are depositing.
+        You can <strong>pay for half of the fees</strong> in OWL. You will be prompted to pay fees in OWL in case you have OWL available in your Wallet. The other half of the fees, however, always has to be covered in the token you are depositing for trade.
         </p>
       </span>
     </section>
@@ -459,8 +465,9 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How much is OWL worth?</h3>
       <span>
         <p>
-          OWL can be used for 1USD in fees on the DutchX.
-          OWL may be freely tradable (it is a fungible token and not personalized).
+        OWL can be used to pay for up to <strong>1USD</strong> in fees on the DutchX Protocol.
+        <br/>
+        OWL may be freely traded (it is a fungible token and not personalized)
         </p>
       </span>
     </section>
@@ -468,7 +475,9 @@ export const Fees = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="why-pay-fees-in-owl">
       <h3>Why would I want to pay my fees in OWL?</h3>
       <span>
-        <p>Firstly, if you are a GNO holder, you obtain OWL by locking your GNO. Secondly, one OWL can be used to pay one USD worth of fees (this is fixed on the DutchX). Thirdly, it is likely cheaper as the OWL may be obtained for less than one USD.</p>
+        <p>
+        First, if you are a GNO holder, you obtain OWL by locking your GNO. Second, 1 OWL can be used to pay 1 USD worth of fees (this is fixed on the DutchX Protocol). Third, it is likely cheaper as OWL may be obtained for less than 1 USD.
+        </p>
       </span>
     </section>
 
@@ -476,8 +485,9 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How do I use OWL to pay for fees?</h3>
       <span>
         <p>
-          The interface will prompt you automatically during the trading process and ask if you would like to use OWL to pay for fees. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to pay for your fees and you will be prompted again the next time.
-          Note that you might not be prompted because you have no OWL in your wallet! To create a great user experience for you on this interface, you are only prompted if you have OWL in your connected wallet.
+        Slow.trade will prompt you automatically during the trading process and ask if you would like to use OWL to pay for fees. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to pay for your fees and you will be prompted again the next time.
+        <br/>
+        Note that you might not be prompted because you have no OWL in your Wallet! To create a better user experience for you on slow.trade, you are only prompted if you have OWL in your connected Wallet.
         </p>
       </span>
     </section>
@@ -486,7 +496,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>What happens to the OWL used to pay for fees?</h3>
       <span>
         <p>
-          OWL used to pay for fees are not credited to anyone! They are instead consumed (“burned”). Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.
+        OWL used to pay for fees are not credited to anyone! <strong>They are instead consumed ("burned")</strong>. Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.
         </p>
       </span>
     </section>
@@ -495,7 +505,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How do I pay my fees?</h3>
       <span>
         <p>
-          This is all done automatically for you! Fees (or remaining fees in case you choose to partially pay with OWL) are automatically deducted from the token you are participating with on the DutchX.
+        Fee payment is done automatically. Fees (or remaining fees in case you choose to partially pay with OWL) are automatically deducted from the token you are depositing for sale.
         </p>
       </span>
     </section>
@@ -503,55 +513,61 @@ export const Fees = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="fee-calculation">
       <h3>Step-by-step fee calculation</h3>
       <span>
-        <p>Imagine you are taking part with a volume of 20 Token A.</p>
-        <br/>
+        <p>Imagine you are taking part with a volume of 20 'token A.'</p>
+        <br />
         <ol>
-          <li>The DutchX calculates your fee level based on the MGN you hold. Let's assume your fee level is currently 0.4%. This information is displayed in the header bar.</li>
-          <li>You owe 0.8A in fee.</li>
-          <li>From this fee, you have the option to pay half in OWL (if you hold OWL in the wallet you are participating with). If you choose to pay half in OWL, this is 0.4A. 0.4A will be translated into USD, where 1 OWL is accepted as 1 USD on the DutchX.</li>
+          <li>The DutchX Protocol calculates your fee level based on the MGN you hold. Let’s assume your fee level is currently 0.4%. This information is displayed in the header bar.</li>
+          <li>You then owe 0.08 A tokens in fees.</li>
+          <li>From this fee, you have the option to pay half in OWL (if you hold OWL in the Wallet you are participating with). If you choose to pay half in OWL, this is 0.04 A tokens. 0.04 A tokens will be translated into USD, where 1 OWL is accepted as 1 USD on the DutchX Protocol.</li>
           <li>
-            The remainder of the fees is paid in the participating token
+            The remainder of the fees is paid in token A
             <ul>
-              <li>In the case of paying with OWL, the remainder is 0.8-0.4 = 0.4A.</li>
-              <li>In the case of not paying in OWL; the remainder is 0.8-0 = 0.8A.</li>
+              <li>In the case of paying with OWL, the remainder is 0.08-0.04 = 0.04 A tokens.</li>
+              <li>In the case of not paying in OWL; the remainder is 0.08-0 = 0.08 A tokens.</li>
             </ul>
           </li>
           <li>
-            What gets deposited into the auction?
+            What gets deposited for you into the auction?
             <ul>
-              <li>In the case of paying in OWL: 20-0.4=19.6 A Tokens are placed on your behalf into the next running auction.</li>
-              <li>In the case of not paying in OWL: 20-0.8=19.2 A Tokens are placed on your behalf into the next running auction.</li>
+              <li>In the case of paying in OWL: 20-0.04=19.96 A tokens are placed on your behalf into the next running auction.</li>
+              <li>In the case of not paying in OWL: 20-0.08=19.92 A tokens are placed on your behalf into the next running auction.</li>
+            </ul>
+          </li>
+          <li>
+            What happens to the fees paid in token A?
+            <ul>
+              <li>These fees get added as a sell volume to the next auction for the same token pair that runs thereafter. It is accordingly a fee-redistribution within the entire DutchX ecosystem designed to benefit you and other users! Your auction may have some prior fee funding as well.</li>
             </ul>
           </li>
         </ol>
+        <a href={stepByStepFeeCalc} target="_blank"><img src={stepByStepFeeCalc} /></a>
     </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="what-happens-to-fees-paid-in-a-token">
       <h3>What happens to fees paid in a token (not in OWL)?</h3>
       <span>
-      <p>These fees remain in the DutchX ecosystem and are redistributed among participants (mainly high-volume users will benefit from this fee redistribution model). Fees will <span className="underline">go into the next running auction</span> for the same token pair as an extra deposit-balance.</p>
+        <p>
+        These fees remain in the DutchX ecosystem and are redistributed among participants. Fees will be added <strong>into the next</strong> <strong>running auction</strong> for the same token pair as an extra sell volume balance.
+        </p>
     </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="why-fees-go-into-next-auction">
-      <h3>What is the reasoning for the fees to go into the next auction?</h3>
+      <h3>Why do the fees get transferred into the next auction?</h3>
       <span>
-      <p>Users of the DutchX should be the main beneficiaries of this decentralized trading protocol. Hence, the fees should remain in the DutchX ecosystem. This means that users, and especially frequent users, benefit as they not only lower their fees, but get credited part of the fees!</p>
+        <p>
+        Users of the DutchX Protocol (and hence of slow.trade) should be its main beneficiaries. For this reason,<strong> </strong>the fees remain in the DutchX ecosystem<strong>.</strong> This means that users, and especially frequent users, benefit from the mechanism in two ways: it lowers their fees and they are credited part of these fees!
+        </p>
     </span>
     </section>
 
-    <section className="drawer" onClick={handleClick} id="how-are-owls-burned">
-      <h3>How are OWLs burned?</h3>
+    <section className="drawer" onClick={handleClick} id="do-i-have-to-pay-gas">
+      <h3>Do I also have to pay gas?</h3>
       <span>
-      <p>Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.</p>
-    </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="do-i-have-to-pay-for-gas">
-      <h3>Do I also have to pay a gas price?</h3>
-      <span>
-        <p>Yes, you do! For all transactions on the Ethereum blockchain, gas has to be paid. The amount of gas cost to be paid depends on the current transactions being processed on Ethereum. Gas is needed to execute your order and claim your new tokens. Your wallet provider will provide you with a gas estimate for each transaction, and you may set a gas price.</p>
+        <p>
+        Yes. For all transactions on the Ethereum Blockchain, gas has to be paid. The amount of gas that has to be paid depends on the transaction processed on Ethereum. Gas is needed to execute your order and claim your new tokens. Your Wallet provider will provide you with a gas estimate for each transaction, and you may also choose to specify a gas price.
+        </p>
       </span>
     </section>
 
@@ -580,7 +596,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="what-is-batch-auction">
       <h3>What is a batch auction?</h3>
       <span>
-      <p>Instead of trading continuously, the exchange collects the sell orders as batches until the auction starts, and clear them at the end of the auction all at once.<br/><br/>
+        <p>Instead of trading continuously, the exchange collects the sell orders as batches until the auction starts, and clear them at the end of the auction all at once.<br /><br />
         Therefore, by accumulating orders that are executed at the same time, a batch auction exchange not only represents a better price finding mechanism than an order book, but also eliminates the inherent flaw of the order book exchange: front-running.
         On the DutchX, your orders will get batched so that you benefit from these advantages (which is a reason for slow execution as well).
       </p>
@@ -592,14 +608,14 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
       <span>
       <p>The DutchX for a particular token-pairing (e.g. exchange Token A for Token B) changes between two states: (i) before the particular auction starts, and (ii) when an auction is running.
         In the first state (i) sellers deposit their tokens (here: Token A). In the second state (ii), while the auction is running, bidders submit their bids (here: Token B).
-        <br/><br/>
+        <br /><br />
         (include seller/bidder picture from this slide deck, slide 6; I don’t think there is a separate graphic for this).
-        <br/><br/>
+        <br /><br />
         State (i) closes before state (ii) starts and hence sellers cannot deposit tokens into a running auction (these automatically go into the next auction). This means that there is a fixed amount of tokens to be auctioned off.
-        <br/><br/>
+        <br /><br />
         This is what the second state (the auction) looks like (Token A for Token B):
         (include picture of the running auction, slide 7, there should be a graph)
-        <br/><br/>
+        <br /><br />
         The price starts at a very high price point (twice the last closing price) and falls over time. The price falls quickly at first and slows down to decrease less rapidly. During the entire auction, bids are accepted. <strong>When the auction ends, all bidders pay the same closing price!</strong> The “price” is paid in the currency determined by the particular token-pairing. In this example, Token B was used to purchase A Token and the price is set by the exchange rate between Token A and Token B.
       </p>
     </span>
@@ -608,7 +624,7 @@ export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="auction-over-time">
       <h3>What does each auction look like over time?</h3>
       <span>
-      <p>Only one auction of the same pairing is run at the same time. Note that opposite auctions (i.e. opposite auction of Token A as sellToken and Token B as bidToken is Token B as sellToken and Token A as bidToken) run at the same time (they start simultaneously and finishing at their individual times).<br/><br/>
+        <p>Only one auction of the same pairing is run at the same time. Note that opposite auctions (i.e. opposite auction of Token A as sellToken and Token B as bidToken is Token B as sellToken and Token A as bidToken) run at the same time (they start simultaneously and finishing at their individual times).<br /><br />
         Of course for all unique pairings the same logic is applied and those auctions run independently from one another. Each pairing goes through the stages (i) sellers deposit, (ii) bidders bid, and (iii) payouts are claimed. Over time, it looks like this:
         (include slide 9 of the slide deck; I don’t think this graphic exists in the repo)
       </p>
@@ -624,9 +640,9 @@ export const MarketMarker = () =>
     TBD
 
   </article>
-{/* END Market Maker on the DutchX - page */}
+{/* END Market Maker on the DutchX - page */ }
 
-{/* Listing a Token on the DutchX - page */}
+{/* Listing a Token on the DutchX - page */ }
 export const ListingToken = () =>
   <article>
     <h1>Listing a Token on the DutchX</h1>
@@ -634,9 +650,9 @@ export const ListingToken = () =>
     TBD
 
   </article>
-{/* END Listing a Token on the DutchX - page */}
+{/* END Listing a Token on the DutchX - page */ }
 
-{/* DutchX as an Open Platform - page */}
+{/* DutchX as an Open Platform - page */ }
 export const OpenPlatform = () =>
   <article>
     <h1>DutchX as an Open Platform</h1>
@@ -644,9 +660,9 @@ export const OpenPlatform = () =>
     TBD
 
   </article>
-{/* END DutchX as an Open Platform - page */}
+{/* END DutchX as an Open Platform - page */ }
 
-{/* FAQ - page */}
+{/* FAQ - page */ }
 export const FAQ = ({ handleClick }: ContentPages) =>
   <article id="FAQ">
     <h1>FAQ</h1>
@@ -838,7 +854,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           Ether (or "ETH")—the native currency built on the Ethereum blockchain—is not ERC20 compatible. <a href={URLS.WETH_TOKEN_URL} target="_blank">Wrapped Ether</a>, however, is Ether that is compliant with the ERC20 standard and hence can be traded on the DutchX. Keep in mind that you still need ETH to pay for your gas costs, though.
-          <br/>
+          <br />
           Wrapped Ether is worth the same as ETH and can of course be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> again anytime.
         </p>
       </span>
@@ -849,7 +865,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           Yes! For a smooth user experience, the interface will wrap ETH for you in case you don't have any wrapped ETH available. In this case, wrapping your ETH is the first transaction you will have to approve before proceeding with the deposit.
-          <br/>
+          <br />
           However, the <span className="underline">DutchX will not unwrap ETH for you—</span>if you exchange a token for ETH, you will always receive W-ETH. Make sure to add the W-ETH token address to your wallet: (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2). W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped on many platforms</a>.
         </p>
       </span>
@@ -869,7 +885,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           If you exchange a token for ETH, you will always receive W-ETH in the DutchX. Thus, make sure to add the W-ETH token address to your wallet (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2).
-          <br/>
+          <br />
           W-ETH is the ERC20 compatible version of ETH. Since the DutchX interface provides no unwrapping at this time, you will always receive W-ETH instead of ETH. W-ETH is worth the same as ETH and can of course be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> again on various platforms.
         </p>
       </span>
@@ -1033,50 +1049,50 @@ export const FAQ = ({ handleClick }: ContentPages) =>
 
   </article>
 
-{/* API and Technical Links - page */}
+{/* API and Technical Links - page */ }
 export const Technical = () =>
   <article>
     <h1>API and Technical Links</h1>
     <section className="content">
       <p>
-        <a href="#">Read API</a><br/>
-        <a href="#">Technical documentation </a><br/>
-        <a href="#">Github Repo</a><br/>
-        <a href="#">Listing a Token to the Smart Contract</a><br/>
-        <a href="#">Listing a Token to the Interface</a><br/>
+        <a href="#">Read API</a><br />
+        <a href="#">Technical documentation </a><br />
+        <a href="#">Github Repo</a><br />
+        <a href="#">Listing a Token to the Smart Contract</a><br />
+        <a href="#">Listing a Token to the Interface</a><br />
         <a href="#">Providing Liquidity</a>
       </p>
     </section>
 
   </article>
 
-{/* Downtime and Maintenance - page */}
+{/* Downtime and Maintenance - page */ }
 export const Downtime = () =>
   <article>
     <h1>Downtime and Maintenance</h1>
     <section className="content">
-      <p>Unfortunately, there is no guarantee of keeping this interface available to you. We try our best to facilitate an easy use. If we are down for maintenance, we will try to communicate this early. In case the site is down due to unforeseen reasons, we will reach out via other channels (e.g. <a href="#">twitter</a>).<br/><br/>
+      <p>Unfortunately, there is no guarantee of keeping this interface available to you. We try our best to facilitate an easy use. If we are down for maintenance, we will try to communicate this early. In case the site is down due to unforeseen reasons, we will reach out via other channels (e.g. <a href="#">twitter</a>).<br /><br />
       It’s important to note that funds can always be claimed: interactions with the DutchX smart contract is always possible as the entire DutchX smart contracts are on the Ethereum blockchain.</p>
     </section>
   </article>
 
-{/* Help - page */}
+{/* Help - page */ }
 export const Help = () =>
   <article>
     <h1>Help</h1>
     <section className="content">
       <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
-      <br/>
+      <br />
       For all questions from and for developers, get in touch on the <a href={URLS.GITTER_URL} target="_blank">Gitter channel</a>.
-      <br/>
+      <br />
       If you would like to take part in the discussion, post in <a href={URLS.ETHRESEARCH_URL} target="_blank">ethresear.ch</a>.
-      <br/>
+      <br />
       To stay informed, follow <a href={URLS.DUTCHX_TWITTER_URL} target="_blank">DutchX Twitter</a>.
       </p>
     </section>
   </article>
 
-{/* Imprint page */}
+{/* Imprint page */ }
 export const Imprint = () =>
   <article>
     <h1>Imprint</h1>
