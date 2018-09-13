@@ -141,20 +141,28 @@ class AppValidator extends React.Component<any> {
     this.dataPollerID = null
   }
 
-  renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, loading?: boolean, online: boolean, SET_UP_COMPLETE?: boolean }) =>
-    <>
-      { !online && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
-      { (!SET_UP_COMPLETE || !this.props.unlocked) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
-      {this.props.children}
-    </>
+  renderError = () => {
+    const { error, loading, online, SET_UP_COMPLETE } = this.state
+    return (
+      <>
+        { (!online && !loading) && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
+        { ((!SET_UP_COMPLETE && !loading) || (!this.props.unlocked && !loading)) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
+      </>
+    )
+  }
 
   render() {
-    const { children, unlocked/* , available */ } = this.props
-
-    if (this.state.loading) return <div className="walletChooser"><Loader hasData={false} strokeColor="#fff" strokeWidth={0.35} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
-    // if (!available) return children
-
-    return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
+    const { loading } = this.state
+    return (
+      <>
+        {this.renderError()}
+        {loading
+          ?
+        <div className="walletChooser"><Loader hasData={false} strokeColor="#fff" strokeWidth={0.35} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
+          :
+        this.props.children}
+      </>
+    )
   }
 }
 
