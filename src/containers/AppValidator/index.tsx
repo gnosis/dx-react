@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ComponentClass } from 'react'
 import { connect } from 'react-redux'
 
 import Loader from 'components/Loader'
@@ -11,6 +11,7 @@ import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } fro
 import { State } from 'types'
 import { getTokenList } from 'actions'
 import { getActiveProvider, getActiveProviderObject } from 'selectors'
+import { withRouter } from 'react-router'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
 
@@ -178,10 +179,10 @@ const mapState = (state: State) => {
   }
 }
 
-export default connect(mapState, {
+export default withRouter(connect(mapState, {
   getTokenList,
   initDutchX,
   updateMainAppState,
   updateProvider,
   resetMainAppState,
-})(AppValidator)
+})(AppValidator) as ComponentClass<any>)
