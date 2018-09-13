@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
 import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
 interface ContentPages {
-  handleClick: () => any;
+  handleClick?: () => any;
+  network: string;
 }
 
 export const HowItWorks = ({ handleClick }: ContentPages) => (
@@ -1048,17 +1049,20 @@ export const Downtime = () =>
     </section>
   </article>
 
-export const Help = () =>
+export const Help = ({ network }: ContentPages) =>
   <article>
     <h1>Help</h1>
     <section className="content">
       <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
       <br/>
-      For all questions from and for developers, get in touch on the <a href={URLS.GITTER_URL} target="_blank">Gitter channel</a>.
-      <br/>
-      If you would like to take part in the discussion, post in <a href={URLS.ETHRESEARCH_URL} target="_blank">ethresear.ch</a>.
-      <br/>
-      To stay informed, follow <a href={URLS.DUTCHX_TWITTER_URL} target="_blank">DutchX Twitter</a>.
+      For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+      {network === 'MAIN' &&
+      <>
+        <br/><br/>
+        You may also reach us at <a href="mailTo: support@slow.trade">support@slow.trade</a>
+        <br/><br/>
+        For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
+      </>}
       </p>
     </section>
   </article>
