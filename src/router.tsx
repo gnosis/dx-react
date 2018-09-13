@@ -8,16 +8,18 @@ import Header from 'components/Header'
 import Footer from 'components/Footer'
 import Home from 'containers/Home'
 import PageNotFound from 'components/PageNotFound'
-import Disclaimer from 'containers/Disclaimer'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
 import AuctionPanel from 'containers/AuctionPanel'
-import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import ContentPageContainer from 'containers/ContentPages'
 import Cookies from 'components/Cookies'
 import Imprint from 'components/Imprint'
 
 import GoogleAnalyticsTracking from 'components/GoogleAnalyticsTracking'
+import WalletIntegration from 'containers/WalletIntegration'
+import AppValidator from 'containers/AppValidator'
+import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
+import Disclaimer from 'containers/Disclaimer'
 
 interface AppRouterProps {
   history: History;
@@ -58,25 +60,32 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
   return (
     <ConnectedRouter history={history}>
       <div className="appFlex">
+
         <RedirectToDisclaimer/>
         <Switch>
-          <Route exact path="/" component={HomeWH} />
-          <Route path="/order" component={OrderPanelWH} />
-          <Route path="/wallet" component={WalletPanelWH} />
-
-          {/* TODO: check for valid params.addr and redirect if necessary */}
-          <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
-
           <Route path="/disclaimer" component={Disclaimer} />
-          <Route path="/cookies" component={CookiesWH} />
-          <Route path="/imprint" component={ImprintWH}/>
+          <WalletIntegration>
+            <AppValidator>
+              <Switch>
+                <Route exact path="/" component={HomeWH} />
+                <Route path="/order" component={OrderPanelWH} />
+                <Route path="/wallet" component={WalletPanelWH} />
 
-          <Route path="/content/:contentPage" component={ContentPageContainerWH} />
-          <Redirect from="/content" to="/content/HowItWorks" />
+                {/* TODO: check for valid params.addr and redirect if necessary */}
+                <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
 
-          <Route path="/404" component={PageNotFound} />
-          <Redirect to="/404" />
+                <Route path="/cookies" component={CookiesWH} />
+                <Route path="/imprint" component={ImprintWH}/>
 
+                <Route path="/content/:contentPage" component={ContentPageContainerWH} />
+                <Redirect from="/content" to="/content/HowItWorks" />
+
+                <Route path="/404" component={PageNotFound} />
+                <Redirect to="/404" />
+
+              </Switch>
+            </AppValidator>
+          </WalletIntegration>
         </Switch>
 
         {analytics && <GoogleAnalyticsTracking />}

@@ -63,7 +63,7 @@ class Cookies extends React.Component {
                 <div className="cookiePageLogo"><img src={dutchXLogo} /></div>
                 <br />
 
-                <h1>d.ex OÜ Cookie Policy Cookie Policy</h1>
+                <h1>d.ex OÜ Cookie Policy</h1>
                 <button
                   className={`buttonCTA ${settingsOpen ? 'light-orange' : 'alt-blue'}`}
                   onClick={this.handleClick}
