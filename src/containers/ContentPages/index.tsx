@@ -2,13 +2,16 @@ import React from 'react'
 import { Redirect, RouteProps } from 'react-router-dom'
 
 import * as ContentPages from 'components/ContentPage'
+import { State } from 'types'
+import { connect } from 'react-redux'
 
 export interface ContentPageContainerProps extends RouteProps {
-  match: {
-    params: {
-      contentPage: string,
+  match?: {
+    params?: {
+      contentPage?: string,
     },
   };
+  network?: string;
 }
 
 interface EventTarget {
@@ -60,7 +63,7 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 
   render() {
-    const { match: { params: { contentPage } } } = this.props
+    const { match: { params: { contentPage } }, network } = this.props
     return (
       ContentPages[contentPage]
       ?
@@ -69,7 +72,7 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
           /* ref={c => this.outerDiv = c} */
           tabIndex={1}
         >
-          {this.renderContentPage(contentPage, { handleClick: this.handleClick })}
+          {this.renderContentPage(contentPage, { handleClick: this.handleClick, network })}
         </div>
       :
         <Redirect to="/404" />
@@ -77,4 +80,8 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 }
 
-export default ContentPageContainer
+const mapStateToProps = ({ blockchain: { network } }: State) => ({
+  network,
+})
+
+export default connect<ContentPageContainerProps>(mapStateToProps)(ContentPageContainer)

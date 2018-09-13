@@ -130,6 +130,13 @@ header {
       font-size: 32px;
     }
 
+    > p {
+      color: white;
+      max-width: 60%;
+      margin: 5px auto;
+      text-align: center;
+    }
+
     > a {
       display: block;
       width: 100%;
