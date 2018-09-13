@@ -271,30 +271,30 @@ export const Tokens = ({ handleClick }: ContentPages) =>
     <h1>Tokens</h1>
 
     <section className="drawer" onClick={handleClick} id="token-pairs-currently-traded">
-      <h3>Which token pairs are currently traded on the DutchX?</h3>
+      <h3>Which token pairs are currently available for trading on slow.trade?</h3>
       <span>
         <p>
-          Check out the token list (click on either Deposit or Receive token) to see the tokens that can be traded on this interface. All tokens on the list can always be traded with ETH (and wrapped ETH).
+          To see which tokens are currently supported on slow.trade, check out the token list by clicking<strong> on either <em>Deposit</em> </strong>or<strong> <em>Receive</em> token</strong>. All tokens on the list can always be traded with ETH (or wrapped ETH).
           <br/>
-          However, there might be more tokens available on the smart contract level. Technical readers should read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+          Unrelated to our offering, there may be more tokens available on the smart contract level. Technical readers may refer to the documentation linked at <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
         </p>
       </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="token-pairs-can-be-traded">
-      <h3>Which token pairs can be traded on the DutchX?</h3>
+      <h3>Which token pairs can be traded on the DutchX Protocol?</h3>
       <span>
         <p>
-          Theoretically, all tokens compatible with the ERC20 standard may be traded on the DutchX. Before they become available to trade, they will need to be added to the DutchX. The conditions for adding tokens are defined in the smart contract governing the DutchX. For more and very detailed information, read <a href={URLS.LISTING_A_TOKEN} target="_blank">Listing a Token</a>.
+        Although we  only support the tokens listed on our slow.trade Platform, we note, for information purposes only, that all tokens compatible with the ERC20 standard may be traded on the DutchX Protocol. This is independent of and unrelated to us, d.ex OÜ and the services offered on our slow.trade Platform. For more and very detailed information, click on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
         </p>
       </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="token-needed-to-trade">
-      <h3>What token do I need to be active on the DutchX?</h3>
+      <h3>What token do I need to participate on the slow.trade?</h3>
       <span>
       <p>
-        You do not need to own any particular token to trade on the DutchX! However, keep in mind that you need ETH to pay for gas costs. Check out "<Link to={URLS.HOW_IT_WORKS + '#what-do-i-need-to-trade-on-dx'}>What do I need to trade a token on the DutchX</Link>"?
+      You do not need to own any particular token to use slow.trade! However, keep in mind that you need ETH to pay for gas costs. For more information, check out "<Link to={URLS.HOW_IT_WORKS + '#what-do-i-need-to-trade-on-dx'}>What do I need to trade a token on slow.trade</Link>"?
       </p>
     </span>
     </section>
@@ -303,9 +303,13 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are Magnolia (MGN)?</h3>
       <span>
         <p>
-          Magnolia (MGN) tokens lower the fees on the DutchX. MGN are <span className="underline">automatically</span> generated and credited to DutchX users: one MGN is credited for trading one ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
-          Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your wallet is <span className="underline">only visible on the interface</span>.
-          Of course, it is not required to hold any Magnolia (MGN) to participate in the DutchX.
+        Magnolia (MGN) tokens lower the fees on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
+        <br/>
+        Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
+        <br/>
+        Of course, you are not required to hold any Magnolia (MGN) to participate on slow.trade or interact with the DutchX Protocol.
+        <br/>
+        <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
     </section>
@@ -314,7 +318,9 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are whitelisted tokens?</h3>
       <span>
         <p>
-          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX with the mere intention to create Magnolia and benefit from lower fees.
+        Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from lower fees.
+        <br/>
+        <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
     </section>
@@ -323,7 +329,9 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Does my trade generate Magnolia?</h3>
       <span>
         <p>
-          Trades only generate Magnolia if both tokens traded are whitelisted. To see if a token that is tradable on this interface is whitelisted, check the token list by clicking on the Deposit or Receive token. You will see a message displayed if the token is not whitelisted: “Any auction with [Token] won’t generate MGN”. Once you proceed to the next screen, you will see “Note: this token pair won't generate MGN tokens” as this auction pair then will not generate Magnolia.
+        Trades only generate Magnolia if both tokens traded are <Link to="#what-are-whitelisted-tokens">whitelisted</Link>. To see if a token that is tradable on slow.trade is whitelisted, check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token. Where a token is not whitelisted, the following message will be displayed: "Any auction with [Token] won't generate MGN". Once you proceed to the next screen, you will see "Note: this token pair won't generate MGN tokens".
+        <br/>
+        <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
     </section>
@@ -332,16 +340,10 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Which tokens are currently whitelisted?</h3>
       <span>
         <p>
-          To find out whether a token that is tradable on this interface is whitelisted, check the token list by clicking on the Deposit or Receive token. You will see a message displayed if the token is not whitelisted: “Any auction with [Token] won’t generate MGN”.
-          Technical readers may refer to <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+        To find out whether a token that is tradable on slow.trade is whitelisted, <strong>check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token.</strong> If the token is not whitelisted, you will see the following message displayed: "Any auction with [Token] won't generate MGN".
+        <br/>
+        <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="how-to-whitelist-token">
-      <h3>How can a token be whitelisted?</h3>
-      <span>
-        <p>Please read <a href={URLS.LISTING_A_TOKEN} target="_blank">Listing a Token</a>.</p>
       </span>
     </section>
 
