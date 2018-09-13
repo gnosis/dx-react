@@ -142,20 +142,25 @@ class AppValidator extends React.Component<any> {
   }
 
   renderError = () => {
-    const { error, online, SET_UP_COMPLETE } = this.state
+    const { error, loading, online, SET_UP_COMPLETE } = this.state
     return (
       <>
-        { !online && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
-        { (!SET_UP_COMPLETE || !this.props.unlocked) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
+        { (!online && !loading) && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
+        { ((!SET_UP_COMPLETE && !loading) || (!this.props.unlocked && !loading)) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
       </>
     )
   }
 
   render() {
+    const { loading } = this.state
     return (
       <>
         {this.renderError()}
-        {this.props.children}
+        {loading
+          ?
+        <div className="walletChooser"><Loader hasData={false} strokeColor="#fff" strokeWidth={0.35} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
+          :
+        this.props.children}
       </>
     )
   }
