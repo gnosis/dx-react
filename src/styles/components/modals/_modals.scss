@@ -2,13 +2,13 @@ $modal-max-width: 800px;
 
 // Modal
 .modalDivStyle {
-  position: fixed;
+  // position: fixed;
   display: flex;
   flex-flow: column;
   align-items: center;
   background: rgba(26, 73, 119, .87);
   color: $white;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   text-align: center;
   justify-content: center;

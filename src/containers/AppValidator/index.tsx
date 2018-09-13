@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Loader from 'components/Loader'
+
 import providerWatcher from 'integrations/providerWatcher'
-import Provider from 'integrations/provider'
+import Providers from 'integrations/provider'
 
 import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
 
@@ -24,18 +26,22 @@ class AppValidator extends React.Component<any> {
   dataPollerID: any | NodeJS.Timer
   state = {
     online: inBrowser ? navigator.onLine : true,
+    loading: false,
     SET_UP_COMPLETE: true,
     error: '',
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     // const provider = MetamaskProvider,
-    const { network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
-
+    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
+    const currentProvider = Providers[activeProvider]
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
 
-      if (this.state.online) {
+      // fire up app if user is actively connected to internet AND has provider set
+      if (this.state.online && activeProvider) {
+
+        this.setState({ loading: true })
 
         console.warn(`
           App Status: ONLINE
@@ -44,20 +50,19 @@ class AppValidator extends React.Component<any> {
         // Grabs network relevant token list
         // Sets available auctions relevant to that list
         await getTokenList(network)
-
         // Initiate Provider
-        await providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState })
-
+        await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
         // initialise basic user state
         await initDutchX()
 
+        console.warn(`
+        APPVALIDATOR MOUNT FINISHED
+        `)
+
         this.setState({
+          loading: false,
           SET_UP_COMPLETE: true,
         })
-
-        console.warn(`
-          APPVALIDATOR MOUNT FINISHED
-        `)
         // start polling for changes and update user state
         return this.startPolling()
       }
@@ -68,6 +73,7 @@ class AppValidator extends React.Component<any> {
 
     } catch (error) {
       this.setState({
+        loading: false,
         SET_UP_COMPLETE: false,
         error,
       })
@@ -77,6 +83,7 @@ class AppValidator extends React.Component<any> {
       }
       this.startPolling(3000)
     }
+    // If here, no wallets have been detected and app loads in non-provider state
   }
 
   componentWillUnmount() {
@@ -95,7 +102,8 @@ class AppValidator extends React.Component<any> {
       // if app mount failed and nextProps detect an unlocked wallet
       // reload the page
       if (!this.state.SET_UP_COMPLETE && nextProps.unlocked) {
-        window.location.reload()
+        // window.location.reload()
+        this.setState({ SET_UP_COMPLETE: true })
       }
     }
   }
@@ -119,13 +127,19 @@ class AppValidator extends React.Component<any> {
   }
 
   startPolling = (pollTime: number = 5000) => {
-    const { updateMainAppState, updateProvider, resetMainAppState } = this.props
+    const { activeProvider, updateMainAppState, updateProvider, resetMainAppState } = this.props,
+      currentProvider = Providers[activeProvider]
 
     console.log('AppValidator: Polling started')
-    return this.dataPollerID = setInterval(() => providerWatcher(Provider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
+    return this.dataPollerID = setInterval(() => providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
   }
 
-  stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
+  stopPolling = () => {
+    console.log('AppValidator: Polling stopped')
+
+    clearInterval(this.dataPollerID)
+    this.dataPollerID = null
+  }
 
   renderError = () => {
     const { error, online, SET_UP_COMPLETE } = this.state
@@ -154,8 +168,8 @@ const mapState = (state: State) => {
   return {
     activeProvider,
     network: provider ? provider.network : 'UNKNOWN NETWORK',
-    unlocked: provider ? provider.unlocked : false,
-    available: provider ? provider.available : false,
+    unlocked: provider && provider.unlocked,
+    available: provider && provider.available,
   }
 }
 

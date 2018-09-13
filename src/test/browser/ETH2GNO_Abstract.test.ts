@@ -73,11 +73,11 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
 
   before(async () => {
     ({ DutchExchange: DX, TokenMGN: TUL, TokenETH: ETH, TokenGNO: GNO } = contractsMap);
-    ({ DutchExchange: dx, TokenMGN: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap)
+    ({ DutchExchange: dx, TokenMGN: tul, TokenETH: eth, TokenGNO: gno } = await promisedContractsMap())
 
     dxa = DX.address;
 
-    ({ getTotalSupply, approve, transfer, transferFrom } = await promisedTokens);
+    ({ getTotalSupply, approve, transfer, transferFrom } = await promisedTokens());
     ({
       getLatestAuctionIndex,
       getAuctionStart,
@@ -91,7 +91,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
       claimSellerFunds,
       claimBuyerFunds,
       postBuyOrder,
-    } = await promisedDutchX)
+    } = await promisedDutchX())
 
     // if currentProvider was injected by browser
     if (currentProvider) {
