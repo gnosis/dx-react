@@ -60,8 +60,8 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           platforms, if not a better one.
         </p>
         <p>
-          For more details, check out "I don't know beforehand how much of a token I will
-          receive —will I get the fair amount?"
+          For more details, check out <Link to={URLS.FAQ + '#how-much-will-receive'}>"I don't know beforehand how much of a token I will
+          receive —will I get the fair amount?"</Link>
         </p>
       </span>
     </section>
