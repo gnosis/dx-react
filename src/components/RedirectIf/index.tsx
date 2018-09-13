@@ -1,5 +1,5 @@
 import React from 'react'
-import { Redirect, withRouter, RedirectProps, RouteComponentProps } from 'react-router'
+import { Redirect, RedirectProps, RouteComponentProps } from 'react-router'
 
 import { Balance } from 'types'
 
@@ -34,10 +34,8 @@ export const RedirectHomeIfNoAccountHOC = RedirectIfFactory({
 export interface RedirectToDisclaimerProps extends RouteComponentProps<any> {
   disclaimer_accepted: boolean,
 }
-const ToDosclaimer: React.SFC<RedirectToDisclaimerProps> = ({ disclaimer_accepted, location }) =>
+export const RedirectToDisclaimer: React.SFC<RedirectToDisclaimerProps> = ({ disclaimer_accepted, location }) =>
   (disclaimer_accepted || location.pathname === '/disclaimer') ? null :
   <Redirect to={{ pathname: '/disclaimer', state: { from: location } }}/>
-
-export const RedirectToDisclaimer = withRouter(ToDosclaimer)
 
 export default RedirectIfFactory

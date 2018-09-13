@@ -4,6 +4,8 @@ interface LoaderProps {
   reSize?: number;
   hasData: any;
   svgHeight?: number;
+  strokeColor: string;
+  strokeWidth: number;
   message?: string;
   SVGChoice?: 'DutchXLogo' | 'ETHLogo'
   render(): ReactElement<any>;
@@ -14,6 +16,8 @@ class Loader extends React.Component<LoaderProps> {
     svgHeight: 50,
     reSize: 1,
     SVGChoice: 'DutchXLogo',
+    strokeColor: '#1c5683',
+    strokeWidth: 0.55,
   }
 
   DutchXLogo = () =>
@@ -24,7 +28,7 @@ class Loader extends React.Component<LoaderProps> {
           <polygon id="path-3" points="0 0.166758882 7.75290678 0.166758882 7.75290678 14.1836979 0 14.1836979"></polygon>
         </defs>
 
-        <g id="Page-1" className="dutchXSVGGroup" fillRule="evenodd">
+        <g id="Page-1" className="dutchXSVGGroup" style={{ stroke: this.props.strokeColor, strokeWidth: this.props.strokeWidth }} fillRule="evenodd">
           <g id="dutchx_logo" transform="translate(0.000000, -4.000000)">
             <g transform="translate(0.666667, 4.282353)" id="v2">
               <g>

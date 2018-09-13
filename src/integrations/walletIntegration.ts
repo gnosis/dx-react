@@ -1,17 +1,8 @@
 import { Store, Dispatch } from 'redux'
-
-import {
-  registerProvider,
-  updateProvider,
-} from 'actions'
-
-import { State, Balance } from 'types'
-import Provider from 'integrations/provider'
-import { WalletProvider } from 'integrations/types'
-import { getTime } from 'api'
-import { promisify/* , timeoutCondition */ } from 'utils'
-import { ETHEREUM_NETWORKS, networkById } from 'globals'
-// import { IPFS_TOKENS_HASH } from 'globals'
+import { registerProvider } from 'actions'
+import Providers from 'integrations/provider'
+import { State } from 'types'
+import { WalletProvider } from './types'
 
 export default async function walletIntegration(store: Store<any>) {
   const { dispatch }: { dispatch: Dispatch<any>, getState: () => State } = store
@@ -24,65 +15,24 @@ export default async function walletIntegration(store: Store<any>) {
 
   const dispatchers = {
     regProvider: dispatchProviderAction(registerProvider),
-    updateProvider: dispatchProviderAction(updateProvider),
   }
 
-  const getAccount = async (provider: WalletProvider): Promise<Account> => {
-    const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
+  Object.keys(Providers).forEach((providerKey) => {
+    const provider: WalletProvider = Providers[providerKey]
 
-    return account
-  }
+    provider.checkAvailability()
 
-  const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
-    const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
-
-    return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
-  }
-
-  const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {
-    const balance = await promisify(provider.web3.eth.getBalance, provider.web3.eth)(account)
-
-    return provider.web3.fromWei(balance, 'ether').toString()
-  }
-
-  // get Provider state
-  const grabProviderState = async (provider: WalletProvider) => {
-    // const promisedState = await Promise.race<[Account, ETHEREUM_NETWORKS, number] | {}>([
-    //   Promise.all([
-    //     getAccount(provider),
-    //     getNetwork(provider),
-    //     getTime(),
-    //   ]),
-    //   timeoutCondition(8000, 'Provider setup timeout. Please check that you are properly logged in and that your network choice is correct.'),
-    // ])
-    const account = await getAccount(provider)
-    console.log('​grabProviderState -> account', account)
-    const network = await getNetwork(provider)
-    console.log('​grabProviderState -> network', network)
-    const timestamp = await getTime()
-    console.log('​grabProviderState -> ', timestamp)
-
-    // const [account, network, timestamp] = promisedState as [Account, ETHEREUM_NETWORKS, number],
-    const balance = account && await getBalance(provider, account)
-    const available = provider.walletAvailable
-    const unlocked = !!(available && account)
-    const newState = { account, network, balance, available, unlocked, timestamp }
-
-    return newState
-  }
-
-  try {
-    const provider = Provider
-
-    provider.initialize()
-
+    // check availability
+    if (!provider.walletAvailable) return
     // dispatch action to save provider name and priority
-    dispatchers.regProvider(provider.providerName, { priority: provider.priority, available: provider.checkAvailability() })
-
-    const newState = await grabProviderState(provider)
-
-    dispatchers.updateProvider(provider.providerName, { ...newState })
-  } catch (error) {
-    console.error(new Error(error))
-  }
+    return dispatchers.regProvider(
+      providerKey,
+      {
+        name: provider.providerName,
+        type: provider.providerType,
+        keyName: provider.keyName,
+        priority: provider.priority,
+        available: provider.checkAvailability(),
+      })
+  })
 }

@@ -18,17 +18,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
 #root div.appFlex {
   display: flex;
   flex-flow: column nowrap;
   min-height: 100vh;
-
-  @media #{$mobile} {
-    max-width: 100%;
-    flex-wrap: wrap;
-    padding: 0;
-    height: 100%;
-  }
 }
 
 ::selection {
@@ -127,7 +125,7 @@ footer {
     padding: 0 4px;
   }
 
-  > p > p > img {
+  > p > span > img {
     max-width: 100px;
   }
 
