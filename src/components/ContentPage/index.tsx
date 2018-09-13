@@ -256,7 +256,6 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   </article>
 )
 
-{/* SCREENCAST - page */}
 export const Screencast = () =>
   <article>
     <h1>Screencast</h1>
@@ -265,7 +264,6 @@ export const Screencast = () =>
     </section>
   </article>
 
-{/* TOKENS - page */}
 export const Tokens = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
@@ -622,9 +620,7 @@ export const MarketMarker = () =>
     TBD
 
   </article>
-{/* END Market Maker on the DutchX - page */}
 
-{/* Listing a Token on the DutchX - page */}
 export const ListingToken = () =>
   <article>
     <h1>Listing a Token on the DutchX</h1>
@@ -632,9 +628,7 @@ export const ListingToken = () =>
     TBD
 
   </article>
-{/* END Listing a Token on the DutchX - page */}
 
-{/* DutchX as an Open Platform - page */}
 export const OpenPlatform = () =>
   <article>
     <h1>DutchX as an Open Platform</h1>
@@ -642,9 +636,7 @@ export const OpenPlatform = () =>
     TBD
 
   </article>
-{/* END DutchX as an Open Platform - page */}
 
-{/* FAQ - page */}
 export const FAQ = ({ handleClick }: ContentPages) =>
   <article id="FAQ">
     <h1>FAQ</h1>
@@ -1031,7 +1023,6 @@ export const FAQ = ({ handleClick }: ContentPages) =>
 
   </article>
 
-{/* API and Technical Links - page */}
 export const Technical = () =>
   <article>
     <h1>API and Technical Links</h1>
@@ -1048,7 +1039,6 @@ export const Technical = () =>
 
   </article>
 
-{/* Downtime and Maintenance - page */}
 export const Downtime = () =>
   <article>
     <h1>Downtime and Maintenance</h1>
@@ -1058,7 +1048,6 @@ export const Downtime = () =>
     </section>
   </article>
 
-{/* Help - page */}
 export const Help = () =>
   <article>
     <h1>Help</h1>
@@ -1070,23 +1059,6 @@ export const Help = () =>
       If you would like to take part in the discussion, post in <a href={URLS.ETHRESEARCH_URL} target="_blank">ethresear.ch</a>.
       <br/>
       To stay informed, follow <a href={URLS.DUTCHX_TWITTER_URL} target="_blank">DutchX Twitter</a>.
-      </p>
-    </section>
-  </article>
-
-{/* Imprint page */}
-export const Imprint = () =>
-  <article>
-    <h1>Imprint</h1>
-    <section className="content">
-      <h3>Gnosis Ops Ltd.</h3>
-      <p>
-        World Trade Center<br />
-        6 Bayside Rd, GX111AA Gibraltar<br />
-        E-mail: <a href="mailto:info@gnosis.pm">info@gnosis.pm</a><br /><br />
-        <strong>Directors:</strong> <br />Stefan George, Martin Köppelmann, Joseph Lubin, Jeremy Millar<br /><br />
-        Company registered in Gibraltar<br />
-        Company Nr. 116678
       </p>
     </section>
   </article>
