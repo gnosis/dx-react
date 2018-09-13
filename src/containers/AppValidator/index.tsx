@@ -31,7 +31,7 @@ class AppValidator extends React.Component<any> {
     error: '',
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     // const provider = MetamaskProvider,
     const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
     const currentProvider = Providers[activeProvider]
@@ -134,7 +134,12 @@ class AppValidator extends React.Component<any> {
     return this.dataPollerID = setInterval(() => providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState }).catch(console.warn), pollTime)
   }
 
-  stopPolling = () => (console.log('AppValidator: Polling stopped'), clearInterval(this.dataPollerID))
+  stopPolling = () => {
+    console.log('AppValidator: Polling stopped')
+
+    clearInterval(this.dataPollerID)
+    this.dataPollerID = null
+  }
 
   renderOfflineApp = ({ error, online, SET_UP_COMPLETE }: { error: string, loading?: boolean, online: boolean, SET_UP_COMPLETE?: boolean }) =>
     <>
@@ -144,10 +149,10 @@ class AppValidator extends React.Component<any> {
     </>
 
   render() {
-    const { children, unlocked, available } = this.props
+    const { children, unlocked/* , available */ } = this.props
 
     if (this.state.loading) return <div className="walletChooser"><Loader hasData={false} strokeColor="#fff" strokeWidth={0.35} render={() => null} message="LOADING WALLET ACCOUNT DETAILS..."/></div>
-    if (!available) return children
+    // if (!available) return children
 
     return this.state.online && unlocked && this.state.SET_UP_COMPLETE ? children : this.renderOfflineApp(this.state)
   }

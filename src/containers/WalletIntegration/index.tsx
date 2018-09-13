@@ -42,13 +42,16 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
   } as WalletIntegrationState
 
   async componentDidMount() {
+    console.log('MOUNTING')
     const providerObj = Object.values(Providers)
     await registerWallets()
 
     if (!this.props.providers) return this.setState({ noProvidersDetected: true })
     if (providerObj.length === 1) return this.initAppWithProvider(providerObj[0].keyName)
   }
-
+  componentWillUnmount() {
+    console.log('UNMOUNTING')
+  }
   initiateAPI = async (web3: any) => {
     // interface with contracts & connect entire DX API
     await connectContracts(web3.currentProvider)

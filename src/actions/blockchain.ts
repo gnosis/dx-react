@@ -5,7 +5,7 @@ import { batchActions } from 'redux-batched-actions'
 
 import localForage from 'localforage'
 
-import { findDefaultProvider, getActiveProviderObject, getSelectedProvider } from 'selectors/blockchain'
+import { getActiveProviderObject, getSelectedProvider } from 'selectors/blockchain'
 import { getTokenName } from 'selectors/tokens'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
@@ -107,8 +107,8 @@ const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
   try {
     // TODO: if user locks wallet, show wallet picker or something
     // determine new provider
-    let newProvider = getActiveProviderObject(state)
-    if (!newProvider) newProvider = findDefaultProvider(state)
+    const newProvider = getActiveProviderObject(state)
+    // if (!newProvider) newProvider = findDefaultProvider(state)
 
     // TODO: not necessarry here but keeping as legacy
     if (newProvider) {
