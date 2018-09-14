@@ -178,7 +178,7 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
       if (
         (!symbol2Token[sell] || !symbol2Token[buy])
         &&
-        (!address2Token[sell] || !address2Token[buy])
+        (!address2Token[sell.toLowerCase()] || !address2Token[buy.toLowerCase()])
       ) {
         const error = `${sell} / ${buy} pairing is not supported in the Frontend UI, please try another token pairing.`
         console.warn(error)
