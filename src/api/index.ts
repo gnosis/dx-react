@@ -829,7 +829,7 @@ export const getSellerOngoingAuctions = async (
     // TODO: addressesToTokenJSON can be calculated once when we get the list from IPFS
     // or at least memoize calculation with reselect
     const addressesToTokenJSON = tokensJSON.reduce((acc, tk) => {
-      acc[tk.address] = tk
+      acc[tk.address.toLowerCase()] = tk
       return acc
     }, {}) as { Account: DefaultTokenObject }
     const [runningPairsS, runningPairsB] = runningPairsArr
@@ -852,8 +852,8 @@ export const getSellerOngoingAuctions = async (
 
       const buyAddress = runningPairsB[index]
 
-      const sell: DefaultTokenObject = addressesToTokenJSON[sellAddress]
-      const buy: DefaultTokenObject = addressesToTokenJSON[buyAddress]
+      const sell: DefaultTokenObject = addressesToTokenJSON[sellAddress.toLowerCase()]
+      const buy: DefaultTokenObject = addressesToTokenJSON[buyAddress.toLowerCase()]
       if (sell && buy) {
         const pair: TokenPair = { sell, buy },
           inversePair: TokenPair = { sell: buy, buy: sell }
