@@ -685,7 +685,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: 'Approving token transfer also for future trades',
-            body: `You will no longer need to sign two transactions for future orders with ${sellName} and will save transaction costs. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+            body: `You will no longer need to sign two transactions for future orders with ${sellName} and will save transaction costs. Please confirm with ${name || 'your wallet provider'}.`,
             loader: true,
           },
         }))
@@ -844,7 +844,7 @@ export const claimSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Withdrawing Claimed Funds',
-        body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+        body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${name || 'your wallet provider'}.`,
         loader: true,
       },
     }))
