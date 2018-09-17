@@ -33,7 +33,10 @@ class AppValidator extends React.Component<any> {
   }
 
   async componentDidMount() {
-    // const provider = MetamaskProvider,
+    // user has NOT accepted disclaimer, do not load state if user attempts to access some parts of app like Content, Cookies etc
+    // user CANNOT get into app as redirect blocks if Disclaimer not accepted
+    if (!this.props.disclaimer_accepted) return
+
     const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
     const currentProvider = Providers[activeProvider]
     try {
@@ -143,7 +146,10 @@ class AppValidator extends React.Component<any> {
   }
 
   renderError = () => {
-    const { error, loading, online, SET_UP_COMPLETE } = this.state
+    const { error, loading, online, SET_UP_COMPLETE } = this.state,
+      { disclaimer_accepted } = this.props
+    if (!disclaimer_accepted) return
+
     return (
       <>
         { (!online && !loading) && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
@@ -176,6 +182,8 @@ const mapState = (state: State) => {
     network: provider ? provider.network : 'UNKNOWN NETWORK',
     unlocked: provider && provider.unlocked,
     available: provider && provider.available,
+
+    disclaimer_accepted: state.settings.disclaimer_accepted,
   }
 }
 
