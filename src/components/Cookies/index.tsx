@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 
 import dutchXLogo from 'assets/dutchx.png'
 
@@ -6,22 +6,35 @@ import { Link } from 'react-router-dom'
 import ScrollToLink from 'components/ScrollToLink'
 
 import localForage from 'localforage'
-import ButtonCTA from '../ButtonCTA'
 
-class Cookies extends React.Component {
-    state = {
+interface CookiesState {
+  settingsOpen: boolean,
+  cookieSettings: {
+    necessary: boolean,
+    analytics: boolean,
+  },
+  loading: boolean,
+  error: string,
+}
+
+interface CookiesProps {
+  dateUpdated: string;
+}
+
+class Cookies extends React.Component<CookiesProps, CookiesState> {
+  state = {
       settingsOpen: false,
       cookieSettings: {
         necessary: true,
         analytics: false,
       },
       loading: true,
-      error: undefined,
+      error: '',
     }
 
-    async componentDidMount() {
+  async componentDidMount() {
       try {
-        const cookieData = await localForage.getItem('cookieSettings')
+        const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
 
         if (!cookieData) return this.setState({ loading: false })
 
@@ -36,11 +49,11 @@ class Cookies extends React.Component {
         })
       } catch (err) {
         console.error(err)
-        this.setState({ error, loading: false })
+        this.setState({ error: err, loading: false })
       }
     }
 
-    handleSubmit = () => {
+  handleSubmit = () => {
       const {
         cookieSettings: {
           necessary,
@@ -51,10 +64,10 @@ class Cookies extends React.Component {
       return localForage.setItem('cookieSettings', { necessary, analytics })
     }
 
-    handleClick = e => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
+  handleClick = (e: SyntheticEvent) => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
 
-    render() {
-      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading, error } = this.state
+  render() {
+      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
       return (
         loading ? null
           : (
