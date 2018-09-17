@@ -20,6 +20,7 @@ import WalletIntegration from 'containers/WalletIntegration'
 import AppValidator from 'containers/AppValidator'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import Disclaimer from 'containers/Disclaimer'
+import Terms from 'components/Terms'
 
 interface AppRouterProps {
   history: History;
@@ -44,6 +45,7 @@ const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
 const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
 const CookiesWH = withHeaderAndFooter(Cookies, true)
 const ImprintWH = withHeaderAndFooter(Imprint, true)
+const TermsWH = withHeaderAndFooter(Terms, true)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
@@ -76,6 +78,9 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
 
                 <Route path="/cookies" component={CookiesWH} />
                 <Route path="/imprint" component={ImprintWH}/>
+                <Route path="/terms" component={TermsWH}/>
+                {/* TODO: change to privacy */}
+                <Redirect from="/privacy" to="/" />
 
                 <Route path="/content/:contentPage" component={ContentPageContainerWH} />
                 <Redirect from="/content" to="/content/HowItWorks" />
