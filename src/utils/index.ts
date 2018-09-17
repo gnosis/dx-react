@@ -179,19 +179,21 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
   }
 }
 
-export const web3CompatibleNetwork = () => {
+export const web3CompatibleNetwork = async () => {
   if (typeof window === 'undefined' || !window.web3) return 'UNKNOWN'
 
   let netID
 
   // 1.X.X API
   if (typeof window.web3.version === 'string') {
-    window.web3.eth.net.getId((err: Error, res: string) => {
-      if (err) {
-        netID = 'UNKNOWN'
-      } else {
-        netID = res
-      }
+    netID = await new Promise((accept, reject) => {
+      window.web3.eth.net.getId((err: string, res: string) => {
+        if (err) {
+          reject('UNKNOWN')
+        } else {
+          accept(res)
+        }
+      })
     })
   } else {
     // 0.2X.xx API

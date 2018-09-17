@@ -21,6 +21,7 @@ export interface DisclaimerState {
   cookies_analytics_accepted: boolean,
   formInvalid: boolean,
   loading: boolean,
+  network: string,
   termsOfUseScrolled: boolean,
   termsOfUseAccepted: boolean,
 }
@@ -32,13 +33,17 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     termsOfUseAccepted: false,
     cookies_analytics_accepted: undefined as boolean,
     loading: true,
+    network: '',
   }
 
   form: HTMLFormElement = null
 
-  async componentWillMount() {
+  async componentDidMount() {
     try {
-      const cookieData: { analytics?: boolean } = await localForage.getItem('cookieSettings')
+      const [cookieData, network] = await Promise.all<{ analytics: boolean }, string>([
+        localForage.getItem('cookieSettings'),
+        web3CompatibleNetwork(),
+      ])
 
       if (!cookieData) return this.setState({ loading: false })
 
@@ -46,6 +51,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
       return this.setState({
         cookies_analytics_accepted: analytics,
         loading: false,
+        network,
       })
     } catch (err) {
       console.error(err)
@@ -309,8 +315,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
   }
 
   render() {
-    const { loading } = this.state,
-      network = web3CompatibleNetwork()// window.web3 ? window.web3.version.network : 'UNKNOWN'
+    const { loading, network } = this.state
 
     return loading ? null : network === '1' ? this.renderMainnetDisclaimer() : this.renderRinkebyDisclaimer()
   }
