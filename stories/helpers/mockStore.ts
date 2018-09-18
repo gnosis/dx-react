@@ -30,7 +30,7 @@ export const bcMetamask: Partial<State> = {
     currentAccount: '0x4d676f863980973338f8eefd1c8ec8b5b9bc6671',
     currentBalance: toBigNumber('99.5788472'),
     providersLoaded: true,
-    dutchXInitialized: true,
+    appInitialised: true,
     ongoingAuctions: [],
   },
   tokenBalances: {
@@ -48,7 +48,7 @@ export const bcLocalHost: Partial<State> = {
     currentAccount: '0x4d676f863980973338f8eefd1c8ec8b5b9bc6671',
     currentBalance: toBigNumber('99.5788472'),
     providersLoaded: true,
-    dutchXInitialized: true,
+    appInitialised: true,
     ongoingAuctions: [],
   },
   tokenBalances: {

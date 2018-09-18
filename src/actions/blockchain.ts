@@ -72,6 +72,7 @@ import { ETH_ADDRESS,
     MAINNET_TOKEN_LIST_HASH,
     TokenListHashMap,
     ETHEREUM_NETWORKS,
+    COMPANY_NAME,
   } from 'globals'
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 import { promisedWeb3 } from 'api/web3Provider'
@@ -89,8 +90,8 @@ export enum TypeKeys {
 }
 
 // TODO define reducer for GnosisStatus
-export const setDutchXInitialized = createAction<{ initialized?: boolean, error?: any }>('SET_DUTCHX_CONNECTION')
-export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_DUTCHX_CONNECTION_STATUS')
+export const setAppInitialised = createAction<{ initialized?: boolean, error?: any }>('SET_APP_CONNECTION')
+export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_APP_CONNECTION_STATUS')
 export const setActiveProvider = createAction<string>('SET_ACTIVE_PROVIDER')
 export const registerProvider = createAction<{ provider?: string, data?: Object }>('REGISTER_PROVIDER')
 export const updateProvider = createAction<{ provider?: string, data?: Object }>('UPDATE_PROVIDER')
@@ -114,12 +115,12 @@ const setActiveProviderHelper = (dispatch: Dispatch<any>, state: State) => {
     if (newProvider) {
       dispatch(batchActions([
         setActiveProvider(newProvider.keyName),
-        setDutchXInitialized({ initialized: true }),
+        setAppInitialised({ initialized: true }),
       ], 'SET_ACTIVE_PROVIDER_AND_INIT_DX_FLAG'))
     }
   } catch (error) {
-    console.warn(`DutchX initialization Error: ${error}`)
-    return dispatch(setDutchXInitialized({ error, initialized: false }))
+    console.warn(`${COMPANY_NAME} initialization Error: ${error}`)
+    return dispatch(setAppInitialised({ error, initialized: false }))
   }
 }
 
@@ -185,9 +186,9 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
 }
 
 /**
- * (Re)-Initializes DutchX connection according to current providers settings
+ * (Re)-Initializes App connection according to current providers settings
  */
-export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => State) => {
+export const initApp = () => async (dispatch: Dispatch<any>, getState: () => State) => {
   const state = getState(),
     {
       // blockchain: { providers },
@@ -220,7 +221,7 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
     }
     await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
 
-    // batch init dutchX actions
+    // batch init app actions
     dispatch(
       batchActions([
         setCurrentAccountAddress({ currentAccount: account }),
@@ -228,7 +229,7 @@ export const initDutchX = () => async (dispatch: Dispatch<any>, getState: () => 
         // dispatches array of tokenBalances
         ...tokenBalances.map(token =>
           setTokenBalance({ address: token.address, balance: token.balance })),
-      ], 'SETTING_UP_DUTCH_X'),
+      ], 'SETTING_UP_APP'),
       )
 
     return dispatch(setConnectionStatus({ connected: true }))
@@ -484,7 +485,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
           modalProps: {
             header: `Confirm ${sellName} token transfer`,
             // tslint:disable-next-line
-            body: `The DutchX needs your permission to transfer your ${sellName}.`,
+            body: `${COMPANY_NAME} needs your permission to transfer your ${sellName}.`,
             buttons: {
               button1: {
                 buttonTitle1: `Approve ${sellName} for this trade only`,
@@ -516,7 +517,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
             modalName: 'ApprovalModal',
             modalProps: {
               header: 'Using OWL to pay for fees',
-              body: `You have the option to pay half of your fees on the DutchX in OWL.
+              body: `You have the option to pay half of your fees on ${COMPANY_NAME} in OWL.
               Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
               `,
               buttons: {
@@ -604,7 +605,7 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // else User has enough balance on DX for Token and can sell w/o deposit
     } else {
 
-      console.log('PROMPTING to start depositAndSell tx')
+      console.log('PROMPTING to start postSellOrder tx')
       hash = await postSellOrder.sendTransaction(sell, buy, nativeSellAmt.toString(), +index, currentAccount)
       console.log('postSellOrder tx hash', hash)
     }
@@ -737,7 +738,7 @@ export const withdrawFromDutchX = ({ name, address }: { name: string, address: s
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Withdrawing Funds',
-        body: `You are withdrawing ${name} from the DutchX to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
+        body: `You are withdrawing ${name} from ${COMPANY_NAME} to your wallet. Please confirm with ${activeProvider || 'your wallet provider'}.`,
         loader: true,
       },
     }))
@@ -844,7 +845,7 @@ export const claimSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Withdrawing Claimed Funds',
-        body: `You are withdrawing ${buyName} from the DutchX to your wallet. Please confirm with ${name || 'your wallet provider'}.`,
+        body: `You are withdrawing ${buyName} from ${COMPANY_NAME} to your wallet. Please confirm with ${name || 'your wallet provider'}.`,
         loader: true,
       },
     }))

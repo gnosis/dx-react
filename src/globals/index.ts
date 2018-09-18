@@ -1,5 +1,8 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
 
+export const COMPANY_NAME = 'slow.trade'
+export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
+
 export enum ETHEREUM_NETWORKS {
   MAIN = 'MAIN',
   MORDEN = 'MORDEN',
@@ -150,8 +153,8 @@ export const URLS = {
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 
-  DUTCHX_APP_URL_MAIN: 'dutchx.app',
-  DUTCHX_APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
+  APP_URL_MAIN: 'slow.trade',
+  APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
 }
 
 // Error messages during TXs

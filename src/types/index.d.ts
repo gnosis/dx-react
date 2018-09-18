@@ -65,7 +65,7 @@ export interface Blockchain {
   connected?: boolean,
   connectionTried?: boolean,
   providersLoaded?: boolean,
-  dutchXInitialized?: boolean,
+  appInitialised?: boolean,
   feeRatio?: number,
   mgnSupply?: Balance,
   useOWL?: boolean,
