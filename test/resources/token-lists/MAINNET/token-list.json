@@ -10,7 +10,7 @@
     {
       "symbol": "RDN",
       "name": "Raiden Tokens",
-      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
+      "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
       "decimals": 18
     },
     {
@@ -33,5 +33,5 @@
     "previousUri": null,
     "nextUri": null
   },
-  "version": "1.0"
+  "version": "1.0.3"
 }
