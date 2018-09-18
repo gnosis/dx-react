@@ -21,10 +21,6 @@ export const store = createStoreWithHistory(history)
 export const loadLocalSettings = () => store.dispatch(asyncLoadSettings() as any)
 export const initializeWallet = () => walletIntegrationCallback(store)
 
-history.listen((location, action) => {
-  console.log('TCL: location, action', location, action)
-})
-
 interface AppProps {
   analytics: boolean;
   disabled?: boolean;
@@ -33,7 +29,7 @@ interface AppProps {
 }
 
 const App = (props: AppProps): any => {
-  const { analytics } = store.getState().settings
+  const { settings: { analytics } } = store.getState()
   return (
     <Provider store={store}>
       <ModalContainer isOpen={props.disabled} modalName={props.disabled && 'BlockModal'} {...props}>

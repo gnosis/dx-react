@@ -25,7 +25,7 @@ const Footer = ({ network }: FooterProps) =>
                 </>
                     :
                 <>
-                    <Link to="/privacy">Privacy Policy</Link><Link to="/cookies">Cookies</Link><Link to="/terms">Terms of Use</Link><Link to="/imprint">Imprint</Link> <span> Protocol built by <img src={gnosisLogoSVG} className="footerLogo"/></span>
+                    <Link to="/privacy">Privacy Policy</Link><Link to="/cookies">Cookies</Link><Link to="/terms">Terms and Conditions</Link><Link to="/imprint">Imprint</Link> <span> Protocol built by <img src={gnosisLogoSVG} className="footerLogo"/></span>
                 </>
             }
         </p>
