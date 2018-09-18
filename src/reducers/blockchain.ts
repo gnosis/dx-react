@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions'
 import {
   setActiveProvider,
   setConnectionStatus,
-  setDutchXInitialized,
+  setAppInitialised,
   registerProvider,
   updateProvider,
   setCurrentBalance,
@@ -50,11 +50,11 @@ const reducer = handleActions({
       connectionTried: true,
     }
   },
-  [setDutchXInitialized.toString()]: (state: any, action: any) => {
+  [setAppInitialised.toString()]: (state: any, action: any) => {
     const { initialized } = action.payload
     return {
       ...state,
-      dutchXInitialized: initialized,
+      appInitialised: initialized,
     }
   },
   [registerProvider.toString()]: (state: any, action: any) => {

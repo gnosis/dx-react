@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
 
 import Loader from 'components/Loader'
 import { displayUserFriendlyError } from 'utils'
@@ -116,7 +116,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {buttons && buttons.button1.buttonTitle1 || 'Approve Min'}
         </button>
         {buttons && buttons.button1.buttonDesc1 && <p className="modalButtonDescription">
-          {buttons && buttons.button1.buttonDesc1 || 'You\'ll allow the DutchX to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.'}
+          {buttons && buttons.button1.buttonDesc1 || `You\'ll allow ${COMPANY_NAME} to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.`}
         </p>}
       </div>
 
@@ -128,7 +128,7 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
           {buttons && buttons.button2.buttonTitle2 || 'Approve Max'}
         </button>
         {buttons && buttons.button2.buttonDesc2 && <p className="modalButtonDescription">
-          {buttons && buttons.button2.buttonDesc2 || 'You\'ll allow the DutchX to also take your bidding token for future trades. The DutchX won\'t take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.'}
+          {buttons && buttons.button2.buttonDesc2 || `You\'ll allow ${COMPANY_NAME} to also take your bidding token for future trades. ${COMPANY_NAME} won\'t take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.`}
         </p>}
       </div>
     </div>
@@ -147,24 +147,24 @@ const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
 
 const disabledReasons = {
   geoblock: {
-    title: 'The DutchX is currently not available.',
+    title: `${COMPANY_NAME} is currently not available.`,
     render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
-        <p>Still experiencing issues? You may be accessing the DutchX from a restricted country or region.</p>
+        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region.</p>
         <br />
         <br />
-        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
       </div>,
   },
   networkblock: {
-    title: 'The DutchX is not available on your network.',
+    title: `${COMPANY_NAME} is not available on your network.`,
     render: (network = 'RINKEBY Test Network') =>
     <div style={blockModalStyle}>
       <p>{`Make sure you’re connected to the ${network}.`}</p>
       <br />
       <br />
-      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about the DutchX.</i></small>
+      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
     </div>,
   },
 }

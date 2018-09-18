@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { State } from 'types'
 import { withRouter } from 'react-router'
 import { getActiveProviderObject } from 'selectors'
+import { COMPANY_NAME, COMPANY_SLOGAN } from 'globals'
 
 interface HeaderProps {
   content?: boolean;
@@ -21,7 +22,7 @@ interface HeaderState {
 export const Header = ({ content, network }: HeaderProps & HeaderState) => (
   <header className={content ? 'solid-background' : ''}>
     <div>
-      <Link to="/" title="DutchX - Dutch Auction Exchange" className={`logo ${network && network.toLowerCase()}`}></Link>
+      <Link to="/" title={`${COMPANY_NAME} - ${COMPANY_SLOGAN}`} className={`logo ${network && network.toLowerCase()}`}></Link>
       <MenuWallet />
       <MenuAuctions />
       <MenuFeeBalance />

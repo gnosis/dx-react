@@ -6,7 +6,7 @@ import Loader from 'components/Loader'
 import providerWatcher from 'integrations/providerWatcher'
 import Providers from 'integrations/provider'
 
-import { updateMainAppState, resetMainAppState, updateProvider, initDutchX } from 'actions'
+import { updateMainAppState, resetMainAppState, updateProvider, initApp } from 'actions'
 
 import { State } from 'types'
 import { getTokenList } from 'actions'
@@ -37,7 +37,7 @@ class AppValidator extends React.Component<any> {
     // user CANNOT get into app as redirect blocks if Disclaimer not accepted
     if (!this.props.disclaimer_accepted) return
 
-    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initDutchX } = this.props
+    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initApp } = this.props
     const currentProvider = Providers[activeProvider]
     try {
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
@@ -57,7 +57,7 @@ class AppValidator extends React.Component<any> {
         // Initiate Provider
         await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
         // initialise basic user state
-        await initDutchX()
+        await initApp()
 
         console.warn(`
         APPVALIDATOR MOUNT FINISHED
@@ -189,7 +189,7 @@ const mapState = (state: State) => {
 
 export default withRouter(connect(mapState, {
   getTokenList,
-  initDutchX,
+  initApp,
   updateMainAppState,
   updateProvider,
   resetMainAppState,

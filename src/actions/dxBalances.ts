@@ -6,7 +6,7 @@ import { Dispatch } from 'redux'
 import { batchActions } from 'redux-batched-actions'
 import { DefaultTokenObject } from 'api/types'
 
-// Actions for grabbing Balances out of DutchX
+// Actions for grabbing Balances out of App
 
 export const getAllDXTokenBalances = async (tokenList: DefaultTokenObject[], account: Account) => {
   account = await fillDefaultAccount(account)
