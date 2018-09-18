@@ -105,9 +105,6 @@ export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFH
 
 export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
-// PoolX token list for PRODUCTION
-// 'QmXVXUCSV6EEcXf2RKkv8QBLR12SiBgXVUDP1BLcTx8VFr'
-
 // Development token list
 // 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
