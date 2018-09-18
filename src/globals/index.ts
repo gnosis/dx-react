@@ -105,14 +105,8 @@ export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFH
 
 export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
-// Development token list
-// 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
-
-// Production token list
-// 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR'
-
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
-export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
+export const MAINNET_TOKEN_LIST_HASH = 'QmV9CVVDNUZckdmzSp5RVWPyQuHRcuwULYiKeY7fVp2Cct'
 
 export const TokenListHashMap = {
   RINKEBY: RINKEBY_TOKEN_LIST_HASH,
