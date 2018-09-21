@@ -1,13 +1,22 @@
-import { connect } from 'react-redux'
-import { checkUserStateAndSell, openModal } from 'actions'
-
 import WalletPanel from 'components/WalletPanel'
+
+import { SyntheticEvent } from 'react'
+import { connect } from 'react-redux'
+
+import { checkUserStateAndSell, openModal } from 'actions'
+import { getProviderName } from 'selectors'
+
 import { RedirectHomeHOC } from 'components/RedirectIf'
 
 import { State } from 'types'
-import { SyntheticEvent } from 'react'
 
-const mapState = ({ tokenPair: { sellAmount } }: Partial<State>) => ({ sellAmount })
+const mapState = (state: State) => {
+  const activeProvider = getProviderName(state)
+  return ({
+    activeProvider,
+    sellAmount: state.tokenPair.sellAmount,
+  })
+}
 
 export default connect(
   mapState,
