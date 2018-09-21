@@ -38,4 +38,9 @@ const App = (props: AppProps): any => {
     </Provider>
   )}
 
+// history listen on change
+history.listen((loc: any) => {
+  loc.search.includes('retrox') && document.body.classList.add('RETROX')
+})
+
 export default App
