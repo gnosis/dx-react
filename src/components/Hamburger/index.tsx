@@ -37,7 +37,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          {window && window.location.pathname !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
+          {window && window.location.hash !== '#/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
           <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
           {/* <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink> */}
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
