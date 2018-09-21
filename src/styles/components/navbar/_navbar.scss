@@ -695,7 +695,7 @@ header {
     will-change: height, opacity;
 
     @media #{$mobile} {
-      left: 0;
+      left: 50%;
       position: fixed;
       width: 100%;
       top: 59px;
