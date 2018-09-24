@@ -16,15 +16,14 @@
   }
 
   .homeTitle {
-    font-family: $RETROX;
-    font-size: 80px;
+    font-family: $MEGRIM;
+    font-size: 65px;
     font-style: italic;
     font-weight: 800;
-    // color: #ff287a;
-    color: #28c6ff;
-
-    letter-spacing: 5px;
-    text-shadow: 2px 5px 9px #dd3ccd;
+    color: #fff;
+    letter-spacing: -3px;
+    text-shadow: 2px 2px 17px #b974e6;
+    text-transform: uppercase;
     // background: #000 url('#{$images}slowtraderetro.jpg') no-repeat center / cover;
   }
 
@@ -35,35 +34,32 @@
 
   h1 > span {
     // display: block;
-    margin: -10px 2.2px;
+    margin: -10px 4.2px;
     text-align: center;
 
     text-shadow: 1px 1px #2ac6ff;
   }
 
-  h1 > span:first-of-type {
-    color: #dd3ccd;
-    font-family: $RETROX;
-    letter-spacing: 3px;
-    text-shadow: 1px 1px #2ac6ff;
+  h1 > span:first-of-type, h1 > span:nth-of-type(3) {
+    font-family: "Megrim", monospace;
+    font-style: italic;
+    font-weight: 800;
+    color: #a082db;
+    letter-spacing: -3px;
+    text-shadow: -7px 3px 13px #ffffff8c;
+    text-transform: uppercase;
   }
 
   h1 > span:nth-of-type(2) {
     color: #fff;
-    font-family: $DEATHSTAR;
-    font-size: 45px;
+    font-family: Arial;
     font-style: italic;
+    font-weight: 1000;
+    letter-spacing: -2px;
     text-shadow: -7px 3px 13px #2ac6ff;
-  }
-
-  h1 > span:nth-of-type(3) {
-    color: #b4fff9;
-    font-size: 30px;
-    font-style: italic;
-        
-    letter-spacing: -3px;
-    text-shadow: 2px 2px 3px #b3229b;
     text-transform: uppercase;
+
+    margin-right: -5px;
   }
 
   header {
@@ -249,10 +245,11 @@
     }
 
     > h1 {
-      font-family: $RETROX;
-      font-size: 50px;
-      letter-spacing: 5px;
-      text-shadow: 0 0 9px black;
+      font-family: $BARCODE;
+      font-size: 65px;
+      font-weight: 100 !important;
+      letter-spacing: 0;
+      text-shadow: 0 0 3px black;
     }
   }
 
