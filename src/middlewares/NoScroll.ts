@@ -5,12 +5,13 @@ const NoScroll = () => (next: Function) => async (action: any) => {
   if (action.payload && action.payload.modalProps && action.payload.modalProps.header !== 'Order confirmation' || type !== 'CLOSE_MODAL' && type !== 'OPEN_MODAL') return next(action as Action)
 
   try {
+    const root = document && document.getElementById('root')
     if (type === 'OPEN_MODAL') {
       document && document.body && document.body.classList.add('noScroll')
-      document && document.getElementById('root') && document.getElementById('root').classList.add('noScroll')
+      root && root.classList.add('noScroll')
     } else if (type === 'CLOSE_MODAL') {
       document && document.body && document.body.classList.remove('noScroll')
-      document && document.getElementById('root') && document.getElementById('root').classList.remove('noScroll')
+      root && root.classList.remove('noScroll')
     }
 
     return next(action as Action)
