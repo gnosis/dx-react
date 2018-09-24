@@ -40,7 +40,8 @@ const App = (props: AppProps): any => {
 
 // history listen on change
 history.listen((loc: any) => {
-  loc.search.includes('retrox') && document.body.classList.add('RETROX')
+  const searchParams = new URLSearchParams(loc.search)
+  document.body.classList.toggle('RETROX', searchParams.has('retrox'))
 })
 
 export default App
