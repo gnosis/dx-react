@@ -20,7 +20,7 @@ export const reducer = handleActions(
     [resetAppState.toString()]: (state: AuctionsState) => ({
       ...state,
       ongoingAuctions: [],
-      availableAuctions: new Set(),
+      // availableAuctions: new Set(),
     }),
   },
   {
