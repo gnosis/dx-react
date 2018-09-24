@@ -1,5 +1,6 @@
 // Array prototypes + others
-import 'utils/prototypes'
+// BROKEN in MM 4.10
+// import 'utils/prototypes'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

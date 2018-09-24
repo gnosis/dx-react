@@ -8,6 +8,7 @@ import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, Provi
 import { dxAPI as dutchXAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
 import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS, GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
+import { lastArrVal } from 'utils'
 
 let API: dutchXAPI
 export const dxAPI = /* (window as any).AP = */ async (provider?: Provider) => {
@@ -786,8 +787,8 @@ const checkClaimableStatus = ({ claimableIndices, idx, closingPricePair }: Check
   if (claimableIndices.length >= 2) return true
 
   if (claimableIndices.length === 1) {
-    if (idx.equals(claimableIndices.last())) return closingPricePair[1].gt(0)
-    if (idx.greaterThan(claimableIndices.last())) return true
+    if (idx.equals(lastArrVal(claimableIndices))) return closingPricePair[1].gt(0)
+    if (idx.greaterThan(lastArrVal(claimableIndices))) return true
   }
   return false
 }
