@@ -8,7 +8,7 @@ import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { BLOCKED_COUNTRIES } from 'globals'
-import { web3CompatibleNetwork } from 'utils'
+import { web3CompatibleNetwork, lastArrVal } from 'utils'
 import { TermsText } from '../Terms'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
@@ -119,7 +119,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                 I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
                 {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
                   if (i === 0) return ` ${code}, `
-                  if (array[i] === array.last()) return `${code}.`
+                  if (array[i] === lastArrVal(array)) return `${code}.`
                   return `${code}, `
                 })}
               </label>
@@ -225,7 +225,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                 I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
                 {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
                   if (i === 0) return ` ${code}, `
-                  if (array[i] === array.last()) return `${code}.`
+                  if (array[i] === lastArrVal(array)) return `${code}.`
                   return `${code}, `
                 })}
               </label>

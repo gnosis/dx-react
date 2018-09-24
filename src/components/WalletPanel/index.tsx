@@ -8,10 +8,11 @@ import ButtonCTA from 'components/ButtonCTA'
 import AuctionAmountSummary from 'containers/AuctionAmountSummary'
 
 export interface WalletPanelProps {
+  activeProvider: string,
   checkUserStateAndSell(): void,
 }
 
-const WalletPanel: React.SFC<WalletPanelProps> = ({ checkUserStateAndSell }) => (
+const WalletPanel: React.SFC<WalletPanelProps> = ({ activeProvider, checkUserStateAndSell }) => (
   <AuctionContainer auctionDataScreen="details">
     <AuctionHeader backTo="/order">
       Confirm Deposit Details
@@ -20,7 +21,7 @@ const WalletPanel: React.SFC<WalletPanelProps> = ({ checkUserStateAndSell }) => 
     <AuctionPriceBar header="Price" />
     <AuctionWalletSummary />
       <p>
-        When submitting your order, you will be asked to sign transactions with MetaMask.
+        When submitting your order, you will be asked to sign transactions with {activeProvider || 'your Wallet provider'}.
         Explanations will be provided with each transaction.
         Upon final confirmation, your deposit will be added on your behalf to the next auction.
         <br/>

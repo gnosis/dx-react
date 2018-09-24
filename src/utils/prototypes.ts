@@ -1,4 +1,4 @@
 // set last () => any on Array prototype
-Array.prototype.last = function getLast() {
+Array.prototype.__last = function getLast() {
   return this[this.length - 1]
 }

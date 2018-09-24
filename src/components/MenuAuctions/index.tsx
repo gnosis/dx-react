@@ -4,6 +4,7 @@ import { DefaultTokenObject } from 'api/types'
 import { AuctionStatus } from 'globals'
 import { getTimingApproximations } from 'utils/timings'
 import { RouterAction } from 'connected-react-router'
+import { lastArrVal } from 'utils'
 
 export interface MenuAuctionProps {
   claimable: any;
@@ -103,7 +104,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.past && auction.past.participatedNormal && (
-                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.past.indicesNormal.last()}`)}>
+                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${lastArrVal(auction.past.indicesNormal)}`)}>
                           <td className="sectionLink">{auction.sell.symbol}/{auction.buy.symbol}</td>
                           <td>ENDED</td>
                           <td>
@@ -149,7 +150,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.past && auction.past.participatedInverse && (
-                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.past.indicesInverse.last()}`)}>
+                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${lastArrVal(auction.past.indicesInverse)}`)}>
                           <td className="sectionLink">{auction.buy.symbol}/{auction.sell.symbol}</td>
                           <td>ENDED</td>
                           <td>
