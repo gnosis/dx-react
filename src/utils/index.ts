@@ -202,3 +202,5 @@ export const web3CompatibleNetwork = async () => {
 
   return netID
 }
+
+export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { handleKeyDown } from 'utils'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, Route } from 'react-router-dom'
 import { URLS } from 'globals'
 
 interface HamburgerProps {}
@@ -37,7 +37,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             className="buttonExit"
             onClick={this.handleClick}>
           </button>
-          {window && window.location.pathname !== '/' && <Link to="/" onClick={this.handleClick}> Home </Link>}
+          <Route path="/(.+)" render={() => <Link to="/" onClick={this.handleClick}> Home </Link>}/>
           <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
           {/* <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink> */}
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
@@ -50,6 +50,8 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
           <p><i>For</i> Market Makers & Listing a Token <i>visit</i>:</p>
           <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" onClick={this.handleClick}> Devs & API </a>
+
+          {document.body.classList.contains('THEME') && <Link to="" onClick={() => document.body.classList.toggle('RETROX')}> THEME ON/OFF </Link>}
         </nav>
       </div>
     )

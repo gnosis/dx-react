@@ -6,3 +6,9 @@
 *.gif binary
 *.jpg binary
 *.jpeg binary
+
+*.eot binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
