@@ -1,7 +1,11 @@
 .RETROX {
-  background: #000 url('#{$images}JauntyHarshIrishsetter.gif') no-repeat center / cover;
+  background: #000 url('#{$images}JauntyHarshIrishsetter.gif') no-repeat fixed center / cover;
   color: #fff;
   font-family: $mono !important;
+
+  *::selection {
+    background-color: #dc28b3;
+  }
 
   .dutchXSVGGroup {
     stroke: #dd3ccd !important;
@@ -61,20 +65,16 @@
 
     margin-right: -5px;
   }
-
-  header {
-    background: transparent !important;
-  }
     
-  .menuWallet {
+  header, .menuWallet {
     @media #{$mobile} {
-      background: #dd3ccd;
+      background: #000000e6;
     }
   }
 
   .menuAuctions {
     > span {
-      background: #ac28a2;
+      background: #d23dbb;
     }
 
     > div > table thead td img, > div > table tbody td img {
@@ -109,6 +109,10 @@
 
     .tokenIntro > *, .tokenItem > * {
       color: white;
+    }
+
+    .tokenIntro .tokenItem > code {
+      background: #dd3ccd;
     }
 
     .tokenItem:not(.disabled):hover {
@@ -150,7 +154,7 @@
       }
 
       > code {
-        background-color: #ac2292;
+        background-color: #dd3ccd;
       }
     }
   }
