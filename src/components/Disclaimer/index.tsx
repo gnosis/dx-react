@@ -7,7 +7,7 @@ import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
 
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
-import { BLOCKED_COUNTRIES } from 'globals'
+import { BLOCKED_COUNTRIES, URLS } from 'globals'
 import { web3CompatibleNetwork, lastArrVal } from 'utils'
 import { TermsText } from '../Terms'
 
@@ -251,7 +251,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                 <ul className="scrollableDisclaimerList">
                   <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
                   <li>You are solely responsible to safekeep your wallet and private information.</li>
-                  <li>Please bookmark https://dutchx-rinkeby.d.exchange as web address imitation by hackers is a risk!</li>
+                  <li>Please bookmark {`https://${URLS.APP_URL_RINKEBY}`} as web address imitation by hackers is a risk!</li>
                   <li>ERC20 tokens are neither legal tender backed by governments nor by assets. The tokens’ value is highly volatile causing price fluctuations, as auctions typically run for some time and trades are not executed instantly.</li>
                   <li>Your jurisdiction allows you to trade on the DutchX.</li>
                   <li>Blockchain transactions are irreversible. The wallet address and your transaction is displayed permanently and publicly. You agree to relinquish any right of rectification or erasure of personal data, which is not possible on the blockchain.</li>

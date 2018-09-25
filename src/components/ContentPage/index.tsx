@@ -70,7 +70,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-        Yes, absolutely! The DutchX Protocol has an alternative interface available on the Rinkeby Testnet: <a href="https://dutchx-rinkeby.d.exchange/" target="_blank">DutchX Interface</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+        Yes, absolutely! The DutchX Protocol has an alternative interface available on the Rinkeby Testnet: <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank">DutchX Interface</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
         </p>
       </span>
     </section>
