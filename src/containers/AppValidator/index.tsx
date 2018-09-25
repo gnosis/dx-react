@@ -49,7 +49,7 @@ class AppValidator extends React.Component<any> {
         // setTimeout condition if loading wallet takes too long
         await Promise.race([
           this.appMountSetup(),
-          timeoutCondition(15000, 'Wallet setup timeout. Please refresh the page!'),
+          timeoutCondition(15000, 'Wallet setup timeout. Please try refreshing the page.'),
         ])
 
         this.setState({
@@ -106,30 +106,26 @@ class AppValidator extends React.Component<any> {
     const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initApp } = this.props
     const currentProvider = Providers[activeProvider]
 
-    try {
-      this.setState({ loading: true })
+    this.setState({ loading: true })
 
-      console.warn(`
-        App Status: ONLINE
-      `)
+    console.warn(`
+      App Status: ONLINE
+    `)
 
-      // Grabs network relevant token list
-      // Sets available auctions relevant to that list
-      await getTokenList(network)
-      // Initiate Provider
-      await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
-      // initialise basic user state
-      await initApp()
+    // Grabs network relevant token list
+    // Sets available auctions relevant to that list
+    await getTokenList(network)
+    // Initiate Provider
+    await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
+    // initialise basic user state
+    await initApp()
 
-      console.warn(`
-      APPVALIDATOR MOUNT FINISHED
-      `)
+    console.warn(`
+    APPVALIDATOR MOUNT FINISHED
+    `)
 
-      // start polling for changes and update user state
-      return this.startPolling()
-    } catch (error) {
-      console.error(error)
-    }
+    // start polling for changes and update user state
+    return this.startPolling()
   }
 
   // start Polling on connect
