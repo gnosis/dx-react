@@ -6,14 +6,14 @@ import { createSelector } from 'reselect'
 import { claimSellerFundsAndWithdrawFromAuction } from 'actions'
 
 const makeSets = createSelector(
-  ({ tokenList }) => tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList,
+  ({ tokenList }: State) => tokenList.type !== 'DEFAULT' ? tokenList.combinedTokenList : tokenList.defaultTokenList,
   tokenList => {
     const address2Token = {}
     const symbol2Token = {}
 
     for (const token of tokenList) {
       const { address, symbol } = token
-      if (address) address2Token[address] = token
+      if (address) address2Token[address.toLowerCase()] = token
       if (symbol) symbol2Token[symbol] = token
     }
     return { address2Token, symbol2Token }

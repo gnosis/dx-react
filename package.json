@@ -1,7 +1,7 @@
 {
   "name": "@gnosis.pm/dx-react",
   "version": "1.0.3",
-  "description": "DutchX - Dutch Auction Trading Platform",
+  "description": "slow.trade - ERC20 Trading Platform",
   "main": "src/index.tsx",
   "scripts": {
     "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
@@ -57,7 +57,7 @@
     "type": "git",
     "url": "https://github.com/gnosis/dx-react.git"
   },
-  "author": "DutchX",
+  "author": "slow.trade",
   "license": "MIT",
   "jest": {
     "transform": {

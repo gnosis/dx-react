@@ -1,4 +1,5 @@
 import blocked_codes from 'blocked_codes.json'
+import { web3CompatibleNetwork } from 'utils'
 
 export const geoBlockedCountryCodes = new Set(blocked_codes)
 
@@ -25,9 +26,8 @@ export const isNetBlocked = async (idsToAllow: (string | number)[]) => {
   if (typeof window === 'undefined' || !window.web3) return false
 
   try {
-    const id = await new Promise<string | number | {}>((res, rej) => {
-      window.web3.version.getNetwork((e: Error, r: string) => e ? rej(e) : res(r))
-    })
+    const id = await web3CompatibleNetwork()
+
     // allow network ID matching at least 1 passed in from idsToAllow
     // and local testrpc (id = Date.now()) >> Apr 29 2018
     if (idsToAllow.includes(id as string) || id > 1525000000000) return false

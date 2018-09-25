@@ -178,3 +178,29 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
       return 'img/icon_metamask3.svg'
   }
 }
+
+export const web3CompatibleNetwork = async () => {
+  if (typeof window === 'undefined' || !window.web3) return 'UNKNOWN'
+
+  let netID
+
+  // 1.X.X API
+  if (typeof window.web3.version === 'string') {
+    netID = await new Promise((accept, reject) => {
+      window.web3.eth.net.getId((err: string, res: string) => {
+        if (err) {
+          reject('UNKNOWN')
+        } else {
+          accept(res)
+        }
+      })
+    })
+  } else {
+    // 0.2X.xx API
+    netID = window.web3.version.network
+  }
+
+  return netID
+}
+
+export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]

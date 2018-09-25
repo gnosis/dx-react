@@ -1,0 +1,310 @@
+.RETROX {
+  background: #000 url('#{$images}JauntyHarshIrishsetter.gif') no-repeat fixed center / cover;
+  color: #fff;
+  font-family: $mono !important;
+
+  *::selection {
+    background-color: #dc28b3;
+  }
+
+  .dutchXSVGGroup {
+    stroke: #dd3ccd !important;
+  }
+
+  .menuWallet > div > table tbody td > img, .menuWallet > div > table thead td > img {
+    background-color: #ff65e8;
+  }
+
+  .sectionLink {
+    color: #d13fbc;
+  }
+
+  .homeTitle {
+    font-family: $MEGRIM;
+    font-size: 65px;
+    font-style: italic;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -3px;
+    text-shadow: 2px 2px 17px #b974e6;
+    text-transform: uppercase;
+    // background: #000 url('#{$images}slowtraderetro.jpg') no-repeat center / cover;
+  }
+
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+
+  h1 > span {
+    // display: block;
+    margin: -10px 4.2px;
+    text-align: center;
+
+    text-shadow: 1px 1px #2ac6ff;
+  }
+
+  h1 > span:first-of-type, h1 > span:nth-of-type(3) {
+    font-family: "Megrim", monospace;
+    font-style: italic;
+    font-weight: 800;
+    color: #a082db;
+    letter-spacing: -3px;
+    text-shadow: -7px 3px 13px #ffffff8c;
+    text-transform: uppercase;
+  }
+
+  h1 > span:nth-of-type(2) {
+    color: #fff;
+    font-family: Arial;
+    font-style: italic;
+    font-weight: 1000;
+    letter-spacing: -2px;
+    text-shadow: -7px 3px 13px #2ac6ff;
+    text-transform: uppercase;
+
+    margin-right: -5px;
+  }
+    
+  header, .menuWallet {
+    @media #{$mobile} {
+      background: #000000e6 !important;
+    }
+  }
+
+  .menuAuctions {
+    > span {
+      background: #d23dbb;
+    }
+
+    > div > table thead td img, > div > table tbody td img {
+      background: #ac28a2;
+    }
+  }
+
+  a.buttonCTA.blue, .home > div.intro ul > li::before, .home > div.intro ol > li::before, header > div > .navParent .navShadow, big[data-status] {
+    // background: #dd26b3;
+    background: linear-gradient(-45deg, #dd26b3, #28c6ff) !important;
+        
+    animation: RetroGradient 15s ease infinite;
+  }
+
+  header > div > .navParent .navShadow {
+    opacity: 0.8;
+  }
+
+  .home > div > p, .home > div > .textSquareInnerContainer {
+    background: #00000aad;
+    padding: 14px;
+  }
+
+  .home h1 {
+    margin: 0 0 10px;
+  }
+
+  .tokenPicker, .home > div.tokenPicker, .auctionContainer {
+    background: #00000aad;
+
+    box-shadow: 0 15px 35px rgba(221, 38, 179, 0.75), 0 5px 15px rgba(251, 15, 216, 0.37);
+
+    .tokenIntro > *, .tokenItem > * {
+      color: white;
+    }
+
+    .tokenIntro .tokenItem > code {
+      background: #dd3ccd;
+    }
+
+    .tokenItem:not(.disabled):hover {
+      background: #ffffff1c;
+      border-radius: 50px;
+    }
+
+    .tokenItem:not(.disabled):hover > [data-coin] {
+      border: 1px solid #dd26b3d1;
+    }
+
+    [data-coin] {
+      border: 1px solid transparent;
+    }
+
+    [data-coin="TOKEN_LIST"] {
+      background: #fcfcfc94 url(http://localhost:5000/img/TOKEN_LIST.svg) no-repeat center/80px;
+    }
+  }
+
+  .tokenOverlay {
+    background: #000;
+
+    > span, span > input {
+      background: #000;
+      color: #dd3ccd;
+    }
+
+    .tokenItem {
+      background: #4c0b5a;
+      border: 1px solid #000;
+    }
+
+    .tokenItem:not(.disabled):hover {
+      border: 1px solid #000;
+            
+      > big {
+        color: white;
+      }
+
+      > code {
+        background-color: #dd3ccd;
+      }
+    }
+  }
+
+  .noMGN {
+    color: #000 !important;
+  }
+
+  .auctionContainer {
+    big {
+      color: #f7fdff;
+    }
+
+    p, .tokenItem:not(.disabled):hover > big {
+      color: white;
+    }
+
+    .auctionWalletSummmary > span > i {
+      color: #35c3fe;
+    }
+
+    .tokenItem:not(.disabled):hover > code {
+      background-color: #ac2292;
+    }
+
+    .auctionHeader > h2 {
+      color: #fff;
+      font-family: Arial;
+      font-size: 18px !important;
+      font-style: italic;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 7px #ee83e3bd;
+
+      > a {
+        color: #28c6ff;
+        text-shadow: none;
+      }
+    }
+
+    .auctionLastPrice {
+      background: transparent;
+
+      > small {
+        color: #fff;
+      }
+    }
+
+    .auctionAmounts {
+      background: #00000ab8;
+
+      > label {
+        color: #fff;
+      }
+
+      > small, input[readonly] {
+        color: #28c6ff;
+      }
+    }
+
+    .auctionProgress, .auctionFooter {
+      background: #22032eb8;
+            
+      small {
+        color: #fff;
+      }
+
+      .progress-bar::after {
+        background: #49de6f;
+      }
+    }
+
+    .auctionStatus {
+      #claimToken > span {
+        background-color: #ac28a2;;
+      }
+    }
+  }
+
+  .modalDivStyle {
+    background: linear-gradient(-45deg, #dd26b3, #28c6ff);
+    opacity: 0.87;
+
+    .modalButton {
+      background-color: #000;
+      color: #fff;
+    }
+        
+    g {
+      stroke: #000;
+      stroke-width: 0.4;
+    }
+
+    > h1 {
+      font-family: $BARCODE;
+      font-size: 65px;
+      font-weight: 100 !important;
+      letter-spacing: 0;
+      text-shadow: 0 0 3px black;
+    }
+  }
+
+  .contentPage {
+    background: #000000d9;
+
+    h3 {
+      color: #dd3ccd;
+    }
+
+    p {
+      color: #fff !important;
+    }
+
+    section.drawer.active h3, section.drawer:hover h3 {
+      color: #2ac6ff !important;
+    }
+  }
+
+}
+
+.retroGradient {
+  background: linear-gradient(-45deg, #dd26b3, #28c6ff);
+
+  animation: RetroGradient 15s ease infinite;
+}
+
+@-webkit-keyframes RetroGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes RetroGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

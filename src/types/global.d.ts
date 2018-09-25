@@ -30,5 +30,5 @@ declare const before: typeof beforeAll
 declare const after: typeof afterAll
 
 declare interface Array<T> {
-  last: () => T;
+  __last: () => T;
 }

@@ -1,5 +1,8 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
 
+export const COMPANY_NAME = 'slow.trade'
+export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
+
 export enum ETHEREUM_NETWORKS {
   MAIN = 'MAIN',
   MORDEN = 'MORDEN',
@@ -102,17 +105,8 @@ export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFH
 
 export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
-// PoolX token list for PRODUCTION
-// 'QmXVXUCSV6EEcXf2RKkv8QBLR12SiBgXVUDP1BLcTx8VFr'
-
-// Development token list
-// 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
-
-// Production token list
-// 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR'
-
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
-export const MAINNET_TOKEN_LIST_HASH = 'QmZwJb4N9tSXme2bPoPtBg5Mz5pgct8oLVbTaqHBSsURSR'
+export const MAINNET_TOKEN_LIST_HASH = 'QmV9CVVDNUZckdmzSp5RVWPyQuHRcuwULYiKeY7fVp2Cct'
 
 export const TokenListHashMap = {
   RINKEBY: RINKEBY_TOKEN_LIST_HASH,
@@ -150,8 +144,8 @@ export const URLS = {
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 
-  DUTCHX_APP_URL_MAIN: 'dutchx.app',
-  DUTCHX_APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
+  APP_URL_MAIN: 'slow.trade',
+  APP_URL_RINKEBY: 'rinkeby.slow.trade',
 }
 
 // Error messages during TXs

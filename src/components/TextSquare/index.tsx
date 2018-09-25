@@ -3,7 +3,11 @@ import ButtonCTA from 'components/ButtonCTA'
 
 export const TextSquare: React.SFC = () =>
   <div className="intro">
-    <h1>Token Auction Platform</h1>
+    <h1><div className="homeTitle">Slow & Fair:</div>
+      <span>Token </span>
+      <span>Auction </span>
+      <span>Platform</span>
+    </h1>
     <div className="textSquareInnerContainer">
       <i>Slow & fair</i><br /><br />
       This trading interface allows you to interact with the DutchX decentralized trading protocol for ERC20 tokens,

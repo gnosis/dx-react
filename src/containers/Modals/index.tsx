@@ -70,7 +70,7 @@ class ModalContainer extends Component<ModalContainerProps> {
     return (
       <>
         {this.renderSpecificModal()}
-        {isOpen ? <div style={blurred}>{children}</div> : children}
+        <div style={isOpen ? blurred : undefined}>{children}</div>
       </>
     )
   }

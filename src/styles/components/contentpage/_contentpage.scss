@@ -14,6 +14,10 @@
   @media #{$mobile} {
     margin: 136px 0 0;
     padding: 0 13px;
+
+    .offlineBanner ~ & {
+      margin-top: 156px;
+    }
   }
 
   a:link, a:visited, a:active, a:focus {

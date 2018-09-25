@@ -20,38 +20,43 @@ import 'assets/img/icons/providerIcons'
 interface WalletIntegrationProps {
   activeProvider: ProviderType;
   providers: {};
+  disclaimer_accepted?: boolean;
 
   setActiveProvider(providerName: string): void;
 }
 
 interface WalletIntegrationState {
-  activeProviderSet: boolean;
   error: Error;
   initialising: boolean;
   noProvidersDetected: boolean;
+  setupComplete: boolean;
   web3: any;
 }
 
 class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
   state = {
-    activeProviderSet: false,
     error: undefined,
     initialising: false,
     noProvidersDetected: false,
+    setupComplete: false,
     web3: undefined,
   } as WalletIntegrationState
 
   async componentDidMount() {
-    console.log('MOUNTING')
+    // user has not accepted disclaimer and is looking at cookies, how it works etc
+    // OR
+    // user already has activeProviden
+    // THEN
+    // no need to re-calc everything
+    if (!this.props.disclaimer_accepted || this.props.activeProvider) return this.setState({ setupComplete: true })
+
     const providerObj = Object.values(Providers)
     await registerWallets()
 
     if (!this.props.providers) return this.setState({ noProvidersDetected: true })
     if (providerObj.length === 1) return this.initAppWithProvider(providerObj[0].keyName)
   }
-  componentWillUnmount() {
-    console.log('UNMOUNTING')
-  }
+
   initiateAPI = async (web3: any) => {
     // interface with contracts & connect entire DX API
     await connectContracts(web3.currentProvider)
@@ -63,7 +68,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
     const web3 = await Providers[providerInfo].initialize()
 
     setActiveProvider(providerInfo)
-    this.setState({ web3, activeProviderSet: true })
+    this.setState({ web3 })
   }
 
   initAppWithProvider = async (providerInfo: string) => {
@@ -74,7 +79,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       // interface with contracts & connect entire DX API
       await this.initiateAPI(this.state.web3)
 
-      return this.setState({ initialising: false })
+      return this.setState({ initialising: false, setupComplete: true })
     } catch (error) {
       console.error(error)
       return this.setState({ error, initialising: false })
@@ -118,15 +123,17 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
   }
 
   render() {
-    const { initialising, activeProviderSet, noProvidersDetected } = this.state,
-      { activeProvider, children } = this.props
-    return noProvidersDetected || ((activeProvider && activeProviderSet) && !initialising) ? children : this.walletSelector()
+    const { setupComplete, noProvidersDetected } = this.state,
+      { children } = this.props
+    return noProvidersDetected || setupComplete ? children : this.walletSelector()
   }
 }
 
-const mapState = ({ blockchain: { activeProvider, providers } }: State) => ({
+const mapState = ({ blockchain: { activeProvider, providers }, settings: { disclaimer_accepted } }: State) => ({
   activeProvider,
   providers,
+
+  disclaimer_accepted,
 })
 
 export default connect<WalletIntegrationProps>(mapState as any, { setActiveProvider })(WalletIntegration as any)

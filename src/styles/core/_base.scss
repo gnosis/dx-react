@@ -19,8 +19,7 @@ body {
 }
 
 #root {
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 #root div.appFlex {
@@ -97,7 +96,8 @@ section.home {
 }
 
 .noScroll {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 footer {

@@ -4,7 +4,7 @@
   <img width="350px" src="http://dutchx.readthedocs.io/en/latest/_static/DutchX-logo_blue.svg" />
 </p>
 
-# DutchX Seller Interface
+# slow.trade Seller Interface
 
 **DX-React** is a React/Redux/Truffle + Web3 frontend application interfacing with the [DX-Contracts][dx-contracts]
 

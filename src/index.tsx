@@ -1,5 +1,6 @@
 // Array prototypes + others
-import 'utils/prototypes'
+// BROKEN in MM 4.10
+// import 'utils/prototypes'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -46,7 +47,7 @@ async function conditionalRender() {
   if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
 
   /* Scenario 3: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
-  else if (hostname === URLS.DUTCHX_APP_URL_RINKEBY) {
+  else if (hostname === URLS.APP_URL_RINKEBY) {
     ALLOWED_NETWORK = 'Rinkeby Test Network'
     blocked = await isNetBlocked(['4'])
 
@@ -57,7 +58,7 @@ async function conditionalRender() {
   }
 
   /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-  else if (hostname === URLS.DUTCHX_APP_URL_MAIN) {
+  else if (hostname === URLS.APP_URL_MAIN) {
     ALLOWED_NETWORK = 'Ethereum Mainnet'
     const netBlockedPromise = isNetBlocked(['1'])
     // geoblock gets precedence, checked first
@@ -74,7 +75,7 @@ async function conditionalRender() {
   }
 
   /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-  else if (hostname === URLS.DUTCHX_APP_URL_MAIN) {
+  else if (hostname === URLS.APP_URL_MAIN) {
     ALLOWED_NETWORK = 'Ethereum Mainnet'
     const netBlockedPromise = isNetBlocked(['1'])
     // geoblock gets precedence, checked first
