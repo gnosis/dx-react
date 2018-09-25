@@ -12,6 +12,7 @@ import { State } from 'types'
 import { getTokenList } from 'actions'
 import { getActiveProvider, getActiveProviderObject } from 'selectors'
 import { withRouter } from 'react-router'
+import { timeoutCondition } from 'utils'
 
 const inBrowser = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
 
@@ -37,44 +38,29 @@ class AppValidator extends React.Component<any> {
     // user CANNOT get into app as redirect blocks if Disclaimer not accepted
     if (!this.props.disclaimer_accepted) return
 
-    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initApp } = this.props
-    const currentProvider = Providers[activeProvider]
+    const { activeProvider } = this.props
+
     try {
+      // listens for online/offline status
       addListeners(['online', 'offline'], [this.connect, this.disconnect])
 
       // fire up app if user is actively connected to internet AND has provider set
       if (this.state.online && activeProvider) {
-
-        this.setState({ loading: true })
-
-        console.warn(`
-          App Status: ONLINE
-        `)
-
-        // Grabs network relevant token list
-        // Sets available auctions relevant to that list
-        await getTokenList(network)
-        // Initiate Provider
-        await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
-        // initialise basic user state
-        await initApp()
-
-        console.warn(`
-        APPVALIDATOR MOUNT FINISHED
-        `)
+        // setTimeout condition if loading wallet takes too long
+        await Promise.race([
+          this.appMountSetup(),
+          timeoutCondition(15000, 'Wallet setup timeout. Please refresh the page!'),
+        ])
 
         this.setState({
           loading: false,
           SET_UP_COMPLETE: true,
         })
-        // start polling for changes and update user state
-        return this.startPolling()
       }
 
-      console.warn(`
+      return console.warn(`
         App Status: OFFLINE
       `)
-
     } catch (error) {
       this.setState({
         loading: false,
@@ -85,17 +71,20 @@ class AppValidator extends React.Component<any> {
         console.warn('AppValidator mounting error - please make sure your wallet is available and unlocked then refresh the page.')
         console.error(error)
       }
+      // start polling for changes
       this.startPolling(3000)
     }
     // If here, no wallets have been detected and app loads in non-provider state
   }
 
+  // removes Listeners and intervals
   componentWillUnmount() {
     removeListeners(['online', 'offline'], [this.connect, this.disconnect])
 
     clearInterval(this.dataPollerID)
   }
 
+  // Detects any changes in Provider lock status or errors
   componentWillReceiveProps(nextProps: any) {
     if (nextProps.unlocked !== this.props.unlocked) {
       console.log(`
@@ -105,13 +94,45 @@ class AppValidator extends React.Component<any> {
       `)
       // if app mount failed and nextProps detect an unlocked wallet
       // reload the page
-      if (!this.state.SET_UP_COMPLETE && nextProps.unlocked) {
+      if (!this.state.error && !this.state.SET_UP_COMPLETE && nextProps.unlocked) {
         // window.location.reload()
         this.setState({ SET_UP_COMPLETE: true })
       }
     }
   }
 
+  // Setup and Validate App
+  appMountSetup = async () => {
+    const { activeProvider, network, updateMainAppState, updateProvider, resetMainAppState, getTokenList, initApp } = this.props
+    const currentProvider = Providers[activeProvider]
+
+    try {
+      this.setState({ loading: true })
+
+      console.warn(`
+        App Status: ONLINE
+      `)
+
+      // Grabs network relevant token list
+      // Sets available auctions relevant to that list
+      await getTokenList(network)
+      // Initiate Provider
+      await providerWatcher(currentProvider, { updateMainAppState, updateProvider, resetMainAppState })
+      // initialise basic user state
+      await initApp()
+
+      console.warn(`
+      APPVALIDATOR MOUNT FINISHED
+      `)
+
+      // start polling for changes and update user state
+      return this.startPolling()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // start Polling on connect
   connect = () => {
     if (!this.state.online) {
       console.log('​Detected new connection')
@@ -121,6 +142,7 @@ class AppValidator extends React.Component<any> {
     }
   }
 
+  // stop polling on disconnect
   disconnect = () => {
     if (this.state.online) {
       console.log('​Detected connection loss')
