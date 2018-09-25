@@ -145,7 +145,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="docs/DutchX_Main_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./DutchX_Main_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -270,7 +270,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 <b>
-                  I have read and understood the <a href="docs/DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
                 </b>
               </label>
             </div>

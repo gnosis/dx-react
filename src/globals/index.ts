@@ -145,7 +145,7 @@ export const URLS = {
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 
   APP_URL_MAIN: 'slow.trade',
-  APP_URL_RINKEBY: 'dutchx-rinkeby.d.exchange',
+  APP_URL_RINKEBY: 'rinkeby.slow.trade',
 }
 
 // Error messages during TXs
