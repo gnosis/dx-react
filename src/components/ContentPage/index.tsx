@@ -699,9 +699,8 @@ export const FAQ = ({ handleClick }: ContentPages) =>
   <article id="FAQ">
     <h1>FAQ</h1>
     <section className="content">
-      <p>Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX was designed. Check out especially: <a href="https://blog.gnosis.pm/the-main-benefits-of-the-dutchx-mechanism-6fc2ef6ee8b4" target="_blank">Main Benefits of the DutchX Mechanism.</a>
-        Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX Protocol was designed. For further information and the terms and conditions that apply to the use of our slow.trade Platform, please always consult the Terms & Conditions. Capitalized terms used but not defined here, have the respective meanings given to them in the Terms and Conditions.
-        {/* TODO: Terms & Conditions link */}
+      <p>
+        Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX Protocol was designed. For further information and the terms and conditions that apply to the use of our slow.trade Platform, please always consult the <Link to="/terms">Terms & Conditions</Link>. Capitalized terms used but not defined here, have the respective meanings given to them in the Terms and Conditions.
       </p>
     </section>
 
@@ -1140,7 +1139,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           There is currently no interface for participating as a bidding. If there is the demand for it, a bidder interface will be created in the future.
           <br />
-          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">DutchX for Devs & API</a>.
+          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
         </p>
       </span>
     </section>
