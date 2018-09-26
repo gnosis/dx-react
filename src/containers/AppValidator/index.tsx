@@ -34,11 +34,10 @@ class AppValidator extends React.Component<any> {
   }
 
   async componentDidMount() {
+    const { activeProvider, disclaimer_accepted } = this.props
     // user has NOT accepted disclaimer, do not load state if user attempts to access some parts of app like Content, Cookies etc
     // user CANNOT get into app as redirect blocks if Disclaimer not accepted
-    if (!this.props.disclaimer_accepted) return
-
-    const { activeProvider } = this.props
+    if (!disclaimer_accepted || activeProvider === 'READ_ONLY') return
 
     try {
       // listens for online/offline status

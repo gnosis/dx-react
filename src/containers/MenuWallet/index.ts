@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { getCurrentBalance, getAccount } from 'selectors/blockchain'
+import { getCurrentBalance, getAccount, getProviderName } from 'selectors/blockchain'
 import { State, DefaultTokenObject, BigNumber } from 'types'
 
 import { MenuWallet, WalletProps } from 'components/MenuWallet'
-import { withdrawFromDutchX } from 'actions'
+import { withdrawFromDutchX, setActiveProvider } from 'actions'
+import { ProviderName } from 'globals'
 
 const getTokenList = (state: State) => state.tokenList.type === 'DEFAULT' ? state.tokenList.defaultTokenList : state.tokenList.combinedTokenList
 
@@ -23,6 +24,8 @@ const tokenNamesAndDecimals = createSelector(
 const mapStateToProps = (state: State) => {
   const dxBalancesValues = Object.values(state.dxBalances)
   const tokenBalancesValues = Object.values(state.tokenBalances)
+  const providerName = getProviderName(state)
+
   return {
     account: getAccount(state),
     addressToSymbolDecimal: tokenNamesAndDecimals(state),
@@ -31,7 +34,8 @@ const mapStateToProps = (state: State) => {
     dxBalances: state.dxBalances,
     dxBalancesAvailable: !!(dxBalancesValues.find((i: BigNumber) => i.gt(0))),
     hasTokenBalances: !!(tokenBalancesValues.find(n => n.gt(0))),
+    providerName: providerName as ProviderName,
   }
 }
 
-export default connect<Partial<WalletProps>>(mapStateToProps, { withdrawFromDutchX })(MenuWallet)
+export default connect<Partial<WalletProps>>(mapStateToProps, { setActiveProvider, withdrawFromDutchX })(MenuWallet)
