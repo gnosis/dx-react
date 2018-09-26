@@ -170,7 +170,6 @@ export const getDecoderForABI = (abi: ABI): Decoder => {
 }
 
 export const provider2SVG = (providerName: ProviderName | ProviderType) => {
-  console.log('TCL: provider2SVG -> providerName', providerName)
   switch (providerName) {
     case 'GNOSIS SAFE':
       return GNOSIS_SAFE_SVG
