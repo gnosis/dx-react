@@ -164,6 +164,7 @@ export const getDecoderForABI = (abi: ABI): Decoder => {
 }
 
 export const provider2SVG = (providerName: ProviderName | ProviderType) => {
+  console.log('TCL: provider2SVG -> providerName', providerName)
   switch (providerName) {
     case 'GNOSIS SAFE':
       return 'img/icon_gnosis_safe1.svg'
@@ -174,8 +175,11 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
     case 'LEDGER':
       return 'img/icon_ledger.svg'
 
-    default:
+    case 'METAMASK':
       return 'img/icon_metamask3.svg'
+
+    default:
+      return 'img/icon_cross.svg'
   }
 }
 

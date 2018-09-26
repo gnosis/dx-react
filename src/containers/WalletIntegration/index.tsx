@@ -53,7 +53,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
     const providerObj = Object.values(Providers)
     await registerWallets()
 
-    if (!this.props.providers) return this.setState({ noProvidersDetected: true })
+    if (!this.props.providers) return (this.props.setActiveProvider('READ_ONLY'), this.setState({ noProvidersDetected: true }))
     if (providerObj.length === 1) return this.initAppWithProvider(providerObj[0].keyName)
   }
 
@@ -124,8 +124,8 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
 
   render() {
     const { setupComplete, noProvidersDetected } = this.state,
-      { children } = this.props
-    return noProvidersDetected || setupComplete ? children : this.walletSelector()
+      { children, activeProvider } = this.props
+    return activeProvider && (noProvidersDetected || setupComplete) ? children : this.walletSelector()
   }
 }
 

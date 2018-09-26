@@ -3,7 +3,8 @@ import React from 'react'
 import Loader from 'components/Loader'
 
 import { Account, BigNumber, TokenBalances } from 'types'
-import { FIXED_DECIMALS } from 'globals'
+import { FIXED_DECIMALS, ProviderName } from 'globals'
+import { provider2SVG } from 'utils'
 
 export interface WalletProps {
   account: Account,
@@ -13,7 +14,9 @@ export interface WalletProps {
   dxBalances: TokenBalances,
   dxBalancesAvailable: boolean,
   hasTokenBalances: boolean,
+  providerName: ProviderName,
 
+  setActiveProvider: (provider: any) => void;
   withdrawFromDutchX: ({ name, address }: { name: string, address: string }) => void;
 }
 
@@ -26,6 +29,8 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
     open: false,
   }
 
+  changeWallet = () => this.props.setActiveProvider(null)
+
   handleClick = () => {
     const windowSize = window.innerWidth
     if (windowSize > 736) return
@@ -36,7 +41,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, withdrawFromDutchX } = this.props
+    const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, providerName, withdrawFromDutchX } = this.props
     return (
       <div
         className="menuWallet"
@@ -45,11 +50,30 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
         onBlur={() => this.setState({ open: false })}
       >
         <span>
-          <code>{`${account ? account.slice(0, 10) : 'No Wallet Detected'}...`}</code>
+          <small><img src={provider2SVG(providerName)} /></small>
+          <code>{`${account ? account.slice(0, 10) + '...' : 'No Wallet Detected'}`}</code>
           <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
         </span>
         {account && hasTokenBalances &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
+          <table>
+            <thead>
+              <tr>
+                <th>WALLET</th>
+                <th>ACCOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td onClick={this.changeWallet}>
+                  <h5><code>{providerName}</code></h5>
+                </td>
+                <td>
+                  <h5><code>{account}</code></h5>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <Loader
           hasData={Object.keys(addressToSymbolDecimal).length > 0}
           message="Enable wallet"

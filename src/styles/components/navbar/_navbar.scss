@@ -233,6 +233,9 @@ header {
 }
 
 .menuWallet {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
   position: relative;
   cursor: pointer;
 
@@ -274,18 +277,25 @@ header {
   }
 
   > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0 14px 0 0;
+    max-height: 24px;
+    
+    overflow: hidden;
+
     font-size: 10px;
     font-style: normal;
     font-weight: $normal;
-    line-height: 1;
     color: $white;
+    
+    line-height: 1;
     border: 1px solid $white;
-    border-radius: 6px;
-    box-sizing: border-box;
-    padding: 0;
-    display: inline-block;
-    position: relative;
-    margin: 0 14px 0 0;
+    border-radius: 25px;
 
     @media #{$mobile} {
       width: 100%;
@@ -325,13 +335,25 @@ header {
   }
 
   > span > small {
-    display: inline-block;
     background: $white;
-    border-radius: 0 3px 3px 0;
     color: $darkBlue;
     font-size: inherit;
-    padding: 6px 6px 6px 7px;
+    padding: 15px 10px;
     text-align: center;
+
+    &:first-of-type {
+      min-width: 23px;
+      max-width: 23px;
+      padding: 8px 8px 8px 10px;
+
+      @media #{$mobile} {
+        min-width: 45px;
+      }
+    }
+
+    > img {
+      max-width: 100%;
+    }
 
     @media #{$mobile} {
       box-sizing: border-box;
@@ -402,6 +424,10 @@ header {
 
     @media #{$mobile} {
       padding: 5px 12px 10px;
+    }
+
+    h5 {
+      margin: 0;
     }
 
     tr {
