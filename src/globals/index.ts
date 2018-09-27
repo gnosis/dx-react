@@ -93,6 +93,12 @@ export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 :
 export const ETH_ADDRESS = '0x0'
 export const WETH_ADDRESS_RINKEBY = '0xc778417e063141139fce010982780140aa0cd5ab'
 
+export const WETH_TEMPLATE: Pick<DefaultTokenObject, Exclude<keyof DefaultTokenObject, 'address'>> = {
+  name: 'WRAPPED ETHER',
+  symbol: 'WETH',
+  decimals: 18,
+}
+
 export const EMPTY_TOKEN: DefaultTokenObject = {
   name: '' as TokenName,
   symbol: '' as TokenCode,
