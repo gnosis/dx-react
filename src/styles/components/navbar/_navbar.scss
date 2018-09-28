@@ -15,12 +15,12 @@ header {
 
   @media #{$mobile} {
     position: fixed;
-    border-bottom: 1px solid #5386b3;
+    border-bottom: 1px solid $greyTextDark;
     max-width: 100vw;
     padding: 0 15px;
     box-sizing: border-box;
     margin: 0 auto 74px;
-    background: $darkBlue;
+    background: $whiteShade;
     border: 0;
   }
 
@@ -107,7 +107,7 @@ header {
     overflow-y: auto;
 
     @media #{$tablet} {
-      box-shadow: 0 999px 0 999px rgba(26,73,119,.9);
+      // box-shadow: 0 999px 0 999px rgba(26,73,119,.9);
     }
 
     @media #{$mobile} {
@@ -211,9 +211,9 @@ header {
 
     @media #{$mobile} {
       font-size: 8px;
-      letter-spacing: 5px;
-      left: 21px;
-      bottom: -14px;
+      letter-spacing: 8px;
+      left: 34px;
+      right: 0;
     }
   }
 }
@@ -262,7 +262,7 @@ header {
     position: absolute;
     top: 59px;
     width: 100%;
-    background: #205790;
+    background: $greyBorder;
     right: 0;
     flex: none;
     max-width: initial;
@@ -314,7 +314,6 @@ header {
       justify-content: space-between;
       border: 0;
       border-radius: 0;
-      color: $darkBlue;
       margin: 0 15px;
       padding: 0 10px 0 0;
       font-size: 14px;
@@ -381,7 +380,6 @@ header {
 
     @media #{$mobile} {
       box-sizing: border-box;
-      color: $white;
       border-radius: 0;
       width: auto;
       background: transparent;
@@ -403,7 +401,7 @@ header {
       text-overflow: ellipsis;
       overflow: hidden;
       border-radius: 0;
-      color: $white;
+      margin-right: auto;
       padding: 0;
       font-family: $mono;
       font-size: 13px;
@@ -873,18 +871,17 @@ header {
   @media #{$mobile} {
     position: absolute;
     top: 104px;
-    background: $greyLight;
+    background: #c0c4cc;
     width: 100%;
     left: 0;
     justify-content: space-between;
     align-items: center;
     align-content: center;
     height: 32px;
-    color: $darkBlue;
+    color: $blackShade;
     padding: 0 15px;
     box-sizing: border-box;
     text-align: center;
-    border-top: 1px solid $white;
     display: flex;
   }
 

@@ -82,8 +82,8 @@ $x: "\2715"; // $x: "✕";
 // BRAND SETTINGS
 $logoWidth: 144px;                // Logo Width on tablet and greater
 $logoHeight: 52px;                // Logo Height on tablet and greater
-$logoWidth_mobile: 90px;          // Logo Width on mobile viewport
-$logoHeight_mobile: 18px;         // Logo height on mobile viewport
+$logoWidth_mobile: auto;          // Logo Width on mobile viewport
+$logoHeight_mobile: 42px;         // Logo height on mobile viewport
 $font: 'SpaceMono', verdana;      // Brand font
 $brandPrimary: $blue;             // Primary color
 $brandPrimaryShade: $blueShade;   // Primary color
