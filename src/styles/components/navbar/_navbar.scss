@@ -44,9 +44,9 @@ header {
   > div {
     width: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     margin: 10px auto 0;
-    padding: 0 30px;
+    padding: 0 30px 0 0;
 
     @media #{$tablet} {
       padding: 0 35px;
@@ -70,12 +70,15 @@ header {
 
   > div > .navParent {
     .navShadow {
-      position: absolute;
+      position: fixed;
       left: 0;
       right: 0;
       top: 0;
       bottom: 0;
-      background-color: rgba(26,73,119,.9);
+      background-color: $blackShade;
+      opacity: 0.9;
+      height: 100vh;
+      width: 100vw;
     }
 
     .buttonExit {
@@ -131,10 +134,20 @@ header {
     }
 
     > p {
-      color: white;
-      max-width: 60%;
-      margin: 5px auto;
+      color: $white;
       text-align: center;
+      border-top: 1px solid #61646d;
+      width: 100%;
+      padding: 20px;
+      margin: 20px auto;
+      font-size: 1.3em;
+      box-sizing: border-box;
+      line-height: 1.5;
+
+      > a {
+        text-decoration: underline;
+        color: $white;
+      }
     }
 
     > a {
@@ -170,9 +183,9 @@ header {
 }
 
 .logo {
-  background: url('#{$images}dutchx_logo.svg') no-repeat center / contain;
-  width: 130px;
-  height: 35px;
+  background: url('#{$brandImages}logo.svg') no-repeat center / contain;
+  width: $logoWidth;
+  height: $logoHeight;
   border: 0;
   margin-right: auto;
   position: relative;
@@ -182,19 +195,19 @@ header {
     left: 0;
     right: 0;
     margin: auto;
-    width: 90px;
-    height: 18px;
+    width: $logoWidth_mobile;
+    height: $logoHeight_mobile;
   }
 
   &.rinkeby::before {
     content: "RINKEBY";
     position: absolute;
-    bottom: -11px;
-    color: $greyBorder;
-    left: 31px;
+    bottom: 0;
+    color: $blackShade;
+    left: 35px;
     text-align: center;
     font-size: 9px;
-    letter-spacing: 9px;
+    letter-spacing: 11px;
 
     @media #{$mobile} {
       font-size: 8px;
@@ -222,13 +235,13 @@ header {
     content: "MENU";
     display: block;
     position: absolute;
-    bottom: -2px;
-    left: -1px;
+    bottom: -3px;
+    left: 0;
     font-size: 8px;
-    color: white;
-    font-weight: $bold;
+    color: $blackShade;
+    font-weight: $normal;
     letter-spacing: 1px;
-    font-family: $montserrat;
+    font-family: $verdana;
   }
 }
 
@@ -238,6 +251,7 @@ header {
   align-items: center;
   position: relative;
   cursor: pointer;
+  outline: 0;
 
   .mobileOpen {
     height: auto;
@@ -284,17 +298,13 @@ header {
     box-sizing: border-box;
     padding: 0;
     margin: 0 14px 0 0;
-    max-height: 24px;
-    
-    overflow: hidden;
-
-    font-size: 10px;
+    height: 24px;
+    font-size: 1em;
     font-style: normal;
     font-weight: $normal;
-    color: $white;
-    
+    color: $whiteShade;
     line-height: 1;
-    border: 1px solid $white;
+    border: 1px solid $greyBorder;
     border-radius: 25px;
 
     @media #{$mobile} {
@@ -318,7 +328,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       transition: all .3s ease-in-out;
       right: -16px;
@@ -335,16 +345,27 @@ header {
   }
 
   > span > small {
-    background: $white;
-    color: $darkBlue;
+    background: $greyBorder;
+    color: $blackShade;
     font-size: inherit;
-    padding: 15px 10px;
+    padding: 0 10px;
     text-align: center;
+    height: 100%;
+    box-sizing: border-box;
+    line-height: 2;
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
 
     &:first-of-type {
-      min-width: 23px;
-      max-width: 23px;
-      padding: 8px 8px 8px 10px;
+      padding: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 25px;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 25px;
+      border-top-left-radius: 25px;
 
       @media #{$mobile} {
         min-width: 45px;
@@ -353,6 +374,9 @@ header {
 
     > img {
       max-width: 100%;
+      object-fit: contain;
+      height: inherit;
+      margin: 0 6px;
     }
 
     @media #{$mobile} {
@@ -368,9 +392,10 @@ header {
   > span > code {
     padding: 5px 10px;
     display: inline-block;
-    font-size: 11px;
+    font-size: 1.1em;
+    line-height: 1.5;
     background: transparent;
-    color: white;
+    color: $blackShade;
     font-family: inherit;
 
     @media #{$mobile} {
@@ -501,7 +526,7 @@ header {
   &:hover > div {
     @media #{$medium-and-up} {
       height: auto;
-      min-height: 50px;
+      min-height: 150px;
       opacity: 1;
     }
   }
@@ -523,13 +548,14 @@ header {
 .menuAuctions {
   margin-left: 10px;
   font-size: 10px;
-  color: $white;
+  color: $greyText;
   line-height: 1;
   font-style: normal;
   position: relative;
   cursor: pointer;
   height: 24px;
   font-weight: $bold;
+  outline: 0;
 
   .mobileOpen {
     height: auto;
@@ -615,7 +641,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       right: 0;
       top: 0;
@@ -836,7 +862,7 @@ header {
 .menuFeeBalance {
   font-size: 10px;
   font-weight: bold;
-  color: $white;
+  color: $blackShade;
   line-height: 1;
   height: 24px;
   display: flex;
@@ -883,6 +909,7 @@ header {
     text-transform: capitalize;
     word-wrap: break-word;
     min-width: 50px;
+    font-weight: $normal;
 
     @media #{$mobile} {
       min-width: initial;

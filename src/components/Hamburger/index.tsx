@@ -48,8 +48,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           {/*  <a href={URLS.MARKET_MAKERS} target="_blank" onClick={this.handleClick}> Market Makers </a>
           <a href={URLS.LISTING_A_TOKEN} target="_blank" onClick={this.handleClick}> Listing a Token </a> */}
           <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
-          <p><i>For</i> Market Makers & Listing a Token <i>visit</i>:</p>
-          <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" onClick={this.handleClick}> Devs & API </a>
+          <p><i>For</i> Market Makers & Listing a Token <i>visit</i>: <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer" onClick={this.handleClick}> Devs & API </a></p>
 
           {document.body.classList.contains('THEME') && <Link to="" onClick={() => document.body.classList.toggle('RETROX')}> THEME ON/OFF </Link>}
         </nav>

@@ -48,33 +48,26 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     </p>
     {txData &&
       <div className="modalTXDataDiv">
-        <ul>
-            <li>{`Total participation: ${txData.sellAmount}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
-            <li>{`Fee level: ${txData.feeRatio}%`}</li>
-            {txData.useOWL && <li>{`Fees paid in OWL: ${(((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS)}OWL (=${((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name})`}</li>}
-            <li>{`Fees paid in ${txData.tokenA.symbol || txData.tokenA.name}: ${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
-            <li>{`Amount deposited into auction: ${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</li>
-        </ul>
+        <span>Total participation:<hr /><strong>{`${txData.sellAmount}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Fee level:<hr /><strong>{`${txData.feeRatio}%`}</strong></span>
+        {txData.useOWL && <span>Fees paid in OWL:<hr /><strong>{`${(((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS)}OWL (=${((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name})`}</strong></span>}
+        <span>Fees paid in {`${txData.tokenA.symbol || txData.tokenA.name}`}:<hr /><strong>{`${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Amount deposited into auction:<hr /><strong>{`${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Amount deposited:<hr /><strong>{`${txData.sellAmount} (without fees applied)`}</strong></span>
+            {(txData.tokenA.symbol || txData.tokenA.name) &&
+            <span>Token depositing:<hr /><strong>{`${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</strong></span>
+            }
+            <span>Deposit token address:<hr /><strong>{`${txData.tokenA.address}`}</strong></span>
+            {(txData.tokenB.symbol || txData.tokenB.name) &&
+            <span>Token receiving:<hr /><strong>{`${txData.tokenB.symbol || txData.tokenB.name}${(txData.tokenB.name && txData.tokenB.symbol) && ' (' + txData.tokenB.name + ')'}`}</strong></span>
+            }
+            <span>Receiving token address:<hr /><strong>{`${txData.tokenB.address}`}</strong></span>
       </div>
     }
     {txData &&
       <>
         <p className="modalHeaderDescriptor">Processing the transaction may take a while.</p>
-        <div className="modalTXDataDiv">
-          <ul>
-            <li>{`Amount deposited:    ${txData.sellAmount} (without fees applied)`}</li>
-            {(txData.tokenA.symbol || txData.tokenA.name) &&
-            <li>{`Token depositing:  ${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</li>
-            }
-            <li>{`Deposit token address:  ${txData.tokenA.address}`}</li>
-            <br />
-            {(txData.tokenB.symbol || txData.tokenB.name) &&
-            <li>{`Token receiving:  ${txData.tokenB.symbol || txData.tokenB.name}${(txData.tokenB.name && txData.tokenB.symbol) && ' (' + txData.tokenB.name + ')'}`}</li>
-            }
-            <li>{`Receiving token address:  ${txData.tokenB.address}`}</li>
-            <li>Verify receiving token validity via EtherScan: <a target="_blank" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></li>
-          </ul>
-        </div>
+        <p>Verify receiving token validity via EtherScan:<br/><a target="_blank" rel="noopener noreferrer" href={`${network2URL[txData.network]}token/${txData.tokenB.address}`}>{`${network2URL[txData.network]}token/${txData.tokenB.address}`}</a></p>
       </>
     }
     {error &&
@@ -134,12 +127,9 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
     </div>
     {footer &&
       <p className="modalFooter">
-        <i>
-          {footer.msg || null}
-          <br/>
-          <br/>
-          For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank">{footer.urlMsg || ' linked'}</a>  or <a href="https://tokenallowance.io/" target="_blank">here</a> about token allowance.
-        </i>
+        {footer.msg || null}
+        <br/>
+        For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank" rel="noopener noreferrer">{footer.urlMsg || ' linked'}</a>  or <a href="https://tokenallowance.io/" target="_blank" rel="noopener noreferrer">here</a> about token allowance.
       </p>}
   </div>
 
@@ -154,7 +144,7 @@ const disabledReasons = {
         <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region.</p>
         <br />
         <br />
-        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
+        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
       </div>,
   },
   networkblock: {
@@ -164,7 +154,7 @@ const disabledReasons = {
       <p>{`Make sure you’re connected to the ${network}.`}</p>
       <br />
       <br />
-      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
+      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
     </div>,
   },
 }

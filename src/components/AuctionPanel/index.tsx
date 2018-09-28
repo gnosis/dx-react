@@ -54,7 +54,7 @@ const AuctionPanel: React.SFC<AuctionPanelProps> = ({
 }) => (
   <AuctionContainer auctionDataScreen="status">
     <AuctionHeader backTo="/wallet">
-      Auction URL: <a href={typeof window !== 'undefined' && window.location.hash || ''} target="_blank">
+      Auction URL: <a href={typeof window !== 'undefined' && window.location.hash || ''}>
         {typeof window !== 'undefined' ? window.location.hash : `https://www.dutchx.pm${url}/`}
       </a> <img src={copySvg} title="copy URL" onClick={copyText(window.location.toString())}/>
     </AuctionHeader>

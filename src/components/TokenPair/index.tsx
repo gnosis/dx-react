@@ -46,7 +46,7 @@ const TokenPair: React.SFC<TokenPairProps> = ({
       {/* On click of this button, it should switch the token pair */}
       {needsTokens
         ? <span className="tokenPairSwitcher" onClick={swapTokensInAPairAndReCalcClosingPrice}></span>
-        : <span>Upload a token list before picking a token pair. Read more in our <a href="#" target="_blank">FAQ</a> on how it works.</span>
+        : <span>Upload a token list before picking a token pair. Read more in our <a href="#" target="_blank" rel="noopener noreferrer">FAQ</a> on how it works.</span>
       }
 
       {buyToken ?

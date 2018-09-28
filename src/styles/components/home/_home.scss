@@ -15,10 +15,10 @@
   }
 
   h1 {
-    font-family: inherit;
+    font-family: $font;
     font-weight: $bold;
-    font-size: 38px;
-    color: $white;
+    font-size: 3.8em;
+    color: $blackShade;
     line-height: 1.2;
     margin: 0 0 30px;
     display: block;
@@ -39,6 +39,21 @@
       text-align: center;
       margin: 0 auto 15px;
     }
+  }
+
+  h1 > div {
+    font-weight: $bold;
+    font-style: normal;
+    color: $brandPrimary;
+    letter-spacing: -1px;
+    display: block;
+  }
+
+  h1 > span {
+    font-weight: $normal;
+    letter-spacing: -1px;
+    display: block;
+    font-size: .85em;
   }
 
   > div {
@@ -82,8 +97,8 @@
 
         > li::before {
           content: counter(item);
-          color: $white;
-          background: $blue;
+          color: $blackShade;
+          background: $greyBorder;
           width: 35px;
           height: 35px;
           text-align: center;
@@ -155,22 +170,22 @@
       }
     }
 
-    > p, > .textSquareInnerContainer {
+    > p, 
+    > .textSquareInnerContainer {
       font-family: inherit;
-      font-size: 16px;
-      color: $white;
+      font-size: 1.5em;
+      color: $greyText;
       line-height: 1.4;
-      font-weight: $lighter;
+      font-weight: $normal;
 
       @media #{$tablet} {
-        font-size: 16px;
+        font-size: 1.6em;
         width: 100%;
       }
 
       @media #{$mobile} {
         display: block;
         width: 100%;
-        font-size: 15px;
         text-align: center;
         padding: 0 20px;
       }
@@ -188,29 +203,34 @@
 
 // state: no wallet connected
 .noWallet {
-  background: rgba(255,255,255,0.08);
+  background: rgba(82, 97, 121, 0.05);
   min-height: 440px;
-  border: 2px dotted $white;
+  border: 2px dotted $grey;
   padding: 0 50px;
   text-align: center;
   display: flex;
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
+  font-family: $font;
 
   h2 {
     width: 100%;
     font-family: inherit;
     font-weight: $normal;
-    font-size: 22px;
-    color: $white;
+    font-size: 2.2em;
+    color: $blackShade;
     line-height: 1.2;
     margin: 0 auto 30px;
 
     @media #{$mobile} {
-      font-size: 18px;
+      font-size: 1.8em;
+    }
 
-      > strong {
+    > strong {
+      color: $brandPrimary;
+
+      @media #{$mobile} {
         display: block;
       }
     }
@@ -233,8 +253,9 @@
   align-items: center;
   flex-wrap: wrap;
   position: relative;
-  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
-  border: 2px solid transparent;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  // border: 2px solid transparent;
+  border: none;
   background: $white;
   min-height: 460px;
 
@@ -242,8 +263,9 @@
     max-width: 100%;
     border-radius: 0;
     margin: 0 auto 40px;
-    align-items: center;
     padding: 25px 10px 0;
+    align-items: flex-start;
+    min-height: auto;
 
     .tokenItem {
       padding: 5px;
@@ -266,11 +288,11 @@
   }
 
   > h2 {
-    font-family: inherit;
+    font-family: $font;
     margin-top: auto;
-    font-size: 24px;
+    font-size: 2.4em;
     font-weight: $bold;
-    color: $darkBlue;
+    color: $blackShade;
     letter-spacing: 1px;
     line-height: 1.5;
     text-align: center;
@@ -278,6 +300,7 @@
 
     @media #{$mobile} {
       line-height: 1;
+      margin: 0 auto 15px;
     }
   }
 
@@ -351,7 +374,8 @@
 
   @media #{$mobile} {
     justify-content: space-between;
-    margin: 5px auto 10px;
+    margin: 20px auto;
+    max-height: initial;
   }
 
   &-switch {
@@ -480,7 +504,7 @@
     }
 
     .tokenOverlay & {
-      border: 1px solid $blue;
+      border: 1px solid $brandPrimary;
     }
 
     .tokenOverlay &,
@@ -490,7 +514,7 @@
       }
 
       > code {
-        background: $blue;
+        background: $brandPrimary;
       }
     }
   }
@@ -506,10 +530,10 @@
   }
 
   > strong {
-    font-family: inherit;
-    font-size: 14px;
-    color: $darkBlue;
-    letter-spacing: 1px;
+    font-family: $font;
+    font-size: 1.4em;
+    color: $blackShade;
+    letter-spacing: 3px;
     line-height: 1;
     font-weight: $bold;
     width: 100%;
@@ -519,8 +543,8 @@
 
   > big {
     font-family: inherit;
-    font-size: 16px;
-    color: $darkBlue;
+    font-size: 1.6em;
+    color: $blackShade;
     letter-spacing: 0;
     line-height: 1.4;
     margin: 0 5px 0 0;
@@ -537,7 +561,7 @@
   }
 
   > code {
-    background: $blue;
+    background: $blackShade;
     border-radius: 2px;
     font-family: inherit;
     font-weight: $bold;
@@ -563,7 +587,7 @@
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $darkBlue transparent transparent transparent;
+      border-color: $blackShade transparent transparent transparent;
       position: absolute;
       right: -14px;
       bottom: 8px;
@@ -593,9 +617,9 @@
 
   > p {
     font-family: inherit;
-    font-weight: $bold;
+    font-weight: bold;
     font-size: 13px;
-    color: $blue;
+    color: $brandPrimary;
     word-wrap: break-word;
     letter-spacing: 0.5px;
     line-height: 1;
@@ -626,6 +650,7 @@
   padding: 8px 5px;
   width: 100%;
   text-align: center;
+  font-size: 1.2em;
 }
 
 .tokenOverlay {
@@ -662,7 +687,7 @@
       width: 100%;
       background: $yellow;
       color: $darkRed;
-      font-size: 9px;
+      font-size: 1em;
       padding: 6px;
       margin: 10px auto 0;
       line-height: 1.4;

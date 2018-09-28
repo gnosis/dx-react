@@ -3,15 +3,12 @@
   align-items: center;
   justify-content: center;
   flex-flow: column nowrap;
-
-  background-color: #000000ba;
-  color: white;
-    
+  background: $modalColor;
+  color: $white;
   width: 100%;
   height: 100vh;
     
   > h1 {
-    color: #fff;
     margin: 20px 0;
   }
     
@@ -33,17 +30,15 @@
       flex: 1 1 26%;
       justify-content: center;
       align-items: center;
-      
       text-align: center;
-      
       height: 100px;
       min-width: 220px;
       border: 2px solid black;
       cursor: pointer;
             
-      &:hover {
-        background: #025aa7;
-      }
+        &:hover {
+          background: #025aa7;
+        }
 
       transition: all 0.2s ease-in;
 

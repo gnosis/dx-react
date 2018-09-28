@@ -2,7 +2,9 @@
 @import "core/_base";
 @import "core/_helper";
 @import "core/_fonts";
+@import "core/_brand";
 @import "core/_themes";
+@import "core/_animations";
 
 // Components
 @import "components/navbar/_navbar";
@@ -21,3 +23,5 @@
 @import "components/appValidator/_appValidator";
 @import "components/cookies/_cookies";
 @import "components/walletChooser/_walletChooser";
+@import "components/footer/_footer";
+

@@ -172,8 +172,8 @@ class AppValidator extends React.Component<any> {
 
     return (
       <>
-        { (!online && !loading) && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
-        { ((!set_up_complete && !loading) || (!this.props.unlocked && !loading)) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
+        { (!online && !loading) && <div className="offlineBanner"><span>App is currently offline - please your check internet connection and refresh the page </span></div> }
+        { ((!set_up_complete && !loading) || (!this.props.unlocked && !loading)) && online && <div className="offlineBanner"><span>{ error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </span></div> }
       </>
     )
   }
