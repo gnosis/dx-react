@@ -76,7 +76,7 @@ export enum AuctionStatus {
   ENDED = 'ended',
 }
 
-export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
+export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET', PRIVATE_KEY_WALLET = 'PRIVATE_KEY_WALLET' }
 export enum ProviderName {
   METAMASK = 'METAMASK',
   MIST = 'MIST',
@@ -85,6 +85,7 @@ export enum ProviderName {
 
   LEDGER = 'LEDGER',
   INJECTED_WALLET = 'INJECTED_WALLET',
+  PRIVATE_KEY_WALLET = 'PRIVATE_KEY_WALLET',
 }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
