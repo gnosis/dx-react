@@ -16,12 +16,14 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   <article>
     <h1>How it works</h1>
 
+    <section className="drawer" id="what-is-slowtrade" onClick={handleClick}>
     <h3>What is slow.trade</h3>
     <span>
       <p>
         Slow.trade is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
       </p>
     </span>
+    </section>
 
     <section className="drawer" id="what-is-dutchx" onClick={handleClick}>
       <h3>What is the DutchX then?</h3>
@@ -70,7 +72,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-        Yes, absolutely! The DutchX Protocol has an alternative interface available on the Rinkeby Testnet: <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank">DutchX Interface</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+        Yes, absolutely! The DutchX Protocol has an alternative interface available on the Rinkeby Testnet: <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank" rel="noopener noreferrer">DutchX Interface</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
         </p>
       </span>
     </section>
@@ -143,7 +145,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         You only need three things:
         </p><ol>
 
-        <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/">Metamask</a> is supported.</li>
+        <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">Metamask</a> is supported.</li>
         <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on slow.trade, click on the <em>deposit</em> or <em>receive</em> token.</li>
         <li>ETH in your Wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
 
@@ -296,7 +298,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     </section>
     <br/>
     <p>
-      Want to bid in an auction? This is currently only possible for technical participants on the DutchX Protocol level: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+      Want to bid in an auction? This is currently only possible for technical participants on the DutchX Protocol level: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
     </p>
 
   </article>
@@ -320,7 +322,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
         <p>
           To see which tokens are currently supported on slow.trade, check out the token list by clicking<strong> on either <em>Deposit</em> </strong>or<strong> <em>Receive</em> token</strong>. All tokens on the list can always be traded with ETH (or wrapped ETH).
           <br />
-          Unrelated to our offering, there may be more tokens available on the smart contract level. Technical readers may refer to the documentation linked at <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+          Unrelated to our offering, there may be more tokens available on the smart contract level. Technical readers may refer to the documentation linked at <a href={URLS.DUTCHX_DEVS_AND_API}>Devs &amp; API</a>.
         </p>
       </span>
     </section>
@@ -329,7 +331,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Which token pairs can be traded on the DutchX Protocol?</h3>
       <span>
         <p>
-          Although we  only support the tokens listed on our slow.trade Platform, we note, for information purposes only, that all tokens compatible with the ERC20 standard may be traded on the DutchX Protocol. This is independent of and unrelated to us, d.ex OÜ and the services offered on our slow.trade Platform. For more and very detailed information, click on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+          Although we  only support the tokens listed on our slow.trade Platform, we note, for information purposes only, that all tokens compatible with the ERC20 standard may be traded on the DutchX Protocol. This is independent of and unrelated to us, d.ex OÜ and the services offered on our slow.trade Platform. For more and very detailed information, click on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
         </p>
       </span>
     </section>
@@ -1119,7 +1121,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>What price feed is the DutchX Protocol using?</h3>
       <span>
         <p>
-          The DutchX Protocol is built in such a way that only <strong>one</strong> external price feed is used, namely the ETH/USD price feed. This feed is derived from the <a href="https://developer.makerdao.com/feeds/" target="_blank">MakerDAO</a> on-chain price feed (which is a median of many price feeds).
+          The DutchX Protocol is built in such a way that only <strong>one</strong> external price feed is used, namely the ETH/USD price feed. This feed is derived from the <a href="https://developer.makerdao.com/feeds/" target="_blank" rel="noopener noreferrer">MakerDAO</a> on-chain price feed (which is a median of many price feeds).
         </p>
       </span>
     </section>
@@ -1139,7 +1141,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           There is currently no interface for participating as a bidding. If there is the demand for it, a bidder interface will be created in the future.
           <br />
-          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
         </p>
       </span>
     </section>
@@ -1188,7 +1190,7 @@ export const Help = ({ network }: ContentPages) =>
     <section className="content">
       <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
       <br/>
-      For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank">Devs & API</a>.
+      For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
       {network === 'MAIN' &&
       <>
         <br/><br/>
