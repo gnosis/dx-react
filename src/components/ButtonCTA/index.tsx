@@ -8,6 +8,9 @@ interface ButtonCTAProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 class ButtonCTA extends PureComponent<ButtonCTAProps> {
+  static defaultProps: Partial<ButtonCTAProps> = {
+    className: 'blue',
+  }
 
   onClick: ButtonCTAProps['onClick'] = (e) => {
     const { onClick } = this.props
