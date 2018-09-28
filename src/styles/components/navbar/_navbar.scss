@@ -10,7 +10,7 @@ header {
   display: flex;
   align-items: center;
   max-width: $max-width;
-  margin: 0 auto auto;
+  margin: 0 auto;
   z-index: 99;
 
   @media #{$mobile} {

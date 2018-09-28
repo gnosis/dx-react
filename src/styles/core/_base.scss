@@ -70,7 +70,6 @@ img {
 
 section.home, section.auction {
   align-items: center;
-  margin: 20px auto;
 
   @media #{$mobile} {
     height: auto;
@@ -78,6 +77,7 @@ section.home, section.auction {
 }
 
 section.home {
+  margin: 20px auto;
   @media #{$desktop} {
     padding: 0 30px 90px;
   }
@@ -92,6 +92,10 @@ section.home {
 
     margin-top: 175px;
   }
+}
+
+section.auction {
+  margin: 40px auto 20px;
 }
 
 .noScroll {
