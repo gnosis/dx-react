@@ -14,7 +14,7 @@ $modal-max-width: 800px;
   box-sizing: border-box;
 
   @media #{$mobile} {
-    padding: 25px 25px 0;
+    padding: 45px 25px;
     overflow-y: scroll;
   }
 
@@ -53,6 +53,7 @@ $modal-max-width: 800px;
 
   > p {
     font-size: 1.2em;
+    word-break: break-word;
   }
 
   > a,
@@ -194,6 +195,11 @@ $modal-max-width: 800px;
       margin: 0 0 10px;
       font-size: 1em;
       word-break: break-all;
+
+      @media #{$mobile} { 
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
     }
 
     > span:first-of-type {
@@ -222,6 +228,10 @@ $modal-max-width: 800px;
       border-bottom: 1px dashed $greyBorder;
       flex: 1;
       margin: 12px 12px 0;
+
+      @media #{$mobile} {  
+        display: none;
+      }
     }
   }
 }
