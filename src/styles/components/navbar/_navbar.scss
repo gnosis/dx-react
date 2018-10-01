@@ -256,6 +256,7 @@ header {
   .mobileOpen {
     height: auto;
     opacity: 1;
+    box-shadow: 0 999px 0 999px $modalColorOpacity;
   }
 
   @media #{$mobile} {
@@ -436,6 +437,7 @@ header {
       top: 105px;
       box-sizing: border-box;
       border-radius: 0;
+      padding-bottom: 50px;
     }
   }
 
