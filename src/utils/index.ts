@@ -183,6 +183,7 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 }
 
 export const web3CompatibleNetwork = async () => {
+  await windowLoaded
   if (typeof window === 'undefined' || !window.web3) return 'UNKNOWN'
 
   let netID
@@ -200,6 +201,7 @@ export const web3CompatibleNetwork = async () => {
     })
   } else {
     // 0.2X.xx API
+    // without windowLoaded web3 can be injected but network id not yet set
     netID = window.web3.version.network
   }
 
