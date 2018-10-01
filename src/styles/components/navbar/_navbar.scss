@@ -254,9 +254,11 @@ header {
   outline: 0;
 
   .mobileOpen {
-    height: auto;
-    opacity: 1;
-    box-shadow: 0 999px 0 999px $modalColorOpacity;
+    @media #{$mobile} {
+      height: auto;
+      opacity: 1;
+      box-shadow: 0 999px 0 999px $modalColorOpacity;
+    }
   }
 
   @media #{$mobile} {
@@ -498,6 +500,7 @@ header {
     font-size: 1.2em;
     color: $greyText;
     font-weight: bold;
+    margin: 0 auto;
   }
 
   > div > table {
@@ -620,10 +623,13 @@ header {
   font-weight: $bold;
   outline: 0;
 
+  
   .mobileOpen {
-    height: auto;
-    opacity: 1;
-    visibility: initial;
+    @media #{$mobile} {
+      height: auto;
+      opacity: 1;
+      visibility: initial;
+    }
   }
 
   @media #{$mobile} {
