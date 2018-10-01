@@ -418,7 +418,7 @@ $headerHeight: 58px;
   > [data-coin] {
     height: 70px;
     width: 70px;
-    background-size: 44px;
+    background-size: 46px 46px;
     display: inline-block;
     margin: 0 auto 10px;
   }
@@ -432,7 +432,7 @@ $headerHeight: 58px;
   min-width: 90%;
   align-items: center;
   padding: 15px;
-  
+
   > span {
     flex: 0 1 auto;
     text-align: center;
