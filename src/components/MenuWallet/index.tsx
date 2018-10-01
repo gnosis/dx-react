@@ -62,7 +62,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
             <img src={provider2SVG(providerName)} />
             <p>
               <strong>{providerName}</strong>
-              <i>MAINNET</i>
+              <i>{network}</i>
             </p>
             <code>{account}</code>
           </span>

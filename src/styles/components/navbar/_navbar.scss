@@ -442,19 +442,32 @@ header {
     display: flex;
     flex-wrap: wrap;
     background: $greyLight;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      background: url('#{$images}settings.svg') no-repeat center / contain;
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
   }
 
   > div > span > img {
-    background-color: $whiteShade;
+    background-color: $white;
     border-radius: 75px;
     width: 75px;
     height: 75px;
     padding: 10px;
     margin: 0 auto;
+    position: relative;
   }
 
   > div > span > p {
     width: 100%;
+    text-align: center;
   }
 
   > div > span > p > strong {
@@ -468,17 +481,19 @@ header {
     font-style: normal;
     background: $brandPrimaryShade;
     color: $white;
+    text-transform: uppercase;
     padding: 2px 8px;
     box-sizing: border-box;
     border-radius: 30px;
-    font-size: 1.1em;
+    font-size: 1em;
     letter-spacing: 1px;
     margin: 0 0 0 5px;
   }
 
-  > div > span > p > code {
+  > div > span > code {
     font-size: 1.2em;
     color: $greyText;
+    font-weight: bold;
   }
 
   > div > table {
