@@ -437,10 +437,36 @@ header {
     }
   }
 
+  > div > span {
+    padding: 20px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    background: $greyLight;
+  }
+
+  > div > span > img {
+    background-color: $whiteShade;
+    border-radius: 75px;
+    width: 75px;
+    height: 75px;
+    padding: 10px;
+    margin: 0 auto;
+  }
+
+  > div > span > strong {
+    font-weight: bold;
+    font-size: 1.3em;
+    color: $brandPrimaryShade;
+  }
+
+  > div > span > code {
+    font-size: 1.2em;
+    color: $greyText;
+  }
+
   > div > table {
     width: 100%;
     text-align: left;
-    font-size: 12px;
     padding: 0;
     line-height: 1;
     font-weight: $normal;
@@ -455,9 +481,14 @@ header {
 
     tr {
       text-transform: uppercase;
-      font-size: 11px;
+      font-size: 12px;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
+
+      > td:first-of-type {
+        font-weight: bold;
+        color: $blackShade;
+      }
 
       @media #{$mobile} {
         font-size: 12px;
@@ -473,22 +504,20 @@ header {
 
       tr {
         &:hover {
-          background: #f2f3f5;
-          color: $darkBlue;
+          background: $greyLight;
+          color: $brandPrimaryShade;
         }
       }
     }
 
     thead {
       tr {
-        font-size: 10px;
-        letter-spacing: 1px;
-        font-weight: $bold;
-        color: $darkBlue;
+        font-size: 11px;
+        font-weight: bold;
+        color: $brandPrimaryShade;
 
         > th {
           border-bottom: 1px solid $greyBorder;
-          letter-spacing: 2px;
         }
       }
     }
@@ -684,6 +713,7 @@ header {
     height: 11px;
     margin: -11px 0 0 26px;
     background: $orange;
+    color: $white;
     border-radius: 50px;
 
     > img {
@@ -699,7 +729,7 @@ header {
     > span {
       font-size: 9px;
       font-weight: $bold;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       padding: 0 1px;
 
       @media #{$mobile} {
@@ -759,7 +789,6 @@ header {
   > div > table {
     width: 100%;
     text-align: left;
-    font-size: 12px;
     padding: 0;
     line-height: 1;
 
@@ -768,7 +797,7 @@ header {
     }
 
     tr {
-      color: black;
+      color: $blackShade;
       text-transform: uppercase;
       font-size: 11px;
       cursor: pointer;
@@ -786,13 +815,11 @@ header {
     thead {
       tr {
         font-size: 10px;
-        letter-spacing: 1px;
         font-weight: $bold;
-        color: $darkBlue;
+        color: $brandPrimaryShade;
 
         > th {
           border-bottom: 1px solid $greyBorder;
-          letter-spacing: 2px;
         }
       }
     }
@@ -855,6 +882,10 @@ header {
       max-height: initial;
     }
   }
+}
+
+.sectionLink {
+  font-weight: bold;
 }
 
 .menuFeeBalance {

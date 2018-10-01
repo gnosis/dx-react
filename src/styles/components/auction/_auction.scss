@@ -469,6 +469,19 @@ $headerHeight: 58px;
     margin: 2px auto 0;
   }
 
+  > span > big.message {
+    background: $greyLight;
+    color: $greyText;
+    font-size: 1.6em;
+    padding: 6px 15px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    line-height: 1;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
   > span:nth-of-type(2) > big {
     &[data-status="planned"],
     &[data-status="initialising"] {

@@ -56,24 +56,13 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
         </span>
         {account && hasTokenBalances &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
-          <table>
-            <thead>
-              <tr>
-                <th>WALLET</th>
-                <th>ACCOUNT</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td onClick={this.changeWallet}>
-                  <h5><code>{providerName}</code></h5>
-                </td>
-                <td>
-                  <h5><code>{account}</code></h5>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <span onClick={this.changeWallet}>
+            <img src={provider2SVG(providerName)} />
+            <strong>{providerName}</strong>
+            <code>{account}</code>
+          </span>
+
           <Loader
           hasData={Object.keys(addressToSymbolDecimal).length > 0}
           message="Enable wallet"
