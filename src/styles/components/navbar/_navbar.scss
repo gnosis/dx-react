@@ -453,13 +453,30 @@ header {
     margin: 0 auto;
   }
 
-  > div > span > strong {
+  > div > span > p {
+    width: 100%;
+  }
+
+  > div > span > p > strong {
     font-weight: bold;
     font-size: 1.3em;
     color: $brandPrimaryShade;
   }
 
-  > div > span > code {
+  > div > span > p > i {
+    font-weight: normal;
+    font-style: normal;
+    background: $brandPrimaryShade;
+    color: $white;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    border-radius: 30px;
+    font-size: 1.1em;
+    letter-spacing: 1px;
+    margin: 0 0 0 5px;
+  }
+
+  > div > span > p > code {
     font-size: 1.2em;
     color: $greyText;
   }
