@@ -14,6 +14,7 @@ export interface WalletProps {
   dxBalances: TokenBalances,
   dxBalancesAvailable: boolean,
   hasTokenBalances: boolean,
+  network: string,
   providerName: ProviderName,
 
   setActiveProvider: (provider: any) => void;
@@ -41,7 +42,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, providerName, withdrawFromDutchX } = this.props
+    const { account, addressToSymbolDecimal, balance, network, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, providerName, withdrawFromDutchX } = this.props
     return (
       <div
         className="menuWallet"
