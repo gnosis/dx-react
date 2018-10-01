@@ -636,7 +636,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       right: -10px;
       top: 0;
@@ -801,6 +801,7 @@ header {
     transform: translateX(-50%);
     box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
     border: 2px solid transparent;
+    min-height: 120px;
     max-height: 660px;
     overflow-y: auto;
     transition: height .2s ease-in-out, opacity .2s ease-in-out;
