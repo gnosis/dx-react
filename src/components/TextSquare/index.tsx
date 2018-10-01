@@ -24,7 +24,7 @@ export const TextSquare: React.SFC = () =>
     Your order is automatically deposited into the next running auction - no strategy needed!
     <br/><br/>
 
-      <ButtonCTA to="/content/HowItWorks"><strong>Slow &amp; Fair -</strong>How it works</ButtonCTA>
+      <ButtonCTA to="/content/HowItWorks" className={null}><strong>Slow &amp; Fair -</strong>How it works</ButtonCTA>
     </div>
   </div>
 
