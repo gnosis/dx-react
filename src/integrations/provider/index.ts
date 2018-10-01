@@ -19,6 +19,9 @@ import { WalletProvider } from 'integrations/types'
 
 import { ETHEREUM_NETWORKS, networkById, network2RPCURL } from 'globals'
 
+import { store } from 'components/App'
+import { openModal } from 'actions'
+
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
 
@@ -112,12 +115,41 @@ const Providers = {
       const engine = new ProviderEngine()
 
       const customWalletSubprovider = new WalletSubprovider(wallet)
-      customWalletSubprovider.validateTransaction = function (txParams: any, cb: Function) {
-        console.warn('TCL: customWalletSubprovider.validateTransaction -> txParams', txParams)
-        // here, instead of prompt, use a modal and txParams to populate and show
-        // users what the fuuuuuck theyre signing, ayy
-        prompt("Please type: 'ACCEPT' and hit ok to approve transaction.")
-        cb()
+      customWalletSubprovider.validateTransaction = async function (txParams: any, cb: Function) {
+        console.log('TCL: initialize -> txParams', txParams)
+        try {
+          // here, instead of prompt, use a modal and txParams to populate and show
+          // users what the fuuuuuck theyre signing, ayy
+          const promisedChoice: Promise<string> = new Promise(accept => {
+            store.dispatch(openModal({
+              modalName: 'ApprovalModal',
+              modalProps: {
+                header: 'Private Key Transaction Confirmation',
+                body: `A blockchain transaction was detected. Please review transaction params below and confirm or cancel.
+                Transaction Parameters:
+                From: ${txParams.from}
+                To: ${txParams.to}
+                `,
+                buttons: {
+                  button2: {
+                    buttonTitle2: 'Confirm',
+                  },
+                  button1: {
+                    buttonTitle1: 'Cancel',
+                  },
+                },
+                onClick: accept,
+              },
+            }))
+          })
+          const choice = await promisedChoice
+
+          if (choice === 'MIN') throw new Error('User cancelled transaction.')
+          else return cb()
+        } catch (error) {
+          console.error(error)
+          throw error
+        }
       }
       engine.addProvider(customWalletSubprovider)
       engine.addProvider(new RpcSubprovider({ rpcUrl }))
