@@ -26,7 +26,7 @@ $defaultTokenSize_mobile: 36px 70px;
 }
 
 [data-coin="RDN"] {
-  background: url('#{$images}tokens/RDN.svg') no-repeat center;
+  background: url('#{$images}tokens/RDN.svg') no-repeat center / $defaultTokenSize;
 }
 
 [data-coin="REP"] {

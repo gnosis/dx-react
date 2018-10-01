@@ -434,9 +434,9 @@ header {
     will-change: height, opacity;
 
     @media #{$mobile} {
-      position: fixed;
+      position: absolute;
       width: 100%;
-      top: 105px;
+      top: 77px;
       box-sizing: border-box;
       border-radius: 0;
       padding-bottom: 50px;
@@ -501,6 +501,10 @@ header {
     color: $greyText;
     font-weight: bold;
     margin: 0 auto;
+
+    @media #{$mobile} { 
+      font-size: 1.1em;
+    }
   }
 
   > div > table {
