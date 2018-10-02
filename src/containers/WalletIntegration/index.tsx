@@ -31,6 +31,8 @@ interface WalletIntegrationState {
   noProvidersDetected: boolean;
   setupComplete: boolean;
   web3: any;
+
+  privateKey: string;
 }
 
 class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIntegrationState> {
@@ -40,6 +42,8 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
     noProvidersDetected: false,
     setupComplete: false,
     web3: undefined,
+
+    privateKey: undefined,
   } as WalletIntegrationState
 
   async componentDidMount() {
@@ -59,23 +63,23 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
 
   initiateAPI = async (web3: any) => {
     // interface with contracts & connect entire DX API
-    await connectContracts(web3.currentProvider)
-    return connectDXAPI(web3.currentProvider)
+    await connectContracts(web3.currentProvider, true)
+    return connectDXAPI(web3.currentProvider, true)
   }
 
-  setActiveAndInitProvider = async (providerInfo: string) => {
+  setActiveAndInitProvider = async (providerInfo: string, privateKey?: string) => {
     const { setActiveProvider } = this.props
-    const web3 = await Providers[providerInfo].initialize()
+    const web3 = await Providers[providerInfo].initialize(privateKey)
 
     setActiveProvider(providerInfo)
     this.setState({ web3 })
   }
 
-  initAppWithProvider = async (providerInfo: string) => {
+  initAppWithProvider = async (providerInfo: string, privateKey?: string) => {
     try {
       this.setState({ initialising: true, error: undefined })
       // initialize providers and return specific Web3 instances
-      await this.setActiveAndInitProvider(providerInfo)
+      await this.setActiveAndInitProvider(providerInfo, privateKey)
       // interface with contracts & connect entire DX API
       await this.initiateAPI(this.state.web3)
 
@@ -84,6 +88,14 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
       console.error(error)
       return this.setState({ error, initialising: false })
     }
+  }
+
+  handlePrivateKeyChange = ({ target: { value } }: any) => this.setState({ privateKey: value })
+  handlePrivateKeySubmit = async (e: any, provider: string) => {
+    e.preventDefault()
+
+    await this.initAppWithProvider(provider, this.state.privateKey)
+    return this.setState({ privateKey: undefined })
   }
 
   walletSelector = () => {
@@ -100,6 +112,22 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
               <div className={!this.state.initialising ? 'lightBlue' : ''}>
                 {Object.keys(Providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
                   const providerInfo = Providers[provider].providerName || provider
+                  // FOr PrivateKey wallet
+                  if (Providers[provider].keyName === 'PRIVATE_KEY_WALLET') {
+                    return (
+                      <div key={i}>
+                        <h4>{providerInfo}</h4>
+                        <br/>
+                        <form
+                          onSubmit={(e) => this.handlePrivateKeySubmit(e, provider)}
+                        >
+                          <input id="walletChooserInput" type="text" onChange={this.handlePrivateKeyChange}/>
+                          <button id="walletChooserSubmitButton" type="submit">Go</button>
+                        </form>
+                      </div>
+                    )
+                  }
+                  // FOr others
                   return (
                     <div
                       key={i}

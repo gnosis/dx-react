@@ -150,3 +150,18 @@ a.buttonCTA {
   width: 35%;
   max-width: 112px;
 }
+
+#walletChooserInput, #walletChooserSubmitButton {
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+}
+
+#walletChooserInput {
+  background: #0000007a;
+}
+
+#walletChooserSubmitButton {
+  background: black;
+}
