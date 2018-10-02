@@ -11,10 +11,10 @@ import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS, GAS_PRICE, GAS_LIMIT_TESTIN
 import { lastArrVal } from 'utils'
 
 let API: dutchXAPI
-export const dxAPI = /* (window as any).AP = */ async (provider?: Provider) => {
-  if (API) return API
+export const dxAPI = /* (window as any).AP = */ async (provider?: Provider, overwrite?: boolean) => {
+  if (API && !overwrite) return API
 
-  API = await initAPI(provider)
+  API = await initAPI(provider, overwrite)
   return API
 }
 
@@ -1136,10 +1136,12 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
   return auctionPairs
 }
 
-async function initAPI(provider: Provider): Promise<dutchXAPI> {
+async function initAPI(provider: Provider, overwrite?: boolean): Promise<dutchXAPI> {
   try {
     const [web3, Tokens, DutchX] = await Promise.all([
-      promisedWeb3(provider),
+      // overwrite is used to tell the API whether or not
+      // to overwrite the current provider (useful when changing wallets)
+      promisedWeb3(provider, overwrite),
       promisedTokens(),
       promisedDutchX(),
     ])
