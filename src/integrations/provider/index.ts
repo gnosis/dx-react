@@ -12,15 +12,12 @@ import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
 
 import { getTime } from 'api'
 
-import { promisify } from 'utils'
+import { promisify, customValidateTransaction } from 'utils'
 
 import { Balance } from 'types'
 import { WalletProvider } from 'integrations/types'
 
 import { ETHEREUM_NETWORKS, networkById, network2RPCURL } from 'globals'
-
-import { store } from 'components/App'
-import { openModal } from 'actions'
 
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -104,7 +101,7 @@ const Providers = {
       return this.walletAvailable = true
     },
 
-    initialize(privateKey: string = '0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d') {
+    initialize(privateKey: string) {
       if (!this.checkAvailability()) return
 
       const walletSetup = require('ethereumjs-wallet')
@@ -115,42 +112,9 @@ const Providers = {
       const engine = new ProviderEngine()
 
       const customWalletSubprovider = new WalletSubprovider(wallet)
-      customWalletSubprovider.validateTransaction = async function (txParams: any, cb: Function) {
-        console.log('TCL: initialize -> txParams', txParams)
-        try {
-          // here, instead of prompt, use a modal and txParams to populate and show
-          // users what the fuuuuuck theyre signing, ayy
-          const promisedChoice: Promise<string> = new Promise(accept => {
-            store.dispatch(openModal({
-              modalName: 'ApprovalModal',
-              modalProps: {
-                header: 'Private Key Transaction Confirmation',
-                body: `A blockchain transaction was detected. Please review transaction params below and confirm or cancel.
-                Transaction Parameters:
-                From: ${txParams.from}
-                To: ${txParams.to}
-                `,
-                buttons: {
-                  button2: {
-                    buttonTitle2: 'Confirm',
-                  },
-                  button1: {
-                    buttonTitle1: 'Cancel',
-                  },
-                },
-                onClick: accept,
-              },
-            }))
-          })
-          const choice = await promisedChoice
 
-          if (choice === 'MIN') throw new Error('User cancelled transaction.')
-          else return cb()
-        } catch (error) {
-          console.error(error)
-          throw error
-        }
-      }
+      customWalletSubprovider.validateTransaction = customValidateTransaction
+
       engine.addProvider(customWalletSubprovider)
       engine.addProvider(new RpcSubprovider({ rpcUrl }))
       engine.addProvider(new FetchSubprovider({ rpcUrl }))

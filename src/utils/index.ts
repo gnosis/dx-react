@@ -1,4 +1,14 @@
 import Web3 from 'web3'
+import { toHex } from 'web3/lib/utils/utils.js'
+
+import { promisedWeb3 } from 'api/web3Provider'
+import { logDecoder } from 'ethjs-abi'
+
+import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog } from 'api/types'
+import { Account } from 'types'
+import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType } from 'globals'
+import { store } from 'components/App'
+import { openModal } from 'actions'
 
 export const getDutchXOptions = (provider: any) => {
   console.log('FIRING getDutchXOptions')
@@ -70,13 +80,6 @@ export const displayUserFriendlyError = (error: string) => {
 
   return DEFAULT_ERROR
 }
-
-import { promisedWeb3 } from 'api/web3Provider'
-import { logDecoder } from 'ethjs-abi'
-
-import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog } from 'api/types'
-import { Account } from 'types'
-import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType } from 'globals'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
@@ -207,3 +210,37 @@ export const web3CompatibleNetwork = async () => {
 }
 
 export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]
+
+// for users using Custom Private Key as wallet
+export async function customValidateTransaction(txParams: any, cb: Function) {
+  console.log('TCL: initialize -> txParams', txParams)
+  // here, instead of prompt, use a modal and txParams to populate and show
+  // users what the fuuuuuck theyre signing, ayy
+  const promisedChoice: Promise<string> = new Promise(accept => {
+    store.dispatch(openModal({
+      modalName: 'PrivateKeyApproval',
+      modalProps: {
+        header: 'Private Key Transaction Confirmation',
+        body: '',
+        buttons: {
+          button2: {
+            buttonTitle2: 'Confirm',
+          },
+          button1: {
+            buttonTitle1: 'Cancel',
+          },
+        },
+        onClick: accept,
+        txParams,
+      },
+    }))
+  })
+  const choice: any = await promisedChoice
+  // @ts-ignore
+  if (choice === 'MIN') store.dispatch(errorHandling(new Error('User canceled transaction')))
+  else {
+    txParams.gas = toHex(choice.gasLimit)
+    txParams.gasPrice = toHex(choice.gasPrice)
+    return cb()
+  }
+}
