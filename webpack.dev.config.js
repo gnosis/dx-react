@@ -169,6 +169,9 @@ module.exports = {
     }),
     new CopyWebpackPlugin([{
       from: 'public',
+    }, {
+      from: '/landing',
+      to: 'landing',
     }]),
   ],
 }
