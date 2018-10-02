@@ -85,6 +85,10 @@
         3. `3_DEV_ONLY_Migrate_Test_Tokens.js`
 
         Where numbers 2 and 3 use conditional network checking logic to only deploy when ganache is set on the `development` (local) network.
+        
+# Submitting an Add Token Request
+
+If you want a Token to be added to Rinkeby token list, please follow instructions in [ADD_TOKEN_REQUEST_TEMPLATE.md](./ADD_TOKEN_REQUEST_TEMPLATE.md).
 
 License
 ----
