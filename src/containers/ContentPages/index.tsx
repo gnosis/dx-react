@@ -58,8 +58,9 @@ class ContentPageContainer extends React.Component<ContentPageContainerProps> {
   }
 
   handleClick = (e: EventTarget) => {
-    if (e.target.parentElement !== e.currentTarget) return
-    e.currentTarget.classList.toggle('active')
+    if (e.target === e.currentTarget || e.target === e.currentTarget.firstChild) {
+      e.currentTarget.classList.toggle('active')
+    }
   }
 
   render() {
