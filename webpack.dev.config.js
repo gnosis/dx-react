@@ -170,7 +170,7 @@ module.exports = {
     new CopyWebpackPlugin([{
       from: 'public',
     }, {
-      from: '/landing',
+      from: '../landing',
       to: 'landing',
     }]),
   ],
