@@ -36,7 +36,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ..
       {/* Token image / icon */}
       <i data-coin={tokenSVG.has(symbol) ? symbol : 'DEFAULT_TOKEN'}></i>
 
-      <big>{name}</big><code>{symbol}</code>
+      <big>{name}</big><code title={address}>{symbol}</code>
       <small>{mod && (mod === 'sell' ? 'AVAILABLE' : 'CURRENT')} BALANCE:</small>
       <p className={balance ? undefined : 'noBalance'}>{typeof balance !== 'number' && balance.div ? balance.div(10 ** decimals).toFixed(FIXED_DECIMALS) : balance} {symbol}</p>
       {!generatesMGN && <p className="noMGN">Any auction with <strong>{symbol || address}</strong> won't generate MGN</p>}

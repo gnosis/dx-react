@@ -1,5 +1,11 @@
 import Web3 from 'web3'
 
+import GNOSIS_SAFE_SVG from 'assets/img/icons/icon_gnosis_safe1.svg'
+import STATUS_SVG from 'assets/img/icons/icon_status.svg'
+import LEDGER_SVG from 'assets/img/icons/icon_ledger.svg'
+import METAMASK_SVG from 'assets/img/icons/icon_metamask3.svg'
+import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_cross.svg'
+
 export const getDutchXOptions = (provider: any) => {
   console.log('FIRING getDutchXOptions')
   const opts: any = {}
@@ -166,20 +172,24 @@ export const getDecoderForABI = (abi: ABI): Decoder => {
 export const provider2SVG = (providerName: ProviderName | ProviderType) => {
   switch (providerName) {
     case 'GNOSIS SAFE':
-      return 'img/icon_gnosis_safe1.svg'
+      return GNOSIS_SAFE_SVG
 
     case 'STATUS':
-      return 'img/icon_status.svg'
+      return STATUS_SVG
 
     case 'LEDGER':
-      return 'img/icon_ledger.svg'
+      return LEDGER_SVG
+
+    case 'METAMASK':
+      return METAMASK_SVG
 
     default:
-      return 'img/icon_metamask3.svg'
+      return DEFAULT_PROVIDER_SVG
   }
 }
 
 export const web3CompatibleNetwork = async () => {
+  await windowLoaded
   if (typeof window === 'undefined' || !window.web3) return 'UNKNOWN'
 
   let netID
@@ -197,6 +207,7 @@ export const web3CompatibleNetwork = async () => {
     })
   } else {
     // 0.2X.xx API
+    // without windowLoaded web3 can be injected but network id not yet set
     netID = window.web3.version.network
   }
 

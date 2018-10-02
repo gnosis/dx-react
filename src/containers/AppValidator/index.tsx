@@ -29,16 +29,15 @@ class AppValidator extends React.Component<any> {
   state = {
     online: inBrowser ? navigator.onLine : true,
     loading: false,
-    SET_UP_COMPLETE: true,
+    set_up_complete: true,
     error: '',
   }
 
   async componentDidMount() {
+    const { activeProvider, disclaimer_accepted } = this.props
     // user has NOT accepted disclaimer, do not load state if user attempts to access some parts of app like Content, Cookies etc
     // user CANNOT get into app as redirect blocks if Disclaimer not accepted
-    if (!this.props.disclaimer_accepted) return
-
-    const { activeProvider } = this.props
+    if (!disclaimer_accepted || activeProvider === 'READ_ONLY') return
 
     try {
       // listens for online/offline status
@@ -46,6 +45,7 @@ class AppValidator extends React.Component<any> {
 
       // fire up app if user is actively connected to internet AND has provider set
       if (this.state.online && activeProvider) {
+
         // setTimeout condition if loading wallet takes too long
         await Promise.race([
           this.appMountSetup(),
@@ -54,7 +54,7 @@ class AppValidator extends React.Component<any> {
 
         this.setState({
           loading: false,
-          SET_UP_COMPLETE: true,
+          set_up_complete: true,
         })
       }
 
@@ -64,7 +64,7 @@ class AppValidator extends React.Component<any> {
     } catch (error) {
       this.setState({
         loading: false,
-        SET_UP_COMPLETE: false,
+        set_up_complete: false,
         error,
       })
       if (this.state.online) {
@@ -86,6 +86,8 @@ class AppValidator extends React.Component<any> {
 
   // Detects any changes in Provider lock status or errors
   componentWillReceiveProps(nextProps: any) {
+    const { set_up_complete } = this.state
+
     if (nextProps.unlocked !== this.props.unlocked) {
       console.log(`
         Wallet lock status change detected.
@@ -94,9 +96,9 @@ class AppValidator extends React.Component<any> {
       `)
       // if app mount failed and nextProps detect an unlocked wallet
       // reload the page
-      if (!this.state.error && !this.state.SET_UP_COMPLETE && nextProps.unlocked) {
+      if (!set_up_complete && !this.props.unlocked) {
         // window.location.reload()
-        this.setState({ SET_UP_COMPLETE: true })
+        this.setState({ set_up_complete: true })
       }
     }
   }
@@ -164,14 +166,14 @@ class AppValidator extends React.Component<any> {
   }
 
   renderError = () => {
-    const { error, loading, online, SET_UP_COMPLETE } = this.state,
+    const { error, loading, online, set_up_complete } = this.state,
       { disclaimer_accepted } = this.props
     if (!disclaimer_accepted) return
 
     return (
       <>
         { (!online && !loading) && <h2 className="offlineBanner"> App is currently offline - please your check internet connection and refresh the page </h2> }
-        { ((!SET_UP_COMPLETE && !loading) || (!this.props.unlocked && !loading)) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
+        { ((!set_up_complete && !loading) || (!this.props.unlocked && !loading)) && online && <h2 className="offlineBanner" style={{ backgroundColor: 'orange' }}> { error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </h2> }
       </>
     )
   }
