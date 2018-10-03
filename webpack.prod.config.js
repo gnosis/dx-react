@@ -180,6 +180,9 @@ module.exports = {
     new UglifyJsPlugin(),
     new CopyWebpackPlugin([{
       from: 'public',
+    }, {
+      from: '../landing',
+      to: 'landing',
     }]),
   ],
 }
