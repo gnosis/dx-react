@@ -8,15 +8,27 @@
       "isETH": true
     },
     {
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "decimals": 18
+    },
+    {
       "symbol": "RDN",
-      "name": "Raiden Tokens",
+      "name": "Raiden Token",
       "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
       "decimals": 18
     },
     {
-      "symbol": "WETH",
-      "name": "Wrapped Ether",
-      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "symbol": "DAI",
+      "name": "Dai Stablecoin",
+      "address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      "decimals": 18
+    },
+    {
+      "symbol": "MKR",
+      "name": "Maker Token",
+      "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
       "decimals": 18
     }
   ],
@@ -33,5 +45,6 @@
     "previousUri": null,
     "nextUri": null
   },
-  "version": "1.0.3"
+  "network": "MAIN",
+  "version": "1.0.6"
 }

@@ -9,7 +9,7 @@
     },
     {
       "symbol": "RDN",
-      "name": "Raiden Tokens",
+      "name": "Raiden Token",
       "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     },
@@ -27,7 +27,7 @@
     },
     {
       "symbol": "DAI",
-      "name": "Dai Token",
+      "name": "Dai Stablecoin",
       "address": "0x62f25065ba60ca3a2044344955a3b2530e355111",
       "decimals": 18
     },
@@ -51,5 +51,6 @@
     "previousUri": null,
     "nextUri": null
   },
-  "version": "1.0.2"
+  "network": "RINKEBY-PROD",
+  "version": "1.0.6"
 }
