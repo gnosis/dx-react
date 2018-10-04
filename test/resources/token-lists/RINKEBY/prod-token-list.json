@@ -27,7 +27,7 @@
     },
     {
       "symbol": "DAI",
-      "name": "Dai Stablecoin",
+      "name": "Dai Token",
       "address": "0x62f25065ba60ca3a2044344955a3b2530e355111",
       "decimals": 18
     },
