@@ -284,9 +284,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
           hash: RINKEBY_TOKEN_LIST_HASH,
           tokens: process.env.NODE_ENV === 'production'
             ?
-            await import('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
+            require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
             :
-            await import('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
+            require('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -296,7 +296,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
         defaultTokens = {
           hash: KOVAN_TOKEN_LIST_HASH,
-          tokens: await import('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
+          tokens: require('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -308,12 +308,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
-          tokens: await import('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
+          tokens: require('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
         }
-
-        console.warn(`
-          Ethereum Mainnet not supported - please try another network.
-        `)
+        console.log('Mainnet Token List:', defaultTokens.tokens.elements)
         break
 
       case 'NONE':
