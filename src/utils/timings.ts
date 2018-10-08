@@ -167,5 +167,4 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
   }
 
   return null
-
 }
