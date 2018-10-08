@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const NameAllModulesPlugin = require('name-all-modules-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -177,5 +178,11 @@ module.exports = {
       },
     }),
     new UglifyJsPlugin(),
+    new CopyWebpackPlugin([{
+      from: 'public',
+    }, {
+      from: '../landing',
+      to: 'landing',
+    }]),
   ],
 }

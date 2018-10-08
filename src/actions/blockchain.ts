@@ -282,12 +282,11 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
         defaultTokens = {
           hash: RINKEBY_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${RINKEBY_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/RINKEBY/token-list.json')
-          }),
+          tokens: process.env.NODE_ENV === 'production'
+            ?
+            require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
+            :
+            require('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -297,12 +296,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
         defaultTokens = {
           hash: KOVAN_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${KOVAN_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/KOVAN/token-list.json')
-          }),
+          tokens: require('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -314,17 +308,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${MAINNET_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/MAINNET/token-list.json')
-          }),
+          tokens: require('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
         }
-
-        console.warn(`
-          Ethereum Mainnet not supported - please try another network.
-        `)
+        console.log('Mainnet Token List:', defaultTokens.tokens.elements)
         break
 
       case 'NONE':

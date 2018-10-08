@@ -3,6 +3,7 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -166,5 +167,11 @@ module.exports = {
         WHITELIST: JSON.stringify(whitelist),
       },
     }),
+    new CopyWebpackPlugin([{
+      from: 'public',
+    }, {
+      from: '../landing',
+      to: 'landing',
+    }]),
   ],
 }

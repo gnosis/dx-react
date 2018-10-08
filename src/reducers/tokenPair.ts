@@ -4,20 +4,13 @@ import {
   selectTokenAndCloseOverlay,
   selectTokenPair,
   setSellTokenAmount,
-  swapTokensInAPair,
+  swapTokensInAPairWithDefaultWETH,
   setClosingPrice,
   resetTokenPair,
   resetTokenPairAndCloseOverlay,
 } from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
-import { ETH_ADDRESS, WETH_ADDRESS_RINKEBY } from 'globals'
-
-const WETH: DefaultTokenObject = {
-  name: 'WRAPPED ETHER',
-  symbol: 'WETH',
-  decimals: 18,
-  address: WETH_ADDRESS_RINKEBY,
-}
+import { ETH_ADDRESS } from 'globals'
 
 const initialState: TokenPair = {
   sell: {
@@ -35,7 +28,7 @@ const initialState: TokenPair = {
 
 export default handleActions<
 TokenPair,
-TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
+{ token: DefaultTokenObject, mod: TokenMod, price: string } & { WETH_TOKEN: DefaultTokenObject}
 >(
   {
     [selectTokenAndCloseOverlay.toString()]: (state, action) => {
@@ -56,10 +49,10 @@ TokenPair & { token: DefaultTokenObject, mod: TokenMod, price: string }
       // TODO: restrict payload.sellAmount to [0, tokenBalances[state.sell]]
       ...action.payload,
     }),
-    [swapTokensInAPair.toString()]: (state) => ({
+    [swapTokensInAPairWithDefaultWETH.toString()]: (state, action) => ({
       ...state,
       sell: state.buy,
-      buy: state.sell && state.sell.isETH ? WETH : state.sell,
+      buy: state.sell && state.sell.isETH ? action.payload.WETH_TOKEN : state.sell,
       sellAmount: '0',
     }),
     [setClosingPrice.toString()]: (state, action) => ({ ...state, lastPrice: action.payload.price }),

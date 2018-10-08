@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-react",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "slow.trade - ERC20 Trading Platform",
   "main": "src/index.tsx",
   "scripts": {
@@ -111,6 +111,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
@@ -139,6 +140,7 @@
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
     "babel-plugin-transform-remove-console": "^6.9.0",
+    "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
