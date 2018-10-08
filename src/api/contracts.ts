@@ -49,8 +49,11 @@ interface ContractsMapWProxy extends ContractsMap {
   TokenOWLProxy: DeployedContract,
 }
 
+// TODO: keep as 'development'
+const FE_CONDITIONAL_ENV = 'development'
+
 let req: any
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === FE_CONDITIONAL_ENV) {
   req = require.context(
     '../../build/contracts/',
     false,
@@ -80,7 +83,7 @@ type TokenArtifact =
 const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
   c => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== FE_CONDITIONAL_ENV) {
       if (c === 'EtherToken')     return require('@gnosis.pm/util-contracts/build/contracts/EtherToken.json')
       if (c === 'TokenGNO')       return require('@gnosis.pm/gno-token/build/contracts/TokenGNO.json')
       if (c === 'TokenOWLProxy')  return require('@gnosis.pm/owl-token/build/contracts/TokenOWLProxy.json')
@@ -110,7 +113,7 @@ for (const contrArt of ContractsArtifacts) {
 }
 
 // in development use different contract addresses
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === FE_CONDITIONAL_ENV) {
   // from networks-%ENV%.json
   const networksDX    = require('@gnosis.pm/dx-contracts/networks-dev.json')
 
@@ -173,7 +176,7 @@ async function init(provider: Provider) {
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === FE_CONDITIONAL_ENV) {
       console.log(deployedContracts)
     }
 
