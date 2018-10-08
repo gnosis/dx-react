@@ -473,7 +473,7 @@ export const getOutstandingVolume = async (
     price || DutchX.getPrice(pair, auctionIndex),
   ])
 
-  const outstandingVolume = sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
+  const outstandingVolume = price[1].gt(0) ? sellVolume.mul(price[0]).div(price[1]).sub(buyVolume) : toBigNumber(0)
 
   return outstandingVolume.lt(0) ? toBigNumber(0) : outstandingVolume
 }
@@ -754,6 +754,8 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
 
   if (auctionStart.eq(1)) statusDir.status = statusOpp.status = AuctionStatus.INIT
   else {
+    // outstandingVolume <= 0 === THEORETICALLY CLOSED
+    // TODO: ask why num here and not den
     if (closingPriceDir[0].equals(0) && outstandingVolumeNormal.eq(0)) {
       statusDir.status = AuctionStatus.ENDED
       statusDir.theoreticallyClosed = true
@@ -921,8 +923,9 @@ export const getSellerOngoingAuctions = async (
         auctionStart,
       } = lastAuctionsData[index]
 
-      const currAuctionNeverRanDir = balanceNormal.eq(0) && closingPriceDir[1].eq(0)
-      const currAuctionNeverRanOpp = balanceInverse.eq(0) && closingPriceOpp[1].eq(0)
+      const bothAuctionTheoClosed = statusDir.theoreticallyClosed && statusOpp.theoreticallyClosed
+      const currAuctionNeverRanDir = bothAuctionTheoClosed || (balanceNormal.eq(0) && closingPriceDir[1].eq(0))
+      const currAuctionNeverRanOpp = bothAuctionTheoClosed || (balanceInverse.eq(0) && closingPriceOpp[1].eq(0))
       const currAuctionEndedDir = closingPriceDir[1].gt(0) && statusDir.status === AuctionStatus.ENDED
       const currAuctionEndedOpp = closingPriceOpp[1].gt(0) && statusOpp.status === AuctionStatus.ENDED
       const committedToNextNormal = balanceNext.normal.gt(0)
