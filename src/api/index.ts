@@ -924,9 +924,8 @@ export const getSellerOngoingAuctions = async (
         auctionStart,
       } = lastAuctionsData[index]
 
-      const bothAuctionTheoClosed = statusDir.theoreticallyClosed && statusOpp.theoreticallyClosed
-      const currAuctionNeverRanDir = bothAuctionTheoClosed || (balanceNormal.eq(0) && closingPriceDir[1].eq(0))
-      const currAuctionNeverRanOpp = bothAuctionTheoClosed || (balanceInverse.eq(0) && closingPriceOpp[1].eq(0))
+      const currAuctionNeverRanDir = statusDir.theoreticallyClosed || (balanceNormal.eq(0) && closingPriceDir[1].eq(0))
+      const currAuctionNeverRanOpp = statusOpp.theoreticallyClosed || (balanceInverse.eq(0) && closingPriceOpp[1].eq(0))
       const currAuctionEndedDir = closingPriceDir[1].gt(0) && statusDir.status === AuctionStatus.ENDED
       const currAuctionEndedOpp = closingPriceOpp[1].gt(0) && statusOpp.status === AuctionStatus.ENDED
       const committedToNextNormal = balanceNext.normal.gt(0)
