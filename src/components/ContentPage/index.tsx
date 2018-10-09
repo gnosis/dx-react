@@ -2,7 +2,7 @@ import React from 'react'
 import { URLS } from 'globals'
 import { Link } from 'react-router-dom'
 
-import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+import 'assets/pdf/PrivacyPolicy.pdf'
 
 import stepByStepFeeCalc from 'assets/content/step_by_step_fee_calculation.png'
 import feeReductionModel from 'assets/content/fee_reduction_model_dutchX.png'
@@ -1040,7 +1040,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Which data do you collect?</h3>
       <span>
         <p>
-          Whenever you take part in a trade on the DutchX Protocol, transactions are stored on the Ethereum Blockchain, which is public and immutable. For more information, please refer to the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+          Whenever you take part in a trade on the DutchX Protocol, transactions are stored on the Ethereum Blockchain, which is public and immutable. For more information, please refer to the <a href="./PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
           </p>
       </span>
     </section>
