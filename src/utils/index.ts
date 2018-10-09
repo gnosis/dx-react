@@ -80,7 +80,7 @@ export const displayUserFriendlyError = (error: string) => {
 import { promisedWeb3 } from 'api/web3Provider'
 import { logDecoder } from 'ethjs-abi'
 
-import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog } from 'api/types'
+import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog, TransactionObject } from 'api/types'
 import { Account } from 'types'
 import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType } from 'globals'
 
@@ -215,3 +215,26 @@ export const web3CompatibleNetwork = async () => {
 }
 
 export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]
+
+export const estimateGas = async (
+  { cb, mainParams, txParams }: { cb: Function & { estimateGas: Function }, mainParams: any, txParams: TransactionObject },
+  type: null | 'sendTransaction' | 'call',
+) => {
+  let estimatedGasPrice: string
+  const estimatedGasLimit: string | number = await cb.estimateGas(...mainParams, { ...txParams }).catch(() => '4000000')
+
+  try {
+    estimatedGasPrice = (await (await fetch('https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/')).json()).standard
+  } catch (error) {
+    console.warn('Safe gas estimation error: ', error, 'Defaulting to lowest gas price')
+    estimatedGasPrice = '1000000000'
+  }
+  console.log('TCL: estimateGas -> estimatedGasPrice', estimatedGasPrice)
+  console.log('TCL: estimateGas -> estimatedGasLimit', estimatedGasLimit)
+
+  console.warn('ESTIMATE GAS FINAL FUNCTION PARAMS: ', mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
+
+  if (!type) return cb(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
+
+  return cb[type](...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
+}
