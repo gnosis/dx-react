@@ -186,7 +186,7 @@ tokenApproval.sendTransaction = async (tokenAddress: Account, amount: Balance, u
   const { DutchX, Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress })
 }
 
 export const tokenSupply = async (tokenAddress: Account) => {
@@ -211,7 +211,7 @@ depositETH.sendTransaction = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount })
 }
 
 /* =================================================================
