@@ -11,11 +11,7 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement>) => (
       Last updated: September 2018
               </p>
     <div>
-      Please read these Terms carefully before participating on our trading platform. These Terms tell you who we are, what we offer and what to do if there is a problem and other important information. If you think that there is a mistake in these Terms, please contact us to discuss at
-                <a href="mailto:legal@slow.trade">
-        legal@slow.trade
-                </a>
-      .
+      Please read these Terms carefully before participating on our trading platform. These Terms tell you who we are, what we offer and what to do if there is a problem and other important information. If you think that there is a mistake in these Terms, please contact us to discuss at <a href="mailto:legal@slow.trade">legal@slow.trade</a>.
                 <br /><br />
       <strong>
         TERMS AND CONDITIONS (“TERMS”)

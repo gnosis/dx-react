@@ -25,32 +25,32 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
   state = {
     settingsOpen: false,
     cookieSettings: {
-        necessary: true,
-        analytics: false,
-      },
+      necessary: true,
+      analytics: false,
+    },
     loading: true,
     error: '',
   }
 
   async componentDidMount() {
     try {
-        const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
+      const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
 
-        if (!cookieData) return this.setState({ loading: false })
+      if (!cookieData) return this.setState({ loading: false })
 
-        const { necessary, analytics } = cookieData
+      const { necessary, analytics } = cookieData
 
-        this.setState({
+      this.setState({
           cookieSettings: {
             necessary,
             analytics,
           },
           loading: false,
         })
-      } catch (err) {
-        console.error(err)
-        this.setState({ error: err, loading: false })
-      }
+    } catch (err) {
+      console.error(err)
+      this.setState({ error: err, loading: false })
+    }
   }
 
   handleSubmit = () => {
@@ -121,6 +121,9 @@ Change Cookie Preferences
                     <Link to="/privacy">Privacy Policy</Link>
 , For general web-browsing of this website, your personal data is not revealed to us, although certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
                 This Cookie Policy sets out some further detail on how and why we use these technologies on our website. The terms "we", "us", and "our" includes d.ex OÜ and any affiliates. The terms “you” and “your” includes our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
+                  <br />
+                  <br />
+                  Capitalized terms used but not defined here have the respective meanings given to them in the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <Link to="/terms">Terms and Conditions</Link>.
                   </p>
                   <p>
                     <strong>What are cookies?</strong>
@@ -320,7 +323,7 @@ and our Cookie Policy whenever you access or use our website to stay informed ab
               </article>
             </div>
           )
-      )
+    )
   }
 }
 

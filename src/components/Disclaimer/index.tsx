@@ -3,7 +3,7 @@ import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
+import 'assets/pdf/PrivacyPolicy.pdf'
 
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -145,7 +145,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="./DutchX_Main_PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.
+                  I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -270,7 +270,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 <b>
-                  I have read and understood the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                  I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
