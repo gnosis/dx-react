@@ -30,11 +30,12 @@ const mapStateToProps = (state: State) => {
     account: getAccount(state),
     addressToSymbolDecimal: tokenNamesAndDecimals(state),
     balance: getCurrentBalance(state),
-    tokens: state.tokenBalances,
     dxBalances: state.dxBalances,
     dxBalancesAvailable: !!(dxBalancesValues.find((i: BigNumber) => i.gt(0))),
     hasTokenBalances: !!(tokenBalancesValues.find(n => n.gt(0))),
+    network: state.blockchain.network || 'Connection failed',
     providerName: providerName as ProviderName,
+    tokens: state.tokenBalances,
   }
 }
 

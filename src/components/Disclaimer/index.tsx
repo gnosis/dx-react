@@ -145,7 +145,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="./DutchX_Main_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./DutchX_Main_PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -163,7 +163,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                       <label htmlFor="disclaimer6">Analytics</label>
                     </div>
                 </div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
+                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies" target="_blank" rel="noopener noreferrer">Cookie Policy</Link> for more information.</p>
               </div>
             </div>
 
@@ -270,7 +270,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 <b>
-                  I have read and understood the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -278,6 +278,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             {/* COOKIE DISCLAIMER */}
             <div className="disclaimerCookiePolicy">
               <div>
+              <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
                 <div>
                     <div className="disclaimerBoxCookie md-checkbox">
                       <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
@@ -288,7 +289,6 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                       <label htmlFor="disclaimer6">Analytics</label>
                     </div>
                 </div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
               </div>
             </div>
 

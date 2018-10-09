@@ -24,7 +24,7 @@ export const NoWallet: React.SFC<NoWalletProps> = ({
       {showUnlock && <span className="icon-walletUnlock"></span>}
 
       {walletUnavailable &&
-        <a className="buttonCTA" href="https://metamask.io/" target="_blank">
+        <a className="buttonCTA" href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
           Download MetaMask <i className="icon icon-arrowDown"></i>
         </a>
       }

@@ -5,6 +5,8 @@ $headerHeight: 58px;
   margin: 0 auto;
   display: flex;
   font-family: inherit;
+  align-items: center;
+  justify-content: center;
 
   a.buttonCTA > i {
     height: 25px;
@@ -25,15 +27,14 @@ $headerHeight: 58px;
   align-items: flex-start;
   flex-wrap: wrap;
   position: relative;
-  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
+  box-shadow: $boxShadowContainer;
   padding: 0 0 40px;
 
   @media #{$mobile} {
     width: 100%;
     border-radius: 0;
     border: 0;
-
-    margin-top: 150px;
+    margin-top: 96px;
   }
 
   &[data-screen="status"] {
@@ -41,13 +42,13 @@ $headerHeight: 58px;
   }
 
   > p {
-    font-size: 15px;
-    color: $greyTextDark;
+    font-size: 1.4em;
+    color: $greyText;
     letter-spacing: 0;
     line-height: 1.7;
-    padding: 0 100px;
+    padding: 0 40px;
     margin: 0 auto 35px;
-    text-align: left;
+    text-align: center;
     width: 100%;
 
     @media #{$mobile} {
@@ -74,10 +75,10 @@ $headerHeight: 58px;
   > h2 {
     vertical-align: middle;
     line-height: $headerHeight;
-    font-family: inherit;
+    font-family: $font;
     font-weight: $bold;
-    font-size: 18px;
-    color: #1a4977;
+    font-size: 1.8em;
+    color: $blackShade;
     letter-spacing: 0;
 
     .auctionContainer[data-screen="status"] & {
@@ -95,10 +96,12 @@ $headerHeight: 58px;
     vertical-align: sub;
     cursor: pointer;
     margin-left: .5em;
-    transition: filter 0.2s ease-in;
+    transition: transform .2s ease-in-out;
+    will-change: transform;
+    transform: scale(1);
 
     &:hover {
-      filter: drop-shadow(0 0 1px #669ddd);
+      transform: scale(1.2);
     }
   }
 }
@@ -108,24 +111,11 @@ $headerHeight: 58px;
   margin: 0 auto;
   text-align: center;
   padding: 15px 0;
-  background: #f2f3f5;
-
-  // [data-screen="details"] {
-  //   display: flex;
-  //   flex-basis: 40%;
-  //   height: 160px;
-  //   flex-wrap: wrap;
-  //   justify-content: center;
-  //   align-items: center;
-  //   align-content: center;
-  //   box-sizing: border-box;
-  //   flex: 0 1 auto;
-  //   width: 40%;
-  // }
+  background: $greyLight;
 
   > small {
     display: block;
-    font-size: 10px;
+    font-size: 1.1em;
     color: $greyText;
     text-transform: uppercase;
     line-height: 2;
@@ -133,10 +123,10 @@ $headerHeight: 58px;
   }
 
   > big {
-    font-size: 14px;
-    color: $darkBlue;
+    font-size: 1.4em;
+    color: $blackShade;
     letter-spacing: 1px;
-    font-weight: $bold;
+    font-weight: bold;
     line-height: 1;
     text-transform: uppercase;
   }
@@ -188,10 +178,10 @@ $headerHeight: 58px;
     background: $white;
     border-radius: 2px;
     border: 0;
-    // outline: 0;
-    font-size: 15px;
-    color: $darkBlue;
-    letter-spacing: 0.5px;
+    outline: 0;
+    font-size: 1.4em;
+    color: $blackShade;
+    letter-spacing: 0;
     line-height: 1;
     text-align: right;
 
@@ -208,8 +198,8 @@ $headerHeight: 58px;
     }
 
     &[readonly] {
-      background: transparent;
-      border: 1px solid #a5b1c1;
+      background: $whiteShade;
+      // border: 1px solid #a5b1c1;
     }
   }
 
@@ -217,12 +207,12 @@ $headerHeight: 58px;
     text-align: center;
     width: 100%;
     display: block;
-    font-size: 11px;
-    color: $darkBlue;
+    font-size: 1.1em;
+    color: $blackShade;
     letter-spacing: 1px;
     line-height: 1;
     text-transform: uppercase;
-    font-weight: $bold;
+    font-weight: bold;
     white-space: nowrap;
 
     @media #{$mobile} {
@@ -244,7 +234,7 @@ $headerHeight: 58px;
 
   a {
     text-decoration: underline;
-    font-weight: $bold;
+    font-weight: bold;
     font-family: inherit;
     font-size: 10px;
     color: $blue;
@@ -254,12 +244,12 @@ $headerHeight: 58px;
   }
 
   small {
-    font-size: 11px;
-    color: $darkBlue;
+    font-size: 1.1em;
+    color: $blackShade;
     letter-spacing: 0.5px;
     line-height: 1;
     margin: 0;
-    font-weight: $bold;
+    font-weight: bold;
 
     &:first-of-type {
       grid-area: token1;
@@ -311,10 +301,10 @@ $headerHeight: 58px;
   }
 
   > span > big {
-    font-size: 11px;
-    font-weight: $bold;
-    color: $darkBlue;
-    letter-spacing: 2px;
+    font-size: 1.1em;
+    font-weight: normal;
+    color: $greyText;
+    letter-spacing: 1px;
     line-height: 1;
     text-transform: uppercase;
     width: 100%;
@@ -328,19 +318,23 @@ $headerHeight: 58px;
 
   > span > i {
     font-size: 13px;
-    color: $blue;
+    color: $brandPrimary;
     margin: 0 auto 3px;
     letter-spacing: 0;
     line-height: 17px;
-    font-weight: $bold;
+    font-weight: bold;
     font-style: normal;
     display: block;
     width: 100%;
   }
 
   > span > small {
-    font-size: 11;
-    color: $greyText;
+    font-size: 1.1em;
+    background: $whiteShade;
+    color: $blackShade;
+    padding: 3px;
+    box-sizing: border-box;
+    border-radius: 2px;
   }
 
   > span > code {
@@ -353,6 +347,7 @@ $headerHeight: 58px;
     display: table;
     font-family: monospace;
     word-break: break-all;
+    font-size: 1.3em;
 
     @media #{$mobile} {
       margin: 0 15px;
@@ -398,32 +393,32 @@ $headerHeight: 58px;
   width: 50%;
 
   > big {
-    font-size: 13px;
-    color: $darkBlue;
+    font-size: 1.1em;
+    color: $greyText;
     letter-spacing: 1px;
     line-height: 1;
     display: inline-block;
     width: 100%;
     margin: 0 auto 5px;
     text-align: center;
-    font-weight: $bold;
+    font-weight: normal;
   }
 
   > p {
     margin: 0 auto;
     width: 100%;
-    font-size: 13px;
-    color: $greyText;
+    font-size: 1.3em;
+    color: $brandPrimary;
     letter-spacing: 0.5px;
     line-height: 1;
     text-align: center;
-    font-weight: normal;
+    font-weight: bold;
   }
 
   > [data-coin] {
     height: 70px;
     width: 70px;
-    background-size: 44px;
+    background-size: 46px 46px;
     display: inline-block;
     margin: 0 auto 10px;
   }
@@ -436,6 +431,7 @@ $headerHeight: 58px;
   height: 275px;
   min-width: 90%;
   align-items: center;
+  padding: 15px;
 
   > span {
     flex: 0 1 auto;
@@ -443,7 +439,7 @@ $headerHeight: 58px;
   }
 
   > span > small {
-    font-size: 11px;
+    font-size: 1.1em;
     color: $greyText;
     letter-spacing: 3px;
     line-height: 1.6;
@@ -453,23 +449,36 @@ $headerHeight: 58px;
   }
 
   > span > big {
-    font-size: 26px;
-    color: $darkBlue;
+    font-size: 2em;
+    color: $brandPrimary;
     letter-spacing: 0.5px;
     line-height: 1;
-    font-weight: $bold;
+    font-weight: bold;
     text-transform: uppercase;
   }
 
   > span > big[data-status] {
-    font-size: 14px;
+    font-size: 1.4em;
     background: $grey;
     border-radius: 16px;
-    padding: 6px 16px;
+    padding: 4px 16px;
     color: $white;
     letter-spacing: 2px;
     display: table;
-    margin: auto;
+    margin: 2px auto 0;
+  }
+
+  > span > big.message {
+    background: $greyLight;
+    color: $greyText;
+    font-size: 1.6em;
+    padding: 6px 15px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    line-height: 1;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   > span:nth-of-type(2) > big {
@@ -520,7 +529,7 @@ $headerHeight: 58px;
 
   > p {
     text-align: center;
-    font-size: 1.1em;
+    font-size: 1.2em;
     margin-top: 0;
   }
 }
@@ -540,7 +549,7 @@ $headerHeight: 58px;
   position: relative;
   cursor: pointer;
   font-family: inherit;
-  font-size: 18px;
+  font-size: 1.8em;
   outline: 0;
   will-change: box-shadow;
   transition: box-shadow .25s ease-in-out;
@@ -552,7 +561,7 @@ $headerHeight: 58px;
   > i {
     font-style: normal;
     font-size: 12px;
-    font-weight: $bold;
+    font-weight: bold;
     letter-spacing: 0;
     color: #9b9b9b;
     line-height: 1;
@@ -590,7 +599,7 @@ $headerHeight: 58px;
   }
 
   &[disabled] {
-    cursor: initial;
+    cursor: not-allowed;
 
     &:hover {
       box-shadow: none;
@@ -621,7 +630,7 @@ $headerHeight: 58px;
   > span > i {
     flex: 0 1 auto;
     align-self: center;
-    opacity: .55;
+    opacity: .65;
     transition: opacity .3s ease-in-out;
     will-change: opacity;
     position: relative;
@@ -670,7 +679,7 @@ $headerHeight: 58px;
   &::after {
     content: " ";
     display: block;
-    background: $greyText;
+    background: $brandPrimary;
     left: 0;
     position: absolute;
     top: 0;
@@ -699,11 +708,11 @@ $headerHeight: 58px;
 
 .auctionFooter {
   height: 90px;
-  background: #024d90;
+  background: $greyBorder;
   width: 100%;
   display: flex;
   flex-wrap: nowrap;
-  color: $white;
+  color: $blackShade;
   justify-content: space-around;
   align-items: center;
   transition: 1s all ease-in-out;
@@ -716,7 +725,6 @@ $headerHeight: 58px;
   }
 
   > span > small {
-    opacity: .5;
     letter-spacing: 1px;
     font-size: 10px;
     font-weight: normal;
@@ -724,6 +732,7 @@ $headerHeight: 58px;
     text-align: center;
     line-height: 1;
     padding: 0 0 10px;
+    color: $greyText;
   }
 
   > span > big {

@@ -5,14 +5,15 @@ $cB3: cubic-bezier(0.175, 0.885, 0.06, 1.165);
 // best
 $CB4: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 
-.dutchxSVGContainer, .mmSVGContainer {
+.dutchxSVGContainer, .mmSVGContainer, .spinnerContainer {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
 }
 
-.dutchxSVGContainer {
+.dutchxSVGContainer,
+.spinnerContainer {
   margin: auto;
 
   @media #{$mobile} {

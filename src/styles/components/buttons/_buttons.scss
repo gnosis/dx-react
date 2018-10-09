@@ -8,9 +8,9 @@ a.buttonCTA {
   padding: 0 15px;
   min-height: 56px;
   box-sizing: border-box;
-  font-family: inherit;
+  font-family: $font;
   font-size: 18px;
-  color: $darkBlue;
+  color: $brandPrimary;
   letter-spacing: 0;
   line-height: 1;
   vertical-align: middle;
@@ -27,16 +27,16 @@ a.buttonCTA {
   }
 
   &.buttonCTA-disabled {
-    background: $greyText;
-    color: $white;
+    background: #dadde3;
+    color: #013a51;
     text-align: center;
     pointer-events: none;
     opacity: .5;
   }
 
   &.blue {
-    background: $blue;
-    color: $white !important;
+    background: $brandPrimary;
+    color: $white;
     text-align: center;
   }
 
@@ -50,6 +50,11 @@ a.buttonCTA {
     background: $greyLight;
     color: $black !important;
     text-align: center;
+  }
+
+  > strong {
+    font-weight: $bold;
+    margin: 0 10px 0 0;
   }
 
   > i {
@@ -84,7 +89,6 @@ a.buttonCTA {
 
 .buttonReset {
   color: $greyTextDark;
-  margin: 0 auto 1em;
   font-size: .9em;
   font-family: inherit;
   border: 0;
@@ -117,6 +121,7 @@ a.buttonCTA {
       right: 0;
       bottom: initial;
       font-size: .8em;
+      margin: auto;
     }
   }
 }

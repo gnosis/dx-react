@@ -1,11 +1,29 @@
 .offlineBanner {
   position: relative;
-  background-color: #f78484;
+  background: $yellow;
+  color: $red;
   line-height: initial;
   text-align: center;
   width: 100%;
-  font-weight: 300;
-  padding: 5px 0;
+  font-size: 1.4em;
+  font-weight: $normal;
+  padding: 20px 0;
+  border-bottom: 1px solid #dce0e4;
+
+  > span {
+    color: inherit;
+    font-size: inherit;
+  }
+
+  > span::before {
+    content: "";
+    background: url('#{$images}alert.svg') no-repeat center/contain;
+    width: 17px;
+    height: 15px;
+    display: inline-block;
+    margin: -3px 6px 0 0;
+    vertical-align: middle;
+  }
 
   @media #{$mobile} {
     position: absolute;

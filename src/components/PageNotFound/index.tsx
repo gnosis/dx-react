@@ -11,7 +11,7 @@ const PageNotFound: React.SFC = () =>
       <br />
       <br />
       If you continue experiencing issues you may be trying to access the exchange from a restricted country or region.
-      If you would like to know more about {COMPANY_NAME} and/or the DutchX Protocol, please <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">visit this blog</a>.
+      If you would like to know more about {COMPANY_NAME} and/or the DutchX Protocol, please <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">visit this blog</a>.
       <br />
       <br />
       Funds are not lost due to a downtime of the frontend.

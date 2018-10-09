@@ -123,7 +123,7 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement>) => (
         5.3. To use the Platform you require:
                   <br />
         <div className="subText">
-          5.3.1. A Wallet compatible with the Platform. We currently only support MetaMask as your Wallet, which you may download from <a href="https://metamask.io" target="_blank">www.metamask.io</a>. We have not tested compatibility with any other Wallet.
+          5.3.1. A Wallet compatible with the Platform. We currently only support MetaMask as your Wallet, which you may download from <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">www.metamask.io</a>. We have not tested compatibility with any other Wallet.
                     <br />
           5.3.2. We have not tested compatibility with any other Wallet.
                     <br />

@@ -1,5 +1,17 @@
-$defaultTokenSize: 80px;
-$defaultTokenSize_mobile: 50px;
+$defaultTokenSize: 70px 90px;
+$defaultTokenSize_mobile: 36px 70px;
+
+[data-coin] {
+  border: 1px solid $greyBorder;
+  will-change: border;
+  transition: border .2s ease-in-out;
+  height: 150px;
+  width: 150px;
+  display: block;
+  border-radius: 150px;
+  margin: 20px auto;
+  background-size: $defaultTokenSize;
+}
 
 [data-coin="ETH"] {
   background: url('#{$images}tokens/ETH.svg') no-repeat center / $defaultTokenSize;
@@ -35,47 +47,27 @@ $defaultTokenSize_mobile: 50px;
 
 [data-coin="DAI"] {
   background: url('#{$images}tokens/DAI.svg') no-repeat center / $defaultTokenSize;
-
-  .tokenOverlay > .tokenList > .tokenItem > & {
-    background-size: 80px;
-  }
 }
 
 [data-coin="GEN"] {
   background: url('#{$images}tokens/GEN.svg') no-repeat center / $defaultTokenSize;
-
-  .tokenOverlay > .tokenList > .tokenItem > & {
-    background-size: 50px;
-  }
 }
 
 [data-coin="MKR"] {
   background: url('#{$images}tokens/MKR.svg') no-repeat center / $defaultTokenSize;
-
-  .tokenOverlay > .tokenList > .tokenItem > & {
-    background-size: 55px;
-  }
 }
 
 [data-coin="DEFAULT_TOKEN"] {
-  background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / 80px;
+  background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / $defaultTokenSize;
 }
 
 [data-coin="TOKEN_LIST"] {
-  background: $greyBorder url('#{$images}tokens/TOKEN_LIST.svg') no-repeat center / 80px;
+  background: $greyBorder url('#{$images}tokens/TOKEN_LIST.svg') no-repeat center / $defaultTokenSize;
 }
 
-[data-coin] {
-  border: 1px solid $greyBorder;
-  will-change: border;
-  transition: border .2s ease-in-out;
-  height: 150px;
-  width: 150px;
-  display: block;
-  border-radius: 150px;
-  margin: 20px auto;
-  background-size: $defaultTokenSize;
 
+// Mobile, placing it here to override, until code is re-structured:
+[data-coin] { 
   @media #{$mobile} {
     border-radius: 90px;
     height: 90px;

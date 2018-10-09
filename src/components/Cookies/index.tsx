@@ -23,17 +23,17 @@ interface CookiesProps {
 
 class Cookies extends React.Component<CookiesProps, CookiesState> {
   state = {
-      settingsOpen: false,
-      cookieSettings: {
+    settingsOpen: false,
+    cookieSettings: {
         necessary: true,
         analytics: false,
       },
-      loading: true,
-      error: '',
-    }
+    loading: true,
+    error: '',
+  }
 
   async componentDidMount() {
-      try {
+    try {
         const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
 
         if (!cookieData) return this.setState({ loading: false })
@@ -51,24 +51,24 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
         console.error(err)
         this.setState({ error: err, loading: false })
       }
-    }
+  }
 
   handleSubmit = () => {
-      const {
+    const {
         cookieSettings: {
           necessary,
           analytics,
         },
       } = this.state
-      this.setState({ settingsOpen: false })
-      return localForage.setItem('cookieSettings', { necessary, analytics })
-    }
+    this.setState({ settingsOpen: false })
+    return localForage.setItem('cookieSettings', { necessary, analytics })
+  }
 
   handleClick = (e: SyntheticEvent) => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
 
   render() {
-      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
-      return (
+    const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
+    return (
         loading ? null
           : (
             <div className="contentPage">
@@ -245,7 +245,7 @@ By using this website, you consent to the processing of data about you by Google
                     <br />
               Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse cookies and control and/or delete cookies as you wish – for details, see
                     {' '}
-                    <a href="https://aboutcookies.org" target="_blank">aboutcookies.org</a>
+                    <a href="https://aboutcookies.org" target="_blank" rel="noopener noreferrer">aboutcookies.org</a>
 . You can delete all cookies that are already on your device and you can set most browsers to prevent them from being placed. You should be aware that if you do this, you may have to manually adjust some preferences every time you visit an Internet site and some services and functionalities may not work if you do not accept the cookies they send.
               Advertisers and business partners that you access on or through our website may also send you cookies. We do not control any cookies outside of our website.
                     <br />
@@ -254,7 +254,7 @@ By using this website, you consent to the processing of data about you by Google
               In order to implement your objection it may be necessary to install an opt-out cookie on your browser. This cookie will only indicate that you have opted out. It is important to note, that for technical reasons, the opt-out cookie will only affect the browser from which you actively object from. If you delete the cookies in your browser or use a different end device or browser, you will need to opt out again.
               To opt out of being tracked by Google Analytics across all websites, Google has developed the Google Analytics opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option of downloading and installing this browser add-on which can be found under the link:
                     {' '}
-                    <a href="http://tools.google.com/dlpage/gaoptout" target="_blank">http://tools.google.com/dlpage/gaoptout</a>
+                    <a href="http://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">http://tools.google.com/dlpage/gaoptout</a>
 .
                   </p>
                   <p>
@@ -321,7 +321,7 @@ and our Cookie Policy whenever you access or use our website to stay informed ab
             </div>
           )
       )
-    }
+  }
 }
 
 export default Cookies

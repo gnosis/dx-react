@@ -443,12 +443,10 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
         modalProps: {
           header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
-          body: `
-            ${sellName} is not an ERC20 Token and must be wrapped.
+          body: `${sellName} is not an ERC20 Token and must be wrapped.
             In case you already have wrapped ${sellName}, you are confirming to wrap the remainder.
 
-            Please confirm with ${name}.
-          `,
+            Please confirm with ${name}.`,
           loader: true,
         },
       }))

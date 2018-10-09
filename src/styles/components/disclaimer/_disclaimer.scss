@@ -25,15 +25,17 @@
 
   > span > h1 {
     font-weight: $bold;
-    font-size: 23px;
-    color: $white;
+    font-family: $font;
+    font-size: 2.3em;
+    color: $blackShade;
     letter-spacing: 0;
     line-height: 1;
   }
 
   > div {
     box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-    border: 2px solid transparent;
+    // border: 2px solid transparent;
+    border: none;
     background: $white;
     min-height: 460px;
     border-radius: 3px;
@@ -45,11 +47,12 @@
   }
 
   > div > h2 {
-    font-size: 20px;
-    color: #0070d2;
+    font-size: 1.6em;
+    color: $brandPrimary;
     text-align: center;
     line-height: 1;
     margin: 25px auto;
+    font-weight: bold;
   }
 
   > div > form {
@@ -64,15 +67,15 @@
   }
 
   > div > form label {
-    font-size: 12px;
-    color: #5c636e;
+    font-size: 1.3em;
+    color: $greyText;
     letter-spacing: 0;
     line-height: 1.5;
     flex: 1;
     box-sizing: border-box;
 
     > b {
-      font-weight: $bold;
+      font-weight: bold;
     }
   }
 
@@ -83,7 +86,7 @@
   }
 
   > div > form input:checked + label {
-    color: #024d90;
+    color: $brandPrimary;
   }
 }
 
@@ -94,10 +97,11 @@
   background: #f0f2f6;
   border-radius: 2px;
   overflow-y: scroll;
-  padding: 8px 15px 15px;
+  padding: 0 15px 30px;
   box-sizing: border-box;
-  color: #5c636e;
+  color: $greyText;
   line-height: 1.5;
+  font-size: 1.3em;
   margin: -18px 0 18px;
 
   > p, span {
@@ -117,11 +121,14 @@
   justify-content: space-evenly;
   align-items: flex-start;
   flex-flow: column;
+  border-top: 1px solid $grey;
+  padding: 10px 0 0;
 
   > div {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
 
     > div > div.disclaimerBoxCookie {
       display: flex;
@@ -129,6 +136,10 @@
       padding: 2px 0;
       width: auto;
     }
+  }
+
+  > div > p {
+    font-size: 1.3em;
   }
 }
 
@@ -165,6 +176,9 @@
   width: 100%;
   text-align: center;
   line-height: 1.5;
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 2em auto;
 }
 
 .subText {

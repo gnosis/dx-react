@@ -1,0 +1,151 @@
+@keyframes initLogo1 {
+  0% {
+    transform: translate3d(-26px,-50px,0);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .4;
+  }
+
+  100% {
+    transform: translate3d(0,0,0);
+    opacity: 1;
+  }
+}
+
+@keyframes initLogo2 {
+  0% {
+    transform: translate3d(26px, -50px, 0);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .4;
+  }
+
+  100% {
+    transform: translate3d(0,0,0);
+    opacity: 1;
+  }
+}
+
+@keyframes initLogo3 {
+  0% {
+    transform: translate3d(-26px, 50px, 0);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .4;
+  }
+
+  100% {
+    transform: translate3d(0,0,0);
+    opacity: 1;
+  }
+}
+
+@keyframes initLogo4 {
+  0% {
+    transform: translate3d(26px, 50px, 0);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .4;
+  }
+
+  100% {
+    transform: translate3d(0,0,0);
+    opacity: 1;
+  }
+}
+
+@keyframes progressLogo1 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(0, 25px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(15px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes progressLogo2 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(0, -25px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(15px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes progressLogo3 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(0, 25px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(-15px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes progressLogo4 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(0, -25px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(-15px, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}

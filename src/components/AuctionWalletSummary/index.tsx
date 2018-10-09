@@ -13,7 +13,7 @@ const AuctionWalletSummary: React.SFC<AuctionWalletSummaryProps> = ({ address, p
     <span>
       <big>Connected Wallet</big>
       <i data-icon={connected ? 'ok' : null}>{provider}</i>
-      <small>[{network}]</small>
+      <small>{network}</small>
     </span>
 
     <span>
