@@ -240,16 +240,10 @@ export const initApp = () => async (dispatch: Dispatch<any>, getState: () => Sta
 }
 
 export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenList) => async (dispatch: Dispatch<any>) => {
-  console.log('​exportsetApprovedTokensAndAvailableAuctions -> tokenList', tokenList)
   const [approvedTokenAddresses, availableAuctions] = await Promise.all([
     getApprovedTokensFromAllTokens(tokenList),
     getAvailableAuctionsFromAllTokens(tokenList),
   ])
-
-  console.log(`
-    APPROVED TOKEN ADDRESSES: ${JSON.stringify(approvedTokenAddresses, undefined, 2)}
-    AVAILABLE AUCTIONS: ${JSON.stringify(availableAuctions, undefined, 2)}
-  `)
 
   dispatch(setApprovedTokens(approvedTokenAddresses))
   dispatch(setAvailableAuctions(availableAuctions))
@@ -282,7 +276,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
         defaultTokens = {
           hash: RINKEBY_TOKEN_LIST_HASH,
-          tokens: process.env.NODE_ENV === 'production'
+          tokens: process.env.FE_CONDITIONAL_ENV === 'production'
             ?
             require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
             :
