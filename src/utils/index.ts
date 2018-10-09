@@ -217,11 +217,11 @@ export const web3CompatibleNetwork = async () => {
 export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]
 
 export const estimateGas = async (
-  { cb, mainParams, txParams }: { cb: Function & { estimateGas: Function }, mainParams: any, txParams: TransactionObject },
-  type: null | 'sendTransaction' | 'call',
+  { cb, mainParams, txParams }: { cb: Function & { estimateGas: Function }, mainParams?: any, txParams?: TransactionObject },
+  type?: null | 'sendTransaction' | 'call',
 ) => {
   let estimatedGasPrice: string
-  const estimatedGasLimit: string | number = await cb.estimateGas(...mainParams, { ...txParams }).catch(() => '4000000')
+  const estimatedGasLimit: string | number = await cb.estimateGas(...mainParams, { ...txParams }).catch((error: Error) => (console.warn(error, 'Defaulting to max 200k (200,000) gas'), '200000'))
 
   try {
     estimatedGasPrice = (await (await fetch('https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/')).json()).standard
@@ -229,8 +229,6 @@ export const estimateGas = async (
     console.warn('Safe gas estimation error: ', error, 'Defaulting to lowest gas price')
     estimatedGasPrice = '1000000000'
   }
-  console.log('TCL: estimateGas -> estimatedGasPrice', estimatedGasPrice)
-  console.log('TCL: estimateGas -> estimatedGasLimit', estimatedGasLimit)
 
   console.warn('ESTIMATE GAS FINAL FUNCTION PARAMS: ', mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 
