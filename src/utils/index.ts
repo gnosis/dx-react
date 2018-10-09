@@ -217,7 +217,7 @@ export const web3CompatibleNetwork = async () => {
 export const lastArrVal = (arr: Array<any>) => arr[arr.length - 1]
 
 export const estimateGas = async (
-  { cb, mainParams, txParams }: { cb: Function & { estimateGas: Function }, mainParams?: any, txParams?: TransactionObject },
+  { cb, mainParams, txParams }: { cb: Function & { estimateGas?: Function }, mainParams?: any, txParams?: TransactionObject },
   type?: null | 'sendTransaction' | 'call',
 ) => {
   let estimatedGasPrice: string
@@ -232,7 +232,5 @@ export const estimateGas = async (
 
   console.warn('ESTIMATE GAS FINAL FUNCTION PARAMS: ', mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 
-  if (!type) return cb(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
-
-  return cb[type](...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
+  return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }

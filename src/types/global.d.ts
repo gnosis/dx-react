@@ -32,7 +32,3 @@ declare const after: typeof afterAll
 declare interface Array<T> {
   __last: () => T;
 }
-
-declare interface Function {
-  estimateGas(mainParams?: any, txParams?: any): any;
-}
