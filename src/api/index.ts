@@ -473,9 +473,10 @@ export const getOutstandingVolume = async (
     price || DutchX.getPrice(pair, auctionIndex),
   ])
 
-  const outstandingVolume = price[1].gt(0) ? sellVolume.mul(price[0]).div(price[1]).sub(buyVolume) : toBigNumber(0)
+  // choosing lte over eq for security
+  if (price[1].lte(0)) return toBigNumber(0)
 
-  return outstandingVolume.lt(0) ? toBigNumber(0) : outstandingVolume
+  return sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
 }
 
 /*
