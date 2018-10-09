@@ -127,7 +127,7 @@ export const TokenListHashMap = {
 export const FIXED_DECIMALS = 4
 
 export const GAS_PRICE = 5e9
-export const GAS_LIMIT_TESTING = '4000000'
+export const GAS_LIMIT = '200000'
 
 // Content page URLS
 export const URLS = {

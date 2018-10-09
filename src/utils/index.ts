@@ -82,7 +82,7 @@ import { logDecoder } from 'ethjs-abi'
 
 import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog, TransactionObject } from 'api/types'
 import { Account } from 'types'
-import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType } from 'globals'
+import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType, GAS_LIMIT } from 'globals'
 
 export const windowLoaded = new Promise((accept, reject) => {
   if (typeof window === 'undefined') {
@@ -221,7 +221,8 @@ export const estimateGas = async (
   type?: null | 'sendTransaction' | 'call',
 ) => {
   let estimatedGasPrice: string
-  const estimatedGasLimit: string | number = await cb.estimateGas(...mainParams, { ...txParams }).catch((error: Error) => (console.warn(error, 'Defaulting to max 200k (200,000) gas'), '200000'))
+  const estimatedGasLimit: string | number = GAS_LIMIT
+  // await cb.estimateGas(...mainParams, { ...txParams }).catch((error: Error) => (console.warn(error, 'Defaulting to max 200k (200,000) gas'), '200000'))
 
   try {
     estimatedGasPrice = (await (await fetch('https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/')).json()).standard

@@ -7,7 +7,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, Provider } from 'types'
 import { dxAPI as dutchXAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
-import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS, GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
+import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
 import { lastArrVal } from 'utils'
 
 let API: dutchXAPI
@@ -81,25 +81,6 @@ export const getTime = async () => {
 TOKENS API
 ====================================================================
 ===================================================================*/
-
-// ETH token balance
-// TODO: delete or keep
-/* export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: Account) => {
-  account = await fillDefaultAccount(account)
-
-  if (tokenName && tokenName === 'ETH') {
-    const { getETHBalance } = await promisedWeb3
-
-    return getETHBalance(account)
-  }
-
-  const { Tokens } = await dxAPI()
-  // account would normally be taken from redux state and passed inside an action
-  // but just in case
-
-  // should probably change name here to WETH
-  return Tokens.getTokenBalance(tokenName, account)
-} */
 
 export const getTokenDecimals = async (tokenAddress: Account) => {
   const { Tokens } = await dxAPI()
