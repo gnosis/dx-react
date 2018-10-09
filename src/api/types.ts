@@ -95,7 +95,7 @@ export interface TransactionReceipt {
 
 type TokensInterfaceExtended = {
   [K in keyof TokensInterface]: TokensInterface[K] extends (...args: any[]) => Promise<Receipt> ?
-    TokensInterface[K] & {sendTransaction?: TokensInterface<Hash>[K]} :
+    TokensInterface[K] & { estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any, sendTransaction?: TokensInterface<Hash>[K] } :
     TokensInterface[K]
 }
 
@@ -214,7 +214,7 @@ export interface GNOInterface extends ERC20Interface {
 
 type ETHInterfaceExtended = {
   [K in keyof ETHInterface]: ETHInterface[K] extends (...args: any[]) => Promise<Receipt> ?
-    ETHInterface[K] & {sendTransaction?: ETHInterface<Hash>[K]} :
+    ETHInterface[K] & { estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any, sendTransaction?: ETHInterface<Hash>[K] } :
     ETHInterface[K]
 }
 
@@ -288,7 +288,7 @@ export interface Receipt {
 
 type DXAuctionExtended = {
   [K in keyof DXAuction]: DXAuction[K] extends (...args: any[]) => Promise<Receipt> ?
-    DXAuction[K] & {sendTransaction: DXAuction<Hash>[K]} :
+    DXAuction[K] & { estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any, sendTransaction: DXAuction<Hash>[K]} :
     DXAuction[K]
 }
 
@@ -494,7 +494,7 @@ interface DXAuction<T = Receipt> {
 
 type DutchExchangeExtended = {
   [K in keyof DutchExchange]: DutchExchange[K] extends (...args: any[]) => Promise<Receipt> ?
-    DutchExchange[K] & {sendTransaction?: DutchExchange<Hash>[K]} :
+    DutchExchange[K] & { estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any, sendTransaction?: DutchExchange<Hash>[K]} :
     DutchExchange[K]
 }
 
