@@ -152,6 +152,8 @@ export const URLS = {
 
   APP_URL_MAIN: 'slow.trade',
   APP_URL_RINKEBY: 'rinkeby.slow.trade',
+  MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
+  RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
 }
 
 // Error messages during TXs
