@@ -226,14 +226,17 @@ export const estimateGas = async (
   let estimatedGasPrice: string
   const estimatedGasLimit: string | number = GAS_LIMIT
   // await cb.estimateGas(...mainParams, { ...txParams }).catch((error: Error) => (console.warn(error, 'Defaulting to max 200k (200,000) gas'), '200000'))
-  const GAS_STATION_URL = network === 'MAIN' ? URLS.MAIN_GAS_STATION : URLS.RINKEBY_GAS_STATION
-  console.warn('TCL: GAS_STATION_URL', GAS_STATION_URL)
 
-  try {
-    estimatedGasPrice = (await (await fetch(GAS_STATION_URL)).json()).standard
-  } catch (error) {
-    console.warn('Safe gas estimation error: ', error, 'Defaulting to lowest gas price')
-    estimatedGasPrice = '1000000000'
+  if (network === 'MAIN' || network === 'RINKEBY') {
+    const GAS_STATION_URL = network === 'MAIN' ? URLS.MAIN_GAS_STATION : URLS.RINKEBY_GAS_STATION
+    console.warn('TCL: GAS_STATION_URL', GAS_STATION_URL)
+
+    try {
+      estimatedGasPrice = (await (await fetch(GAS_STATION_URL)).json()).standard
+    } catch (error) {
+      console.warn('Safe gas estimation error: ', error, 'Defaulting to lowest gas price')
+      estimatedGasPrice = '1000000000'
+    }
   }
 
   console.warn('ESTIMATE GAS FINAL FUNCTION PARAMS: ', mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
