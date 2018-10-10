@@ -48,11 +48,11 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     </p>
     {txData &&
       <div className="modalTXDataDiv">
-        <span>Total participation:<hr /><strong>{`${txData.sellAmount}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Total participation:<hr /><strong>{`${txData.sellAmount} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
         <span>Fee level:<hr /><strong>{`${txData.feeRatio}%`}</strong></span>
         {txData.useOWL && <span>Fees paid in OWL:<hr /><strong>{`${(((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS)}OWL (=${((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name})`}</strong></span>}
-        <span>Fees paid in {`${txData.tokenA.symbol || txData.tokenA.name}`}:<hr /><strong>{`${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
-        <span>Amount deposited into auction:<hr /><strong>{`${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)}${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Fees paid in {`${txData.tokenA.symbol || txData.tokenA.name}`}:<hr /><strong>{`${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Amount deposited into auction:<hr /><strong>{`${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
             {(txData.tokenA.symbol || txData.tokenA.name) &&
             <span>Token depositing:<hr /><strong>{`${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</strong></span>
             }
