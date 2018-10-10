@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import ScrollToLink from 'components/ScrollToLink'
 
 import localForage from 'localforage'
+import { COMPANY_NAME } from 'globals'
 
 interface CookiesState {
   settingsOpen: boolean,
@@ -41,12 +42,12 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
       const { necessary, analytics } = cookieData
 
       this.setState({
-          cookieSettings: {
+        cookieSettings: {
             necessary,
             analytics,
           },
-          loading: false,
-        })
+        loading: false,
+      })
     } catch (err) {
       console.error(err)
       this.setState({ error: err, loading: false })
@@ -67,7 +68,7 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
   handleClick = (e: SyntheticEvent) => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
 
   render() {
-    const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
+    const { dateUpdated = 'September 2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
     return (
         loading ? null
           : (
@@ -76,7 +77,10 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
                 <div className="cookiePageLogo"><img src={dutchXLogo} /></div>
                 <br />
 
-                <h1>d.ex OÜ Cookie Policy</h1>
+                <h1 style={{ whiteSpace: 'pre-line' }}>
+                  {`${COMPANY_NAME}
+                  Cookie Policy`}
+                </h1>
                 <button
                   className={`buttonCTA ${settingsOpen ? 'light-orange' : 'alt-blue'}`}
                   onClick={this.handleClick}
