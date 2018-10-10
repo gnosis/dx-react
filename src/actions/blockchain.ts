@@ -406,6 +406,17 @@ const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAdd
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
+  // TODO: keep || remove idgaf but the `Submit Order` button > WalletPanel needs to be fixed
+  // SubmitOrder > onClick allows users to click twice while this fn (slow as fuck) makes up it's mind
+  // hack that fixes this just opens a modal right away with some "super cool" blockchainy buzz words
+  dispatch(openModal({
+    modalName: 'TransactionModal',
+    modalProps: {
+      header: 'Checking user state',
+      body: 'Verifying/updating user state again blockchain, please wait',
+    },
+  }))
+
   const {
     tokenPair: { sell, sellAmount },
     blockchain: {
