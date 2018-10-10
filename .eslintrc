@@ -17,7 +17,7 @@
       ".jsx"
     ],
     "import/ignore": [
-      "\\.(s?css|less|styl|svg|json)$"
+      "\\.(s?css|less|styl|svg|json|pdf)$"
     ]
   },
   "rules": {
