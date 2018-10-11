@@ -14,6 +14,7 @@ export interface AuctionSellingGettingProps {
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
   onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
+    // TODO: consider using e.target.value.match(/^(0|[1-9]\d*)(\,|.\d+)?(e-?(0|[1-9]\d*))?$/i)
     const input = e.target
     const { sellAmount, setSellTokenAmount, maxSellAmount } = this.props
 
@@ -35,7 +36,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
         input.setCustomValidity('')
       }
     } else {
-      input.setCustomValidity('Please enter a valid number greater than 0')
+      input.setCustomValidity('Please enter a valid number and/or valid separator')
       input.reportValidity()
     }
   }
