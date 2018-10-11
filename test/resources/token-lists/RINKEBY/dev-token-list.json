@@ -8,15 +8,15 @@
       "isETH": true
     },
     {
-      "symbol": "RDN",
-      "name": "Raiden Token",
-      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
-      "decimals": 18
-    },
-    {
       "symbol": "WETH",
       "name": "Wrapped Ether",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18
+    },
+    {
+      "symbol": "RDN",
+      "name": "Raiden Token",
+      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     },
     {
@@ -40,5 +40,5 @@
     "nextUri": null
   },
   "network": "RINKEBY-DEV",
-  "version": "1.0.6"
+  "version": "1.1.1"
 }
