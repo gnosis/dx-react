@@ -661,7 +661,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: 'Approving token transfer for this trade only',
-            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${name || 'your wallet provider'}.`,
+            body: `You are approving ${+sellAmount} ${sellName}. Please confirm with ${name || 'your wallet provider'}.`,
             loader: true,
           },
         }))

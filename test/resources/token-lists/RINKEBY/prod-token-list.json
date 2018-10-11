@@ -8,15 +8,15 @@
       "isETH": true
     },
     {
-      "symbol": "RDN",
-      "name": "Raiden Token",
-      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
-      "decimals": 18
-    },
-    {
       "symbol": "WETH",
       "name": "Wrapped Ether",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18
+    },
+    {
+      "symbol": "RDN",
+      "name": "Raiden Token",
+      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     },
     {
@@ -36,6 +36,12 @@
       "name": "Maker Token",
       "address": "0x2D9585690A724BfA29a212295a9E8C714ca694aA",
       "decimals": 18
+    },
+    {
+      "symbol": "OMG",
+      "name": "OmiseGO",
+      "address": "0x00df91984582e6e96288307e9c2f20b38c8fece9",
+      "decimals": 18
     }
   ],
   "pagination": {
@@ -52,5 +58,5 @@
     "nextUri": null
   },
   "network": "RINKEBY-PROD",
-  "version": "1.0.6"
+  "version": "1.1.1"
 }

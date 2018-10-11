@@ -30,6 +30,12 @@
       "name": "Maker Token",
       "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
       "decimals": 18
+    },
+    {
+      "symbol": "OMG",
+      "name": "OMGToken",
+      "address": "0xd26114cd6ee289accf82350c8d8487fedb8a0c07",
+      "decimals": 18
     }
   ],
   "pagination": {
@@ -46,5 +52,5 @@
     "nextUri": null
   },
   "network": "MAIN",
-  "version": "1.0.6"
+  "version": "1.1.2"
 }
