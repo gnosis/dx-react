@@ -25,12 +25,18 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
 
     setSellTokenAmount({ sellAmount: value })
 
+    const validValue = !!(+value)
     // validate maxSellAmount isnt exceeded but make sure value is castable to type number
-    if (!!(+value) && sellAmount && maxSellAmount.lessThanOrEqualTo(value)) {
-      input.setCustomValidity(`amount available for sale is ${maxSellAmount.toString()}`)
-      input.reportValidity()
+    if (validValue && sellAmount) {
+      if (maxSellAmount.lessThanOrEqualTo(value)) {
+        input.setCustomValidity(`Amount available for sale is ${maxSellAmount.toString()}`)
+        input.reportValidity()
+      } else {
+        input.setCustomValidity('')
+      }
     } else {
-      input.setCustomValidity('')
+      input.setCustomValidity('Please enter a valid number greater than 0')
+      input.reportValidity()
     }
   }
 
