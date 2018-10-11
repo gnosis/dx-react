@@ -15,12 +15,18 @@ export interface AuctionSellingGettingProps {
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
   onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
     const input = e.target
-    const { value } = input
-    const { setSellTokenAmount, maxSellAmount } = this.props
-    if (e.target.value.length < 1) return setSellTokenAmount({ sellAmount: '0' })
+    const { sellAmount, setSellTokenAmount, maxSellAmount } = this.props
+
+    let { value } = input
+    // if (value.length < 1) return setSellTokenAmount({ sellAmount: '0' })
+
+    // check for commas and replace as decimals
+    value = value.replace(/[,]/g, '.')
+
     setSellTokenAmount({ sellAmount: value })
 
-    if (maxSellAmount.lessThanOrEqualTo(value)) {
+    // validate maxSellAmount isnt exceeded but make sure value is castable to type number
+    if (!!(+value) && sellAmount && maxSellAmount.lessThanOrEqualTo(value)) {
       input.setCustomValidity(`amount available for sale is ${maxSellAmount.toString()}`)
       input.reportValidity()
     } else {
@@ -47,7 +53,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps> {
         <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
-          type="number"
+          type="text"
           name="sellingAmount"
           id="sellingAmount"
           onChange={this.onChange}
