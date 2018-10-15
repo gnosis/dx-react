@@ -1,15 +1,16 @@
 import React from 'react'
+import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
+
 import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import 'assets/pdf/PrivacyPolicy.pdf'
-
-import { RouteComponentProps } from 'react-router'
-import { Link } from 'react-router-dom'
 import { BLOCKED_COUNTRIES, URLS } from 'globals'
 import { web3CompatibleNetwork, lastArrVal } from 'utils'
 import { TermsText } from '../Terms'
+
+import 'assets/pdf/PrivacyPolicy.pdf'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
   accepted: boolean,
@@ -33,7 +34,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     termsOfUseAccepted: false,
     cookies_analytics_accepted: undefined as boolean,
     loading: true,
-    network: '',
+    network: undefined as any,
   }
 
   form: HTMLFormElement = null
@@ -45,11 +46,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
         web3CompatibleNetwork(),
       ])
 
-      if (!cookieData) return this.setState({ loading: false })
-
-      const { analytics } = cookieData
       return this.setState({
-        cookies_analytics_accepted: analytics,
+        cookies_analytics_accepted: cookieData ? cookieData.analytics : null,
         loading: false,
         network,
       })
