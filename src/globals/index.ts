@@ -152,8 +152,18 @@ export const URLS = {
 
   APP_URL_MAIN: 'slow.trade',
   APP_URL_RINKEBY: 'rinkeby.slow.trade',
+  APP_URL_IPFS: {
+    hostname: 'ipfs.io',
+    pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV',
+  },
   MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
   RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
+}
+
+export const GA_CODES = {
+  RINKEBY: 'UA-83220550-8',
+  MAIN: 'UA-83220550-9',
+  IPFS: 'UA-83220550-10',
 }
 
 // Error messages during TXs

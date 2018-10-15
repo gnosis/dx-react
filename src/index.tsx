@@ -12,7 +12,7 @@ import App, { loadLocalSettings } from 'components/App'
 
 import { isNetBlocked, isGeoBlocked } from 'block'
 
-import { URLS } from 'globals'
+import { GA_CODES, URLS } from 'globals'
 
 /* global document */
 const rootElement = document.getElementById('root')
@@ -54,7 +54,7 @@ async function conditionalRender() {
     if (blocked) disabledReason = 'networkblock'
 
     // init GA
-    ReactGA.initialize('UA-83220550-8')
+    ReactGA.initialize(GA_CODES.RINKEBY)
   }
 
   /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
@@ -71,8 +71,10 @@ async function conditionalRender() {
       if (blocked) disabledReason = 'networkblock'
     }
     // init GA
-    ReactGA.initialize('UA-83220550-9')
+    ReactGA.initialize(GA_CODES.MAIN)
   }
+
+  else if (hostname === URLS.APP_URL_IPFS.hostname) ReactGA.initialize(GA_CODES.IPFS)
 
   if (blocked) {
     window.history.replaceState(null, '', '/')
