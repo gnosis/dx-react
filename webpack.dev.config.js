@@ -138,7 +138,7 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new FaviconsWebpackPlugin({
-      logo: 'assets/dutchx.png',
+      logo: 'assets/favicon.png',
       prefix: './',
       // Generate a cache file with control hashes and
       // don't rebuild the favicons until those hashes change

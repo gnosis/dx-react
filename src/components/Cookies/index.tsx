@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react'
 
-import dutchXLogo from 'assets/dutchx.png'
+import dutchXLogo from 'assets/favicon.png'
 
 import { Link } from 'react-router-dom'
 import ScrollToLink from 'components/ScrollToLink'
