@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const NameAllModulesPlugin = require('name-all-modules-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -147,7 +148,7 @@ module.exports = {
     new NameAllModulesPlugin(),
     new ExtractTextPlugin('[name].[contenthash].css'),
     new FaviconsWebpackPlugin({
-      logo: 'assets/dutchx.png',
+      logo: 'assets/favicon.png',
       prefix: './', // puts favicons into root folder,
       // which allows for not html content (like pdf) to fetch /favicon.icon from default location
 
@@ -174,8 +175,15 @@ module.exports = {
       'process.env': {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
+        FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'production'),
       },
     }),
     new UglifyJsPlugin(),
+    new CopyWebpackPlugin([{
+      from: 'public',
+    }, {
+      from: '../landing',
+      to: 'landing',
+    }]),
   ],
 }

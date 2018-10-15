@@ -12,3 +12,5 @@
 *.otf binary
 *.woff binary
 *.woff2 binary
+*.pdf binary
+*.PDF binary

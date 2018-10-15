@@ -3,6 +3,7 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const path = require('path')
 const webpack = require('webpack')
@@ -137,7 +138,7 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new FaviconsWebpackPlugin({
-      logo: 'assets/dutchx.png',
+      logo: 'assets/favicon.png',
       prefix: './',
       // Generate a cache file with control hashes and
       // don't rebuild the favicons until those hashes change
@@ -162,9 +163,16 @@ module.exports = {
       'process.env': {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
+        FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'development'),
         ETHEREUM_URL: JSON.stringify(ethereumUrl),
         WHITELIST: JSON.stringify(whitelist),
       },
     }),
+    new CopyWebpackPlugin([{
+      from: 'public',
+    }, {
+      from: '../landing',
+      to: 'landing',
+    }]),
   ],
 }

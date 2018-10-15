@@ -3,6 +3,7 @@ import { HumanFriendlyToken, promisedContractsMap } from 'api/contracts'
 import { TokensInterface, TransactionObject } from './types'
 import { Account, Balance } from 'types'
 import { ETH_ADDRESS } from 'globals'
+import { estimateGas } from 'utils'
 
 let tokensAPI: TokensInterface
 
@@ -33,30 +34,32 @@ async function init(): Promise<TokensInterface> {
   const getTotalSupply = (tokenAddress: Account) => getToken(tokenAddress).totalSupply()
 
   const transfer = (tokenAddress: Account, to: Account, value: Balance, tx: TransactionObject) =>
-    getToken(tokenAddress).transfer(to, value, tx)
+    estimateGas({ cb: getToken(tokenAddress).transfer, mainParams: [to, value], txParams: tx })
 
   const transferFrom = (tokenAddress: Account, from: Account, to: Account, value: Balance, tx: TransactionObject) =>
-    getToken(tokenAddress).transferFrom(from, to, value, tx)
+    estimateGas({ cb: getToken(tokenAddress).transferFrom, mainParams: [from, to, value], txParams: tx })
 
   const approve: TokensInterface['approve'] = (tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject) =>
-    getToken(tokenAddress).approve(spender, value, tx)
+    estimateGas({ cb: getToken(tokenAddress).approve, mainParams: [spender, value], txParams: tx })
 
   approve.sendTransaction = (tokenAddress: Account, spender: Account, value: Balance, tx: TransactionObject) =>
-    getToken(tokenAddress).approve.sendTransaction(spender, value, tx)
+    estimateGas({ cb: getToken(tokenAddress).approve, mainParams: [spender, value], txParams: tx }, 'sendTransaction')
 
   const allowance = (tokenAddress: Account, owner: Account, spender: Account) =>
-    getToken(tokenAddress).allowance(owner, spender)
+    estimateGas({ cb: getToken(tokenAddress).allowance, mainParams: [owner, spender] })
 
   const eth = contractsMap['TokenETH']
 
   const ethTokenBalance = (owner: Account) => eth.balanceOf(owner)
 
-  const depositETH: TokensInterface['depositETH'] = (tx: TransactionObject & {value: TransactionObject['value']}) => eth.deposit(tx)
+  const depositETH: TokensInterface['depositETH'] = (tx: TransactionObject & {value: TransactionObject['value']}) =>
+    estimateGas({ cb: eth.deposit, mainParams: [], txParams: tx })
 
   depositETH.sendTransaction = (tx: TransactionObject & {value: TransactionObject['value']}) =>
-    eth.deposit.sendTransaction(tx)
+    estimateGas({ cb: eth.deposit, mainParams: [], txParams: tx }, 'sendTransaction')
 
-  const withdrawETH = (value: Balance, tx: TransactionObject) => eth.withdraw(value, tx)
+  const withdrawETH = (value: Balance, tx: TransactionObject) =>
+    estimateGas({ cb: eth.withdraw, mainParams: [value], txParams: tx })
 
   return {
     getTokenDecimals,

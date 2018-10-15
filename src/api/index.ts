@@ -7,7 +7,7 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, Provider } from 'types'
 import { dxAPI as dutchXAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
-import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS, GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
+import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
 import { lastArrVal } from 'utils'
 
 let API: dutchXAPI
@@ -81,25 +81,6 @@ export const getTime = async () => {
 TOKENS API
 ====================================================================
 ===================================================================*/
-
-// ETH token balance
-// TODO: delete or keep
-/* export const getCurrentBalance = async (tokenName: TokenCode = 'ETH', account?: Account) => {
-  account = await fillDefaultAccount(account)
-
-  if (tokenName && tokenName === 'ETH') {
-    const { getETHBalance } = await promisedWeb3
-
-    return getETHBalance(account)
-  }
-
-  const { Tokens } = await dxAPI()
-  // account would normally be taken from redux state and passed inside an action
-  // but just in case
-
-  // should probably change name here to WETH
-  return Tokens.getTokenBalance(tokenName, account)
-} */
 
 export const getTokenDecimals = async (tokenAddress: Account) => {
   const { Tokens } = await dxAPI()
@@ -186,7 +167,7 @@ tokenApproval.sendTransaction = async (tokenAddress: Account, amount: Balance, u
   const { DutchX, Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  return Tokens.approve.sendTransaction(tokenAddress, DutchX.address, amount, { from: userAddress })
 }
 
 export const tokenSupply = async (tokenAddress: Account) => {
@@ -211,7 +192,7 @@ depositETH.sendTransaction = async (amount: Balance, userAddress?: Account) => {
   const { Tokens } = await dxAPI()
   userAddress = await fillDefaultAccount(userAddress)
 
-  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  return Tokens.depositETH.sendTransaction({ from: userAddress, value: amount })
 }
 
 /* =================================================================
@@ -473,9 +454,10 @@ export const getOutstandingVolume = async (
     price || DutchX.getPrice(pair, auctionIndex),
   ])
 
-  const outstandingVolume = sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
+  // choosing lte over eq for security
+  if (price[1].lte(0)) return toBigNumber(0)
 
-  return outstandingVolume.lt(0) ? toBigNumber(0) : outstandingVolume
+  return sellVolume.mul(price[0]).div(price[1]).sub(buyVolume)
 }
 
 /*
@@ -754,6 +736,8 @@ const getLastAuctionStats = async (DutchX: DutchExchange, pair: TokenPair, accou
 
   if (auctionStart.eq(1)) statusDir.status = statusOpp.status = AuctionStatus.INIT
   else {
+    // outstandingVolume <= 0 === THEORETICALLY CLOSED
+    // TODO: ask why num here and not den
     if (closingPriceDir[0].equals(0) && outstandingVolumeNormal.eq(0)) {
       statusDir.status = AuctionStatus.ENDED
       statusDir.theoreticallyClosed = true
@@ -921,8 +905,8 @@ export const getSellerOngoingAuctions = async (
         auctionStart,
       } = lastAuctionsData[index]
 
-      const currAuctionNeverRanDir = balanceNormal.eq(0) && closingPriceDir[1].eq(0)
-      const currAuctionNeverRanOpp = balanceInverse.eq(0) && closingPriceOpp[1].eq(0)
+      const currAuctionNeverRanDir = statusDir.theoreticallyClosed || (balanceNormal.eq(0) && closingPriceDir[1].eq(0))
+      const currAuctionNeverRanOpp = statusOpp.theoreticallyClosed || (balanceInverse.eq(0) && closingPriceOpp[1].eq(0))
       const currAuctionEndedDir = closingPriceDir[1].gt(0) && statusDir.status === AuctionStatus.ENDED
       const currAuctionEndedOpp = closingPriceOpp[1].gt(0) && statusOpp.status === AuctionStatus.ENDED
       const committedToNextNormal = balanceNext.normal.gt(0)

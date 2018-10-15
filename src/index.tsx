@@ -74,21 +74,6 @@ async function conditionalRender() {
     ReactGA.initialize('UA-83220550-9')
   }
 
-  /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-  else if (hostname === URLS.APP_URL_MAIN) {
-    ALLOWED_NETWORK = 'Ethereum Mainnet'
-    const netBlockedPromise = isNetBlocked(['1'])
-    // geoblock gets precedence, checked first
-    blocked = await isGeoBlocked()
-
-    if (blocked) {
-      disabledReason = 'geoblock'
-    } else {
-      blocked = await netBlockedPromise
-      if (blocked) disabledReason = 'networkblock'
-    }
-  }
-
   if (blocked) {
     window.history.replaceState(null, '', '/')
     return rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)

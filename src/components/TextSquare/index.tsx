@@ -3,35 +3,28 @@ import ButtonCTA from 'components/ButtonCTA'
 
 export const TextSquare: React.SFC = () =>
   <div className="intro">
-    <h1><div className="homeTitle">Slow & Fair:</div>
-      <span>Token </span>
-      <span>Auction </span>
-      <span>Platform</span>
+    <h1>
+      <div className="homeTitle">Trading Platform</div>
+      <span>Good trades take time</span>
     </h1>
+
     <div className="textSquareInnerContainer">
-      <i>Slow & fair</i><br /><br />
-      This trading interface allows you to interact with the DutchX decentralized trading protocol for ERC20 tokens,
-      determining a fair value for tokens based on the Dutch auction principle.
+    This trading interface allows you to interact with
+    the DutchX decentralized trading protocol for ERC20 tokens,
+    determining a fair value for tokens based on the Dutch auction principle.
+    <br/><br/>
+    No account needed. Direct trades between peers through smart contracts.
+    <br/><br/>
+    <ol>
+      <li>Choose the tokens you would like to trade</li>
+      <li>Specify the amount to deposit</li>
+      <li>Submit the order via your wallet provider</li>
+    </ol>
+    <br/>
+    Your order is automatically deposited into the next running auction - no strategy needed!
+    <br/><br/>
 
-      <br /><br />
-
-      No account needed. Direct trades between peers through smart contracts.
-
-      <br /><br />
-
-      <ol>
-        <li>Choose the tokens you would like to trade</li>
-        <li>Specify the amount to deposit</li>
-        <li>Submit the order via your wallet provider</li>
-      </ol>
-
-      <br />
-
-      Your order is automatically deposited into the next running auction - no strategy needed!
-
-      <br /><br />
-
-      <ButtonCTA className="blue" to="/content/HowItWorks">How it works</ButtonCTA>
+      <ButtonCTA to="/content/HowItWorks" className={null}><strong>Slow &amp; Fair -</strong>How it works</ButtonCTA>
     </div>
   </div>
 

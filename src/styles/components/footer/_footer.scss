@@ -1,0 +1,78 @@
+footer {
+  height: auto;
+  padding: 3em;
+  box-sizing: border-box;
+  display: flex;
+  background: $white;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  align-self: flex-end;
+
+  > p {
+    color: $grey;
+    text-align: center;
+    width: 75%;
+    margin: 0;
+  }
+
+  p > a:link {
+    margin: 0 2.5em 0 0;
+    font-size: 1.1em;
+    color: $grey;
+    text-transform: uppercase;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out;
+    will-change: color;
+    padding: .3em;
+    box-sizing: border-box;
+    border-radius: 2px;
+  }
+
+  p > a:hover {
+    background-color: $greyLight;
+    color: $blackShade;
+  }
+
+  p > a:last-of-type {
+    margin: 0;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    > i {
+      font-size: .8em;
+      padding: 0 3px;
+      font-style: normal;
+      text-transform: uppercase;
+      color: $grey;
+    }
+  }
+}
+
+.footerLogo {
+  width: 100%;
+  margin: 3em auto 1em;
+  text-align: center;
+  display: block;
+
+  > i {
+    color: $grey;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: .9em;
+    display: block;
+    font-style: normal;
+    margin: 0 auto 6px;
+  }
+
+  > a > img {
+    height: 25px;
+    width: auto;
+    margin: 0 auto;
+  }
+}

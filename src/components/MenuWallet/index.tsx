@@ -14,6 +14,7 @@ export interface WalletProps {
   dxBalances: TokenBalances,
   dxBalancesAvailable: boolean,
   hasTokenBalances: boolean,
+  network: string,
   providerName: ProviderName,
 
   setActiveProvider: (provider: any) => void;
@@ -41,7 +42,18 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { account, addressToSymbolDecimal, balance, tokens, hasTokenBalances, dxBalances, dxBalancesAvailable, providerName, withdrawFromDutchX } = this.props
+    const {
+      account,
+      addressToSymbolDecimal,
+      balance,
+      dxBalances,
+      dxBalancesAvailable,
+      hasTokenBalances,
+      network,
+      providerName,
+      tokens,
+      withdrawFromDutchX,
+    } = this.props
     return (
       <div
         className="menuWallet"
@@ -56,6 +68,16 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
         </span>
         {account && hasTokenBalances &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
+
+          <span onClick={this.changeWallet}>
+            <img src={provider2SVG(providerName)} />
+            <p>
+              <strong>{providerName}</strong>
+              <i>{network}</i>
+            </p>
+            <code>{account}</code>
+          </span>
+
           <table>
             <thead>
               <tr>
@@ -92,17 +114,21 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
                 {Object.keys(tokens).map((addressKey: any) => {
                   if (!addressToSymbolDecimal[addressKey]) return null
                   const { name, decimals } = addressToSymbolDecimal[addressKey]
+                  const tokenBalAvailable = tokens[addressKey].gt(0)
+                  const dxTokenAvailable = dxBalances[addressKey]
+                  const dxTokenBalAvailable = dxTokenAvailable && dxBalances[addressKey].gt(0)
+
                   return (
-                    tokens[addressKey].gt(0) &&
+                    (tokenBalAvailable || dxTokenBalAvailable) &&
                     <tr key={addressKey}>
                       <td>{name || 'Unknown'}</td>
                       <td>{(tokens[addressKey]).div(10 ** decimals).toFixed(FIXED_DECIMALS)}</td>
 
                       {// Conditionally render dxBalances column
                       dxBalancesAvailable &&
-                        <td className={dxBalances[addressKey] && dxBalances[addressKey].gt(0) ? 'withPic' : ''}>
-                          {dxBalances[addressKey] && dxBalances[addressKey].div(10 ** decimals).toFixed(FIXED_DECIMALS)}
-                          {dxBalances[addressKey] && dxBalances[addressKey].gt(0) &&
+                        <td className={dxTokenBalAvailable ? 'withPic' : ''}>
+                          {dxTokenAvailable && dxBalances[addressKey].div(10 ** decimals).toFixed(FIXED_DECIMALS)}
+                          {dxTokenBalAvailable &&
                             <img
                               src={require('assets/claim.svg')}
                               onClick={() => withdrawFromDutchX({ name, address: addressKey })}

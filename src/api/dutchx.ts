@@ -1,7 +1,7 @@
 import { promisedContractsMap } from './contracts'
 import { DutchExchange, Index, Filter, ErrorFirstCallback, DutchExchangeEvents } from './types'
 import { TokenPair, Account, Balance, TokenCode } from 'types'
-import { GAS_PRICE, GAS_LIMIT_TESTING } from 'globals'
+import { estimateGas } from 'utils'
 
 let dutchXAPI: DutchExchange
 
@@ -70,7 +70,7 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postSellOrder(t1, t2, index, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  ) => estimateGas({ cb: dx.postSellOrder, mainParams: [t1, t2, index, amount], txParams: { from: userAccount } })
 
   postSellOrder.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -84,14 +84,14 @@ async function init(): Promise<DutchExchange> {
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postSellOrder.sendTransaction(t1, t2, index, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  ) => estimateGas({ cb: dx.postSellOrder, mainParams: [t1, t2, index, amount], txParams: { from: userAccount } }, 'sendTransaction')
 
   const postBuyOrder = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     index: Index,
     userAccount: Account,
-  ) => dx.postBuyOrder(t1, t2, index, amount, { from: userAccount })
+  ) =>  estimateGas({ cb: dx.postBuyOrder, mainParams: [t1, t2, index, amount], txParams: { from: userAccount } })
 
   postBuyOrder.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -104,7 +104,7 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-  ) => dx.claimSellerFunds(t1, t2, userAccount, index, { from: userAccount })
+  ) => estimateGas({ cb: dx.claimSellerFunds, mainParams: [t1, t2, userAccount, index], txParams: { from: userAccount } })
 
   claimSellerFunds.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -117,32 +117,39 @@ async function init(): Promise<DutchExchange> {
     buyTokenAddresses: Account[],
     indices: number[],
     account: Account,
-  ) => dx.claimTokensFromSeveralAuctionsAsSeller(
-    sellTokenAddresses,
-    buyTokenAddresses,
-    indices,
-    account,
-    { from: account },
-  )
+  ) => estimateGas({
+    cb: dx.claimTokensFromSeveralAuctionsAsSeller,
+    mainParams: [
+      sellTokenAddresses,
+      buyTokenAddresses,
+      indices,
+      account,
+    ],
+    txParams: { from: account },
+  })
 
   claimTokensFromSeveralAuctionsAsSeller.sendTransaction = (
     sellTokenAddresses: Account[],
     buyTokenAddresses: Account[],
     indices: number[],
     account: Account,
-  ) => dx.claimTokensFromSeveralAuctionsAsSeller.sendTransaction(
-    sellTokenAddresses,
-    buyTokenAddresses,
-    indices,
-    account,
-    { from: account },
-  )
+  ) => estimateGas({
+    cb: dx.claimTokensFromSeveralAuctionsAsSeller,
+    mainParams: [
+      sellTokenAddresses,
+      buyTokenAddresses,
+      indices,
+      account,
+    ],
+    txParams: { from: account },
+  }, 'sendTransaction')
 
   const claimBuyerFunds = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     userAccount: Account,
-  ) => dx.claimBuyerFunds(t1, t2, userAccount, index, { from: userAccount })
+  ) => estimateGas({ cb: dx.claimBuyerFunds, mainParams: [t1, t2, userAccount, index], txParams: { from: userAccount } })
+  // dx.claimBuyerFunds(t1, t2, userAccount, index, { from: userAccount })
 
   claimBuyerFunds.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -151,19 +158,23 @@ async function init(): Promise<DutchExchange> {
   ) => dx.claimBuyerFunds.call(t1, t2, userAccount, index)
 
   const deposit = (tokenAddress: Account, amount: Balance, userAccount: Account) =>
-    dx.deposit(tokenAddress, amount, { from: userAccount })
+    estimateGas({ cb: dx.deposit, mainParams: [tokenAddress, amount], txParams: { from: userAccount } })
+    // dx.deposit(tokenAddress, amount, { from: userAccount })
 
   const withdraw: DutchExchange['withdraw'] = (tokenAddress: TokenCode, amount: Balance, userAccount: Account) =>
-    dx.withdraw(tokenAddress, amount, { from: userAccount })
+    estimateGas({ cb: dx.withdraw, mainParams: [tokenAddress, amount], txParams: { from: userAccount } })
+    // dx.withdraw(tokenAddress, amount, { from: userAccount })
 
   withdraw.sendTransaction = (tokenAddress: TokenCode, amount: Balance, userAccount: Account) =>
-    dx.withdraw.sendTransaction(tokenAddress, amount, { from: userAccount })
+    estimateGas({ cb: dx.withdraw, mainParams: [tokenAddress, amount], txParams: { from: userAccount } }, 'sendTransaction')
+    // dx.withdraw.sendTransaction(tokenAddress, amount, { from: userAccount })
 
   const depositAndSell: DutchExchange['depositAndSell'] = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     userAccount: Account,
-  ) => dx.depositAndSell(t1, t2, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  ) => estimateGas({ cb: dx.depositAndSell, mainParams: [t1, t2, amount], txParams: { from: userAccount } }, 'sendTransaction')
+  // dx.depositAndSell(t1, t2, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
 
   depositAndSell.call = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
@@ -175,14 +186,16 @@ async function init(): Promise<DutchExchange> {
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     amount: Balance,
     userAccount: Account,
-  ) => dx.depositAndSell.sendTransaction(t1, t2, amount, { from: userAccount, gasPrice: GAS_PRICE, gas: GAS_LIMIT_TESTING })
+  ) => estimateGas({ cb: dx.depositAndSell, mainParams: [t1, t2, amount], txParams: { from: userAccount } }, 'sendTransaction')
 
+  // TODO: could be an issue
   const claimAndWithdraw = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
     amount: Balance,
     userAccount: Account,
-    ) => dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount, gas: 4712388 })
+    ) => estimateGas({ cb: dx.claimAndWithdraw, mainParams: [t1, t2, userAccount, index, amount], txParams: { from: userAccount } })
+    // dx.claimAndWithdraw(t1, t2, userAccount, index, amount, { from: userAccount, gas: 4712388 })
 
   const isTokenApproved = (tokenAddress: Account) => dx.approvedTokens.call(tokenAddress)
 

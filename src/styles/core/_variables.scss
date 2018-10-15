@@ -1,6 +1,10 @@
-// File paths
+// Global File paths
 $images: '../../src/assets/';
 $fonts: '../../src/styles/fonts/';
+
+// Brand file paths
+$brandImages: '../../src/assets/brand/images/';
+$brandFonts: '../../src/assets/brand/fonts/';
 
 // Media Query Ranges
 $tiny-screen: 340px !default;
@@ -29,16 +33,20 @@ $tablet-small: "(min-width: #{$small-screen-up}) and (max-width: #{$medium-small
 // $ipad-pro-portrait-breakpoint: "(min-device-width: 1024px) and (max-device-height: 1366px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio: 2)";
 // $ipad-pro-landscape-breakpoint: "(min-device-width: 1024px) and (max-device-height: 1366px) and (orientation:landscape) and (-webkit-min-device-pixel-ratio: 2)";
 
+
 // Global HEX Colors
 $green: #008f41;
 $white: #fff;
+$whiteShade: #eaeef3;
 $black: #333;
+$blackShade: #3d4450;
 $grey: #7c7c8c;
 $greyLight: #f0f2f6;
-$greyText: #79828f;
+$greyText: #526179;
 $greyTextDark: #5c636e;
 $greyBorder: #ced3db;
 $blue: #0072cf;
+$blueShade: #00447b;
 $darkBlue: #1a4977;
 $lightBlue: #4d7398;
 $red: #bf1600;
@@ -47,6 +55,8 @@ $orange: #ed5a00;
 $lila: #735ab7;
 $colorGNO: #00a6c4;
 $yellow: #fcf8e3;
+$yellowLight: #feefb3;
+$yellowDark: #9f6000;
 
 $max-width: 1090px;
 
@@ -68,3 +78,17 @@ $bold: 500;
 
 // HTML Entity characters (e.g. for use with pseudo-elements)
 $x: "\2715"; // $x: "✕";
+
+// BRAND SETTINGS
+$logoWidth: 144px;                // Logo Width on tablet and greater
+$logoHeight: 52px;                // Logo Height on tablet and greater
+$logoWidth_mobile: auto;          // Logo Width on mobile viewport
+$logoHeight_mobile: 42px;         // Logo height on mobile viewport
+$font: 'SpaceMono', verdana;      // Brand font
+$brandPrimary: $blue;             // Primary color
+$brandPrimaryShade: $blueShade;   // Primary color
+
+// Modals
+$modalColor: rgba(0, 72, 130, 1);
+$modalColorOpacity: rgba(0, 72, 130, .9);
+$boxShadowContainer: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);

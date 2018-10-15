@@ -6,11 +6,10 @@ html, body {
 }
 
 body {
-  background: $darkBlue url('#{$images}bg.jpg') no-repeat center / cover;
-  background-attachment: fixed;
-  color: $black;
-  font-family: $montserrat;
-  font-size: 12px;
+  background: $whiteShade;
+  color: $greyText;
+  font-family: $verdana;
+  font-size: 10px;
   line-height: 16px;
   margin: 0;
   text-rendering: geometricPrecision;
@@ -29,7 +28,7 @@ body {
 }
 
 ::selection {
-  color: $white;
+  color: $whiteShade;
   background: $blue;
 }
 
@@ -71,7 +70,6 @@ img {
 
 section.home, section.auction {
   align-items: center;
-  margin: 20px auto;
 
   @media #{$mobile} {
     height: auto;
@@ -79,8 +77,10 @@ section.home, section.auction {
 }
 
 section.home {
+  margin: 20px auto;
+
   @media #{$desktop} {
-    padding: 0 30px;
+    padding: 0 30px 90px;
   }
 
   @media #{$tablet} {
@@ -91,8 +91,12 @@ section.home {
     flex-wrap: wrap;
     height: auto;
 
-    margin-top: 175px;
+    margin-top: 136px;
   }
+}
+
+section.auction {
+  margin: 40px auto 20px;
 }
 
 .noScroll {
@@ -103,42 +107,4 @@ section.home {
 footer {
   position: relative;
   width: 100%;
-  height: auto;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  display: flex;
-  background: $greyLight;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  margin: auto auto 0;
-
-  > p:first-child {
-    color: $grey;
-
-    text-align: center;
-    width: 75%;
-  }
-
-  p > a {
-    color: $blue;
-    padding: 0 4px;
-  }
-
-  > p > span > img {
-    max-width: 100px;
-  }
-
-  > div {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-
-    > i {
-      font-size: 8px;
-      padding: 0 3px;
-    }
-  }
-
 }

@@ -2,11 +2,10 @@ $modal-max-width: 800px;
 
 // Modal
 .modalDivStyle {
-  // position: fixed;
   display: flex;
   flex-flow: column;
   align-items: center;
-  background: rgba(26, 73, 119, .87);
+  background: $modalColorOpacity;
   color: $white;
   min-height: 100vh;
   width: 100vw;
@@ -15,7 +14,7 @@ $modal-max-width: 800px;
   box-sizing: border-box;
 
   @media #{$mobile} {
-    padding: 25px 25px 0;
+    padding: 45px 25px;
     overflow-y: scroll;
   }
 
@@ -26,24 +25,24 @@ $modal-max-width: 800px;
     justify-content: center;
     width: 100%;
     max-width: $modal-max-width;
-
-    margin-top: 20px;
   }
 
   > h1 {
-    font-size: 2.5em;
+    font-size: 2.6em;
     text-transform: uppercase;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 0;
     max-width: $modal-max-width;
     width: 100%;
+    font-family: $font;
+    margin: 0 20px 20px;
 
     @media #{$mobile} {
-      font-size: 1.7em;
+      font-size: 1.9em;
     }
   }
-
-  > h1, .modalButtonDescription {
+  
+  .modalButtonDescription {
     margin: 20px;
   }
 
@@ -52,15 +51,36 @@ $modal-max-width: 800px;
     line-height: normal;
   }
 
+  > p {
+    font-size: 1.2em;
+    word-break: break-word;
+  }
+
+  > a,
+  > p > a {
+    font-size: 1.1em;
+    color: $white;
+    text-decoration: underline;
+  }
+
   > .modalFooter {
-    font-size: 14px;
-    max-width: 600px;
+    font-size: 1.4em;
+    max-width: $modal-max-width;
+    background: $brandPrimaryShade;
+    border-radius: 2px;
+    padding: 15px;
+    box-sizing: border-box;
+
+    > a {
+      color: $white;
+      text-decoration: underline;
+    }
   }
 
   > .modalP {
     max-width: $modal-max-width;
     width: 100%;
-    font-size: 21px;
+    font-size: 1.8em;
     line-height: 1.5;
     font-weight: lighter;
     white-space: pre-line;
@@ -74,7 +94,7 @@ $modal-max-width: 800px;
 
   > .modalHeaderDescriptor {
     font-size: 1.5em;
-    font-weight: 100;
+    font-weight: normal;
     line-height: 1.5;
     margin: 0 30px;
     text-align: center;
@@ -89,25 +109,24 @@ $modal-max-width: 800px;
     margin: 30px;
     padding: 15px;
     word-wrap: break-word;
-    font-size: 1.2em;
+    font-size: 1.3em;
     border-radius: 3px;
     flex: 1 1 auto;
     max-width: 600px;
     text-align: center;
     display: table;
-    border: 1px dotted $red;
-    background-color: #fef1f1;
-    color: $red;
+    background-color: #713837;
+    color: $white;
   }
 
   .modalButton {
     background-color: $white;
     border: 0;
     border-radius: 3px;
-    color: $blue;
+    color: $blackShade;
     font-family: inherit;
     font-size: 1.5em;
-    font-weight: $normal;
+    font-weight: bold;
     width: 100%;
     max-width: 14em;
     padding: 20px;
@@ -158,28 +177,77 @@ $modal-max-width: 800px;
     padding: 15px;
     text-align: left;
     word-wrap: break-word;
-    font-size: 1.2em;
+    font-size: 1.3em;
     border-radius: 3px;
-    flex: 1 1 auto;
+    flex: 0;
     width: 100%;
     max-width: 600px;
-    display: table;
-    color: #84deb3;
-    background: #0f2b48;
+    color: $greyText;
+    background: $white;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: $boxShadowContainer;
 
-    > ul {
-      color: inherit;
-      font-family: $mono;
-      line-height: initial;
-      text-align: left;
-      width: 100%;
+    > span {
+      flex: 1 1 100%;
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 10px;
+      font-size: 1em;
       word-break: break-all;
-    }
 
-    > ul > li > a {
-      &:link, &:visited, &:active, &:focus {
-        color: #f2f3f5;
+      @media #{$mobile} {
+        flex-wrap: wrap;
+        flex-direction: column;
       }
     }
+
+    > span:first-of-type {
+      font-size: 1.3em;
+      color: $blackShade;
+
+      > strong {
+        color: $brandPrimary;
+      }
+    }
+
+    > span > a {
+      &:link, &:visited, &:active, &:focus {
+        color: $blackShade;
+        text-decoration: underline;
+      }
+    }
+
+    > span > strong {
+      flex: 0 1 auto;
+    }
+
+    > span > hr {
+      height: 1px;
+      border-width: 0;
+      border-bottom: 1px dashed $greyBorder;
+      flex: 1;
+      margin: 12px 12px 0;
+
+      @media #{$mobile} {
+        display: none;
+      }
+    }
+  }
+}
+
+.spinnerContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+
+  > p {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    font-weight: bold;
   }
 }

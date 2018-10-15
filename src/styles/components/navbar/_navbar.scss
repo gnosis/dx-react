@@ -10,23 +10,23 @@ header {
   display: flex;
   align-items: center;
   max-width: $max-width;
-  margin: 0 auto auto;
+  margin: 0 auto;
   z-index: 99;
 
   @media #{$mobile} {
-    position: fixed;
-    border-bottom: 1px solid #5386b3;
+    position: absolute;
+    border-bottom: 1px solid $greyTextDark;
     max-width: 100vw;
     padding: 0 15px;
     box-sizing: border-box;
     margin: 0 auto 74px;
-    background: $darkBlue;
+    background: $whiteShade;
     border: 0;
   }
 
   &.solid-background {
     margin: 0 auto;
-    background: $darkBlue;
+    background: $whiteShade;
     max-width: initial;
     padding: 0 0 20px;
     width: 100%;
@@ -44,9 +44,9 @@ header {
   > div {
     width: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     margin: 10px auto 0;
-    padding: 0 30px;
+    padding: 0 30px 0 0;
 
     @media #{$tablet} {
       padding: 0 35px;
@@ -70,12 +70,15 @@ header {
 
   > div > .navParent {
     .navShadow {
-      position: absolute;
+      position: fixed;
       left: 0;
       right: 0;
       top: 0;
       bottom: 0;
-      background-color: rgba(26,73,119,.9);
+      background-color: $blackShade;
+      opacity: 0.9;
+      height: 100vh;
+      width: 100vw;
     }
 
     .buttonExit {
@@ -104,7 +107,7 @@ header {
     overflow-y: auto;
 
     @media #{$tablet} {
-      box-shadow: 0 999px 0 999px rgba(26,73,119,.9);
+      // box-shadow: 0 999px 0 999px rgba(26,73,119,.9);
     }
 
     @media #{$mobile} {
@@ -131,10 +134,20 @@ header {
     }
 
     > p {
-      color: white;
-      max-width: 60%;
-      margin: 5px auto;
+      color: $white;
       text-align: center;
+      border-top: 1px solid #61646d;
+      width: 100%;
+      padding: 20px;
+      margin: 20px auto;
+      font-size: 1.3em;
+      box-sizing: border-box;
+      line-height: 1.5;
+
+      > a {
+        text-decoration: underline;
+        color: $white;
+      }
     }
 
     > a {
@@ -170,9 +183,9 @@ header {
 }
 
 .logo {
-  background: url('#{$images}dutchx_logo.svg') no-repeat center / contain;
-  width: 130px;
-  height: 35px;
+  background: url('#{$brandImages}logo.svg') no-repeat center / contain;
+  width: $logoWidth;
+  height: $logoHeight;
   border: 0;
   margin-right: auto;
   position: relative;
@@ -182,25 +195,25 @@ header {
     left: 0;
     right: 0;
     margin: auto;
-    width: 90px;
-    height: 18px;
+    width: $logoWidth_mobile;
+    height: $logoHeight_mobile;
   }
 
   &.rinkeby::before {
     content: "RINKEBY";
     position: absolute;
-    bottom: -11px;
-    color: $greyBorder;
-    left: 31px;
+    bottom: 0;
+    color: $blackShade;
+    left: 35px;
     text-align: center;
     font-size: 9px;
-    letter-spacing: 9px;
+    letter-spacing: 11px;
 
     @media #{$mobile} {
       font-size: 8px;
-      letter-spacing: 5px;
-      left: 21px;
-      bottom: -14px;
+      letter-spacing: 8px;
+      left: 34px;
+      right: 0;
     }
   }
 }
@@ -222,13 +235,13 @@ header {
     content: "MENU";
     display: block;
     position: absolute;
-    bottom: -2px;
-    left: -1px;
+    bottom: -3px;
+    left: 0;
     font-size: 8px;
-    color: white;
-    font-weight: $bold;
+    color: $blackShade;
+    font-weight: $normal;
     letter-spacing: 1px;
-    font-family: $montserrat;
+    font-family: $verdana;
   }
 }
 
@@ -238,17 +251,21 @@ header {
   align-items: center;
   position: relative;
   cursor: pointer;
+  outline: 0;
 
   .mobileOpen {
-    height: auto;
-    opacity: 1;
+    @media #{$mobile} {
+      height: auto;
+      opacity: 1;
+      box-shadow: 0 999px 0 999px $modalColorOpacity;
+    }
   }
 
   @media #{$mobile} {
     position: absolute;
     top: 59px;
     width: 100%;
-    background: #205790;
+    background: $greyBorder;
     right: 0;
     flex: none;
     max-width: initial;
@@ -284,17 +301,13 @@ header {
     box-sizing: border-box;
     padding: 0;
     margin: 0 14px 0 0;
-    max-height: 24px;
-    
-    overflow: hidden;
-
-    font-size: 10px;
+    height: 24px;
+    font-size: 1em;
     font-style: normal;
     font-weight: $normal;
-    color: $white;
-    
+    color: $whiteShade;
     line-height: 1;
-    border: 1px solid $white;
+    border: 1px solid $greyBorder;
     border-radius: 25px;
 
     @media #{$mobile} {
@@ -304,7 +317,6 @@ header {
       justify-content: space-between;
       border: 0;
       border-radius: 0;
-      color: $darkBlue;
       margin: 0 15px;
       padding: 0 10px 0 0;
       font-size: 14px;
@@ -318,7 +330,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       transition: all .3s ease-in-out;
       right: -16px;
@@ -335,11 +347,55 @@ header {
   }
 
   > span > small {
-    background: $white;
-    color: $darkBlue;
+    background: $greyBorder;
+    color: $blackShade;
     font-size: inherit;
-    padding: 15px 10px;
+    padding: 0 10px;
     text-align: center;
+    height: 100%;
+    box-sizing: border-box;
+    line-height: 2;
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
+
+    &:first-of-type {
+      padding: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 25px;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 25px;
+      border-top-left-radius: 25px;
+
+      @media #{$mobile} {
+        width: 24px;
+        padding: 0;
+        margin: 0 5px 0 0;
+      }
+    }
+
+    > img {
+      max-width: 100%;
+      object-fit: contain;
+      height: inherit;
+      margin: 0 6px;
+    }
+
+    &:first-of-type {
+      min-width: 23px;
+      max-width: 23px;
+      padding: 8px 8px 8px 10px;
+
+      @media #{$mobile} {
+        min-width: 45px;
+      }
+    }
+
+    > img {
+      max-width: 100%;
+    }
 
     &:first-of-type {
       min-width: 23px;
@@ -357,7 +413,6 @@ header {
 
     @media #{$mobile} {
       box-sizing: border-box;
-      color: $white;
       border-radius: 0;
       width: auto;
       background: transparent;
@@ -368,9 +423,10 @@ header {
   > span > code {
     padding: 5px 10px;
     display: inline-block;
-    font-size: 11px;
+    font-size: 1.1em;
+    line-height: 1.5;
     background: transparent;
-    color: white;
+    color: $blackShade;
     font-family: inherit;
 
     @media #{$mobile} {
@@ -378,7 +434,7 @@ header {
       text-overflow: ellipsis;
       overflow: hidden;
       border-radius: 0;
-      color: $white;
+      margin-right: auto;
       padding: 0;
       font-family: $mono;
       font-size: 13px;
@@ -406,18 +462,82 @@ header {
     will-change: height, opacity;
 
     @media #{$mobile} {
-      position: fixed;
+      position: absolute;
       width: 100%;
-      top: 105px;
+      top: 77px;
       box-sizing: border-box;
       border-radius: 0;
+      padding-bottom: 50px;
+    }
+  }
+
+  > div > span {
+    padding: 20px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    background: $greyLight;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      background: url('#{$images}settings.svg') no-repeat center / contain;
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
+  }
+
+  > div > span > img {
+    background-color: $white;
+    border-radius: 75px;
+    width: 75px;
+    height: 75px;
+    padding: 10px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  > div > span > p {
+    width: 100%;
+    text-align: center;
+  }
+
+  > div > span > p > strong {
+    font-weight: bold;
+    font-size: 1.3em;
+    color: $brandPrimaryShade;
+  }
+
+  > div > span > p > i {
+    font-weight: normal;
+    font-style: normal;
+    background: $brandPrimaryShade;
+    color: $white;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    border-radius: 30px;
+    font-size: 1em;
+    letter-spacing: 1px;
+    margin: 0 0 0 5px;
+  }
+
+  > div > span > code {
+    font-size: 1.2em;
+    color: $greyText;
+    font-weight: bold;
+    margin: 0 auto;
+
+    @media #{$mobile} {
+      font-size: 1.1em;
     }
   }
 
   > div > table {
     width: 100%;
     text-align: left;
-    font-size: 12px;
     padding: 0;
     line-height: 1;
     font-weight: $normal;
@@ -432,9 +552,14 @@ header {
 
     tr {
       text-transform: uppercase;
-      font-size: 11px;
+      font-size: 12px;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
+
+      > td:first-of-type {
+        font-weight: bold;
+        color: $blackShade;
+      }
 
       @media #{$mobile} {
         font-size: 12px;
@@ -450,22 +575,20 @@ header {
 
       tr {
         &:hover {
-          background: #f2f3f5;
-          color: $darkBlue;
+          background: $greyLight;
+          color: $brandPrimaryShade;
         }
       }
     }
 
     thead {
       tr {
-        font-size: 10px;
-        letter-spacing: 1px;
-        font-weight: $bold;
-        color: $darkBlue;
+        font-size: 11px;
+        font-weight: bold;
+        color: $brandPrimaryShade;
 
         > th {
           border-bottom: 1px solid $greyBorder;
-          letter-spacing: 2px;
         }
       }
     }
@@ -501,7 +624,7 @@ header {
   &:hover > div {
     @media #{$medium-and-up} {
       height: auto;
-      min-height: 50px;
+      min-height: 150px;
       opacity: 1;
     }
   }
@@ -523,18 +646,22 @@ header {
 .menuAuctions {
   margin-left: 10px;
   font-size: 10px;
-  color: $white;
+  color: $greyText;
   line-height: 1;
   font-style: normal;
   position: relative;
   cursor: pointer;
   height: 24px;
   font-weight: $bold;
+  outline: 0;
 
+  
   .mobileOpen {
-    height: auto;
-    opacity: 1;
-    visibility: initial;
+    @media #{$mobile} {
+      height: auto;
+      opacity: 1;
+      visibility: initial;
+    }
   }
 
   @media #{$mobile} {
@@ -551,7 +678,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       right: -10px;
       top: 0;
@@ -615,7 +742,7 @@ header {
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0;
-      border-color: $white transparent transparent;
+      border-color: $blackShade transparent transparent;
       position: absolute;
       right: 0;
       top: 0;
@@ -660,6 +787,7 @@ header {
     height: 11px;
     margin: -11px 0 0 26px;
     background: $orange;
+    color: $white;
     border-radius: 50px;
 
     > img {
@@ -675,7 +803,7 @@ header {
     > span {
       font-size: 9px;
       font-weight: $bold;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       padding: 0 1px;
 
       @media #{$mobile} {
@@ -715,6 +843,7 @@ header {
     transform: translateX(-50%);
     box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
     border: 2px solid transparent;
+    // min-height: 120px;
     max-height: 660px;
     overflow-y: auto;
     transition: height .2s ease-in-out, opacity .2s ease-in-out;
@@ -735,7 +864,6 @@ header {
   > div > table {
     width: 100%;
     text-align: left;
-    font-size: 12px;
     padding: 0;
     line-height: 1;
 
@@ -744,7 +872,7 @@ header {
     }
 
     tr {
-      color: black;
+      color: $blackShade;
       text-transform: uppercase;
       font-size: 11px;
       cursor: pointer;
@@ -762,13 +890,11 @@ header {
     thead {
       tr {
         font-size: 10px;
-        letter-spacing: 1px;
         font-weight: $bold;
-        color: $darkBlue;
+        color: $brandPrimaryShade;
 
         > th {
           border-bottom: 1px solid $greyBorder;
-          letter-spacing: 2px;
         }
       }
     }
@@ -833,10 +959,14 @@ header {
   }
 }
 
+.sectionLink {
+  font-weight: bold;
+}
+
 .menuFeeBalance {
   font-size: 10px;
   font-weight: bold;
-  color: $white;
+  color: $blackShade;
   line-height: 1;
   height: 24px;
   display: flex;
@@ -847,18 +977,17 @@ header {
   @media #{$mobile} {
     position: absolute;
     top: 104px;
-    background: $greyLight;
+    background: #c0c4cc;
     width: 100%;
     left: 0;
     justify-content: space-between;
     align-items: center;
     align-content: center;
     height: 32px;
-    color: $darkBlue;
+    color: $blackShade;
     padding: 0 15px;
     box-sizing: border-box;
     text-align: center;
-    border-top: 1px solid $white;
     display: flex;
   }
 
@@ -883,6 +1012,7 @@ header {
     text-transform: capitalize;
     word-wrap: break-word;
     min-width: 50px;
+    font-weight: $normal;
 
     @media #{$mobile} {
       min-width: initial;

@@ -55,7 +55,7 @@ const ShowStatus: React.SFC<AuctionStatusProps & TokenClaimingState & { claimTok
       if (sellAmount.eq(0) || buyAmount.eq(0)) {
         return (
           <span>
-            <big>No funds to claim</big>
+            <big className="message">No funds to claim</big>
           </span>
         )
       }

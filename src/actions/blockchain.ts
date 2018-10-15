@@ -240,16 +240,10 @@ export const initApp = () => async (dispatch: Dispatch<any>, getState: () => Sta
 }
 
 export const setApprovedTokensAndAvailableAuctions = (tokenList: DefaultTokenList) => async (dispatch: Dispatch<any>) => {
-  console.log('​exportsetApprovedTokensAndAvailableAuctions -> tokenList', tokenList)
   const [approvedTokenAddresses, availableAuctions] = await Promise.all([
     getApprovedTokensFromAllTokens(tokenList),
     getAvailableAuctionsFromAllTokens(tokenList),
   ])
-
-  console.log(`
-    APPROVED TOKEN ADDRESSES: ${JSON.stringify(approvedTokenAddresses, undefined, 2)}
-    AVAILABLE AUCTIONS: ${JSON.stringify(availableAuctions, undefined, 2)}
-  `)
 
   dispatch(setApprovedTokens(approvedTokenAddresses))
   dispatch(setAvailableAuctions(availableAuctions))
@@ -282,12 +276,11 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.RINKEBY}`)
         defaultTokens = {
           hash: RINKEBY_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${RINKEBY_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/RINKEBY/token-list.json')
-          }),
+          tokens: process.env.FE_CONDITIONAL_ENV === 'production'
+            ?
+            require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
+            :
+            require('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -297,12 +290,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
         defaultTokens = {
           hash: KOVAN_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${KOVAN_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/KOVAN/token-list.json')
-          }),
+          tokens: require('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -314,17 +302,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
-          tokens: await fetch(`https://gateway.ipfs.io/ipfs/${MAINNET_TOKEN_LIST_HASH}`)
-          .then(tokenList => tokenList.json())
-          .catch(err => {
-            console.error(err, 'IPFS fetch error - defaulting to local tokens')
-            return require('../../test/resources/token-lists/MAINNET/token-list.json')
-          }),
+          tokens: require('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
         }
-
-        console.warn(`
-          Ethereum Mainnet not supported - please try another network.
-        `)
+        console.log('Mainnet Token List:', defaultTokens.tokens.elements)
         break
 
       case 'NONE':
@@ -426,6 +406,17 @@ const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAdd
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
+  // TODO: keep || remove idgaf but the `Submit Order` button > WalletPanel needs to be fixed
+  // SubmitOrder > onClick allows users to click twice while this fn (slow as fuck) makes up it's mind
+  // hack that fixes this just opens a modal right away with some "super cool" blockchainy buzz words
+  dispatch(openModal({
+    modalName: 'TransactionModal',
+    modalProps: {
+      header: 'Checking user state',
+      body: 'Verifying/updating user state again blockchain, please wait',
+    },
+  }))
+
   const {
     tokenPair: { sell, sellAmount },
     blockchain: {
@@ -457,12 +448,10 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
         modalProps: {
           header: `Wrapping ${(ETHToWrap as BigNumber).div(10 ** 18)} ${sellName}`,
           // tslint:disable-next-line
-          body: `
-            ${sellName} is not an ERC20 Token and must be wrapped.
+          body: `${sellName} is not an ERC20 Token and must be wrapped.
             In case you already have wrapped ${sellName}, you are confirming to wrap the remainder.
 
-            Please confirm with ${name}.
-          `,
+            Please confirm with ${name}.`,
           loader: true,
         },
       }))
@@ -672,7 +661,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: 'Approving token transfer for this trade only',
-            body: `You are approving ${sellAmount} ${sellName}. Please confirm with ${name || 'your wallet provider'}.`,
+            body: `You are approving ${+sellAmount} ${sellName}. Please confirm with ${name || 'your wallet provider'}.`,
             loader: true,
           },
         }))

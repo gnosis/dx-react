@@ -8,21 +8,21 @@
       "isETH": true
     },
     {
-      "symbol": "RDN",
-      "name": "Raiden Tokens",
-      "address": "0x1f7f270df126ba464228cc8d8203d2768429e085",
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
       "decimals": 18
     },
     {
-      "symbol": "WETH",
-      "name": "Wrapped Ether",
-      "address": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+      "symbol": "RDN",
+      "name": "Raiden Token",
+      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     },
     {
       "symbol": "OMG",
       "name": "OmiseGO",
-      "address": "0xde6efd396e18a950b45e24d6225505f48d0c627b",
+      "address": "0x00df91984582e6e96288307e9c2f20b38c8fece9",
       "decimals": 18
     }
   ],
@@ -39,5 +39,6 @@
     "previousUri": null,
     "nextUri": null
   },
-  "version": "1.0.1"
+  "network": "RINKEBY-DEV",
+  "version": "1.1.1"
 }

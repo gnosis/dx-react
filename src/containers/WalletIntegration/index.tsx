@@ -109,7 +109,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
             render={() => (
             <>
               <h1>Please select a wallet</h1>
-              <div className={!this.state.initialising ? 'lightBlue' : ''}>
+              <div className={!this.state.initialising ? 'ready' : ''}>
                 {Object.keys(Providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
                   const providerInfo = Providers[provider].providerName || provider
                   // FOr PrivateKey wallet
@@ -129,16 +129,14 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                   }
                   // FOr others
                   return (
-                    <div
+                    <div className="providerItem"
                       key={i}
                       onClick={() => this.initAppWithProvider(provider)}
                     >
-                      <h4>{providerInfo}</h4>
-                      <br/>
                       {<img
                         src={provider2SVG(providerInfo)}
-                        style={{ minHeight: 26, maxHeight: 45, marginTop: -6 }}
                       />}
+                      <h4>{providerInfo}</h4>
                     </div>
                   )
                 })}

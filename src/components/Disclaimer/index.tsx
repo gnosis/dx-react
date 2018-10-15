@@ -1,15 +1,16 @@
 import React from 'react'
+import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
+
 import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import 'assets/pdf/DutchX_Rinkeby_PrivacyPolicy.pdf'
-
-import { RouteComponentProps } from 'react-router'
-import { Link } from 'react-router-dom'
 import { BLOCKED_COUNTRIES, URLS } from 'globals'
 import { web3CompatibleNetwork, lastArrVal } from 'utils'
 import { TermsText } from '../Terms'
+
+import 'assets/pdf/PrivacyPolicy.pdf'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
   accepted: boolean,
@@ -33,7 +34,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     termsOfUseAccepted: false,
     cookies_analytics_accepted: undefined as boolean,
     loading: true,
-    network: '',
+    network: undefined as any,
   }
 
   form: HTMLFormElement = null
@@ -45,11 +46,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
         web3CompatibleNetwork(),
       ])
 
-      if (!cookieData) return this.setState({ loading: false })
-
-      const { analytics } = cookieData
       return this.setState({
-        cookies_analytics_accepted: analytics,
+        cookies_analytics_accepted: cookieData ? cookieData.analytics : null,
         loading: false,
         network,
       })
@@ -145,7 +143,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="./DutchX_Main_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -163,7 +161,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                       <label htmlFor="disclaimer6">Analytics</label>
                     </div>
                 </div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
+                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies" target="_blank" rel="noopener noreferrer">Cookie Policy</Link> for more information.</p>
               </div>
             </div>
 
@@ -270,7 +268,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 <b>
-                  I have read and understood the <a href="./DutchX_Rinkeby_PrivacyPolicy.pdf" target="_blank">Privacy Policy</a>.
+                  I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
                 </b>
               </label>
             </div>
@@ -278,6 +276,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             {/* COOKIE DISCLAIMER */}
             <div className="disclaimerCookiePolicy">
               <div>
+              <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
                 <div>
                     <div className="disclaimerBoxCookie md-checkbox">
                       <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
@@ -288,7 +287,6 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                       <label htmlFor="disclaimer6">Analytics</label>
                     </div>
                 </div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
               </div>
             </div>
 

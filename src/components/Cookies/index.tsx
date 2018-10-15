@@ -1,11 +1,12 @@
 import React, { SyntheticEvent } from 'react'
 
-import dutchXLogo from 'assets/dutchx.png'
+import dutchXLogo from 'assets/favicon.png'
 
 import { Link } from 'react-router-dom'
 import ScrollToLink from 'components/ScrollToLink'
 
 import localForage from 'localforage'
+import { COMPANY_NAME } from 'globals'
 
 interface CookiesState {
   settingsOpen: boolean,
@@ -23,52 +24,52 @@ interface CookiesProps {
 
 class Cookies extends React.Component<CookiesProps, CookiesState> {
   state = {
-      settingsOpen: false,
-      cookieSettings: {
-        necessary: true,
-        analytics: false,
-      },
-      loading: true,
-      error: '',
-    }
+    settingsOpen: false,
+    cookieSettings: {
+      necessary: true,
+      analytics: false,
+    },
+    loading: true,
+    error: '',
+  }
 
   async componentDidMount() {
-      try {
-        const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
+    try {
+      const cookieData: { analytics?: boolean, necessary?: boolean } = await localForage.getItem('cookieSettings')
 
-        if (!cookieData) return this.setState({ loading: false })
+      if (!cookieData) return this.setState({ loading: false })
 
-        const { necessary, analytics } = cookieData
+      const { necessary, analytics } = cookieData
 
-        this.setState({
-          cookieSettings: {
-            necessary,
-            analytics,
-          },
-          loading: false,
-        })
-      } catch (err) {
-        console.error(err)
-        this.setState({ error: err, loading: false })
-      }
+      this.setState({
+        cookieSettings: {
+          necessary,
+          analytics,
+        },
+        loading: false,
+      })
+    } catch (err) {
+      console.error(err)
+      this.setState({ error: err, loading: false })
     }
+  }
 
   handleSubmit = () => {
-      const {
+    const {
         cookieSettings: {
           necessary,
           analytics,
         },
       } = this.state
-      this.setState({ settingsOpen: false })
-      return localForage.setItem('cookieSettings', { necessary, analytics })
-    }
+    this.setState({ settingsOpen: false })
+    return localForage.setItem('cookieSettings', { necessary, analytics })
+  }
 
   handleClick = (e: SyntheticEvent) => (e.preventDefault(), this.setState({ settingsOpen: !this.state.settingsOpen }))
 
   render() {
-      const { dateUpdated = '26/08/2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
-      return (
+    const { dateUpdated = 'September 2018' } = this.props, { settingsOpen, cookieSettings: { necessary, analytics }, loading } = this.state
+    return (
         loading ? null
           : (
             <div className="contentPage">
@@ -76,7 +77,10 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
                 <div className="cookiePageLogo"><img src={dutchXLogo} /></div>
                 <br />
 
-                <h1>d.ex OÜ Cookie Policy</h1>
+                <h1 style={{ whiteSpace: 'pre-line' }}>
+                  {`${COMPANY_NAME}
+                  Cookie Policy`}
+                </h1>
                 <button
                   className={`buttonCTA ${settingsOpen ? 'light-orange' : 'alt-blue'}`}
                   onClick={this.handleClick}
@@ -118,9 +122,12 @@ Change Cookie Preferences
                   <p>
                 As described in our
                     {' '}
-                    <Link to="/privacy">Privacy Policy</Link>
+                    <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
 , For general web-browsing of this website, your personal data is not revealed to us, although certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
                 This Cookie Policy sets out some further detail on how and why we use these technologies on our website. The terms "we", "us", and "our" includes d.ex OÜ and any affiliates. The terms “you” and “your” includes our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
+                  <br />
+                  <br />
+                  Capitalized terms used but not defined here have the respective meanings given to them in the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <Link to="/terms">Terms and Conditions</Link>.
                   </p>
                   <p>
                     <strong>What are cookies?</strong>
@@ -245,7 +252,7 @@ By using this website, you consent to the processing of data about you by Google
                     <br />
               Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse cookies and control and/or delete cookies as you wish – for details, see
                     {' '}
-                    <a href="https://aboutcookies.org" target="_blank">aboutcookies.org</a>
+                    <a href="https://aboutcookies.org" target="_blank" rel="noopener noreferrer">aboutcookies.org</a>
 . You can delete all cookies that are already on your device and you can set most browsers to prevent them from being placed. You should be aware that if you do this, you may have to manually adjust some preferences every time you visit an Internet site and some services and functionalities may not work if you do not accept the cookies they send.
               Advertisers and business partners that you access on or through our website may also send you cookies. We do not control any cookies outside of our website.
                     <br />
@@ -254,7 +261,7 @@ By using this website, you consent to the processing of data about you by Google
               In order to implement your objection it may be necessary to install an opt-out cookie on your browser. This cookie will only indicate that you have opted out. It is important to note, that for technical reasons, the opt-out cookie will only affect the browser from which you actively object from. If you delete the cookies in your browser or use a different end device or browser, you will need to opt out again.
               To opt out of being tracked by Google Analytics across all websites, Google has developed the Google Analytics opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option of downloading and installing this browser add-on which can be found under the link:
                     {' '}
-                    <a href="http://tools.google.com/dlpage/gaoptout" target="_blank">http://tools.google.com/dlpage/gaoptout</a>
+                    <a href="http://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">http://tools.google.com/dlpage/gaoptout</a>
 .
                   </p>
                   <p>
@@ -262,11 +269,11 @@ By using this website, you consent to the processing of data about you by Google
                     <br />
                 On this website, you can always view the latest version of our
                     {' '}
-                    <Link to="/privacy">Privacy Policy</Link>
+                    <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
                     {' '}
 and our Cookie Policy. We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through the our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our
                     {' '}
-                    <Link to="/privacy">Privacy Policy</Link>
+                    <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
                     {' '}
 and our Cookie Policy whenever you access or use our website to stay informed about our information practices and the choices available to you.
                 If you do not accept changes which are made to this Cookie Policy, or take any measures described above to opt-out by removing or rejecting cookies, you may continue to use this website but accept that it may not display and/or function as intended by us. Any social media channels connected to d.ex OÜ and third party applications will be subject to the privacy and cookie policies and practices of the relevant platform providers which, unless otherwise indicated, are not affiliated or associated with d.ex. OÜ. Your exercise of any rights to opt-out may also impact how our information and content is displayed and/or accessible to you on this website and on other websites.
@@ -320,8 +327,8 @@ and our Cookie Policy whenever you access or use our website to stay informed ab
               </article>
             </div>
           )
-      )
-    }
+    )
+  }
 }
 
 export default Cookies

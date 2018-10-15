@@ -110,7 +110,7 @@ export const EMPTY_TOKEN: DefaultTokenObject = {
 // Network token list hashes (latest versions)
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
 
-export const RINKEBY_TOKEN_LIST_HASH = process.env.NODE_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
+export const RINKEBY_TOKEN_LIST_HASH = process.env.FE_CONDITIONAL_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
 export const MAINNET_TOKEN_LIST_HASH = 'QmV9CVVDNUZckdmzSp5RVWPyQuHRcuwULYiKeY7fVp2Cct'
@@ -128,7 +128,7 @@ export const TokenListHashMap = {
 export const FIXED_DECIMALS = 4
 
 export const GAS_PRICE = 5e9
-export const GAS_LIMIT_TESTING = '4000000'
+export const GAS_LIMIT = '200000'
 
 // Content page URLS
 export const URLS = {
@@ -153,6 +153,8 @@ export const URLS = {
 
   APP_URL_MAIN: 'slow.trade',
   APP_URL_RINKEBY: 'rinkeby.slow.trade',
+  MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
+  RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
 }
 
 // Error messages during TXs
