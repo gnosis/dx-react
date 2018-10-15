@@ -29,10 +29,10 @@
     border-radius: 2px;
     min-height: 300px;
 
-      &.ready {
-        background: $white;
-        box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-      }
+    &.ready {
+      background: $white;
+      box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    }
   }
 
   > h3 {
@@ -56,29 +56,29 @@
     transition: all 0.2s ease-in;
     margin: 3px;
 
-    @media #{$mobile} { 
+    @media #{$mobile} {
       max-width: 47%;
       flex: 1;
     }
           
-      &:hover {
-        border: 1px solid $brandPrimary;
-        transform: translateY(-1px);
-        box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-      }
+    &:hover {
+      border: 1px solid $brandPrimary;
+      transform: translateY(-1px);
+      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
 
-      > img {
-        width: 120px;
-        height: 120px;
-        object-fit: contain;
-      }
+    > img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
 
-      > h4 {
-        margin: 0;
-        width: 100%;
-        text-align: center;
-        color: $blackShade;
-        font-size: 1.2em;
-      }
+    > h4 {
+      margin: 0;
+      width: 100%;
+      text-align: center;
+      color: $blackShade;
+      font-size: 1.2em;
+    }
   }
 }

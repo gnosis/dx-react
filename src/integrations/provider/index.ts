@@ -2,19 +2,22 @@ import Web3 from 'web3'
 // import Transport from '@ledgerhq/hw-transport'
 // import TransportU2F from '@ledgerhq/hw-transport-u2f'
 // import createLedgerSubprovider from '@ledgerhq/web3-subprovider'
-// import ProviderEngine from 'web3-provider-engine'
-// import FetchSubprovider from 'web3-provider-engine/subproviders/fetch'
-// import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
+// @ts-ignore
+import ProviderEngine from 'web3-provider-engine'
+// @ts-ignore
+import FetchSubprovider from 'web3-provider-engine/subproviders/fetch'
+// @ts-ignore
+import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
 // import Eth from '@ledgerhq/hw-app-eth'
 
 import { getTime } from 'api'
 
-import { promisify } from 'utils'
+import { promisify, customValidateTransaction } from 'utils'
 
 import { Balance } from 'types'
 import { WalletProvider } from 'integrations/types'
 
-import { ETHEREUM_NETWORKS, networkById/* , network2RPCURL */ } from 'globals'
+import { ETHEREUM_NETWORKS, networkById, network2RPCURL } from 'globals'
 
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -52,7 +55,7 @@ export const grabProviderState = async (provider: WalletProvider) => {
 
 // ====================================================================================
 // Ledger Wallet info only
-// const rpcUrl = network2RPCURL.RINKEBY
+const rpcUrl = network2RPCURL.UNKNOWN
 // const networkId = 4 // parseInt(process.env.REACT_APP_NETWORK_ID || "1337", 10);
 // ====================================================================================
 
@@ -82,6 +85,43 @@ const Providers = {
     initialize() {
       if (!this.checkAvailability()) return
       this.web3 = new Web3(window.web3.currentProvider)
+      this.state = {}
+
+      return this.web3
+    },
+  },
+  // Private Key Wallet
+  PRIVATE_KEY_WALLET: {
+    priority: 1,
+    providerName: 'Private Key Wallet',
+    providerType: 'PRIVATE_KEY_WALLET',
+    keyName: 'PRIVATE_KEY_WALLET',
+
+    checkAvailability() {
+      return this.walletAvailable = true
+    },
+
+    initialize(privateKey: string) {
+      if (!this.checkAvailability()) return
+
+      const walletSetup = require('ethereumjs-wallet')
+      const ethUtils = require('ethereumjs-util')
+      const WalletSubprovider = require('ethereumjs-wallet/provider-engine')
+      const privKey = ethUtils.toBuffer(privateKey)
+      const wallet = walletSetup.fromPrivateKey(privKey)
+      const engine = new ProviderEngine()
+
+      const customWalletSubprovider = new WalletSubprovider(wallet)
+
+      customWalletSubprovider.validateTransaction = customValidateTransaction
+
+      engine.addProvider(customWalletSubprovider)
+      engine.addProvider(new RpcSubprovider({ rpcUrl }))
+      engine.addProvider(new FetchSubprovider({ rpcUrl }))
+      engine.start()
+
+      this.web3 = new Web3(engine)
+
       this.state = {}
 
       return this.web3

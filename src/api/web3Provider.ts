@@ -11,8 +11,10 @@ const setupWeb3 = async (provider: Provider) => {
 
 let web3API: ProviderInterface
 
-export const promisedWeb3 = async (provider?: Provider) => {
-  if (web3API) return web3API
+export const promisedWeb3 = async (provider?: Provider, overwrite?: boolean) => {
+  // overwrite is used to tell the API whether or not
+  // to overwrite the current provider (useful when changing wallets)
+  if (web3API && !overwrite) return web3API
 
   web3API = await init(provider)
   return web3API

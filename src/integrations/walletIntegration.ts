@@ -18,6 +18,7 @@ export default async function walletIntegration(store: Store<any>) {
   }
 
   Object.keys(Providers).forEach((providerKey) => {
+    console.log('TCL: walletIntegration -> providerKey', providerKey)
     const provider: WalletProvider = Providers[providerKey]
 
     provider.checkAvailability()

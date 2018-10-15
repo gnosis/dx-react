@@ -196,7 +196,7 @@ $modal-max-width: 800px;
       font-size: 1em;
       word-break: break-all;
 
-      @media #{$mobile} { 
+      @media #{$mobile} {
         flex-wrap: wrap;
         flex-direction: column;
       }
@@ -229,7 +229,7 @@ $modal-max-width: 800px;
       flex: 1;
       margin: 12px 12px 0;
 
-      @media #{$mobile} {  
+      @media #{$mobile} {
         display: none;
       }
     }

@@ -96,6 +96,12 @@ export interface Modal {
       feeRatio?: string | number,
       sellAmountAfterFee?: BigNumber,
     },
+    txParams?: {
+      from: string,
+      to: string,
+      value: string,
+      data: string,
+    }
     onClick?: (choice: string) => any,
     button?: boolean,
     error?: string,

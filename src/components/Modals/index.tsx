@@ -6,6 +6,8 @@ import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'gl
 import Loader from 'components/Loader'
 import { displayUserFriendlyError } from 'utils'
 
+import { toDecimal } from 'web3/lib/utils/utils.js'
+
 interface TransactionModalProps {
   activeProvider?: string,
   closeModal?: typeof closeModal,
@@ -131,6 +133,94 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
         For more information, read the <a href={footer.url || '#/content/FAQ/#approval'} target="_blank" rel="noopener noreferrer">{footer.urlMsg || ' linked'}</a>  or <a href="https://tokenallowance.io/" target="_blank" rel="noopener noreferrer">here</a> about token allowance.
       </p>}
   </div>
+
+export class PrivateKeyApproval extends React.Component<any> {
+  state = {
+    gasPrice: toDecimal(this.props.modalProps.txParams.gasPrice) as number,
+    gasLimit: toDecimal(this.props.modalProps.txParams.gas) as number,
+  }
+
+  handleGasPriceChange = (e: any) => {
+    return this.setState({
+      gasPrice: e.target.value,
+    })
+  }
+
+  handleGasChange = (e: any) => this.setState({ gasLimit: e.target.value })
+
+  render() {
+    const { modalProps: { header, body, buttons, onClick, txParams } } = this.props, { gasPrice, gasLimit } = this.state
+    return (
+      <div className="modalDivStyle">
+        <h1 className="modalH1">{header || 'Please choose Token Approval amount'}</h1>
+        <p className="modalP">
+          { body || 'Please see below.' }
+        </p>
+        {txParams &&
+          <>
+            <div className="modalTXDataDiv">
+              <ul>
+                <li>From: {txParams.from}</li>
+                <li>To: {txParams.to}</li>
+                <li>Value: {toDecimal(txParams.value)}</li>
+                <li>Data: {txParams.data}</li>
+
+                <li>Gas Price:
+                  <input
+                    onChange={this.handleGasPriceChange}
+                    value={gasPrice}
+                    type="number"
+                    name="gasPrice"
+                    id="gasPrice"
+                    min="0"
+                    step="1"
+                  />
+                </li>
+                <li>Gas Limit:
+                  <input
+                    onChange={this.handleGasChange}
+                    value={gasLimit}
+                    type="number"
+                    name="gasLimit"
+                    id="gasLimit"
+                    min="0"
+                    step="1"
+                  />
+                </li>
+              </ul>
+            </div>
+            <p className="modalHeaderDescriptor">Processing the transaction may take a while.</p>
+          </>
+        }
+        <div className="modalParentDiv">
+          <div className="modalButtonDiv">
+            <button
+              className="modalButton"
+              onClick={() => onClick('CANCEL')}
+              >
+              {buttons && buttons.button1.buttonTitle1 || 'Cancel'}
+            </button>
+            {buttons && buttons.button1.buttonDesc1 && <p className="modalButtonDescription">
+              {buttons && buttons.button1.buttonDesc1 || `You\'ll allow ${COMPANY_NAME} to take just the amount of the current operation. Note that you\'ll have to sign a transfer confirmation and an order confirmation for future trades.`}
+            </p>}
+          </div>
+
+          <div className="modalButtonDiv">
+            <button
+              className="modalButton"
+              onClick={() => onClick({ gasPrice, gasLimit })}
+              >
+              {buttons && buttons.button2.buttonTitle2 || 'Confirm'}
+            </button>
+            {buttons && buttons.button2.buttonDesc2 && <p className="modalButtonDescription">
+              {buttons && buttons.button2.buttonDesc2 || `You\'ll allow ${COMPANY_NAME} to also take your bidding token for future trades. ${COMPANY_NAME} won\'t take any tokens until also confirm your order. You will use the same amount of funds but save transaction cost on future trades.`}
+            </p>}
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
 

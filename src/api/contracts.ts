@@ -140,8 +140,10 @@ const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deplo
 
 let contractsAPI: ContractsMap
 
-export const promisedContractsMap = async (provider?: Provider) => {
-  if (contractsAPI) return contractsAPI
+export const promisedContractsMap = async (provider?: Provider, overwrite?: boolean) => {
+  // overwrite is used to tell the API whether or not
+  // to overwrite the current provider (useful when changing wallets)
+  if (contractsAPI && !overwrite) return contractsAPI
 
   contractsAPI = await init(provider)
   return contractsAPI

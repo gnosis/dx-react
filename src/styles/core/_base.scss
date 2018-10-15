@@ -78,6 +78,7 @@ section.home, section.auction {
 
 section.home {
   margin: 20px auto;
+
   @media #{$desktop} {
     padding: 0 30px 90px;
   }
