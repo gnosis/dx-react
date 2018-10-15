@@ -148,7 +148,7 @@ module.exports = {
     new NameAllModulesPlugin(),
     new ExtractTextPlugin('[name].[contenthash].css'),
     new FaviconsWebpackPlugin({
-      logo: 'assets/dutchx.png',
+      logo: 'assets/favicon.png',
       prefix: './', // puts favicons into root folder,
       // which allows for not html content (like pdf) to fetch /favicon.icon from default location
 
