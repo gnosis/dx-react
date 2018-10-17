@@ -156,6 +156,7 @@ export const URLS = {
     hostname: 'ipfs.io',
     pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV',
   },
+  FOOTER_LOGO_URL: 'https://gnosis.pm',
   MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
   RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
 }

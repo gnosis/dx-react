@@ -11,7 +11,7 @@ const Imprint = () =>
                 Estonia
             </p>
             <p>
-                <a href="mailTo: info@slow.trade">E-Mail: info@slow.trade</a>
+                E-Mail: <a href="mailTo: info@slow.trade">info@slow.trade</a>
             </p>
             <p>
                 Company registration No. 14553524

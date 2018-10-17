@@ -8,7 +8,7 @@ import { getActiveProviderObject } from 'selectors'
 import gnosisLogoSVG from 'assets/img/gnosis_logo.svg'
 
 import { Link } from 'react-router-dom'
-import { COMPANY_NAME } from 'globals'
+import { COMPANY_NAME, URLS } from 'globals'
 
 interface FooterProps {
   network: string;
@@ -31,7 +31,7 @@ const Footer = ({ network }: FooterProps) =>
                     <Link to="/terms">Terms and Conditions</Link>
                     <Link to="/imprint">Imprint</Link>
                     <Link to="/">Home</Link>
-                    <span className="footerLogo"><i>Protocol built by</i><Link to="/"><img src={gnosisLogoSVG} /></Link></span>
+                    <span className="footerLogo"><i>Protocol built by</i><a href={URLS.FOOTER_LOGO_URL} target="_blank"><img src={gnosisLogoSVG} /></a></span>
                 </>
             }
         </p>

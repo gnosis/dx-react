@@ -26,7 +26,7 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement>) => (
                   <strong>
           We
                   </strong>
-        ”). We are a private limited company registered in Estonia under registry No. 14553524 at Ahtri 12, Kesklinna District, 10151 Tallinn, Harju County, Estonia. To contact us, please email us at info@slow.trade.
+        ”). We are a private limited company registered in Estonia under registry No. 14553524 at Ahtri 12, Kesklinna District, 10151 Tallinn, Harju County, Estonia. To contact us, please email us at <a href="mailTo: info@slow.trade">info@slow.trade</a>.
                   <br />
       </div>
       <strong>
@@ -95,7 +95,7 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement>) => (
         4.4. The Terms refer to the following additional terms, which also apply to your use of our Platform and are hereby incorporated by reference:
                   <br />
         <div className="subText">
-          4.4.1. Our Privacy Policy.
+          4.4.1. Our <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
                     <br />
           4.4.2. Our <Link to="/cookies">Cookie Policy</Link>, which sets out information about the cookies on our site.
                     <br />
