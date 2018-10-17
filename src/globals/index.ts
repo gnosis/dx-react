@@ -78,6 +78,7 @@ export enum AuctionStatus {
 
 export enum ProviderType { INJECTED_WALLET = 'INJECTED_WALLET', HARDWARE_WALLET = 'HARDWARE_WALLET' }
 export enum ProviderName {
+  COINBASE = 'COINBASE',
   METAMASK = 'METAMASK',
   MIST = 'MIST',
   STATUS = 'STATUS',
