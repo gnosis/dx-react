@@ -4,8 +4,8 @@ interface LoaderProps {
   reSize?: number;
   hasData: any;
   svgHeight?: number;
-  strokeColor: string;
-  strokeWidth: number;
+  strokeColor?: string;
+  strokeWidth?: number;
   message?: string;
   SVGChoice?: 'DutchXLogo' | 'ETHLogo'
   render(): ReactElement<any>;
