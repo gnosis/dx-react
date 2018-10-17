@@ -72,7 +72,7 @@ class AppValidator extends React.Component<any> {
         console.error(error)
       }
       // start polling for changes
-      this.startPolling(3000)
+      this.startPolling(10000)
     }
     // If here, no wallets have been detected and app loads in non-provider state
   }
@@ -150,7 +150,7 @@ class AppValidator extends React.Component<any> {
     }
   }
 
-  startPolling = (pollTime: number = 5000) => {
+  startPolling = (pollTime: number = 10000) => {
     const { activeProvider, updateMainAppState, updateProvider, resetMainAppState } = this.props,
       currentProvider = Providers[activeProvider]
 
