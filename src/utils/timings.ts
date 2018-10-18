@@ -49,8 +49,7 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
       willStart: 'soon',
       runFor: 'approx. 6h',
       claim: 'in approx. 6h',
-    }
-    }
+    }}
     // Produces in AuctionStatus(
     //   <p>
     //     The auction will start soon and run for approx. 6 hours
@@ -64,8 +63,7 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
       willStart: 'in approx 6h:45min',
       runFor: 'approx. 6h',
       claim: 'in approx. 12h:45min',
-    }
-    }
+    }}
     // Produces in AuctionStatus(
     //   <p>
     //     The auction will start in approx 6h:45min and run for approx. 6 hours
@@ -109,11 +107,11 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
       // auctionStart was just set to a waiting period
       // the auction started, but auctionStart is 10min in the future
       if (timeTillNext <= WAITING_PERIOD) {
-        const willEnd = 'in approx 6h:30min'
+        const willEnd = 'in approx. 6 hours'
         return { willEnd, claim: willEnd }
       }
       // Produces in AuctionStatus(
-      //   <p>This auction is running and will end in approx 6h:30min</p>
+      //   <p>This auction is running and will end in approx. 6 hours</p>
       // )
 
       const hhMmTillNext = getHhMm(timeTillNext)
@@ -142,12 +140,12 @@ export const getTimingApproximations = ({ auctionStart, status, now }: TimingApp
     const claimableIn = timeTillNext + AUCTION_RUN_TIME
 
     if (timeSinceStart >= AUCTION_RUN_TIME) {
-      return { willStart: 'soon', runFor: 'approx. 6 hours', claim: 'in approx. 6h:30min' }
+      return { willStart: 'soon', runFor: 'approx. 6 hours', claim: 'in approx. 6 hours' }
       // Produces in AuctionStatus(
       //   <p>
       //     The auction will start soon and run for approx. 6 hours
       // <br />
-      //     {userParticipates && `You may claim your ${bToken} in approx. 6h:30min`}
+      //     {userParticipates && `You may claim your ${bToken} in approx. 6 hours`}
       //   </p>
       // )
     }
