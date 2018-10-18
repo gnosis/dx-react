@@ -8,6 +8,7 @@ import {
   SimpleContract,
   DeployedContract,
   ContractArtifact,
+  PriceOracleInterface,
 } from './types'
 import { Provider } from 'types'
 
@@ -19,6 +20,7 @@ const contractNames = [
   'TokenGNO',               // TODO: > 0.9.0 will be @gnosis/token-gno
   'TokenOWL',               // TODO: > 0.9.0 will be @gnosis/token-owl
   'TokenOWLProxy',          // TODO: > 0.9.0 will be @gnosis/token-owl
+  'PriceOracleInterface',
 ]
 
 // breaks in rinkeby, cancel for now
@@ -42,6 +44,7 @@ interface ContractsMap {
   TokenOWL?:      OWLInterface,
   TokenOMG?:      GNOInterface,
   TokenRDN?:      GNOInterface,
+  PriceOracleInterface: PriceOracleInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
@@ -54,13 +57,13 @@ if (process.env.FE_CONDITIONAL_ENV === 'development') {
   req = require.context(
     '../../build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
   )
 } else {
   req = require.context(
     '@gnosis.pm/dx-contracts/build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
   )
 }
 
@@ -172,6 +175,11 @@ async function init(provider: Provider) {
     deployedContracts.TokenOWL = contractsMap.TokenOWL.at(owlProxyAddress)
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
+
+    const oracleAddress = await deployedContracts.DutchExchange.ethUSDOracle()
+    console.log('oracleAddress: ', oracleAddress)
+    deployedContracts.PriceOracleInterface = contractsMap.PriceOracleInterface.at(oracleAddress)
+    console.log('PriceOracleInterface.getUSDETHPrice() = ', (await deployedContracts.PriceOracleInterface.getUSDETHPrice.call()).toString())
 
     if (process.env.FE_CONDITIONAL_ENV === 'development') {
       console.log(deployedContracts)
