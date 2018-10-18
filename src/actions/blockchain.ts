@@ -636,7 +636,24 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // indicate that submission worked
     return true
   } catch (error) {
-    dispatch(errorHandling(error))
+    if (error.message && error.message.includes('Web3ProviderEngine does not support synchronous requests.')) {
+      dispatch(closeModal())
+      // jump to Auction Page
+      dispatch(push('/'))
+
+      // grab balance of sold token after sale
+      const balance = await getTokenBalance(sell.address, currentAccount)
+
+      // dispatch Actions
+      dispatch(batchActions([
+        setTokenBalance({ address: sell.address, balance }),
+        // set sellAmount back to 0
+        setSellTokenAmount({ sellAmount: '0' }),
+      ], 'SUBMIT_SELL_ORDER_STATE_UPDATE'))
+      // indicate that submission worked
+      return true
+    }
+    return dispatch(errorHandling(error))
   }
 }
 
@@ -801,10 +818,7 @@ export const claimSellerFundsFromSeveral = (
 ) => async (dispatch: Function, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { name } } } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
-    { DutchExchange } = contractsMap
-
-  let decoder
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
 
   try {
     dispatch(openModal({
@@ -816,19 +830,8 @@ export const claimSellerFundsFromSeveral = (
       },
     }))
 
-    // >>> ============= >>>
-    // CLAIMING TX WATCHING
-    // >>> ============= >>>
-
-    const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
+    const claimHash = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
     console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
-
-    // >>> ============= >>>
-    // END CLAIMING TX
-    // >>> ============= >>>
-
-    // wait claimHash
-    await waitForTx(claimHash)
 
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -839,29 +842,8 @@ export const claimSellerFundsFromSeveral = (
       },
     }))
 
-    // >>> ======== >>>
-    // WITHDRAW TX WATCHING
-    // >>> ======== >>>
-
-    const withdrawHash = await withdraw.sendTransaction(buy.address)
-    // get receipt or throw TIMEOUT
-    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    const withdrawReceipt = await withdraw(buy.address)
     console.log('Withdraw TX receipt: ', withdrawReceipt)
-
-    decoder = getDecoderForABI(DutchExchange.abi)
-    // next line unreachable in case of TIMEOUT
-    // @ts-ignore
-    const withdrawLogs = decoder(withdrawReceipt.logs)
-    console.log('withdraw tx logs', withdrawLogs)
-
-    // Find the 'NewWithdrawal' log
-    const withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
-
-    console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
-
-    // >>> ======== >>>
-    // END WITHDRAW TX WATCHING
-    // >>> ======== >>>
 
     return dispatch(closeModal())
   } catch (error) {

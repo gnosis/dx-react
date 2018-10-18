@@ -12,6 +12,7 @@ import GNOSIS_SAFE_SVG from 'assets/img/icons/icon_gnosis_safe1.svg'
 import STATUS_SVG from 'assets/img/icons/icon_status.svg'
 import LEDGER_SVG from 'assets/img/icons/icon_ledger.svg'
 import METAMASK_SVG from 'assets/img/icons/icon_metamask3.svg'
+import COINBASE_PNG from 'assets/img/icons/icon_coinbase.png'
 import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_cross.svg'
 
 export const getDutchXOptions = (provider: any) => {
@@ -183,6 +184,9 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
     case 'METAMASK':
       return METAMASK_SVG
+
+    case 'COINBASE':
+      return COINBASE_PNG
 
     default:
       return DEFAULT_PROVIDER_SVG

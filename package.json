@@ -179,7 +179,7 @@
     "tslib": "^1.8.0",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
-    "typescript": "^3.0.3",
+    "typescript": "^2.8.3",
     "webpack-dev-server": "2.9.1"
   }
 }

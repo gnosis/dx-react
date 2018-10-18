@@ -66,10 +66,11 @@ const Providers = {
     get providerName() {
       if (!this.checkAvailability()) return null
 
-      if (window.web3.currentProvider.constructor.name === 'Web3ProviderEngine') return 'GNOSIS SAFE'
-      if (window.web3.currentProvider.isMetaMask) return 'METAMASK'
       if ((window as any).mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
       if (window.web3.currentProvider.constructor.name === 'StatusHttpProvider') return 'STATUS'
+      if (window.web3.currentProvider.constructor.name === 'o') return 'COINBASE'
+      if (window.web3.currentProvider.isMetaMask) return 'METAMASK'
+      if (window.web3.currentProvider.isSafe) return 'GNOSIS SAFE'
 
       return window.web3.currentProvider.constructor.name
     },
