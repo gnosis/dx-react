@@ -176,7 +176,7 @@ export const DEFAULT_ERROR = 'TRANSACTION CANCELLED: Please check your developer
 
 export const WATCHER_INTERVAL = 5000
 
-export const AUCTION_RUN_TIME = 6.5 * 60 * 60 * 1000 // 6.5 hours in ms
+export const AUCTION_RUN_TIME = 6 * 60 * 60 * 1000 // 6 hours in ms
 export const WAITING_PERIOD = 10 * 60 * 1000 // 10 min in ms
 
 export const BLOCKED_COUNTRIES = {
