@@ -574,8 +574,36 @@ export type DutchExchangeEvents = 'NewDeposit' |
   'NewTokenPair' |
   'AuctionCleared'
 
+type PriceOracleInterfaceExtended = {
+    [K in keyof PriceOracleInterface]: PriceOracleInterface[K] extends (...args: any[]) => Promise<Receipt> ?
+    PriceOracleInterface[K] & {
+      estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any,
+      sendTransaction?: PriceOracleInterface<Hash>[K],
+      call: PriceOracleInterface[K],
+    } : PriceOracleInterface[K] extends Function ? PriceOracleInterface[K] & {call: PriceOracleInterface[K]}
+    : PriceOracleInterface[K]
+  }
+
+export { PriceOracleInterfaceExtended as PriceOracleInterface }
+interface PriceOracleInterface<T = Receipt> {
+  address: Account,
+  priceFeedSource(): Promise<Account>,
+  owner(): Promise<Account>,
+  emergencyMode(): Promise<boolean>,
+  raiseEmergency(_emergencyMode: boolean, tx: TransactionObject): Promise<T>,
+  updateCurator(_owner: Account, tx: TransactionObject): Promise<T>,
+  getUSDETHPrice(): Promise<BigNumber>,
+  NonValidPriceFeed: ContractEvent,
+}
+
+export interface PriceOracle {
+  address: Account,
+  getUSDETHPrice: () => Promise<BigNumber>,
+}
+
 export interface dxAPI {
   web3: ProviderInterface,
   Tokens: TokensInterfaceExtended,
   DutchX: DutchExchangeExtended,
+  PriceOracle: PriceOracle,
 }
