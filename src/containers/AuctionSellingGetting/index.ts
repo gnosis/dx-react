@@ -17,6 +17,7 @@ const mapState = (state: State) => {
     // TODO: change prop to sellTokenBalance
     maxSellAmount,
     sellTokenSymbol: sell.symbol || sell.name || sell.address,
+    sellTokenAddress: sell.address,
     buyTokenSymbol: buy.symbol || buy.name || buy.address,
     sellAmount,
     // TODO: use BN.mult()
