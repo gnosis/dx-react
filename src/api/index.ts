@@ -1121,6 +1121,24 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
   return auctionPairs
 }
 
+export const getTokenPriceInUSD = async (tokenAddress: string) => {
+  const { DutchX, PriceOracle } = await dxAPI()
+
+  const [ethUSDPrice, WETHaddress] = await Promise.all([
+    PriceOracle.getUSDETHPrice(),
+    DutchX.ethToken(),
+  ])
+
+  console.log('ethUSDPrice: ', ethUSDPrice.toString())
+
+  if (tokenAddress === ETH_ADDRESS || tokenAddress === WETHaddress) return ethUSDPrice
+
+  const [num, den] = await DutchX.getPriceOfTokenInLastAuction(tokenAddress)
+  console.log('PriceOfTokenInLastAuction, num, den: ', num.toString(), den.toString())
+
+  return ethUSDPrice.mul(num).div(den)
+}
+
 async function initAPI(provider: Provider): Promise<dutchXAPI> {
   try {
     const [web3, Tokens, DutchX, PriceOracle] = await Promise.all([

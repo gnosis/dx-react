@@ -288,8 +288,12 @@ export interface Receipt {
 
 type DXAuctionExtended = {
   [K in keyof DXAuction]: DXAuction[K] extends (...args: any[]) => Promise<Receipt> ?
-    DXAuction[K] & { estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any, sendTransaction: DXAuction<Hash>[K]} :
-    DXAuction[K]
+  DXAuction[K] & {
+    estimateGas?: (mainParams?: any, txParams?: TransactionObject) => any,
+    sendTransaction?: DXAuction<Hash>[K],
+    call: DXAuction[K],
+  } : DXAuction[K] extends Function ? DXAuction[K] & {call: DXAuction[K]}
+  : DXAuction[K]
 }
 
 export { DXAuctionExtended as DXAuction }
@@ -502,6 +506,7 @@ export { DutchExchangeExtended as DutchExchange }
 
 interface DutchExchange<T = Receipt> {
   address: Account,
+  ethToken(): Promise<Account>,
 
   isTokenApproved(tokenAddress: Account): Promise<boolean>,
   getApprovedAddressesOfList(tokenAddresses: Account[]): Promise<boolean[]>,
@@ -556,6 +561,8 @@ interface DutchExchange<T = Receipt> {
   deposit(tokenAddress: Account, amount: Balance, account: Account): Promise<T>,
   withdraw(tokenAddress: Account, amount: Balance, account: Account): Promise<T>,
   depositAndSell(pair: TokenPair, amount: Balance, account: Account): Promise<T>,
+
+  getPriceOfTokenInLastAuction(token: Account): Promise<[BigNumber, BigNumber]>,
 
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter): EventInstance,
   event(eventName: DutchExchangeEvents, valueFilter: object | void, filter: Filter, cb: ErrorFirstCallback): void,
