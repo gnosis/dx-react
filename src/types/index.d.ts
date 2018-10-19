@@ -92,6 +92,7 @@ export interface Modal {
       tokenB?: DefaultTokenObject,
       sellAmount: Balance | BigNumber,
       network?: 'RINKEBY' | 'MAIN',
+      feeReductionFromOWL?: { adjustment: BigNumber, ethUSDPrice: BigNumber },
       useOWL?: boolean,
       feeRatio?: string | number,
       sellAmountAfterFee?: BigNumber,
