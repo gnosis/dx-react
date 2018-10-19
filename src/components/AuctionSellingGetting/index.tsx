@@ -8,7 +8,7 @@ export interface AuctionSellingGettingProps {
   maxSellAmount: BigNumber,
   buyTokenSymbol: string,
   sellTokenSymbol: string,
-  sellTokenAddress: string,
+  sellTokenAddress?: string,
   sellAmount: Balance,
   buyAmount: Balance,
   setSellTokenAmount(props: any): any,
