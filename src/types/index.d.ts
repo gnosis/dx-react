@@ -15,6 +15,9 @@ export interface Code2Name {
   MGN: 'MAGNOLIA',
   OWL: 'OWL',
   RDN: 'RAIDEN',
+  GEN: 'DAOSTACK',
+  DAI: 'DAI',
+  MKR: 'MAKER',
 }
 
 export type TokenCode = keyof Code2Name

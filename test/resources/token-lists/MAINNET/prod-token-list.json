@@ -27,7 +27,7 @@
     },
     {
       "symbol": "MKR",
-      "name": "Maker Token",
+      "name": "Maker",
       "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
       "decimals": 18
     },
