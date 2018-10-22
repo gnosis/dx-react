@@ -306,11 +306,9 @@ export default (Component: React.ClassType<any, any, any>): React.ClassType<any,
 
     render() {
       // TODO: redirect home on invalid auction or something
-      const { error } = this.state
       return (
         <div>
           <Component {...this.props} {...this.state} claimSellerFunds={this.claimSellerFunds}/> :
-          {error && <h3> Invalid auction: {error}</h3>}
         </div>
       )
     }

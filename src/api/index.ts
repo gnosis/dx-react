@@ -1,6 +1,7 @@
 import { promisedWeb3 } from './web3Provider'
 import { promisedTokens } from './Tokens'
 import { promisedDutchX } from './dutchx'
+import { promisedPriceOracle } from './PriceOracle'
 
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
@@ -1120,15 +1121,34 @@ export const getAvailableAuctionsFromAllTokens = async (tokensJSON: DefaultToken
   return auctionPairs
 }
 
+export const getTokenPriceInUSD = async (tokenAddress: string) => {
+  const { DutchX, PriceOracle } = await dxAPI()
+
+  const [ethUSDPrice, WETHaddress] = await Promise.all([
+    PriceOracle.getUSDETHPrice(),
+    DutchX.ethToken(),
+  ])
+
+  console.log('ethUSDPrice: ', ethUSDPrice.toString())
+
+  if (tokenAddress === ETH_ADDRESS || tokenAddress === WETHaddress) return ethUSDPrice
+
+  const [num, den] = await DutchX.getPriceOfTokenInLastAuction(tokenAddress)
+  console.log('PriceOfTokenInLastAuction, num, den: ', num.toString(), den.toString())
+
+  return ethUSDPrice.mul(num).div(den)
+}
+
 async function initAPI(provider: Provider): Promise<dutchXAPI> {
   try {
-    const [web3, Tokens, DutchX] = await Promise.all([
+    const [web3, Tokens, DutchX, PriceOracle] = await Promise.all([
       promisedWeb3(provider),
       promisedTokens(),
       promisedDutchX(),
+      promisedPriceOracle(),
     ])
-    console.log('INDEX API => ', { web3, Tokens, DutchX })
-    return { web3, Tokens, DutchX }
+    console.log('INDEX API => ', { web3, Tokens, DutchX, PriceOracle })
+    return { web3, Tokens, DutchX, PriceOracle }
   } catch (err) {
     console.error('Error in init - API has not been initialised')
   }

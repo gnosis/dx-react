@@ -8,6 +8,7 @@ import ReactDOMServer from 'react-dom/server'
 
 import ReactGA from 'react-ga'
 
+import fireListeners from 'integrations/events'
 import App, { loadLocalSettings } from 'components/App'
 
 import { isNetBlocked, isGeoBlocked } from 'block'
@@ -19,7 +20,7 @@ const rootElement = document.getElementById('root')
 
 const preAppRender = async () => {
   // fire provider network change listener
-  // fireListeners()
+  fireListeners()
   // load localForage settings
   // register provider + update provider state
   await loadLocalSettings()

@@ -197,3 +197,5 @@ export const BLOCKED_COUNTRIES = {
   VU: 'Venezuela',
   YE: 'Yemen',
 }
+
+export const MAX_SELL_USD = 500 // temporary for MAINNET

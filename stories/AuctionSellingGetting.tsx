@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import { number, object } from '@storybook/addon-knobs'
+import { number, text } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import { makeCenterDecorator/*, storeInit, bcMetamask, makeProviderDecorator */ } from './helpers'
 
@@ -30,11 +30,14 @@ storiesOf('Auction Sell & Get', module)
     return (
       <AuctionSellingGetting
         maxSellAmount={toBigNumber(number('balance', 20))}
-        buyTokenSymbol={object('buyTokenSymbol', 'GNO')}
-        sellTokenSymbol={object('sellTokenSymbol', 'ETH')}
+        buyTokenSymbol={text('buyTokenSymbol', 'GNO')}
+        sellTokenSymbol={text('sellTokenSymbol', 'ETH')}
+        sellTokenAddress={text('sellTokenAddress', '0x0')}
         sellAmount={sellAmount}
         buyAmount={buyAmount}
         setSellTokenAmount={action('Set sellTokenAmount')}
+        network={text('network', 'RINKEBY')}
+        onValidityChange={()=>{}}
       />
     )
   })

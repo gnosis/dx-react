@@ -220,6 +220,10 @@ async function init(): Promise<DutchExchange> {
 
   const getFeeRatio = (userAccount: Account) => dx.getFeeRatio.call(userAccount)
 
+  const ethToken = () => dx.ethToken.call()
+
+  const getPriceOfTokenInLastAuction = (tokenAddress: Account) => dx.getPriceOfTokenInLastAuction.call(tokenAddress)
+
   const event: DutchExchange['event'] = (
     eventName: DutchExchangeEvents,
     valueFilter: object | void,
@@ -239,6 +243,7 @@ async function init(): Promise<DutchExchange> {
     get address() {
       return dx.address
     },
+    ethToken,
     isTokenApproved,
     getApprovedAddressesOfList,
     getDXTokenBalance,
@@ -267,6 +272,7 @@ async function init(): Promise<DutchExchange> {
     withdraw,
     depositAndSell,
     claimAndWithdraw,
+    getPriceOfTokenInLastAuction,
     event,
     allEvents,
   }
