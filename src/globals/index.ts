@@ -39,19 +39,22 @@ export const code2tokenMap: Code2Name = {
   OMG: 'OMISEGO',
   RDN: 'RAIDEN',
   REP: 'AUGUR',
+  GEN: 'DAOSTACK',
+  DAI: 'DAI',
+  MKR: 'MAKER',
 }
 
 export const tokenSVG = new Set([
-  'REP',
   'ETH',
   'WETH',
   'GNO',
-  'OMG',
   '1ST',
   'GNT',
+  'OMG',
   'RDN',
-  'DAI',
+  'REP',
   'GEN',
+  'DAI',
   'MKR',
 ])
 
