@@ -130,11 +130,15 @@
     align-items: flex-start;
     justify-content: flex-start;
 
-    > div > div.disclaimerBoxCookie {
+    > div {
       display: flex;
-      margin: auto 10px auto 0;
-      padding: 2px 0;
-      width: auto;
+
+      > div.disclaimerBoxCookie {
+        display: flex;
+        margin: auto 10px auto 0;
+        padding: 2px 0;
+        width: auto;
+      }
     }
   }
 

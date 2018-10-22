@@ -36,6 +36,12 @@
       "name": "OMGToken",
       "address": "0xd26114cd6ee289accf82350c8d8487fedb8a0c07",
       "decimals": 18
+    },
+    {
+      "symbol": "GEN",
+      "name": "DAOstack",
+      "address": "0x543ff227f64aa17ea132bf9886cab5db55dcaddf",
+      "decimals": 18
     }
   ],
   "pagination": {

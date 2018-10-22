@@ -35,6 +35,7 @@ import {
   getAllTokenDecimals,
   getApprovedTokensFromAllTokens,
   getAvailableAuctionsFromAllTokens,
+  dxAPI,
 } from 'api'
 
 import { promisedContractsMap, contractsMap } from 'api/contracts'
@@ -156,7 +157,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     * localStorage changes
    */
 
-  // TODO: if address doesnt exist in calcAlltokenBalances it throws and stops
+  // TODO: Batch as per Dima's suggestion
   const [ongoingAuctions, tokenBalances, feeRatio, mgnLockedBalance, dxTokenBalances] = await Promise.all([
     getSellerOngoingAuctions(mainList as DefaultTokenObject[], currentAccount),
     calcAllTokenBalances(mainList as DefaultTokenObject[]),
@@ -165,9 +166,6 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     getAllDXTokenInfo(mainList as DefaultTokenObject[], currentAccount),
   ])
   const { balance } = tokenBalances.find((t: typeof tokenBalances[0]) => t.address === ETH_ADDRESS)
-
-  // TODO: remove
-  console.log('OGA: ', ongoingAuctions, 'TokBal: ', tokenBalances, 'FeeRatio: ', feeRatio, 'DXTokenBalances: ', dxTokenBalances.map(({ symbol, address, balance: i }: any) => ({ symbol, address, balance: i.div(10 ** 18).toFixed(4) })))
 
   // dispatch Actions
   dispatch(batchActions([
@@ -298,7 +296,6 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
       case '1':
       case ETHEREUM_NETWORKS.MAIN:
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.MAIN}`)
-        // TODO: fix for Mainnet
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
@@ -406,9 +403,6 @@ const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAdd
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
-  // TODO: keep || remove idgaf but the `Submit Order` button > WalletPanel needs to be fixed
-  // SubmitOrder > onClick allows users to click twice while this fn (slow as fuck) makes up it's mind
-  // hack that fixes this just opens a modal right away with some "super cool" blockchainy buzz words
   dispatch(openModal({
     modalName: 'TransactionModal',
     modalProps: {
@@ -429,6 +423,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
       },
     },
   } = getState()
+
   let sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address
   const nativeSellAmt = await toNative(sellAmount, sell.decimals),
     { TokenOWL, TokenETH } = await promisedContractsMap(),
@@ -455,7 +450,6 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
           loader: true,
         },
       }))
-      // TODO: only deposit difference
       console.log('PROMPTING to start depositETH tx')
       const depositHash = await depositETH.sendTransaction(ETHToWrap.toString(), currentAccount)
       console.log('​depositETH tx hash: ', depositHash)
@@ -529,20 +523,13 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
 
         await dispatch(approveTokens(choice, 'OWLTOKEN'))
       }
+      // User has already approved and has enough OWL, approve in FE
+      dispatch(setOWLPreference(true))
     }
     return dispatch(submitSellOrder())
   } catch (e) {
     dispatch(errorHandling(e))
   }
-}
-
-export const calculateSellAmountAfterFee = async (sellAmount: string | BigNumber, userAccount: Account) => {
-  const selling: BigNumber = toBigNumber(sellAmount)
-
-  const feeRatio = await getFeeRatio(userAccount)
-  const fee = selling.times(feeRatio)
-
-  return (selling.minus(fee))
 }
 
 export const submitSellOrder = () => async (dispatch: any, getState: () => State) => {
@@ -561,10 +548,13 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     // indicate that nothing happened with false return
     if (+sellAmount <= 0) throw new Error('Invalid selling amount. Cannot sell 0.')
 
-    const sellAmountAfterFee = await calculateSellAmountAfterFee(sellAmount, currentAccount)
+    const [{ selling, fee }, feeReductionFromOWL] = await Promise.all([
+      calculateSellAmountAfterFee(sellAmount, currentAccount),
+      useOWL ? getFeeReductionFromOWL(sellAmount, currentAccount) : toBigNumber(0),
+    ])
 
-    console.log('​exportsubmitSellOrder -> sellAmountAfterFee', sellAmountAfterFee)
     dispatch(closeModal())
+    // Confirmation Modal
     dispatch(openModal({
       modalName: 'TransactionModal',
       modalProps: {
@@ -576,8 +566,9 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
           sellAmount: toBigNumber(sellAmount),
           network,
           feeRatio,
-          sellAmountAfterFee,
-          useOWL,
+          feeReductionFromOWL,
+          sellAmountAfterFee: selling.minus(fee),
+          useOWL: useOWL && feeReductionFromOWL.adjustment.gt(0),
         },
         loader: true,
       },
@@ -607,18 +598,6 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     console.log('postSellOrder tx logs', logs)
     const { auctionIndex } = logs.find((log: Web3EventLog) => log._eventName === 'NewSellOrder')
 
-    // let receipt
-    // const [nativeSellAmt, userDXBalance] = await promisedAmtAndDXBalance
-    // if (nativeSellAmt.greaterThan(userDXBalance)) {
-    //   receipt = await depositAndSell(sell, buy, nativeSellAmt.toString(), currentAccount)
-    //   console.log('depositAndSell receipt', receipt)
-    // // else User has enough balance on DX for Token and can sell w/o deposit
-    // } else {
-    //   receipt = await postSellOrder(sell, buy, nativeSellAmt.toString(), index as number, currentAccount)
-    //   console.log('postSellOrder receipt', receipt)
-    // }
-    // const { args: { auctionIndex } } = receipt.logs.find((log: any) => log.event === 'NewSellOrder')
-
     console.log(`Sell order went to ${sellName.symbol}-${buyName.symbol}-${auctionIndex.toString()}`)
     dispatch(closeModal())
     // jump to Auction Page
@@ -637,6 +616,16 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
     return true
   } catch (error) {
     if (error.message && error.message.includes('Web3ProviderEngine does not support synchronous requests.')) {
+      console.warn(`
+      WARNING! ${error.message}
+
+      Your wallet's Web3 provider engine does not support Web3
+      eth.filter implementation. This is generally not a serious
+      problem and can be safely ignored.
+
+      Please check in the Menu Auctions component in the header
+      to confirm that your bid was submitted.
+      `)
       dispatch(closeModal())
       // jump to Auction Page
       dispatch(push('/'))
@@ -653,11 +642,11 @@ export const submitSellOrder = () => async (dispatch: any, getState: () => State
       // indicate that submission worked
       return true
     }
+    console.error(error.message)
     return dispatch(errorHandling(error))
   }
 }
 
-// TODO: if add index of current tokenPair to state
 export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN') => async (dispatch: Dispatch<any>, getState: () => State) => {
   const {
     tokenPair: { sell, sellAmount },
@@ -696,7 +685,6 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
             loader: true,
           },
         }))
-        // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(sell.address, currentAccount)).toNumber()
 
         console.log('PROMPTING to start tokenApproval tx for MAX', sellName)
@@ -706,6 +694,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
     // OWL APPROVAL
     } else {
       dispatch(setOWLPreference(false))
+
       const { TokenOWL } = await promisedContracts
       if (choice === 'MAX') {
         dispatch(openModal({
@@ -716,19 +705,14 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
             loader: true,
           },
         }))
-        // CONSIDER/TODO: move allowanceLeft into state
         const allowanceLeft = (await getTokenAllowance(TokenOWL.address, currentAccount)).toNumber()
 
         console.log('PROMPTING to start tokenApproval tx for OWL')
         const tokenApprovalHash = await tokenApproval.sendTransaction(TokenOWL.address, ((2 ** 255) - allowanceLeft).toString())
         console.log('tokenApproval for OWL tx hash', tokenApprovalHash)
-      } else {
-        console.log('Disallowing OWL')
-        dispatch(batchActions([
-          setOWLPreference(false),
-          closeModal(),
-        ], 'DISALLOWING_OWL_AND_CLOSING_MODAL'))
+        return dispatch(setOWLPreference(true))
       }
+      return console.log('OWL use denied')
     }
   } catch (error) {
     throw error
@@ -818,7 +802,10 @@ export const claimSellerFundsFromSeveral = (
 ) => async (dispatch: Function, getState: () => State) => {
   const { blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { name } } } } = getState(),
     sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address,
-    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+    buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address,
+    { DutchExchange } = contractsMap
+
+  let decoder
 
   try {
     dispatch(openModal({
@@ -830,8 +817,19 @@ export const claimSellerFundsFromSeveral = (
       },
     }))
 
-    const claimHash = await claimSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
+    // >>> ============= >>>
+    // CLAIMING TX WATCHING
+    // >>> ============= >>>
+
+    const claimHash = await claimSellerFundsFromSeveralAuctions.sendTransaction(sell, buy, currentAccount, lastNIndex)
     console.log('ClaimSellerFundsFromSeveralAuctions TX HASH: ', claimHash)
+
+    // >>> ============= >>>
+    // END CLAIMING TX
+    // >>> ============= >>>
+
+    // wait claimHash
+    await waitForTx(claimHash)
 
     dispatch(openModal({
       modalName: 'TransactionModal',
@@ -842,13 +840,56 @@ export const claimSellerFundsFromSeveral = (
       },
     }))
 
-    const withdrawReceipt = await withdraw(buy.address)
+    // >>> ======== >>>
+    // WITHDRAW TX WATCHING
+    // >>> ======== >>>
+
+    const withdrawHash = await withdraw.sendTransaction(buy.address)
+    // get receipt or throw TIMEOUT
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)
+
+    decoder = getDecoderForABI(DutchExchange.abi)
+    // next line unreachable in case of TIMEOUT
+    // @ts-ignore
+    const withdrawLogs = decoder(withdrawReceipt.logs)
+    console.log('withdraw tx logs', withdrawLogs)
+
+    // Find the 'NewWithdrawal' log
+    const withdrawEvents = withdrawLogs.find((log: Web3EventLog) => log._eventName === 'NewWithdrawal')
+
+    console.log('>>=====> NEW_WITHDRAWAL_EVENT >>====> ', withdrawEvents)
+
+    // >>> ======== >>>
+    // END WITHDRAW TX WATCHING
+    // >>> ======== >>>
 
     return dispatch(closeModal())
   } catch (error) {
-    console.error(error.message)
+    if (error.message && error.message.includes('Web3ProviderEngine does not support synchronous requests.')) {
+      console.warn(`
+      WARNING! ${error.message}
 
+      Your wallet's Web3 provider engine does not support Web3
+      eth.filter implementation. This is generally not a serious
+      problem and can be safely ignored.
+
+      Please check that your tokens have been properly withdrawn
+      into your wallet to confirm.
+      `)
+      dispatch(closeModal())
+      // jump to home Page
+      dispatch(push('/'))
+
+      // grab balance of sold token after claim
+      const balance = await getTokenBalance(sell.address, currentAccount)
+
+      // dispatch Actions
+      dispatch(setTokenBalance({ address: sell.address, balance }))
+      // indicate that claiming worked
+      return true
+    }
+    console.error(error.message)
     dispatch(errorHandling(error))
   }
 }
@@ -869,7 +910,6 @@ async function checkEthTokenBalance(
   console.log('address: ', address)
   console.log('isETH: ', isETH)
   if (!isETH) return false
-  // CONSIDER/TODO: wrappedETH in state or TokenBalance
   const wrappedETH = await getEtherTokenBalance(account)
   console.log('wrappedETH: ', wrappedETH)
   // BYPASS[return false] => if wrapped Eth is enough
@@ -896,6 +936,41 @@ async function checkTokenAllowance(
   if (tokenAllowance.gte(nativeSellAmt)) return false
 
   return tokenAllowance
+}
+
+export async function getFeeReductionFromOWL(sellAmount: string | BigNumber, userAccount: Account) {
+  const [
+    { PriceOracle },
+    { TokenOWL },
+    { fee },
+  ] = await Promise.all([
+    dxAPI(),
+    promisedContractsMap(),
+    calculateSellAmountAfterFee(sellAmount, userAccount),
+  ])
+
+  const [ethUSDPrice, owlBalance, owlAllowance] = await Promise.all([
+    PriceOracle.getUSDETHPrice(),
+    getTokenBalance(TokenOWL.address, userAccount),
+    getTokenAllowance(TokenOWL.address, userAccount),
+  ])
+  const feeInUSD = fee.mul(ethUSDPrice)
+  // // return lesser of the 2
+  // return Math.min(owlBalance.toNumber(), Math.min(owlAllowance.toNumber(), feeInUSD.div(2).toNumber()))
+  const owlsBurned =  toBigNumber(Math.min(owlBalance.toNumber(), Math.min(owlAllowance.toNumber(), feeInUSD.div(2).toNumber())))
+  const adjustment = owlsBurned.gt(0) ? (owlsBurned.mul(fee)).div(feeInUSD) : toBigNumber(0)
+
+  console.warn('getFeeReductionFromOWL ==> ', { TokenOWLaddr: TokenOWL.address, fee, ethUSDPrice, owlBalance, owlAllowance, feeInUSD, owlsBurned, adjustment })
+  return { adjustment, ethUSDPrice }
+}
+
+export async function calculateSellAmountAfterFee(sellAmount: string | BigNumber, userAccount: Account) {
+  const selling: BigNumber = toBigNumber(sellAmount)
+
+  const feeRatio = await getFeeRatio(userAccount)
+  const fee = selling.times(feeRatio)
+
+  return { selling, fee }
 }
 
 export function errorHandling(error: Error, goHome = true) {

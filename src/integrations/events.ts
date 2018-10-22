@@ -1,5 +1,6 @@
 // import localForage from 'localforage'
 // import { store } from 'components/App'
+// import { updateMainAppState } from 'actions'
 // import { watch, getBlock } from 'integrations/filterChain'
 // import { promisedWeb3 } from 'api/web3Provider'
 // import { code2Network } from 'utils'
@@ -11,67 +12,78 @@
 // ========== //
 
 // let netID: string
+const obj = {}
 
 // =============== //
 // event listeners //
 // =============== //
 
-// const stableWeb3Listener = async () => {
-//   const { web3 } = await promisedWeb3
+const stableWeb3Listener = () => {
+  window.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }: { selectedAddress: string }) => {
+    if (obj[selectedAddress]) return console.debug('Same address detected, doing nothing.')
+    console.debug('Account change detected, updating app.')
+    obj[selectedAddress] = selectedAddress
 
-//   web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
-//     const state: State = store.getState() as State
-//     const { currentAccount: currentAccountFromState } = state.blockchain
-//     const networkFromState = getActiveProviderObject(state).network
-//     const { defaultTokenList } = store.getState().tokenList
+    console.debug('Updated address: ', obj[selectedAddress])
+    // return store.dispatch(updateMainAppState())
+  })
+}
 
-//     console.log(`
-//       [[LISTENER]] ---> CHANGES DETECTED
-//         >>====> Account Before: ${currentAccountFromState}
-//         >>====> Account After:  ${selectedAddress}
-//         >>====> Network Before: ${netID}
-//         >>====> Network After:  ${networkVersion}
-//       [[LISTENER]]
-//     `)
+/* const stableWeb3Listener = async () => {
+  const { web3 } = await promisedWeb3
 
-//     if (netID === networkVersion) return
+  web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
+    const state: State = store.getState() as State
+    const { currentAccount: currentAccountFromState } = state.blockchain
+    const networkFromState = getActiveProviderObject(state).network
+    const { defaultTokenList } = store.getState().tokenList
 
-//     // set scoped netID var to networkVersion detected
-//     netID = networkVersion
+    console.log(`
+      [[LISTENER]] ---> CHANGES DETECTED
+        >>====> Account Before: ${currentAccountFromState}
+        >>====> Account After:  ${selectedAddress}
+        >>====> Network Before: ${netID}
+        >>====> Network After:  ${networkVersion}
+      [[LISTENER]]
+    `)
 
-//     console.log(`
-//       [[LISTENER]] --> NETWORK CHANGE DETECTED
-//         >>====> localNetID      ${netID}
-//         >>====> C.Net.ID:       ${networkVersion}
-//       [[LISTENER]]
-//     `)
+    if (netID === networkVersion) return
 
-//     if (
-//       // network undefined (page refresh)
-//       (!netID && defaultTokenList.length < 1) ||
-//       // change of networks
-//       ((netID !== networkVersion) && defaultTokenList.length < 1) ||
-//       // state network !== networkVersion (network change)
-//       networkFromState !== code2Network(networkVersion)
-//     ) {
-//       netID = networkVersion
+    // set scoped netID var to networkVersion detected
+    netID = networkVersion
 
-//       console.log(`
-//         [[LISTENER]] --> NETWORK CHANGE DETECTED, GRABBING NEW NETWORK TOKEN LIST
-//       `)
+    console.log(`
+      [[LISTENER]] --> NETWORK CHANGE DETECTED
+        >>====> localNetID      ${netID}
+        >>====> C.Net.ID:       ${networkVersion}
+      [[LISTENER]]
+    `)
 
-//       localForage.removeItem('defaultTokens')
-//     }
-//   })
-// }
+    if (
+      // network undefined (page refresh)
+      (!netID && defaultTokenList.length < 1) ||
+      // change of networks
+      ((netID !== networkVersion) && defaultTokenList.length < 1) ||
+      // state network !== networkVersion (network change)
+      networkFromState !== code2Network(networkVersion)
+    ) {
+      netID = networkVersion
+
+      console.log(`
+        [[LISTENER]] --> NETWORK CHANGE DETECTED, GRABBING NEW NETWORK TOKEN LIST
+      `)
+
+      localForage.removeItem('defaultTokens')
+    }
+  })
+} */
 
 const fireListeners = async () => {
   console.log('FIRING LISTENERS')
 
   if (typeof window.web3.version === 'object') {
     // web3 version 0.20.xx
-
-    // await stableWeb3Listener()
+    stableWeb3Listener()
 
     // watch(async (e, bl) => {
     //   console.log(' ==> 2: Block watcher fired')
@@ -83,6 +95,7 @@ const fireListeners = async () => {
     // web3 version 1.x.x
     console.warn(`
       WARNING: You are using an experimental release of Web3 1.x.x
+      No Account or Network listeners being fired.
     `)
 
   }

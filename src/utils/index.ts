@@ -6,7 +6,7 @@ import { store } from 'components/App'
 
 import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog, TransactionObject } from 'api/types'
 import { Account } from 'types'
-import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType, GAS_LIMIT, URLS } from 'globals'
+import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType, GAS_LIMIT, URLS, BLOCKED_COUNTRIES } from 'globals'
 
 import GNOSIS_SAFE_SVG from 'assets/img/icons/icon_gnosis_safe1.svg'
 import STATUS_SVG from 'assets/img/icons/icon_status.svg'
@@ -247,3 +247,5 @@ export const estimateGas = async (
 
   return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }
+
+export const geoBlockedCitiesToString = () => Object.values(BLOCKED_COUNTRIES).join(', ') + '.'

@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME, GEO_BLOCKED_COUNTIES_LIST } from 'globals'
 
 import Loader from 'components/Loader'
 import { displayUserFriendlyError } from 'utils'
@@ -49,9 +49,24 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
     {txData &&
       <div className="modalTXDataDiv">
         <span>Total participation:<hr /><strong>{`${txData.sellAmount} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
-        <span>Fee level:<hr /><strong>{`${txData.feeRatio}%`}</strong></span>
-        {txData.useOWL && <span>Fees paid in OWL:<hr /><strong>{`${(((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS)}OWL (=${((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name})`}</strong></span>}
-        <span>Fees paid in {`${txData.tokenA.symbol || txData.tokenA.name}`}:<hr /><strong>{`${txData.useOWL ? (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).div(2)).toFixed(FIXED_DECIMALS) : ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
+        <span>Fee level:<hr /><strong>{`${+txData.feeRatio * 100}%`}</strong></span>
+        {txData.useOWL &&
+        <span>Fees paid in OWL:
+          <hr />
+          <strong>
+            {`${txData.feeReductionFromOWL.adjustment.div(txData.feeReductionFromOWL.ethUSDPrice).toFixed(9)} OWL (=${txData.feeReductionFromOWL.adjustment.toFixed(9)} ${txData.tokenA.symbol || txData.tokenA.name})`}
+          </strong>
+        </span>}
+        <span>Fees paid in {`${txData.tokenA.symbol || txData.tokenA.name}`}:
+          <hr />
+          <strong>
+            {`${txData.useOWL
+            ?
+            (((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).minus(txData.feeReductionFromOWL.adjustment)).toFixed(9)
+            :
+            ((txData.sellAmount as BigNumber).minus(txData.sellAmountAfterFee)).toFixed(9)} ${txData.tokenA.symbol || txData.tokenA.name}`}
+          </strong>
+        </span>
         <span>Amount deposited into auction:<hr /><strong>{`${txData.sellAmountAfterFee.toFixed(FIXED_DECIMALS)} ${txData.tokenA.symbol || txData.tokenA.name}`}</strong></span>
             {(txData.tokenA.symbol || txData.tokenA.name) &&
             <span>Token depositing:<hr /><strong>{`${txData.tokenA.symbol || txData.tokenA.name}${(txData.tokenA.name && txData.tokenA.symbol) && ' (' + txData.tokenA.name + ')'}`}</strong></span>
@@ -140,7 +155,10 @@ const disabledReasons = {
     render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
-        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region.</p>
+        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region. The following countries are geo-blocked:</p>
+        <p className="offlineBanner" style={{ margin: 'auto', padding: 20, width: '57%' }}>
+          {GEO_BLOCKED_COUNTIES_LIST}
+        </p>
         <br />
         <br />
         <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
