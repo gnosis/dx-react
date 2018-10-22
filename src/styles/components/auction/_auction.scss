@@ -144,8 +144,9 @@ $headerHeight: 58px;
   grid-template-columns: minmax(20px, 1fr) minmax(20ch, 3fr) minmax(30px, 1fr) minmax(30px, 1fr) minmax(20ch, 3fr) minmax(20px, 1fr);
   grid-template-rows: auto;
   grid-template-areas:
-    ".   label1 .      . label2 ."
-    "max input1 token1 . input2 token2";
+    ".   header header header header ."
+    ".   label1 .           . label2 ."
+    "max input1 token1      . input2 token2";
 
   @media #{$mobile} {
     display: flex;
@@ -258,6 +259,18 @@ $headerHeight: 58px;
     &:last-of-type {
       grid-area: token2;
     }
+  }
+
+  .message {
+    grid-area: header;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    color: red;
+    background-color: $yellow;
+    padding: 1em;
+    margin: -1em 0 1em 0;
+    letter-spacing: 0.8px;
   }
 }
 

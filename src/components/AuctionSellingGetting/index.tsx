@@ -67,7 +67,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
       if (maxSellAmount.lessThanOrEqualTo(value)) {
         validityMessage = `Amount available for sale is ${maxSellAmount.toString()}`
       } else if (sellTokenInUSD && sellTokenInUSD.mul(value).gt(MAX_SELL_USD)) {
-        validityMessage = `You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
+        validityMessage = `Amount is limited to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
       } else {
         validityMessage = ''
       }
@@ -94,10 +94,13 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   } */
 
   render() {
-    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount, network } = this.props
 
     return (
       <div className="auctionAmounts">
+        {network === 'MAIN' && <span className="message">
+          You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of 500USD
+        </span>}
         <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
