@@ -6,6 +6,7 @@ import 'assets/pdf/PrivacyPolicy.pdf'
 
 import stepByStepFeeCalc from 'assets/content/step_by_step_fee_calculation.png'
 import feeReductionModel from 'assets/content/fee_reduction_model_dutchX.png'
+import dutchXSlowtrade from 'assets/content/dutchX_slowtrade.png'
 
 interface ContentPages {
   handleClick?: () => any;
@@ -16,13 +17,14 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   <article>
     <h1>How it works</h1>
 
-    <section className="drawer" id="what-is-slowtrade" onClick={handleClick}>
-    <h3>What is slow.trade</h3>
-    <span>
-      <p>
-        Slow.trade is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
-      </p>
-    </span>
+    <section className="drawer active" id="what-is-slowtrade" onClick={handleClick}>
+      <h3>What is slow.trade</h3>
+      <span>
+        <p>
+          Slow.trade is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
+        </p>
+        <a href={dutchXSlowtrade} target="_blank"><img src={dutchXSlowtrade} /></a>
+      </span>
     </section>
 
     <section className="drawer" id="what-is-dutchx" onClick={handleClick}>
@@ -1136,7 +1138,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="how-to-participate-as-buyer">
-      <h3>How do I participate as a buyer?</h3>
+      <h3>How do I participate as a bidder?</h3>
       <span>
         <p>
           There is currently no interface for participating as a bidding. If there is the demand for it, a bidder interface will be created in the future.
