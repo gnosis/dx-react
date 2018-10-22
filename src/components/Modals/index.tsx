@@ -1,10 +1,10 @@
 import React, { CSSProperties } from 'react'
 import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME, BLOCKED_COUNTRIES } from 'globals'
 
 import Loader from 'components/Loader'
-import { displayUserFriendlyError } from 'utils'
+import { displayUserFriendlyError, lastArrVal } from 'utils'
 
 interface TransactionModalProps {
   activeProvider?: string,
@@ -140,7 +140,14 @@ const disabledReasons = {
     render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
-        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region.</p>
+        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region. The following countries are geo-blocked:</p>
+        <p className="offlineBanner" style={{ margin: 'auto', padding: 20, width: '57%' }}>
+          {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
+            if (i === 0) return ` ${code}, `
+            if (array[i] === lastArrVal(array)) return `${code}.`
+            return `${code}, `
+          })}
+        </p>
         <br />
         <br />
         <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
