@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME, GEO_BLOCKED_COUNTIES_LIST } from 'globals'
 
 import Loader from 'components/Loader'
 import { displayUserFriendlyError } from 'utils'
@@ -155,7 +155,10 @@ const disabledReasons = {
     render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
-        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region.</p>
+        <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region. The following countries are geo-blocked:</p>
+        <p className="offlineBanner" style={{ margin: 'auto', padding: 20, width: '57%' }}>
+          {GEO_BLOCKED_COUNTIES_LIST}
+        </p>
         <br />
         <br />
         <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>

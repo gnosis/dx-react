@@ -1,4 +1,5 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
+import { geoBlockedCitiesToString } from 'utils'
 
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
@@ -180,22 +181,21 @@ export const AUCTION_RUN_TIME = 6 * 60 * 60 * 1000 // 6 hours in ms
 export const WAITING_PERIOD = 10 * 60 * 1000 // 10 min in ms
 
 export const BLOCKED_COUNTRIES = {
-  AE: 'Abu Dhabi Global Market',
   AF: 'Afghanistan',
   CU: 'Cuba',
   KP: 'Democratic People\'s Republic of Korea',
-  DE: 'Germany',
   IR: 'Iran',
   IQ: 'Iraq',
-  JP: 'Japan',
   CN: 'People’s Republic of China',
   RU: 'Russian Federation',
   SO: 'Somalia',
   SD: 'Sudan',
   SY: 'Syria',
+  AE: 'United Arab Emirates',
   US: 'United States of America',
   VU: 'Venezuela',
   YE: 'Yemen',
 }
 
 export const MAX_SELL_USD = 500 // temporary for MAINNET
+export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
