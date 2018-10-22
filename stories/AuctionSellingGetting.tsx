@@ -36,6 +36,8 @@ storiesOf('Auction Sell & Get', module)
         sellAmount={sellAmount}
         buyAmount={buyAmount}
         setSellTokenAmount={action('Set sellTokenAmount')}
+        network={text('network', 'RINKEBY')}
+        onValidityChange={()=>{}}
       />
     )
   })

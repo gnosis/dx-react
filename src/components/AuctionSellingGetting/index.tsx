@@ -11,7 +11,9 @@ export interface AuctionSellingGettingProps {
   sellTokenAddress?: string,
   sellAmount: Balance,
   buyAmount: Balance,
+  onValidityChange?(choice: boolean): void,
   setSellTokenAmount(props: any): any,
+  network?: string,
 }
 
 interface AuctionSellingGettingState {
@@ -21,12 +23,17 @@ interface AuctionSellingGettingState {
 const MAX_SELL_USD = 500
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps, AuctionSellingGettingState> {
+  input: HTMLInputElement = null
+
   componentDidMount() {
     this.tokenInUSD()
   }
 
   componentDidUpdate(prevProps: AuctionSellingGettingProps) {
-    if (prevProps.sellTokenAddress !== this.props.sellTokenAddress) this.tokenInUSD()
+    if (prevProps.sellTokenAddress !== this.props.sellTokenAddress) {
+      this.tokenInUSD()
+      this.input.setCustomValidity('')
+    }
   }
 
   tokenInUSD = async () => {
@@ -41,7 +48,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
     // TODO: consider using e.target.value.match(/^(0|[1-9]\d*)(\,|.\d+)?(e-?(0|[1-9]\d*))?$/i)
     const input = e.target
-    const { sellAmount, setSellTokenAmount, maxSellAmount, sellTokenSymbol } = this.props
+    const { sellAmount, setSellTokenAmount, maxSellAmount, sellTokenSymbol, onValidityChange } = this.props
     const { sellTokenInUSD } = this.state
 
     let { value } = input
@@ -55,22 +62,24 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
     const validValue = !!(+value)
     // validate maxSellAmount isnt exceeded but make sure value is castable to type number
     console.log('validValue && sellAmount: ', validValue, sellAmount)
+    let validityMessage = ''
     if (validValue && value) {
       if (maxSellAmount.lessThanOrEqualTo(value)) {
-        input.setCustomValidity(`Amount available for sale is ${maxSellAmount.toString()}`)
-        input.reportValidity()
+        validityMessage = `Amount available for sale is ${maxSellAmount.toString()}`
       } else if (sellTokenInUSD && sellTokenInUSD.mul(value).gt(MAX_SELL_USD)) {
-        input.setCustomValidity(`You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.mul(value).round(4).toString()}${sellTokenSymbol})`)
-        input.reportValidity()
+        validityMessage = `You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
       } else {
-        console.log('Reset validity', input.validationMessage)
-        input.setCustomValidity('')
-        input.reportValidity()
+        validityMessage = ''
       }
     } else {
-      input.setCustomValidity('Please enter a valid number and/or valid separator')
-      input.reportValidity()
+      validityMessage = 'Please enter a valid number and/or valid separator'
     }
+
+    input.setCustomValidity(validityMessage)
+    validityMessage && input.reportValidity()
+
+    onValidityChange && onValidityChange(!validityMessage)
+    console.log('onValidityChange: ', !validityMessage)
   }
 
   onFocus = () => this.props.setSellTokenAmount({ sellAmount: '' })
@@ -92,6 +101,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
         <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
+          ref={c => this.input = c}
           type="text"
           name="sellingAmount"
           id="sellingAmount"

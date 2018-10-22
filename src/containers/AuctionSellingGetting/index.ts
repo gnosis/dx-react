@@ -7,6 +7,7 @@ import { State } from 'types'
 import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/AuctionSellingGetting'
 
 const mapState = (state: State) => {
+  const { network } = state.blockchain
   // TODO: always have some price for every pair in RatioPairs
   const { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN, lastPrice: price } = state.tokenPair
   const sellTokenBalance = getSellTokenBalance(state)
@@ -22,7 +23,10 @@ const mapState = (state: State) => {
     sellAmount,
     // TODO: use BN.mult()
     buyAmount: (+sellAmount * +price).toFixed(FIXED_DECIMALS),
+    network,
   }) as AuctionSellingGettingProps
 }
 
-export default connect(mapState, { setSellTokenAmount })(AuctionSellingGetting)
+export default connect<
+  AuctionSellingGettingProps, {}, Pick<AuctionSellingGettingProps, 'onValidityChange'>
+>(mapState, { setSellTokenAmount })(AuctionSellingGetting)
