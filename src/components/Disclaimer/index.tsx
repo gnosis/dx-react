@@ -143,7 +143,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
                 <b>
-                  I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.
+                  <strong>I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.</strong>
                 </b>
               </label>
             </div>
@@ -205,7 +205,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
 
         <span>
           <img src={disclaimerSVG} />
-          <h1>Verification and Disclaimer</h1>
+          <h1>Verification and Terms</h1>
         </span>
 
         <div>
@@ -239,7 +239,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required disabled={accepted || !termsOfUseScrolled} />
               <label htmlFor="disclaimer3">
-                I have read, understood, and agree to the Disclaimer:
+                I have read, understood, and agree to the full Terms and Conditions:
               </label>
             </div>
 
@@ -268,7 +268,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer4">
                 <b>
-                  I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                  <strong>I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</strong>
                 </b>
               </label>
             </div>
