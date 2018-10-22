@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { Balance, BigNumber } from 'types'
 import { getTokenPriceInUSD } from 'api'
+import { MAX_SELL_USD } from 'globals'
 
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
@@ -19,8 +20,6 @@ export interface AuctionSellingGettingProps {
 interface AuctionSellingGettingState {
   sellTokenInUSD: BigNumber,
 }
-
-const MAX_SELL_USD = 500
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps, AuctionSellingGettingState> {
   input: HTMLInputElement = null
