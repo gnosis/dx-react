@@ -1,4 +1,5 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
+import { geoBlockedCitiesToString } from 'utils'
 
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
@@ -195,3 +196,5 @@ export const BLOCKED_COUNTRIES = {
   VU: 'Venezuela',
   YE: 'Yemen',
 }
+
+export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()

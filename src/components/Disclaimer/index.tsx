@@ -6,8 +6,8 @@ import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import { BLOCKED_COUNTRIES, URLS } from 'globals'
-import { web3CompatibleNetwork, lastArrVal } from 'utils'
+import { URLS, GEO_BLOCKED_COUNTIES_LIST } from 'globals'
+import { web3CompatibleNetwork } from 'utils'
 import { TermsText } from '../Terms'
 
 import 'assets/pdf/PrivacyPolicy.pdf'
@@ -115,11 +115,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
                 I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
-                {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
-                  if (i === 0) return ` ${code}, `
-                  if (array[i] === lastArrVal(array)) return `${code}.`
-                  return `${code}, `
-                })}
+                {' ' + GEO_BLOCKED_COUNTIES_LIST}
               </label>
             </div>
 
@@ -221,11 +217,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
                 I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
-                {Object.values(BLOCKED_COUNTRIES).map((code, i, array) => {
-                  if (i === 0) return ` ${code}, `
-                  if (array[i] === lastArrVal(array)) return `${code}.`
-                  return `${code}, `
-                })}
+                {' ' + GEO_BLOCKED_COUNTIES_LIST}
               </label>
             </div>
 
