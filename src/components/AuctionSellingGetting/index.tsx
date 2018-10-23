@@ -25,12 +25,12 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   input: HTMLInputElement = null
 
   componentDidMount() {
-    this.tokenInUSD()
+    this.props.network === 'MAIN' && this.tokenInUSD()
   }
 
   componentDidUpdate(prevProps: AuctionSellingGettingProps) {
     if (prevProps.sellTokenAddress !== this.props.sellTokenAddress) {
-      this.tokenInUSD()
+      this.props.network === 'MAIN' && this.tokenInUSD()
       this.input.setCustomValidity('')
     }
   }
@@ -47,7 +47,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   onChange = (e: React.ChangeEvent<HTMLInputElement & HTMLFormElement>) => {
     // TODO: consider using e.target.value.match(/^(0|[1-9]\d*)(\,|.\d+)?(e-?(0|[1-9]\d*))?$/i)
     const input = e.target
-    const { sellAmount, setSellTokenAmount, maxSellAmount, sellTokenSymbol, onValidityChange } = this.props
+    const { sellAmount, setSellTokenAmount, maxSellAmount, sellTokenSymbol, onValidityChange, network } = this.props
     const { sellTokenInUSD } = this.state
 
     let { value } = input
@@ -65,7 +65,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
     if (validValue && value) {
       if (maxSellAmount.lessThanOrEqualTo(value)) {
         validityMessage = `Amount available for sale is ${maxSellAmount.toString()}`
-      } else if (sellTokenInUSD && sellTokenInUSD.mul(value).gt(MAX_SELL_USD)) {
+      } else if (network === 'MAIN' && sellTokenInUSD && sellTokenInUSD.mul(value).gt(MAX_SELL_USD)) {
         validityMessage = `Amount is limited to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
       } else {
         validityMessage = ''
