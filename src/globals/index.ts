@@ -157,6 +157,8 @@ export const URLS = {
 
   APP_URL_MAIN: 'slow.trade',
   APP_URL_RINKEBY: 'rinkeby.slow.trade',
+  APP_STAGING: 'dx.staging.gnosisdev.com',
+  APP_DEV: 'dx.dev.gnosisdev.com',
   APP_URL_IPFS: {
     hostname: 'ipfs.io',
     pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV',
