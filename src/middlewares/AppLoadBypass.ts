@@ -14,24 +14,20 @@ const AppLoadBypass = ({ dispatch, getState }: { dispatch: Function, getState: (
   if (!activeProvider || type !== '@@router/LOCATION_CHANGE') return next(action as Action)
 
   const pathMatch = (toCheck: string, match: boolean = true) =>
-        match
-            ?
-        (toCheck === '/cookies' || toCheck.includes('/content/'))
-            :
-        (toCheck !== '/cookies' && !toCheck.includes('/content/'))
+    match
+        ?
+    (toCheck === '/cookies' || toCheck.includes('/content/'))
+        :
+    (toCheck !== '/cookies' && !toCheck.includes('/content/'))
 
   try {
     if (pathMatch(pathname)) {
-        console.debug('LOCATION MATCH')
-        if (
-                pathMatch(payload.location.pathname, false)
-            ) {
-            dispatch(setAppLoadBypass(true))
-          }
-      } else {
-        console.debug('LOCATION MIS-MATCH')
-        dispatch(setAppLoadBypass(false))
+      if (pathMatch(payload.location.pathname, false)) {
+        dispatch(setAppLoadBypass(true))
       }
+    } else {
+      dispatch(setAppLoadBypass(false))
+    }
 
     return next(action as Action)
   } catch (e) {
