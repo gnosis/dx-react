@@ -73,7 +73,7 @@ const prefilterByAvailableAuctions = createSelector(
   },
 )
 
-const sortedTokeList = createSelector(
+const sortedTokenList = createSelector(
   prefilterByAvailableAuctions,
   (_, props: TokenOverlayProps) => props.tokenBalances,
   (tokenList, balances) => tokenList.sort((a, b) => {
@@ -107,7 +107,7 @@ const sortedTokeList = createSelector(
 
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
-  sortedTokeList,
+  sortedTokenList,
   (filter, tokens) => filter
     ?
     tokens.filter(({
