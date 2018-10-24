@@ -46,11 +46,7 @@ header {
     display: flex;
     align-items: center;
     margin: 10px auto 0;
-    padding: 0 30px 0 0;
-
-    @media #{$tablet} {
-      padding: 0 35px;
-    }
+    padding: 0 35px;
 
     @media #{$mobile} {
       justify-content: space-between;

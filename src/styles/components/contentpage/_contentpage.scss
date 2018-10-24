@@ -11,7 +11,7 @@
   box-sizing: border-box;
 
   @media #{$mobile} {
-    margin: 136px 0 0;
+    margin: 0;
     padding: 0 13px;
 
     .offlineBanner ~ & {
@@ -31,7 +31,7 @@
     padding: 40px 20px 80px;
 
     @media #{$mobile} {
-      margin: 45px 0;
+      margin: 175px 0;
       padding: 0;
     }
   }
