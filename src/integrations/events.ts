@@ -1,104 +1,104 @@
-// import localForage from 'localforage'
-// import { store } from 'components/App'
-// import { updateMainAppState } from 'actions'
-// import { watch, getBlock } from 'integrations/filterChain'
-// import { promisedWeb3 } from 'api/web3Provider'
-// import { code2Network } from 'utils'
-// import { getActiveProviderObject } from 'selectors'
-// import { State } from 'types'
+// // import localForage from 'localforage'
+// // import { store } from 'components/App'
+// // import { updateMainAppState } from 'actions'
+// // import { watch, getBlock } from 'integrations/filterChain'
+// // import { promisedWeb3 } from 'api/web3Provider'
+// // import { code2Network } from 'utils'
+// // import { getActiveProviderObject } from 'selectors'
+// // import { State } from 'types'
 
-// ========== //
-// scope vars //
-// ========== //
+// // ========== //
+// // scope vars //
+// // ========== //
 
-// let netID: string
-const obj = {}
+// // let netID: string
+// const obj = {}
 
-// =============== //
-// event listeners //
-// =============== //
+// // =============== //
+// // event listeners //
+// // =============== //
 
-const stableWeb3Listener = () => {
-  window.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }: { selectedAddress: string }) => {
-    if (obj[selectedAddress]) return console.debug('Same address detected, doing nothing.')
-    console.debug('Account change detected, updating app.')
-    obj[selectedAddress] = selectedAddress
+// const stableWeb3Listener = () => {
+//   window.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }: { selectedAddress: string }) => {
+//     if (obj[selectedAddress]) return console.debug('Same address detected, doing nothing.')
+//     console.debug('Account change detected, updating app.')
+//     obj[selectedAddress] = selectedAddress
 
-    console.debug('Updated address: ', obj[selectedAddress])
-    // return store.dispatch(updateMainAppState())
-  })
-}
+//     console.debug('Updated address: ', obj[selectedAddress])
+//     // return store.dispatch(updateMainAppState())
+//   })
+// }
 
-/* const stableWeb3Listener = async () => {
-  const { web3 } = await promisedWeb3
+// /* const stableWeb3Listener = async () => {
+//   const { web3 } = await promisedWeb3
 
-  web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
-    const state: State = store.getState() as State
-    const { currentAccount: currentAccountFromState } = state.blockchain
-    const networkFromState = getActiveProviderObject(state).network
-    const { defaultTokenList } = store.getState().tokenList
+//   web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress, networkVersion }: any) => {
+//     const state: State = store.getState() as State
+//     const { currentAccount: currentAccountFromState } = state.blockchain
+//     const networkFromState = getActiveProviderObject(state).network
+//     const { defaultTokenList } = store.getState().tokenList
 
-    console.log(`
-      [[LISTENER]] ---> CHANGES DETECTED
-        >>====> Account Before: ${currentAccountFromState}
-        >>====> Account After:  ${selectedAddress}
-        >>====> Network Before: ${netID}
-        >>====> Network After:  ${networkVersion}
-      [[LISTENER]]
-    `)
+//     console.log(`
+//       [[LISTENER]] ---> CHANGES DETECTED
+//         >>====> Account Before: ${currentAccountFromState}
+//         >>====> Account After:  ${selectedAddress}
+//         >>====> Network Before: ${netID}
+//         >>====> Network After:  ${networkVersion}
+//       [[LISTENER]]
+//     `)
 
-    if (netID === networkVersion) return
+//     if (netID === networkVersion) return
 
-    // set scoped netID var to networkVersion detected
-    netID = networkVersion
+//     // set scoped netID var to networkVersion detected
+//     netID = networkVersion
 
-    console.log(`
-      [[LISTENER]] --> NETWORK CHANGE DETECTED
-        >>====> localNetID      ${netID}
-        >>====> C.Net.ID:       ${networkVersion}
-      [[LISTENER]]
-    `)
+//     console.log(`
+//       [[LISTENER]] --> NETWORK CHANGE DETECTED
+//         >>====> localNetID      ${netID}
+//         >>====> C.Net.ID:       ${networkVersion}
+//       [[LISTENER]]
+//     `)
 
-    if (
-      // network undefined (page refresh)
-      (!netID && defaultTokenList.length < 1) ||
-      // change of networks
-      ((netID !== networkVersion) && defaultTokenList.length < 1) ||
-      // state network !== networkVersion (network change)
-      networkFromState !== code2Network(networkVersion)
-    ) {
-      netID = networkVersion
+//     if (
+//       // network undefined (page refresh)
+//       (!netID && defaultTokenList.length < 1) ||
+//       // change of networks
+//       ((netID !== networkVersion) && defaultTokenList.length < 1) ||
+//       // state network !== networkVersion (network change)
+//       networkFromState !== code2Network(networkVersion)
+//     ) {
+//       netID = networkVersion
 
-      console.log(`
-        [[LISTENER]] --> NETWORK CHANGE DETECTED, GRABBING NEW NETWORK TOKEN LIST
-      `)
+//       console.log(`
+//         [[LISTENER]] --> NETWORK CHANGE DETECTED, GRABBING NEW NETWORK TOKEN LIST
+//       `)
 
-      localForage.removeItem('defaultTokens')
-    }
-  })
-} */
+//       localForage.removeItem('defaultTokens')
+//     }
+//   })
+// } */
 
-const fireListeners = async () => {
-  console.log('FIRING LISTENERS')
+// const fireListeners = async () => {
+//   console.log('FIRING LISTENERS')
 
-  if (typeof window.web3.version === 'object') {
-    // web3 version 0.20.xx
-    stableWeb3Listener()
+//   if (window.web3 && typeof window.web3.version === 'object') {
+//     // web3 version 0.20.xx
+//     stableWeb3Listener()
 
-    // watch(async (e, bl) => {
-    //   console.log(' ==> 2: Block watcher fired')
-    //   if (e) return console.error('Chain watching Error', e)
-    //   console.log('LATEST BLOCK')
-    //   console.log(await getBlock(bl))
-    // })
-  } else {
-    // web3 version 1.x.x
-    console.warn(`
-      WARNING: You are using an experimental release of Web3 1.x.x
-      No Account or Network listeners being fired.
-    `)
+//     // watch(async (e, bl) => {
+//     //   console.log(' ==> 2: Block watcher fired')
+//     //   if (e) return console.error('Chain watching Error', e)
+//     //   console.log('LATEST BLOCK')
+//     //   console.log(await getBlock(bl))
+//     // })
+//   } else {
+//     // web3 version 1.x.x
+//     console.warn(`
+//       WARNING: You are using an experimental release of Web3 1.x.x
+//       No Account or Network listeners being fired.
+//     `)
 
-  }
-}
+//   }
+// }
 
-export default fireListeners
+// export default fireListeners
