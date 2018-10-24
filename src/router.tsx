@@ -29,23 +29,24 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, content?: boolean) => (props: any) => (
+const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean }, useFooter = true) => (compProps: any) => (
   <>
-    <Header content={content}/>
-    <Component {...props}/>
-    <Footer />
+    <Header {...headerProps}/>
+    <Component {...compProps}/>
+    {useFooter && <Footer />}
   </>
 )
 
-const HomeWH = withHeaderAndFooter(Home)
-const OrderPanelWH = withHeaderAndFooter(OrderPanel)
-const WalletPanelWH = withHeaderAndFooter(WalletPanel)
-const AuctionPanelWH = withHeaderAndFooter(AuctionPanel)
+const HomeWHF = withHeaderAndFooter(Home)
+const OrderPanelWHF = withHeaderAndFooter(OrderPanel)
+const WalletPanelWHF = withHeaderAndFooter(WalletPanel)
+const AuctionPanelWHF = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
-const ContentPageContainerWH = withHeaderAndFooter(ContentPageContainer, true)
-const CookiesWH = withHeaderAndFooter(Cookies, true)
-const ImprintWH = withHeaderAndFooter(Imprint, true)
-const TermsWH = withHeaderAndFooter(Terms, true)
+const ContentPageContainerWHF = withHeaderAndFooter(ContentPageContainer, { content: true })
+const CookiesWHF = withHeaderAndFooter(Cookies, { content: true, dumb: true }, false)
+const ImprintWHF = withHeaderAndFooter(Imprint, { content: true })
+const TermsWHF = withHeaderAndFooter(Terms, { content: true })
+const FourOhFourWHF = withHeaderAndFooter(PageNotFound, { dumb: true })
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
@@ -65,27 +66,28 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
 
         <RedirectToDisclaimer/>
         <Switch>
+          {/* DISCONNECTED CONTENT PAGES */}
           <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/cookies" component={CookiesWHF} />
+
+          <Route path="/content/:contentPage" component={ContentPageContainerWHF} />
+          <Redirect from="/content" to="/content/HowItWorks" />
+
+          {/* CONNECTED APP */}
           <WalletIntegration>
             <AppValidator>
               <Switch>
-                <Route exact path="/" component={HomeWH} />
-                <Route path="/order" component={OrderPanelWH} />
-                <Route path="/wallet" component={WalletPanelWH} />
+                <Route exact path="/" component={HomeWHF} />
+                <Route path="/order" component={OrderPanelWHF} />
+                <Route path="/wallet" component={WalletPanelWHF} />
 
                 {/* TODO: check for valid params.addr and redirect if necessary */}
-                <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWH} />
+                <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWHF} />
 
-                <Route path="/cookies" component={CookiesWH} />
-                <Route path="/imprint" component={ImprintWH}/>
-                <Route path="/terms" component={TermsWH}/>
-                {/* TODO: change to privacy */}
-                <Redirect from="/privacy" to="/" />
+                <Route path="/imprint" component={ImprintWHF}/>
+                <Route path="/terms" component={TermsWHF}/>
 
-                <Route path="/content/:contentPage" component={ContentPageContainerWH} />
-                <Redirect from="/content" to="/content/HowItWorks" />
-
-                <Route path="/404" component={PageNotFound} />
+                <Route path="/404" component={FourOhFourWHF} />
                 <Redirect to="/404" />
 
               </Switch>
