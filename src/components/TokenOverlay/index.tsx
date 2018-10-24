@@ -73,24 +73,56 @@ const prefilterByAvailableAuctions = createSelector(
   },
 )
 
+const sortedTokeList = createSelector(
+  prefilterByAvailableAuctions,
+  (_, props: TokenOverlayProps) => props.tokenBalances,
+  (tokenList, balances) => tokenList.sort((a, b) => {
+    // first ETH
+    // then WETH
+    if (a.symbol === 'ETH') return -1
+    if (b.symbol === 'ETH') return 1
+    if (a.symbol === 'WETH') return -1
+    if (b.symbol === 'WETH') return 1
+
+    // // then by balance
+    const balA = balances[a.address]
+    const balB = balances[b.address]
+    if (balA.lt(balB)) return 1
+    if (balB.lt(balA)) return -1
+
+    // then by symbol
+    const symbolA = a.symbol.toUpperCase()
+    const symbolB = b.symbol.toUpperCase()
+    if (symbolA < symbolB) {
+      return -1
+    }
+    if (symbolA > symbolB) {
+      return 1
+    }
+
+    return 0
+  }),
+
+)
+
 const filterTokens = createSelector(
   (state: TokenOverlayState, _: TokenOverlayProps) => state.filter.toUpperCase(),
-  prefilterByAvailableAuctions,
+  sortedTokeList,
   (filter, tokens) => filter
     ?
-      tokens.filter(({
-        symbol = '',
-        name = code2tokenMap[symbol] || '',
-      }) => symbol.toUpperCase().includes(filter) || name.toUpperCase().includes(filter))
+    tokens.filter(({
+      symbol = '',
+      name = code2tokenMap[symbol] || '',
+    }) => symbol.toUpperCase().includes(filter) || name.toUpperCase().includes(filter))
     :
-      tokens,
+    tokens,
 )
 
 const dataLengthCheck = (o1: {} | any[], o2: {} | any[]) => {
   const o1kl = Array.isArray(o1) ? o1.length : Object.keys(o1).length,
-		    o2kl = Array.isArray(o2) ? o2.length : Object.keys(o2).length
+    o2kl = Array.isArray(o2) ? o2.length : Object.keys(o2).length
 
-	 return o1kl <= o2kl
+  return o1kl <= o2kl
 }
 
 export interface TokenOverlayProps {
@@ -160,13 +192,13 @@ class TokenOverlay extends Component<TokenOverlayProps, TokenOverlayState> {
           message="Loading token balances - please wait"
           reSize={0.72}
           render={() =>
-          <TokenList
-            tokens={filteredTokens}
-            balances={tokenBalances}
-            onTokenClick={this.selectTokenAndCloseOverlay}
-            approvedTokens={approvedTokens}
-          />
-        } />
+            <TokenList
+              tokens={filteredTokens}
+              balances={tokenBalances}
+              onTokenClick={this.selectTokenAndCloseOverlay}
+              approvedTokens={approvedTokens}
+            />
+          } />
       </div>
     )
   }
