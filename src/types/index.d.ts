@@ -72,6 +72,7 @@ export interface Blockchain {
   feeRatio?: number,
   mgnSupply?: Balance,
   useOWL?: boolean,
+  appLoadBypass?: boolean,
 }
 
 export interface Modal {

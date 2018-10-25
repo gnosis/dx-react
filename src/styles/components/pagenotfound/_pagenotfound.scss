@@ -14,7 +14,7 @@
   > h1 {
     font-size: 70px;
     font-weight: $bold;
-    color: $white;
+    color: $black;
     letter-spacing: 0;
     text-align: center;
     line-height: 1;
@@ -23,7 +23,7 @@
   > h2 {
     font-weight: $bold;
     font-size: 23px;
-    color: $white;
+    color: $black;
     letter-spacing: 0;
     text-align: center;
     line-height: 2;
@@ -32,14 +32,14 @@
   > p {
     font-weight: $lighter;
     font-size: 16px;
-    color: $white;
+    color: $black;
     letter-spacing: 0;
     text-align: center;
     line-height: 1.5;
   }
 
   a {
-    color: $white;
+    color: $black;
     text-decoration: underline;
   }
 }

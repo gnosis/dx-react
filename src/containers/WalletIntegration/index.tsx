@@ -19,6 +19,7 @@ import 'assets/img/icons/providerIcons'
 
 interface WalletIntegrationProps {
   activeProvider: ProviderType;
+  appLoadBypass: boolean;
   providers: {};
   disclaimer_accepted?: boolean;
 
@@ -122,13 +123,14 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
 
   render() {
     const { setupComplete, noProvidersDetected } = this.state,
-      { children, activeProvider } = this.props
-    return activeProvider && (noProvidersDetected || setupComplete) ? children : this.walletSelector()
+      { children, activeProvider, appLoadBypass } = this.props
+    return appLoadBypass || activeProvider && (noProvidersDetected || setupComplete) ? children : this.walletSelector()
   }
 }
 
-const mapState = ({ blockchain: { activeProvider, providers }, settings: { disclaimer_accepted } }: State) => ({
+const mapState = ({ blockchain: { activeProvider, appLoadBypass, providers }, settings: { disclaimer_accepted } }: State) => ({
   activeProvider,
+  appLoadBypass,
   providers,
 
   disclaimer_accepted,
