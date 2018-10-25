@@ -18,11 +18,12 @@ export interface AuctionSellingGettingProps {
 }
 
 interface AuctionSellingGettingState {
-  sellTokenInUSD: BigNumber,
+  sellTokenInUSD?: BigNumber,
 }
 
 class AuctionSellingGetting extends Component<AuctionSellingGettingProps, AuctionSellingGettingState> {
   input: HTMLInputElement = null
+  state: AuctionSellingGettingState = {}
 
   componentDidMount() {
     this.props.network === 'MAIN' && this.tokenInUSD()
