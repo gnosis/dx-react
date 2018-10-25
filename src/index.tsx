@@ -40,14 +40,21 @@ conditionalRender()
 
 async function conditionalRender() {
   let blocked = false, disabledReason, ALLOWED_NETWORK
-
   /* User's environment does not have access to window API (e.g user on mobile?) */
   if (typeof window === 'undefined') return false
   const { hostname } = window.location
+
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
   if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
 
-  /* Scenario 3: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
+  /* Scenario 1a: User is a developer on dx.staging */
+  else if (hostname === URLS.APP_STAGING) {
+    blocked = await isGeoBlocked()
+    blocked && (disabledReason = 'geoblock')
+  }
+
+  // Main release Scenarios:
+  /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
   else if (hostname === URLS.APP_URL_RINKEBY) {
     ALLOWED_NETWORK = 'Rinkeby Test Network'
     blocked = await isNetBlocked(['4'])
@@ -58,7 +65,7 @@ async function conditionalRender() {
     ReactGA.initialize(GA_CODES.RINKEBY)
   }
 
-  /* Scenario 2: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
+  /* Scenario 3: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
   else if (hostname === URLS.APP_URL_MAIN) {
     ALLOWED_NETWORK = 'Ethereum Mainnet'
     const netBlockedPromise = isNetBlocked(['1'])
