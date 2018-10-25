@@ -7,7 +7,7 @@ import { State } from 'types'
 
 export const TermsText = (props: HTMLAttributes<HTMLDivElement> & { network: string }) => (
   <div {...props}>
-  {props.network === '1'
+  {props.network === '1' || props.network === 'MAIN'
     ?
     <>
     <p>
