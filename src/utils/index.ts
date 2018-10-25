@@ -248,4 +248,5 @@ export const estimateGas = async (
   return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }
 
-export const geoBlockedCitiesToString = (extraCountries?: any) => Object.values({ ...BLOCKED_COUNTRIES, ...extraCountries }).join(', ') + '.'
+export const geoBlockedCitiesToString = (extraCountries?: {[p: string]: string}) =>
+  Object.values({ ...BLOCKED_COUNTRIES, ...extraCountries }).sort().join(', ') + '.'

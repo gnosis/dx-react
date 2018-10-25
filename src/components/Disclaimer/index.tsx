@@ -76,7 +76,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     })
 
   handleTermsScroll = ({ target }: any) => {
-    const bottom = target.scrollHeight - target.scrollTop === target.clientHeight
+    const bottom = Math.ceil(target.scrollHeight - target.scrollTop) === target.clientHeight
 
     if (bottom) return this.setState({ termsOfUseScrolled: true })
   }
@@ -145,7 +145,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             {/* COOKIE DISCLAIMER */}
             <div className="disclaimerCookiePolicy">
               <div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies" target="_blank" rel="noopener noreferrer">Cookie Policy</Link> for more information.</p>
+                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
                 <div>
                     <div className="disclaimerBoxCookie md-checkbox">
                       <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
