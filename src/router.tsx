@@ -65,7 +65,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
 
         <RedirectToDisclaimer/>
         <Switch>
-          <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/verification" component={Disclaimer} />
           <WalletIntegration>
             <AppValidator>
               <Switch>
