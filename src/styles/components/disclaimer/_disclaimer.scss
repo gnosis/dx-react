@@ -97,7 +97,7 @@
   background: #f0f2f6;
   border-radius: 2px;
   overflow-y: scroll;
-  padding: 0 15px 30px;
+  padding: 0 15px;
   box-sizing: border-box;
   color: $greyText;
   line-height: 1.5;
@@ -113,6 +113,10 @@
     list-style: initial;
     margin: 0 0 0 20px;
     padding: initial;
+
+    > li:last-of-type {
+      padding-bottom: 10px;
+    }
   }
 }
 
@@ -190,9 +194,9 @@
 }
 
 .green {
-  color: green;
+  color: green !important;
 }
 
 .red {
-  color: red;
+  color: red !important;
 }

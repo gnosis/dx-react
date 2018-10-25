@@ -67,7 +67,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
         <RedirectToDisclaimer/>
         <Switch>
           {/* DISCONNECTED CONTENT PAGES */}
-          <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/verification" component={Disclaimer} />
           <Route path="/cookies" component={CookiesWHF} />
 
           <Route path="/content/:contentPage" component={ContentPageContainerWHF} />

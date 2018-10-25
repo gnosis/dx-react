@@ -6,7 +6,7 @@ import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import { URLS, GEO_BLOCKED_COUNTIES_LIST } from 'globals'
+import { GEO_BLOCKED_COUNTIES_LIST } from 'globals'
 import { web3CompatibleNetwork } from 'utils'
 import { TermsText } from '../Terms'
 
@@ -29,9 +29,9 @@ export interface DisclaimerState {
 
 export default class Disclaimer extends React.Component<DisclaimerProps, DisclaimerState> {
   state = {
-    formInvalid: true,
-    termsOfUseScrolled: false,
-    termsOfUseAccepted: false,
+    formInvalid: !this.props.accepted,
+    termsOfUseScrolled: this.props.accepted,
+    termsOfUseAccepted: this.props.accepted,
     cookies_analytics_accepted: undefined as boolean,
     loading: true,
     network: undefined as any,
@@ -81,110 +81,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     if (bottom) return this.setState({ termsOfUseScrolled: true })
   }
 
-  renderMainnetDisclaimer() {
-    const { cookies_analytics_accepted, formInvalid, termsOfUseScrolled, termsOfUseAccepted } = this.state
-    const { accepted } = this.props
-
-    let disclaimerConfirmClasses = 'buttonCTA'
-    const disclaimerErrorStyle: React.CSSProperties = {}
-
-    if (formInvalid || !termsOfUseAccepted) {
-      disclaimerConfirmClasses += ' buttonCTA-disabled'
-    } else {
-      disclaimerErrorStyle.visibility = 'hidden'
-    }
-
-    return (
-      <section className="disclaimer">
-
-        <span>
-          <img src={disclaimerSVG} />
-          <h1>Verification and T&C</h1>
-        </span>
-
-        <div>
-          <h2>Please confirm before continuing:</h2>
-          <form
-            id="disclaimer"
-            ref={c => this.form = c}
-            onSubmit={this.onSubmit}
-            onChange={this.onChange}
-          >
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer1">
-                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
-                {' ' + GEO_BLOCKED_COUNTIES_LIST}
-              </label>
-            </div>
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer2">
-                I certify that I am NEITHER on any of the U.S. Treasury Department’s Office of Foreign Asset Control’s sanctions lists, the U.S. Commerce Department's Consolidated Screening List, the EU consolidated list of persons, groups or entities subject to EU financial sanctions, NOR do I act on behalf of a person sanctioned thereunder or a U.S.-, EU- or UN-sanctioned state.
-              </label>
-            </div>
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required disabled={accepted || !termsOfUseScrolled} />
-              <label htmlFor="disclaimer3">
-                I have read, understood, and agree to the full Terms and Conditions:
-              </label>
-            </div>
-
-            <TermsText className="disclaimerTextbox" onScroll={this.handleTermsScroll}/>
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer5">
-                <b>
-                  <strong>I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>.</strong>
-                </b>
-              </label>
-            </div>
-
-            {/* COOKIE DISCLAIMER */}
-            <div className="disclaimerCookiePolicy">
-              <div>
-                <div>
-                    <div className="disclaimerBoxCookie md-checkbox">
-                      <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
-                      <label htmlFor="disclaimer5">Necessary</label>
-                    </div>
-                    <div className="disclaimerBoxCookie md-checkbox">
-                      <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked={cookies_analytics_accepted} disabled={accepted}/>
-                      <label htmlFor="disclaimer6">Analytics</label>
-                    </div>
-                </div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies" target="_blank" rel="noopener noreferrer">Cookie Policy</Link> for more information.</p>
-              </div>
-            </div>
-
-            <p className="disclaimerError" style={disclaimerErrorStyle}>
-              Please read and truly confirm all sections before you continue
-            </p>
-          </form>
-
-          <span className="disclaimerFooterActions">
-            <button
-              id="disclaimer-submit"
-              form="disclaimer"
-              type="confirm"
-              className={disclaimerConfirmClasses}
-            >
-              Continue
-            </button>
-          </span>
-
-        </div>
-
-      </section>
-    )
-  }
-
-  renderRinkebyDisclaimer() {
-    const { cookies_analytics_accepted, formInvalid, termsOfUseScrolled, termsOfUseAccepted } = this.state
+  renderVerification() {
+    const { cookies_analytics_accepted, formInvalid, network, termsOfUseScrolled, termsOfUseAccepted } = this.state
     const { accepted } = this.props
 
     let disclaimerConfirmClasses = 'buttonCTA'
@@ -229,46 +127,25 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             </div>
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required disabled={accepted || !termsOfUseScrolled} />
+              <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required defaultChecked={accepted} disabled={accepted || !termsOfUseScrolled} />
               <label htmlFor="disclaimer3">
                 I have read, understood, and agree to the full Terms and Conditions:
               </label>
             </div>
 
-            <div className="disclaimerTextbox" onScroll={this.handleTermsScroll}>
-              <span>
-                <h4>Disclaimer:</h4>
-                <ul className="scrollableDisclaimerList">
-                  <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
-                  <li>You are solely responsible to safekeep your wallet and private information.</li>
-                  <li>Please bookmark {`https://${URLS.APP_URL_RINKEBY}`} as web address imitation by hackers is a risk!</li>
-                  <li>ERC20 tokens are neither legal tender backed by governments nor by assets. The tokens’ value is highly volatile causing price fluctuations, as auctions typically run for some time and trades are not executed instantly.</li>
-                  <li>Your jurisdiction allows you to trade on the DutchX.</li>
-                  <li>Blockchain transactions are irreversible. The wallet address and your transaction is displayed permanently and publicly. You agree to relinquish any right of rectification or erasure of personal data, which is not possible on the blockchain.</li>
-                  <li>You are not using the DutchX to trade tokens that are proceeds of criminal or fraudulent activity.</li>
-                  <li>The DutchX and the underlying Ethereum blockchain are in an early development stage. We do not guarantee an error-free process and give no price or liquidity guarantee.</li>
-                  <li>You recognize and agree to using the DutchX at your own risk.</li>
-                  <li>In no event shall any initiator, programmer, auditor, auctioneer, participant, or other person (all, the “Initiators”) involved in the creation or other interaction with the DutchX be liable for any loss or damage arising out of or in connection with the DutchX. </li>
-                  <li>You will indemnify the Initiators against any claims, actions, and costs that arise out of or in connection with you breaching this Disclaimer.</li>
-                  <li>You are prohibited from interacting with the DutchX, where your jurisdiction disallows our exclusions of liability or applies mandatory laws overriding this Disclaimer.</li>
-                  <li>This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk</li>
-                </ul>
-              </span>
-            </div>
+            {network ? <TermsText className="disclaimerTextbox" onScroll={this.handleTermsScroll} network={network}/> : null}
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer4">
-                <b>
-                  <strong>I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</strong>
-                </b>
+              <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+              <label htmlFor="disclaimer5">
+                I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>
               </label>
             </div>
 
             {/* COOKIE DISCLAIMER */}
             <div className="disclaimerCookiePolicy">
               <div>
-              <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
+                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies" target="_blank" rel="noopener noreferrer">Cookie Policy</Link> for more information.</p>
                 <div>
                     <div className="disclaimerBoxCookie md-checkbox">
                       <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
@@ -305,8 +182,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
   }
 
   render() {
-    const { loading, network } = this.state
+    const { loading } = this.state
 
-    return loading ? null : network === '1' ? this.renderMainnetDisclaimer() : this.renderRinkebyDisclaimer()
+    return loading ? null : this.renderVerification()
   }
 }
