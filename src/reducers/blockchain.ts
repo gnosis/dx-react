@@ -14,6 +14,7 @@ import {
   resetAppState,
   setOWLPreference,
 } from 'actions/blockchain'
+import { setAppLoadBypass } from 'middlewares/AppLoadBypass'
 
 import { Blockchain, Provider } from 'types'
 
@@ -39,9 +40,15 @@ const initialState: Blockchain = {
   feeRatio: undefined,
   mgnSupply: undefined,
   useOWL: undefined,
+  appLoadBypass: false,
 }
 
 const reducer = handleActions({
+  [setAppLoadBypass.toString()]: (state, action) => ({
+    ...state,
+    appLoadBypass: action.payload,
+  }),
+
   [setConnectionStatus.toString()]: (state, action) => {
     const { connected } = action.payload
     return {

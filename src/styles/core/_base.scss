@@ -78,6 +78,7 @@ section.home, section.auction {
 
 section.home {
   margin: 20px auto;
+
   @media #{$desktop} {
     padding: 0 30px 90px;
   }
@@ -91,6 +92,8 @@ section.home {
     height: auto;
 
     margin-top: 136px;
+    // offlineBanner covers
+    // could be margin-top: 200px;
   }
 }
 

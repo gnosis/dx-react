@@ -13,19 +13,27 @@ import { COMPANY_NAME, COMPANY_SLOGAN } from 'globals'
 
 interface HeaderProps {
   content?: boolean;
+  dumb?: boolean;
 }
 
 interface HeaderState {
   network?: string | 'RINKEBY' | 'MAIN' | 'UNKNOWN';
 }
 
-export const Header = ({ content, network }: HeaderProps & HeaderState) => (
+export const Header = ({ content, dumb = false, network }: HeaderProps & HeaderState) => (
   <header className={content ? 'solid-background' : ''}>
     <div>
-      <Link to="/" title={`${COMPANY_NAME} - ${COMPANY_SLOGAN}`} className={`logo ${network && network.toLowerCase()}`}></Link>
-      <MenuWallet />
-      <MenuAuctions />
-      <MenuFeeBalance />
+      <Link
+        to="/"
+        title={`${COMPANY_NAME} - ${COMPANY_SLOGAN}`}
+        className={`logo ${network && network.toLowerCase()}`}
+      />
+      {!dumb &&
+      <>
+        <MenuWallet />
+        <MenuAuctions />
+        <MenuFeeBalance />
+      </>}
       <Hamburger />
     </div>
   </header>

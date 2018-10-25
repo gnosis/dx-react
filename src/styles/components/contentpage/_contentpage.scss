@@ -2,7 +2,7 @@
   display: flex;
   flex-flow: column nowrap;
   flex: 100%;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin: 0 auto;
   width: 100%;
@@ -11,7 +11,7 @@
   box-sizing: border-box;
 
   @media #{$mobile} {
-    margin: 136px 0 0;
+    margin: 0;
     padding: 0 13px;
 
     .offlineBanner ~ & {
@@ -31,7 +31,7 @@
     padding: 40px 20px 80px;
 
     @media #{$mobile} {
-      margin: 45px 0;
+      margin: 175px 0;
       padding: 0;
     }
   }

@@ -38,6 +38,7 @@ const rootReducer: Reducer<State> = (state, action) => {
       ...action.payload,
     }
   }
+
   return reducers(resultState, action)
 }
 
