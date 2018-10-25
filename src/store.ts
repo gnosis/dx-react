@@ -4,7 +4,7 @@ import { History } from 'history'
 import thunk from 'redux-thunk'
 
 import { enableBatching } from 'redux-batched-actions'
-import { CrashReporter, NoScroll } from 'middlewares'
+import { CrashReporter, NoScroll, AppLoadBypass } from 'middlewares'
 
 import { State } from 'types'
 
@@ -16,6 +16,7 @@ export default function (history: History, initialState?: Partial<State>) {
     routerMiddleware(history),
     CrashReporter,
     NoScroll,
+    AppLoadBypass,
   ]
 
   const composeEnhancers = (process.env.NODE_ENV !== 'production' &&
