@@ -1,10 +1,12 @@
 import React, { CSSProperties } from 'react'
 import { BigNumber, Modal } from 'types'
 import { closeModal } from 'actions'
-import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME, GEO_BLOCKED_COUNTIES_LIST } from 'globals'
+import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
 
 import Loader from 'components/Loader'
-import { displayUserFriendlyError } from 'utils'
+import { displayUserFriendlyError, geoBlockedCitiesToString } from 'utils'
+
+const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString({ DE: 'Germany' })
 
 interface TransactionModalProps {
   activeProvider?: string,
