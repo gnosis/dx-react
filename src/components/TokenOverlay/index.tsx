@@ -85,8 +85,8 @@ const sortedTokenList = createSelector(
     if (b.symbol === 'WETH') return 1
 
     // // then by balance
-    const balA = balances[a.address]
-    const balB = balances[b.address]
+    const balA = balances[a.address].div(a.decimals)
+    const balB = balances[b.address].div(b.decimals)
     if (balA.lt(balB)) return 1
     if (balB.lt(balA)) return -1
 
