@@ -119,7 +119,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
         <small>{sellTokenSymbol}</small>
 
         <label htmlFor="gettingAmount">Est. Amount Receiving:</label>
-        <input type="number" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
+        <input type="text" name="gettingAmount" id="gettingAmount" value={buyAmount} readOnly />
         <small>{buyTokenSymbol}</small>
       </div>
     )
