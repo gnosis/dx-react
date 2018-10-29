@@ -195,7 +195,7 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
 export const web3CompatibleNetwork = async () => {
   await windowLoaded
-  if (typeof window === 'undefined' || !window.web3) return 'UNKNOWN'
+  if (typeof window === 'undefined' || !window.web3 || !window.web3.version) return 'UNKNOWN'
 
   let netID
 
