@@ -36,7 +36,7 @@ class OrderPanel extends React.Component<OrderPanelProps> {
         </AuctionHeader>
 
         {/* Display 'pair-noMGN' when this pair won't generate MGN tokens (any of the picked token causing this) */}
-        {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN"><strong>Note: </strong>this token pair won't generate <u>MGN</u> tokens. <Link to={URLS.TOKENS + '#what-is-mgn'} target="_blank" rel="noopener noreferrer">Read more</Link></div>}
+        {sellTokenSymbol && buyTokenSymbol && !generatesMGN && <div className="pair-noMGN"><strong>Note: </strong>this token pair won't generate MGN tokens. <Link to={URLS.TOKENS + '#what-is-mgn'} target="_blank" rel="noopener noreferrer">Read more</Link></div>}
         {/* END */}
 
         <TokenPair />
