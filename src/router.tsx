@@ -42,10 +42,10 @@ const OrderPanelWHF = withHeaderAndFooter(OrderPanel)
 const WalletPanelWHF = withHeaderAndFooter(WalletPanel)
 const AuctionPanelWHF = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
-const ContentPageContainerWHF = withHeaderAndFooter(ContentPageContainer, { content: true })
+const ContentPageContainerWHF = withHeaderAndFooter(ContentPageContainer, { content: true, dumb: true }, false)
 const CookiesWHF = withHeaderAndFooter(Cookies, { content: true, dumb: true }, false)
-const ImprintWHF = withHeaderAndFooter(Imprint, { content: true })
-const TermsWHF = withHeaderAndFooter(Terms, { content: true })
+const ImprintWHF = withHeaderAndFooter(Imprint, { content: true, dumb: true }, false)
+const TermsWHF = withHeaderAndFooter(Terms, { content: true, dumb: true }, false)
 const FourOhFourWHF = withHeaderAndFooter(PageNotFound, { dumb: true })
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
