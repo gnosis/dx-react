@@ -76,6 +76,10 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     })
 
   handleTermsScroll = ({ target }: any) => {
+    console.debug('scrollHeight: ', target.scrollHeight)
+    console.debug('scrollTop: ', target.scrollTop)
+    console.debug('clientHeight: ', target.clientHeight)
+    console.debug('Math.ceil(scrollHeight - scrollTop): ', Math.ceil(target.scrollHeight - target.scrollTop))
     const bottom = Math.ceil(target.scrollHeight - target.scrollTop) === target.clientHeight
 
     if (bottom) return this.setState({ termsOfUseScrolled: true })
