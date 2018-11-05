@@ -150,7 +150,7 @@ const Providers = {
           WalletConnectQRCodeModal.close()
 
           this.initiated = true
-          console.debug('INITIATED. ACCTS = ', await this.web3.eth.getAccounts((err: Error, res: any) => console.debug(res)))
+          console.debug('INITIATED. ACCTS = ', await this.web3.eth.getAccounts((_: null, res: any) => console.debug(res)))
         }
 
         this.state = {}
