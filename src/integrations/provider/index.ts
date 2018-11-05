@@ -6,6 +6,12 @@ import Web3 from 'web3'
 // import FetchSubprovider from 'web3-provider-engine/subproviders/fetch'
 // import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
 // import Eth from '@ledgerhq/hw-app-eth'
+// @ts-ignore
+import WalletConnect from 'walletconnect'
+// @ts-ignore
+import WalletConnectQRCodeModal from 'walletconnect-qrcode-modal'
+// @ts-ignore
+import WalletConnectProvider from 'walletconnect-web3-provider'
 
 import { getTime } from 'api'
 
@@ -14,7 +20,8 @@ import { promisify } from 'utils'
 import { Balance } from 'types'
 import { WalletProvider } from 'integrations/types'
 
-import { ETHEREUM_NETWORKS, networkById/* , network2RPCURL */ } from 'globals'
+import { ETHEREUM_NETWORKS, networkById, /* , network2RPCURL */
+COMPANY_NAME} from 'globals'
 
 export const getAccount = async (provider: WalletProvider): Promise<Account> => {
   const [account] = await promisify(provider.web3.eth.getAccounts, provider.web3.eth)()
@@ -86,6 +93,75 @@ const Providers = {
       this.state = {}
 
       return this.web3
+    },
+  },
+  // WalletConnect
+  WALLETCONNECT: {
+    priority: 80,
+    providerName: 'WALLET CONNECT',
+    providerType: 'SDK_WALLET',
+    keyName: 'WALLETCONNECT',
+    initiated: false,
+
+    async checkAvailability() {
+      if (this.session) return this.walletAvailable = true
+      return this.walletAvailable = true
+    },
+
+    async initialize(networkURL: string = 'https://rinkeby.infura.io/') {
+      try {
+        // @ts-ignore
+        // const WalletConnectProvider = await import('walletconnect-web3-provider')
+
+        /**
+         *  Create WalletConnect Provider
+         */
+        const walletConnectProvider = new WalletConnectProvider({
+          bridgeUrl: 'https://test-bridge.walletconnect.org',   // Required
+          dappName: COMPANY_NAME,                               // Required
+          rpcUrl: networkURL,                                    // Required
+        })
+        console.debug('TCL: asyncinitialize -> provider', walletConnectProvider)
+
+        /**
+         *  Create Web3
+         */
+        this.web3 = new Web3(walletConnectProvider)
+
+        /**
+         *  Initiate WalletConnect Session
+         */
+        this.session = await walletConnectProvider.walletconnect.initSession()
+
+        // check Connection Status
+        if (!this.initiated && !walletConnectProvider.isConnected) {
+          const { uri } = walletConnectProvider.walletconnect
+
+          // TODO: show QR code to user here via uri const
+          WalletConnectQRCodeModal.open(uri)
+
+          await walletConnectProvider.walletconnect.listenSessionStatus()
+          // wait for confirmation
+          // await Promise.race([
+          //   walletConnectProvider.walletconnect.listenSessionStatus(),
+          //   timeoutCondition(60000, 'WalletConnect timeout. Please refresh and try again.')
+          // ])
+
+          WalletConnectQRCodeModal.close()
+
+          this.initiated = true
+          console.debug('INITIATED. ACCTS = ', await this.web3.eth.getAccounts((err: Error, res: any) => console.debug(res)))
+        }
+
+        this.state = {}
+        return this.web3
+      } catch (error) {
+        console.error(error)
+        // WalletConnectQRCodeModal.close()
+
+        this.walletAvailable = false
+        throw new Error(error)
+      }
     },
   },
   // Hardware Provider - LEDGER

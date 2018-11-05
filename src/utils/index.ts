@@ -12,6 +12,7 @@ import GNOSIS_SAFE_SVG from 'assets/img/icons/icon_gnosis_safe1.svg'
 import STATUS_SVG from 'assets/img/icons/icon_status.svg'
 import LEDGER_SVG from 'assets/img/icons/icon_ledger.svg'
 import METAMASK_SVG from 'assets/img/icons/icon_metamask3.svg'
+import WALLETCONNECT_SVG from 'assets/img/icons/icon_walletconnect.svg'
 import COINBASE_PNG from 'assets/img/icons/icon_coinbase.png'
 import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_cross.svg'
 
@@ -187,6 +188,9 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
     case 'COINBASE':
       return COINBASE_PNG
+
+    case 'WALLET CONNECT':
+      return WALLETCONNECT_SVG
 
     default:
       return DEFAULT_PROVIDER_SVG
