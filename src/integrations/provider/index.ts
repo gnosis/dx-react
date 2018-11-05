@@ -109,7 +109,7 @@ const Providers = {
     },
 
     async initialize(networkURL: string = 'https://rinkeby.infura.io/') {
-      console.debug('#1: ', WalletConnectQRCodeModal.close)
+
       try {
         // @ts-ignore
         // const WalletConnectProvider = await import('walletconnect-web3-provider')
@@ -124,12 +124,6 @@ const Providers = {
         })
         console.debug('TCL: asyncinitialize -> provider', walletConnectProvider)
 
-        WalletConnectQRCodeModal.close = function () {
-          console.debug('CLOSING')
-          this.close()
-          throw new Error('User closed QR Modal')
-        }
-        console.debug('#2: ', WalletConnectQRCodeModal.close)
         /**
          *  Create Web3
          */
@@ -146,6 +140,16 @@ const Providers = {
 
           // TODO: show QR code to user here via uri const
           WalletConnectQRCodeModal.open(uri)
+
+          // TODO: handle closing modal better but for now:
+          await new Promise((_, reject) => {
+            window.document
+            .getElementById('walletconnect-qrcode-close')
+            .addEventListener('click', function handler() {
+              window.document.removeEventListener('click', handler, false)
+              reject('User closed modal')
+            })
+          })
 
           await walletConnectProvider.walletconnect.listenSessionStatus()
           // wait for confirmation
