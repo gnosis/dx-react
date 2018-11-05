@@ -22,6 +22,8 @@ import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import Disclaimer from 'containers/Disclaimer'
 import Terms from 'components/Terms'
 
+import { SHOW_FOOTER_CONTENT } from 'globals'
+
 interface AppRouterProps {
   history: History;
   analytics: boolean;
@@ -42,11 +44,16 @@ const OrderPanelWHF = withHeaderAndFooter(OrderPanel)
 const WalletPanelWHF = withHeaderAndFooter(WalletPanel)
 const AuctionPanelWHF = withHeaderAndFooter(AuctionPanel)
 // true passed in to show different, solidBackgorund Header
-const ContentPageContainerWHF = withHeaderAndFooter(ContentPageContainer, { content: true, dumb: true }, false)
-const CookiesWHF = withHeaderAndFooter(Cookies, { content: true, dumb: true }, false)
-const ImprintWHF = withHeaderAndFooter(Imprint, { content: true, dumb: true }, false)
-const TermsWHF = withHeaderAndFooter(Terms, { content: true, dumb: true }, false)
-const FourOhFourWHF = withHeaderAndFooter(PageNotFound, { dumb: true })
+const ContentPageContainerWHF =
+  withHeaderAndFooter(ContentPageContainer, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
+const CookiesWHF =
+  withHeaderAndFooter(Cookies, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
+const ImprintWHF =
+  withHeaderAndFooter(Imprint, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
+const TermsWHF =
+  withHeaderAndFooter(Terms, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
+const FourOhFourWHF =
+  withHeaderAndFooter(PageNotFound, { dumb: true }, SHOW_FOOTER_CONTENT)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
