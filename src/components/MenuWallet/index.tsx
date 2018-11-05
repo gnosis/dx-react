@@ -42,17 +42,17 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { 
-      account, 
-      addressToSymbolDecimal, 
-      balance, 
-      dxBalances, 
-      dxBalancesAvailable, 
-      hasTokenBalances, 
-      network, 
-      providerName, 
-      tokens, 
-      withdrawFromDutchX 
+    const {
+      account,
+      addressToSymbolDecimal,
+      balance,
+      dxBalances,
+      dxBalancesAvailable,
+      hasTokenBalances,
+      network,
+      providerName,
+      tokens,
+      withdrawFromDutchX,
     } = this.props
     return (
       <div
@@ -66,7 +66,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
           <code>{`${account ? account.slice(0, 10) + '...' : 'No Wallet Detected'}`}</code>
           <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
         </span>
-        {account && hasTokenBalances &&
+        {account &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
 
           <span onClick={this.changeWallet}>
@@ -96,7 +96,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
               </tr>
             </tbody>
           </table>
-          <Loader
+          {hasTokenBalances && <Loader
           hasData={Object.keys(addressToSymbolDecimal).length > 0}
           message="Enable wallet"
           svgHeight={35}
@@ -140,7 +140,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
                 })}
               </tbody>
             </table>
-          }/>
+          }/>}
         </div>}
       </div>
     )
