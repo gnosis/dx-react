@@ -81,6 +81,8 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
                 <Route path="/order" component={OrderPanelWHF} />
                 <Route path="/wallet" component={WalletPanelWHF} />
 
+                <Route path="/subscription" component={TestSubscription} />
+
                 {/* TODO: check for valid params.addr and redirect if necessary */}
                 <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWHF} />
 
