@@ -3,34 +3,20 @@ import VisualComp from './visual'
 // @ts-ignore
 import { createSubscription } from 'create-subscription'
 import { grabProviderState } from 'integrations/provider'
-// import { windowLoaded } from '../../utils';
 import { promisedWeb3 } from 'api/web3Provider'
-
-// const Web3 = require('web3')
-// Web3.providers.HttpProvider.prototype.send = Web3.providers.HttpProvider.prototype.sendAsync
-// const web3 = new Web3(window.web3.currentProvider)
-
-// const fakeProvider = {
-//   name: 'FAKE PROVIDER',
-//   keyName: 'FAKE PROVIDER',
-//   available: true,
-//   walletAvailable: true,
-//   web3,
-// }
+import { SUBSCRIPTION_INTERVAL } from 'globals'
 
 let filter: any
-let I = 0
 
 const filterObject = {
   currentState: {
-    account: ' web3.eth.accounts[0]',
+    account: '...',
   },
+
   async subscribe(cb: any) {
-    ++I
-    console.debug('DEBUG')
     const { web3 } = await promisedWeb3()
-    console.debug('web3: ', !!web3)
     let prevAcc = web3.eth.accounts[0]
+
     const fakeProvider = {
       name: 'FAKE PROVIDER',
       keyName: 'FAKE PROVIDER',
@@ -41,18 +27,18 @@ const filterObject = {
     // initial state grab
     grabProviderState(fakeProvider as any).then(cb)
 
-    setInterval(async () => {
-      console.debug('INTERVAL', I)
-      if (web3.eth.accounts[0] !== prevAcc) {
-        prevAcc = web3.eth.accounts[0]
-        const accData = await grabProviderState(fakeProvider as any)
-        cb(accData)
-      }
-    }, 8000)
+    if (!this.stateInterval) {
+      this.stateInterval = setInterval(async () => {
+        if (web3.eth.accounts[0] !== prevAcc) {
+          prevAcc = web3.eth.accounts[0]
+          const accData = await grabProviderState(fakeProvider as any)
+          cb(accData)
+        }
+      }, SUBSCRIPTION_INTERVAL)
+    }
 
     // create filter listening for latest new blocks
     filter = web3.eth.filter('latest')
-    console.debug('filter: ', filter)
     // watch and update state on new block
     filter.watch(async (err: any, res: any) => {
       console.log('res: ', res)
@@ -67,7 +53,7 @@ const filterObject = {
     })
   },
   unsubscribe() {
-    console.debug('UNSUB')
+    clearInterval(this.stateInterval)
     return filter && filter.stopWatching()
   },
 }
