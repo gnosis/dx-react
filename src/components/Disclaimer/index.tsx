@@ -23,18 +23,18 @@ export interface DisclaimerState {
   formInvalid: boolean,
   loading: boolean,
   network: string,
-  termsOfUseScrolled: boolean,
-  termsOfUseAccepted: boolean,
+  // termsOfUseScrolled: boolean, <-- Scroll check removed. See handleScroll method.
+  // termsOfUseAccepted: boolean, <-- Scroll check removed. See handleScroll method.
 }
 
 export default class Disclaimer extends React.Component<DisclaimerProps, DisclaimerState> {
   state = {
     formInvalid: !this.props.accepted,
-    termsOfUseScrolled: this.props.accepted,
-    termsOfUseAccepted: this.props.accepted,
     cookies_analytics_accepted: undefined as boolean,
     loading: true,
     network: undefined as any,
+    // termsOfUseScrolled: this.props.accepted, <-- Scroll check removed. See handleScroll method.
+    // termsOfUseAccepted: this.props.accepted, <-- Scroll check removed. See handleScroll method.
   }
 
   form: HTMLFormElement = null
@@ -58,7 +58,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
 
   onSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const accepted = this.form.checkValidity() && this.state.termsOfUseAccepted
+    // const accepted = this.form.checkValidity() && this.state.termsOfUseAccepted <-- Scroll check removed. See handleScroll method.
+    const accepted = this.form.checkValidity()
     this.setState({
       formInvalid: !accepted,
       ...this.state,
@@ -75,20 +76,29 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
       formInvalid: !this.form.checkValidity(),
     })
 
-  handleTermsScroll = ({ target }: any) => {
-    const bottom = Math.ceil(target.scrollHeight - target.scrollTop) === target.clientHeight
+  // Requested removal of scroll requirement (1.11.2018)
+  // handleTermsScroll = ({ target }: any) => {
+  //   const bottom = Math.ceil(target.scrollHeight - target.scrollTop - 50) <= target.clientHeight
 
-    if (bottom) return this.setState({ termsOfUseScrolled: true })
-  }
+  //   if (bottom) return this.setState({ termsOfUseScrolled: true })
+  // }
 
   renderVerification() {
-    const { cookies_analytics_accepted, formInvalid, network, termsOfUseScrolled, termsOfUseAccepted } = this.state
+    const {
+      cookies_analytics_accepted,
+      formInvalid,
+      network,
+      // termsOfUseScrolled, termsOfUseAccepted <-- Scroll check removed. See handleScroll method.
+    } = this.state
     const { accepted } = this.props
 
     let disclaimerConfirmClasses = 'buttonCTA'
     const disclaimerErrorStyle: React.CSSProperties = {}
 
-    if (formInvalid || !termsOfUseAccepted) {
+    if (
+      formInvalid
+      // || !termsOfUseAccepted <-- Scroll check removed. See handleScroll method.
+      ) {
       disclaimerConfirmClasses += ' buttonCTA-disabled'
     } else {
       disclaimerErrorStyle.visibility = 'hidden'
@@ -127,18 +137,33 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             </div>
 
             <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer3" type="checkbox" onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} required defaultChecked={accepted} disabled={accepted || !termsOfUseScrolled} />
+              <input
+                id="disclaimer3"
+                type="checkbox"
+                // onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} <-- Scroll check removed. See handleScroll method.
+                required
+                defaultChecked={accepted}
+                disabled={accepted/*  || !termsOfUseScrolled <-- Scroll check removed. See handleScroll method. */}
+              />
               <label htmlFor="disclaimer3">
                 I have read, understood, and agree to the full Terms and Conditions:
               </label>
             </div>
 
-            {network ? <TermsText className="disclaimerTextbox" onScroll={this.handleTermsScroll} network={network}/> : null}
+            {network
+              ?
+            <TermsText
+              className="disclaimerTextbox"
+              // onScroll={this.handleTermsScroll} <-- Scroll check removed. See handleScroll method.
+              network={network}
+            />
+              :
+            null}
 
             <div className="disclaimerBox md-checkbox">
               <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer5">
-                I have read and understood the <a href="./PrivacyPolicy.pdf" rel="noopener noreferrer">Privacy Policy</a>
+                I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
               </label>
             </div>
 

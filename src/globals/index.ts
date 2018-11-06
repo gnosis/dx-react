@@ -204,3 +204,9 @@ export const BLOCKED_COUNTRIES = {
 
 export const MAX_SELL_USD = 500 // temporary for MAINNET
 export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
+
+/**
+ * Show/Hide Footer in relevant places (see router)
+ * @type {boolean}
+ */
+export const SHOW_FOOTER_CONTENT = true

@@ -22,10 +22,10 @@ export const getAccount = async (provider: WalletProvider): Promise<Account> => 
   return account
 }
 
-export const getNetwork = async (provider: WalletProvider): Promise<ETHEREUM_NETWORKS> => {
+export const getNetwork = async (provider: WalletProvider, id?: boolean): Promise<ETHEREUM_NETWORKS> => {
   const networkId = await promisify(provider.web3.version.getNetwork, provider.web3.version)()
 
-  return networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
+  return id ? networkId : networkById[networkId] || ETHEREUM_NETWORKS.UNKNOWN
 }
 
 export const getBalance = async (provider: WalletProvider, account: Account): Promise<Balance> => {

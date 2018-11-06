@@ -30,7 +30,7 @@ export const isNetBlocked = async (idsToAllow: (string | number)[]) => {
 
     // allow network ID matching at least 1 passed in from idsToAllow
     // and local testrpc (id = Date.now()) >> Apr 29 2018
-    if (idsToAllow.includes(id as string) || id > 1525000000000) return false
+    if (idsToAllow.includes(id as string) || +id > 1525000000000) return false
   } catch (error) {
     console.error(error)
     // web3 didn't get network, disconnected?

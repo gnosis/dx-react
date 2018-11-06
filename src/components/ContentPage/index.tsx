@@ -23,7 +23,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         <p>
           Slow.trade is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
         </p>
-        <a href={dutchXSlowtrade} target="_blank"><img src={dutchXSlowtrade} /></a>
+        <img src={dutchXSlowtrade} />
       </span>
     </section>
 
@@ -425,7 +425,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
         <p>
           Your fees will be lowered automatically if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this step function integrated within the DutchX Protocol:
         </p>
-        <a href={feeReductionModel} target="_blank"><img src={feeReductionModel} /></a>
+        <img src={feeReductionModel} />
         <p>
           Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the<strong> same Wallet</strong> that you are using for the auction.
         </p>
@@ -585,7 +585,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
             </ul>
           </li>
         </ol>
-        <a href={stepByStepFeeCalc} target="_blank"><img src={stepByStepFeeCalc} /></a>
+        <img src={stepByStepFeeCalc} />
       </span>
     </section>
 
