@@ -21,6 +21,7 @@ import AppValidator from 'containers/AppValidator'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import Disclaimer from 'containers/Disclaimer'
 import Terms from 'components/Terms'
+import TestSubscription from 'components/TestSubscription'
 
 interface AppRouterProps {
   history: History;
@@ -31,8 +32,8 @@ interface AppRouterProps {
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
 const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean }, useFooter = true) => (compProps: any) => (
   <>
-    <Header {...headerProps}/>
-    <Component {...compProps}/>
+    <Header {...headerProps} />
+    <Component {...compProps} />
     {useFooter && <Footer />}
   </>
 )
@@ -54,7 +55,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
       <StaticRouter context={{}}>
         <div>
           <Header />
-          <Home showPicker/>
+          <Home showPicker />
         </div>
       </StaticRouter>
     )
@@ -64,7 +65,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
     <ConnectedRouter history={history}>
       <div className="appFlex">
 
-        <RedirectToDisclaimer/>
+        <RedirectToDisclaimer />
         <Switch>
           {/* DISCONNECTED CONTENT PAGES */}
           <Route path="/verification" component={Disclaimer} />
@@ -86,8 +87,8 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
                 {/* TODO: check for valid params.addr and redirect if necessary */}
                 <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWHF} />
 
-                <Route path="/imprint" component={ImprintWHF}/>
-                <Route path="/terms" component={TermsWHF}/>
+                <Route path="/imprint" component={ImprintWHF} />
+                <Route path="/terms" component={TermsWHF} />
 
                 <Route path="/404" component={FourOhFourWHF} />
                 <Redirect to="/404" />
@@ -99,7 +100,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
 
         {analytics && <GoogleAnalyticsTracking />}
       </div>
-  </ConnectedRouter>
+    </ConnectedRouter>
   )
 }
 

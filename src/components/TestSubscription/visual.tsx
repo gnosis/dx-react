@@ -4,10 +4,10 @@
 
 import React from 'react'
 
-const VisualComp = (props: any) => {
-  <pre>
+const VisualComp: React.SFC<any> = (props: any) => (
+    <pre>
         {JSON.stringify(props, null, 2)}
     </pre>
-}
+)
 
 export default VisualComp
