@@ -19,12 +19,15 @@ import { promisedWeb3 } from 'api/web3Provider'
 // }
 
 let filter: any
+let I = 0
 
 const filterObject = {
   currentState: {
     account: ' web3.eth.accounts[0]',
   },
   async subscribe(cb: any) {
+    ++I
+    console.debug('DEBUG')
     const { web3 } = await promisedWeb3()
     console.debug('web3: ', !!web3)
     let prevAcc = web3.eth.accounts[0]
@@ -39,6 +42,7 @@ const filterObject = {
     grabProviderState(fakeProvider as any).then(cb)
 
     setInterval(async () => {
+      console.debug('INTERVAL', I)
       if (web3.eth.accounts[0] !== prevAcc) {
         prevAcc = web3.eth.accounts[0]
         const accData = await grabProviderState(fakeProvider as any)
@@ -63,7 +67,8 @@ const filterObject = {
     })
   },
   unsubscribe() {
-    // return filter.stopWatching()
+    console.debug('UNSUB')
+    return filter && filter.stopWatching()
   },
 }
 
