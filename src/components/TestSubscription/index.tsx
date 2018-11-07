@@ -4,6 +4,7 @@ import VisualComp from './visual'
 import { createSubscription } from 'create-subscription'
 import { grabProviderState } from 'integrations/provider'
 import { promisedWeb3 } from 'api/web3Provider'
+
 import { SUBSCRIPTION_INTERVAL } from 'globals'
 
 let filter: any
@@ -14,7 +15,10 @@ const filterObject = {
   },
 
   async subscribe(cb: any) {
-    const { currentAccount, web3 } = await promisedWeb3()
+    const { getCurrentAccount, web3 } = await promisedWeb3()
+    const currentAccount = await getCurrentAccount()
+    console.debug('TCL: asyncsubscribe -> currentAccount', currentAccount)
+
     let prevAcc = currentAccount
     const fakeProvider = {
       name: 'FAKE PROVIDER',
