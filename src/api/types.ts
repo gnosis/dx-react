@@ -41,6 +41,7 @@ export interface BlockReceipt {
 export interface ProviderInterface {
   getCurrentAccount(): Promise<Account>,
   getAccounts(): Promise<Account[]>,
+  currentAccount: Function | string,
   getBlock(bl: 'earliest' | 'latest' | 'pending' | Hash, returnTransactionObjects?: boolean): Promise<BlockReceipt>,
   getTransaction(tx: Hash): Promise<TransactionObject | null>,
   getTransactionReceipt(tx: Hash): Promise<TransactionReceipt | null>,

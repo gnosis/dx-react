@@ -14,9 +14,8 @@ const filterObject = {
   },
 
   async subscribe(cb: any) {
-    const { web3 } = await promisedWeb3()
-    let prevAcc = web3.eth.accounts[0]
-
+    const { currentAccount, web3 } = await promisedWeb3()
+    let prevAcc = currentAccount
     const fakeProvider = {
       name: 'FAKE PROVIDER',
       keyName: 'FAKE PROVIDER',
@@ -52,6 +51,7 @@ const filterObject = {
       }
     })
   },
+
   unsubscribe() {
     clearInterval(this.stateInterval)
     return filter && filter.stopWatching()
