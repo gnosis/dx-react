@@ -96,9 +96,6 @@ async function init(provider: Provider): Promise<ProviderInterface> {
       getNetwork,
       isConnected,
       isAddress,
-      get currentAccount () {
-        return web3.eth.accounts[0]
-      },
       get currentProvider() {
         return web3.currentProvider
       },
