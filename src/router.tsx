@@ -48,6 +48,7 @@ const CookiesWHF = withHeaderAndFooter(Cookies, { content: true, dumb: true }, f
 const ImprintWHF = withHeaderAndFooter(Imprint, { content: true })
 const TermsWHF = withHeaderAndFooter(Terms, { content: true })
 const FourOhFourWHF = withHeaderAndFooter(PageNotFound, { dumb: true })
+const AllSubsWHF = withHeaderAndFooter(AllSubs, undefined, false)
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
   if (disabled) {
@@ -82,7 +83,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
                 <Route path="/order" component={OrderPanelWHF} />
                 <Route path="/wallet" component={WalletPanelWHF} />
 
-                <Route path="/subscription" component={AllSubs} />
+                <Route path="/subscription" component={AllSubsWHF} />
 
                 {/* TODO: check for valid params.addr and redirect if necessary */}
                 <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWHF} />
