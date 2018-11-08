@@ -21,7 +21,7 @@ import AppValidator from 'containers/AppValidator'
 import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import Disclaimer from 'containers/Disclaimer'
 import Terms from 'components/Terms'
-import TestSubscription from 'components/TestSubscription'
+import { AllSubs } from 'components/TestSubscription'
 
 import { SHOW_FOOTER_CONTENT } from 'globals'
 
@@ -118,7 +118,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
                 <Route path="/order" component={OrderPanelWHF} />
                 <Route path="/wallet" component={WalletPanelWHF} />
 
-                <Route path="/subscription" component={TestSubscription} />
+                <Route path="/subscription" component={AllSubs} />
 
                 {/* TODO: check for valid params.addr and redirect if necessary */}
                 <Route path="/auction/:sell-:buy-:index" component={AuctionPanelWHF} />

@@ -65,6 +65,8 @@ export const handleKeyDown = ({ key }: { key: string }, fn: Function, codeCheck:
 
 // compare object properties
 export const shallowDifferent = (obj1: object, obj2: object) => {
+  if (Object.is(obj1, obj2)) return false
+
   if (!obj1 || !obj2) return true
 
   const keys1 = Object.keys(obj1)
@@ -72,7 +74,7 @@ export const shallowDifferent = (obj1: object, obj2: object) => {
 
   if (keys1.length !== keys2.length) return true
 
-  return keys1.some(key => obj1[key] !== obj2[key])
+  return keys1.some(key => !Object.is(obj1[key], obj2[key]))
 }
 
 export const displayUserFriendlyError = (error: string) => {
@@ -264,7 +266,7 @@ export const estimateGas = async (
   return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }
 
-export const geoBlockedCitiesToString = (extraCountries?: {[p: string]: string}) =>
+export const geoBlockedCitiesToString = (extraCountries?: { [p: string]: string }) =>
   Object.values({ ...BLOCKED_COUNTRIES, ...extraCountries }).sort().join(', ') + '.'
 
 export const contractVersionChecker = (contractObj: { version: string }, hiLimit: number, loLimit: number = 0) => {
