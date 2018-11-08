@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 // import Transport from '@ledgerhq/hw-transport'
 // import TransportU2F from '@ledgerhq/hw-transport-u2f'
 // import createLedgerSubprovider from '@ledgerhq/web3-subprovider'
@@ -8,6 +7,7 @@ import Web3 from 'web3'
 // import Eth from '@ledgerhq/hw-app-eth'
 
 import { getTime } from 'api'
+import { setupWeb3 } from 'api/web3Provider'
 
 import { promisify } from 'utils'
 
@@ -66,23 +66,23 @@ const Providers = {
     get providerName() {
       if (!this.checkAvailability()) return null
 
-      if ((window as any).mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
+      if (window.mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
       if (window.web3.currentProvider.constructor.name === 'StatusHttpProvider') return 'STATUS'
       if (window.web3.currentProvider.constructor.name === 'o') return 'COINBASE'
       if (window.web3.currentProvider.isSafe) return 'GNOSIS SAFE'
-      if (window.web3.currentProvider.isMetaMask) return 'METAMASK'
+      if ((window.web3.currentProvider || window.ethereum).isMetaMask) return 'METAMASK'
 
       return 'UNKNOWN PROVIDER'
     },
 
     checkAvailability() {
       if (this.web3) return this.walletAvailable = true
-      return this.walletAvailable = typeof window.web3 !== 'undefined' && window.web3.currentProvider.constructor
+      return this.walletAvailable = (typeof window.web3 !== 'undefined' || typeof window.ethereum !== 'undefined') && (window.web3.currentProvider.constructor || window.ethereum.constructor)
     },
 
-    initialize() {
+    async initialize() {
       if (!this.checkAvailability()) return
-      this.web3 = new Web3(window.web3.currentProvider)
+      this.web3 = await setupWeb3() // new Web3(window.web3.currentProvider)
       this.state = {}
 
       return this.web3
