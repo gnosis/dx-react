@@ -64,6 +64,8 @@ export const handleKeyDown = ({ key }: { key: string }, fn: Function, codeCheck:
 
 // compare object properties
 export const shallowDifferent = (obj1: object, obj2: object) => {
+  if (Object.is(obj1, obj2)) return false
+
   if (!obj1 || !obj2) return true
 
   const keys1 = Object.keys(obj1)
@@ -71,7 +73,7 @@ export const shallowDifferent = (obj1: object, obj2: object) => {
 
   if (keys1.length !== keys2.length) return true
 
-  return keys1.some(key => obj1[key] !== obj2[key])
+  return keys1.some(key => !Object.is(obj1[key], obj2[key]))
 }
 
 export const displayUserFriendlyError = (error: string) => {
@@ -102,18 +104,18 @@ export const windowLoaded = new Promise((accept, reject) => {
 })
 
 export const readFileUpload = (file: File) =>
-    new Promise((resolve) => {
-      const r = new FileReader()
-      r.onload = (e: any) => resolve(e.target.result)
-      r.readAsArrayBuffer(file)
-    })
+  new Promise((resolve) => {
+    const r = new FileReader()
+    r.onload = (e: any) => resolve(e.target.result)
+    r.readAsArrayBuffer(file)
+  })
 
 export const readFileAsText = (file: File): Promise<string> =>
-    new Promise((resolve) => {
-      const r = new FileReader()
-      r.onload = (e: any) => resolve(e.target.result)
-      r.readAsText(file)
-    })
+  new Promise((resolve) => {
+    const r = new FileReader()
+    r.onload = (e: any) => resolve(e.target.result)
+    r.readAsText(file)
+  })
 
 export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
   (...args: any[]): Promise<any> => new Promise((res, rej) => {
@@ -248,5 +250,5 @@ export const estimateGas = async (
   return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }
 
-export const geoBlockedCitiesToString = (extraCountries?: {[p: string]: string}) =>
+export const geoBlockedCitiesToString = (extraCountries?: { [p: string]: string }) =>
   Object.values({ ...BLOCKED_COUNTRIES, ...extraCountries }).sort().join(', ') + '.'
