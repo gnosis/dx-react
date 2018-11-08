@@ -90,7 +90,6 @@ export enum TypeKeys {
   OTHER_ACTIONS = 'OTHER_ACTIONS',
 }
 
-// TODO define reducer for GnosisStatus
 export const setAppInitialised = createAction<{ initialized?: boolean, error?: any }>('SET_APP_CONNECTION')
 export const setConnectionStatus = createAction<{ connected?: boolean }>('SET_APP_CONNECTION_STATUS')
 export const setActiveProvider = createAction<string>('SET_ACTIVE_PROVIDER')

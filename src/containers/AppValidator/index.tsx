@@ -127,7 +127,7 @@ class AppValidator extends React.Component<any> {
     `)
 
     // start polling for changes and update user state
-    return this.startPolling()
+    return true // this.startPolling()
   }
 
   // start Polling on connect
