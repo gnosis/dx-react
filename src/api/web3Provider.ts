@@ -3,8 +3,30 @@ import { windowLoaded, promisify } from 'utils'
 import { Account, Provider } from 'types'
 import Web3 from 'web3'
 
-const setupWeb3 = async (provider: Provider) => {
+export const setupWeb3 = async (provider?: Provider) => {
   await windowLoaded
+
+  if (!provider) {
+    let providerWeb3: any
+    if (window.ethereum) {
+      providerWeb3 = window.web3 = new Web3(window.ethereum)
+      try {
+          // Request account access if needed
+        await window.ethereum.enable()
+        return providerWeb3
+      } catch (error) {
+          // User denied account access...
+        console.error(error)
+        throw new Error(error)
+      }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      return new Web3(window.web3.currentProvider)
+    }
+    // none passed, none detected, use localhost
+    return new Web3('http://localhost:8545')
+  }
 
   return new Web3(provider)
 }
