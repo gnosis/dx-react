@@ -1,5 +1,6 @@
 import React from 'react'
 
+import UserProviderConnection from 'components/UserProviderConnection'
 import Loader from 'components/Loader'
 
 import { Account, BigNumber, TokenBalances } from 'types'
@@ -42,17 +43,17 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { 
-      account, 
-      addressToSymbolDecimal, 
-      balance, 
-      dxBalances, 
-      dxBalancesAvailable, 
-      hasTokenBalances, 
-      network, 
-      providerName, 
-      tokens, 
-      withdrawFromDutchX 
+    const {
+      account,
+      addressToSymbolDecimal,
+      balance,
+      dxBalances,
+      dxBalancesAvailable,
+      hasTokenBalances,
+      network,
+      providerName,
+      tokens,
+      withdrawFromDutchX,
     } = this.props
     return (
       <div
@@ -66,36 +67,15 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
           <code>{`${account ? account.slice(0, 10) + '...' : 'No Wallet Detected'}`}</code>
           <small>{balance != null ? balance.toFixed(FIXED_DECIMALS) : '0'} ETH</small>
         </span>
-        {account && hasTokenBalances &&
+        {account &&
         <div className={this.state.open ? 'mobileOpen' : ''}>
-
-          <span onClick={this.changeWallet}>
-            <img src={provider2SVG(providerName)} />
-            <p>
-              <strong>{providerName}</strong>
-              <i>{network}</i>
-            </p>
-            <code>{account}</code>
-          </span>
-
-          <table>
-            <thead>
-              <tr>
-                <th>WALLET</th>
-                <th>ACCOUNT</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td onClick={this.changeWallet}>
-                  <h5><code>{providerName}</code></h5>
-                </td>
-                <td>
-                  <h5><code>{account}</code></h5>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <UserProviderConnection
+            account={account}
+            network={network}
+            providerName={providerName}
+            changeWallet={this.changeWallet}
+          />
+          {hasTokenBalances &&
           <Loader
           hasData={Object.keys(addressToSymbolDecimal).length > 0}
           message="Enable wallet"
@@ -140,7 +120,7 @@ export class MenuWallet extends React.Component<WalletProps, WalletState> {
                 })}
               </tbody>
             </table>
-          }/>
+          }/>}
         </div>}
       </div>
     )

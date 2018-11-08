@@ -72,7 +72,7 @@ const Providers = {
       if (window.web3.currentProvider.isSafe) return 'GNOSIS SAFE'
       if ((window.web3.currentProvider || window.ethereum).isMetaMask) return 'METAMASK'
 
-      return window.web3.currentProvider.constructor.name
+      return 'UNKNOWN PROVIDER'
     },
 
     checkAvailability() {
