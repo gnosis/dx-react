@@ -6,8 +6,7 @@ import localForage from 'localforage'
 
 import disclaimerSVG from 'assets/disclaimer.svg'
 
-import { GEO_BLOCKED_COUNTIES_LIST } from 'globals'
-import { web3CompatibleNetwork } from 'utils'
+import { web3CompatibleNetwork, geoBlockedCitiesToString } from 'utils'
 import { TermsText } from '../Terms'
 
 import 'assets/pdf/PrivacyPolicy.pdf'
@@ -26,6 +25,8 @@ export interface DisclaimerState {
   // termsOfUseScrolled: boolean, <-- Scroll check removed. See handleScroll method.
   // termsOfUseAccepted: boolean, <-- Scroll check removed. See handleScroll method.
 }
+
+const GEO_BLOCKED_COUNTRIES_LIST = geoBlockedCitiesToString()
 
 export default class Disclaimer extends React.Component<DisclaimerProps, DisclaimerState> {
   state = {
@@ -125,7 +126,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
               <label htmlFor="disclaimer1">
                 I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
-                {' ' + GEO_BLOCKED_COUNTIES_LIST}
+                {' ' + GEO_BLOCKED_COUNTRIES_LIST}
               </label>
             </div>
 
