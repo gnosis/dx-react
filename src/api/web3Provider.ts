@@ -7,9 +7,10 @@ export const setupWeb3 = async (provider?: Provider) => {
   await windowLoaded
 
   if (!provider) {
-    let providerWeb3: any
     if (window.ethereum) {
-      providerWeb3 = window.web3 = new Web3(window.ethereum)
+      // TODO: be careful this doesn't override window.web3 @ 0.20.x
+      // with a version 1.X.xx that breaks app...
+      const providerWeb3 = window.web3 = new Web3(window.ethereum)
       try {
           // Request account access if needed
         await window.ethereum.enable()
