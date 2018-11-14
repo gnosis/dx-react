@@ -2,21 +2,33 @@ import createStatefulSub, { createMultiSub } from './genericSub'
 
 import { promisedWeb3 } from 'api/web3Provider'
 
-import { fetchAccountData, fetchETHBalance, fetchBlock, getTokenListAndNetwork, fetchTokenBalances } from './actions'
+import { setCurrentAccountAddress, setCurrentBalance } from 'actions'
+import { fetchAccountData, fetchETHBalance, fetchBlock, getTokenListAndNetwork, fetchTokenBalances, send } from './actions'
+
 import { SUBSCRIPTION_INTERVAL } from 'globals'
 
 import { debounce } from 'lodash'
+import { toBN } from 'api'
 
 // instantiate early to avoid some race conditions
 // TODO: make do without this ugliness
 promisedWeb3(window.web3.currentProvider)
 
+/* send(setCurrentAccountAddress, ({ currentAccount: account }))
+send([
+  setCurrentAccountAddress,
+  setCurrentBalance,
+],
+  [
+  { currentAccount: account },
+  { currentBalance: balance },
+  ], 'BATCH_ACCOUNT_AND_BALANCE') */
+
 export const AccountSub = createStatefulSub(fetchAccountData, { account: 'loading...' })
 export const ETHbalanceSub = createStatefulSub(fetchETHBalance, undefined, {
   _shouldUpdate(prevState, nextState) {
-    if (!prevState.balance || !prevState.account) return true
-    return prevState.account !== nextState.account
-      || !prevState.balance.equals(nextState.balance)
+    if (!prevState.balance) return true
+    return !prevState.balance.equals(nextState.balance)
   },
 })
 export const BlockSub = createStatefulSub(fetchBlock)
@@ -24,7 +36,15 @@ export const NetworkAndTokensSub = createStatefulSub(getTokenListAndNetwork)
 export const TokenBalancesSub = createStatefulSub(fetchTokenBalances)
 
 // updates in AccountSub cause updates in ETHbalanceSub
-AccountSub.subscribe(accountState => ETHbalanceSub.update(accountState.account))
+AccountSub.subscribe(() => AccountSub.update())
+AccountSub.subscribe(({ account: currentAccount }) => send(setCurrentAccountAddress, ({ currentAccount })))
+
+AccountSub.subscribe(async (accountState) => {
+  await ETHbalanceSub.update(accountState.account)
+
+  const { balance } = ETHbalanceSub.getState()
+  send(setCurrentBalance, ({ currentBalance: balance ? balance : await toBN(0) }))
+})
 
 const AccountAndTokenListSub = createMultiSub(AccountSub, NetworkAndTokensSub)
 AccountAndTokenListSub.subscribe(([accountState, tokenListState]) =>
