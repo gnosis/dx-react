@@ -35,7 +35,7 @@ const UserProviderConnection: React.SFC<UserProviderConnectionProps> = ({
             </thead>
             <tbody>
               <tr>
-                <td onClick={this.changeWallet}>
+                <td onClick={changeWallet}>
                   <h5><code>{providerName}</code></h5>
                 </td>
                 <td>

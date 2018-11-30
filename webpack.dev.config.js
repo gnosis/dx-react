@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-enable import/no-extraneous-dependencies */
+const fs = require('fs')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
@@ -30,7 +31,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    symlinks: false,
+    symlinks: true,
     modules: [
       `${__dirname}/src`,
       'node_modules',
@@ -41,7 +42,11 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules)/,
+        // exclude: /(node_modules)/,
+        include: [
+          path.resolve(__dirname, 'src'),
+          fs.realpathSync(path.resolve(__dirname, 'node_modules/dx-react-monitor/src')),
+        ],
         use: {
           loader: 'babel-loader',
           options: {

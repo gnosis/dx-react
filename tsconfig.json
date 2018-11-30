@@ -33,7 +33,7 @@
     "src/**/*.tsx",
     ".storybook/*.ts",
     "stories/*.ts",
-    "stories/*.tsx"
+    "stories/*.tsx", "babel.config.js", "node_modules/dx-react-monitor/postcss.config.js"
   ],
   "files": [
     "src/index.tsx",

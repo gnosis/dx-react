@@ -22,6 +22,9 @@ import RedirectToDisclaimer from 'containers/RedirectToDisclaimer'
 import Disclaimer from 'containers/Disclaimer'
 import Terms from 'components/Terms'
 
+// @ts-ignore
+import DXMonitor from 'dx-react-monitor/src'
+
 import { SHOW_FOOTER_CONTENT } from 'globals'
 
 interface AppRouterProps {
@@ -43,6 +46,7 @@ const HomeWHF = withHeaderAndFooter(Home)
 const OrderPanelWHF = withHeaderAndFooter(OrderPanel)
 const WalletPanelWHF = withHeaderAndFooter(WalletPanel)
 const AuctionPanelWHF = withHeaderAndFooter(AuctionPanel)
+const DXMonitorWHF = withHeaderAndFooter(DXMonitor, { content: true })
 // true passed in to show different, solidBackgorund Header
 const ContentPageContainerWHF =
   withHeaderAndFooter(ContentPageContainer, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
@@ -70,7 +74,6 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
   return (
     <ConnectedRouter history={history}>
       <div className="appFlex">
-
         <RedirectToDisclaimer/>
         <Switch>
           {/* DISCONNECTED CONTENT PAGES */}
@@ -94,8 +97,10 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
                 <Route path="/imprint" component={ImprintWHF}/>
                 <Route path="/terms" component={TermsWHF}/>
 
+                <Route path="/subscriptions" component={DXMonitorWHF} />
+
                 <Route path="/404" component={FourOhFourWHF} />
-                <Redirect to="/404" />
+                {/* <Redirect to="/404" /> */}
 
               </Switch>
             </AppValidator>
