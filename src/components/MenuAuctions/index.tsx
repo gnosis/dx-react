@@ -72,8 +72,13 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                       key={`${auction.sell.address}-${auction.buy.address}-${i}`}
                     >
                       {auction.current && auction.current.dirRunning && auction.current.participatesNormal && (
-                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.current.index}`)}>
-                          <td className="sectionLink">{auction.sell.symbol}/{auction.buy.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.current.index}`)}
+                          >
+                            {auction.sell.symbol}/{auction.buy.symbol}
+                          </td>
                           <td>{auction.current.statusDir.status === AuctionStatus.INIT ? 'NOT STARTED' : 'ONGOING'}</td>
                           <td>
                             <p>{auction.current.balanceNormal.toString()} {auction.sell.symbol}</p>
@@ -88,8 +93,13 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.next && auction.next.participatesNormal && (
-                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.next.index}`)}>
-                          <td className="sectionLink">{auction.sell.symbol}/{auction.buy.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.next.index}`)}
+                          >
+                            {auction.sell.symbol}/{auction.buy.symbol}
+                          </td>
                           <td>NOT STARTED</td>
                           <td>
                             <p>{auction.next.balanceNormal.toString()} {auction.sell.symbol}</p>
@@ -104,22 +114,32 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.past && auction.past.participatedNormal && (
-                        <tr onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${lastArrVal(auction.past.indicesNormal)}`)}>
-                          <td className="sectionLink">{auction.sell.symbol}/{auction.buy.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${lastArrVal(auction.past.indicesNormal)}`)}
+                          >
+                            {auction.sell.symbol}/{auction.buy.symbol}
+                          </td>
                           <td>ENDED</td>
                           <td>
                             <p>{auction.past.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
                           {auction.past.claimableNormal &&
-                            <td onClick={() => claimSellerFundsFromSeveral(auction.sell, auction.buy)}>
+                            <td className="pointer" onClick={() => (claimSellerFundsFromSeveral(auction.sell, auction.buy))}>
                               {auction.past.claimableBalanceNormal} {auction.buy.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
                         </tr>
                       )}
                       {auction.current && auction.current.oppRunning && auction.current.participatesInverse && (
-                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.current.index}`)}>
-                          <td className="sectionLink">{auction.buy.symbol}/{auction.sell.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.current.index}`)}
+                          >
+                            {auction.buy.symbol}/{auction.sell.symbol}
+                          </td>
                           <td>{auction.current.statusOpp.status === AuctionStatus.INIT ? 'NOT STARTED' : 'ONGOING'}</td>
                           <td>
                             <p>{auction.current.balanceInverse.toString()} {auction.buy.symbol}</p>
@@ -134,8 +154,13 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.next && auction.next.participatesInverse && (
-                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.next.index}`)}>
-                          <td className="sectionLink">{auction.buy.symbol}/{auction.sell.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.next.index}`)}
+                          >
+                            {auction.buy.symbol}/{auction.sell.symbol}
+                          </td>
                           <td>NOT STARTED</td>
                           <td>
                             <p>{auction.next.balanceInverse.toString()} {auction.buy.symbol}</p>
@@ -150,14 +175,19 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.past && auction.past.participatedInverse && (
-                        <tr onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${lastArrVal(auction.past.indicesInverse)}`)}>
-                          <td className="sectionLink">{auction.buy.symbol}/{auction.sell.symbol}</td>
+                        <tr>
+                          <td
+                            className="sectionLink"
+                            onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${lastArrVal(auction.past.indicesInverse)}`)}
+                          >
+                            {auction.buy.symbol}/{auction.sell.symbol}
+                          </td>
                           <td>ENDED</td>
                           <td>
                             <p>{auction.past.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
                           {auction.past.claimableInverse &&
-                            <td onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
+                            <td className="pointer" onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
                               {auction.past.claimableBalanceInverse} {auction.sell.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
