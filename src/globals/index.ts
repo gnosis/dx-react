@@ -136,6 +136,7 @@ export const GAS_LIMIT = '200000'
 // Content page URLS
 export const URLS = {
   METAMASK: 'https://metamask.io',
+  GNOSIS_SAFE_SITE: 'https://safe.gnosis.io/',
   HOW_IT_WORKS: '/content/HowItWorks',
   TOKENS: '/content/Tokens',
   LIQUIDITY_CONTRIBUTION: '/content/LiquidityContribution',
