@@ -13,6 +13,7 @@ import { COMPANY_NAME, COMPANY_SLOGAN } from 'globals'
 
 interface HeaderProps {
   content?: boolean;
+  noMenu?: boolean;
   dumb?: boolean;
 }
 
@@ -20,7 +21,7 @@ interface HeaderState {
   network?: string | 'RINKEBY' | 'MAIN' | 'UNKNOWN';
 }
 
-export const Header = ({ content, dumb = false, network }: HeaderProps & HeaderState) => (
+export const Header = ({ content, dumb, network, noMenu }: HeaderProps & HeaderState) => (
   <header className={content ? 'solid-background' : ''}>
     <div>
       <Link
@@ -34,7 +35,7 @@ export const Header = ({ content, dumb = false, network }: HeaderProps & HeaderS
         <MenuAuctions />
         <MenuFeeBalance />
       </>}
-      <Hamburger />
+      {!noMenu && <Hamburger />}
     </div>
   </header>
 )
