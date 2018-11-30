@@ -875,7 +875,7 @@ header {
       color: $blackShade;
       text-transform: uppercase;
       font-size: 11px;
-      cursor: pointer;
+      // cursor: pointer;
       transition: background .2s ease-in-out, color .2s ease-in-out;
       will-change: background, color;
     }
