@@ -31,7 +31,7 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean }, useFooter = true) => (compProps: any) => (
+const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean, noMenu?: boolean }, useFooter = true, compProps?: any) => () => (
   <>
     <Header {...headerProps}/>
     <Component {...compProps}/>
@@ -54,12 +54,14 @@ const TermsWHF =
   withHeaderAndFooter(Terms, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
 const FourOhFourWHF =
   withHeaderAndFooter(PageNotFound, { dumb: true }, SHOW_FOOTER_CONTENT)
+const HomeClaimOnly = withHeaderAndFooter(Home, { noMenu: true }, false, { claimOnly: true })
 
 const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) => {
+  // App is disabled (Geo Block, Net Block etc)
   if (disabled) {
     return (
       <StaticRouter context={{}}>
-        <div>
+        <div className="appFlex">
           <Header />
           <Home showPicker/>
         </div>
@@ -67,6 +69,27 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
     )
   }
 
+  // Render Claim Only version of app
+  if (process.env.READ_ONLY) {
+    return (
+      <ConnectedRouter history={history}>
+        <div className="appFlex">
+          <WalletIntegration>
+              <AppValidator>
+                <Switch>
+                  <Route
+                    exact path="/"
+                    component={HomeClaimOnly}
+                  />
+                  <Redirect to="/" />
+                </Switch>
+              </AppValidator>
+          </WalletIntegration>
+        </div>
+      </ConnectedRouter>
+    )
+  }
+  // Render main App
   return (
     <ConnectedRouter history={history}>
       <div className="appFlex">
