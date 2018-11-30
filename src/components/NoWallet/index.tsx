@@ -1,4 +1,5 @@
 import React from 'react'
+import { COMPANY_NAME, URLS } from 'globals'
 
 interface NoWalletProps {
   handleClick?(): void,
@@ -24,12 +25,29 @@ export const NoWallet: React.SFC<NoWalletProps> = ({
       {showUnlock && <span className="icon-walletUnlock"></span>}
 
       {walletUnavailable &&
-        <a className="buttonCTA" href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
-          Download MetaMask <i className="icon icon-arrowDown"></i>
+        <a className="buttonCTA" href={URLS.GNOSIS_SAFE_SITE} target="_blank" rel="noopener noreferrer">
+          Download Gnosis Safe <i className="icon icon-arrowDown"></i>
         </a>
       }
     </div >
   )
 }
+
+export const ClaimOnly: React.SFC<any> = () =>
+    <div className="noWallet">
+        <h2><strong><span className="underline">ATTENTION</span>: CLAIM ONLY MODE</strong> <br/></h2>
+
+        <h2>
+          <strong>This is a deprecated version of {COMPANY_NAME}.</strong>
+          <br/><br/>
+          Trading is no longer available on this contract version. You may only <span className="underline">withdraw</span> your funds.
+          <br/><br/>
+          For trading, please head to the latest, up-to-date version available below:
+        </h2>
+
+        <a className="buttonCTA" href={`https://${URLS.APP_URL_MAIN}`} rel="noopener noreferrer">
+          Trade on {COMPANY_NAME} <i className="icon icon-arrowDown"></i>
+        </a>
+    </div >
 
 export default NoWallet
