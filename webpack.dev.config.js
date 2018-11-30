@@ -161,10 +161,11 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        VERSION: JSON.stringify(`${version}#${build}`),
-        NODE_ENV: JSON.stringify(nodeEnv),
-        FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'development'),
         ETHEREUM_URL: JSON.stringify(ethereumUrl),
+        FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'development'),
+        NODE_ENV: JSON.stringify(nodeEnv),
+        READ_ONLY: JSON.stringify(process.env.READ_ONLY),
+        VERSION: JSON.stringify(`${version}#${build}`),
         WHITELIST: JSON.stringify(whitelist),
       },
     }),

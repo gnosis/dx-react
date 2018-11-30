@@ -176,6 +176,7 @@ module.exports = {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
         FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'production'),
+        READ_ONLY: JSON.stringify(process.env.READ_ONLY),
       },
     }),
     new UglifyJsPlugin(),
