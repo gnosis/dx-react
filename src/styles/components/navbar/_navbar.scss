@@ -212,6 +212,24 @@ header {
       right: 0;
     }
   }
+
+  &.beta::before {
+    content: "BETA";
+    position: absolute;
+    bottom: 0;
+    color: $greyTextDark;
+    right: 0;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    @media #{$mobile} {
+      font-size: 8px;
+      letter-spacing: 8px;
+      left: 34px;
+      right: 0;
+    }
+  }
 }
 
 .hamburger {
@@ -637,7 +655,7 @@ header {
   font-weight: $bold;
   outline: 0;
 
-  
+
   .mobileOpen {
     @media #{$mobile} {
       height: auto;
