@@ -213,7 +213,7 @@ header {
     }
   }
 
-  &.beta::before {
+  &.main::before {
     content: "BETA";
     position: absolute;
     bottom: 0;
