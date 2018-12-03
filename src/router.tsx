@@ -70,7 +70,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
   }
 
   // Render Claim Only version of app
-  if (process.env.READ_ONLY) {
+  if (process.env.CLAIM_ONLY) {
     return (
       <ConnectedRouter history={history}>
         <div className="appFlex">
