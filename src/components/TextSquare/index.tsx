@@ -19,7 +19,7 @@ export const TextSquare: React.SFC<TextSquareProps> = ({ claimOnly }) =>
       <br/><br/>
       No account needed. Direct trades between peers through smart contracts.
       <br/><br/>
-      {!claimOnly &&
+      {claimOnly &&
         <>
           <ol>
             <li>Choose the tokens you would like to trade</li>

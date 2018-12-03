@@ -72,10 +72,11 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                       key={`${auction.sell.address}-${auction.buy.address}-${i}`}
                     >
                       {auction.current && auction.current.dirRunning && auction.current.participatesNormal && (
-                        <tr>
+                        <tr
+                          onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.current.index}`)}
+                        >
                           <td
                             className="sectionLink"
-                            onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.current.index}`)}
                           >
                             {auction.sell.symbol}/{auction.buy.symbol}
                           </td>
@@ -93,10 +94,11 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.next && auction.next.participatesNormal && (
-                        <tr>
+                        <tr
+                          onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.next.index}`)}
+                        >
                           <td
                             className="sectionLink"
-                            onClick={() => push(`/auction/${auction.sell.symbol}-${auction.buy.symbol}-${auction.next.index}`)}
                           >
                             {auction.sell.symbol}/{auction.buy.symbol}
                           </td>
@@ -113,6 +115,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                           </td>
                         </tr>
                       )}
+                      {/* CLAIMABLE NORMAL*/}
                       {auction.past && auction.past.participatedNormal && (
                         <tr>
                           <td
@@ -133,10 +136,11 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.current && auction.current.oppRunning && auction.current.participatesInverse && (
-                        <tr>
+                        <tr
+                          onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.current.index}`)}
+                        >
                           <td
                             className="sectionLink"
-                            onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.current.index}`)}
                           >
                             {auction.buy.symbol}/{auction.sell.symbol}
                           </td>
@@ -154,10 +158,11 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                         </tr>
                       )}
                       {auction.next && auction.next.participatesInverse && (
-                        <tr>
+                        <tr
+                          onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.next.index}`)}
+                        >
                           <td
                             className="sectionLink"
-                            onClick={() => push(`/auction/${auction.buy.symbol}-${auction.sell.symbol}-${auction.next.index}`)}
                           >
                             {auction.buy.symbol}/{auction.sell.symbol}
                           </td>
@@ -174,6 +179,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                           </td>
                         </tr>
                       )}
+                      {/* CLAIMABLE INVERSE*/}
                       {auction.past && auction.past.participatedInverse && (
                         <tr>
                           <td

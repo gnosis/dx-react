@@ -31,10 +31,10 @@ interface AppRouterProps {
 }
 
 // TODO: consider redirecting from inside /order, /wallet, /auction/:nonexistent_addr to root
-const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean, noMenu?: boolean }, useFooter = true, compProps?: any) => () => (
+const withHeaderAndFooter = (Component: React.ComponentClass | React.SFC, headerProps?: { content?: boolean, dumb?: boolean, noMenu?: boolean }, useFooter = true, othProps?: any) => (compProps: any) => (
   <>
     <Header {...headerProps}/>
-    <Component {...compProps}/>
+    <Component {...othProps} {...compProps}/>
     {useFooter && <Footer />}
   </>
 )
