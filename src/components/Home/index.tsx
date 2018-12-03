@@ -14,7 +14,7 @@ export interface HomeProps {
 
 const Home: React.SFC<HomeProps> = ({ claimOnly, walletEnabled, showPicker }) =>
   <section className="home">
-    <TextSquare claimOnly />
+    <TextSquare claimOnly={claimOnly} />
     {
       !walletEnabled ? <NoWallet />
         :
