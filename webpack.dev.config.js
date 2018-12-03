@@ -164,7 +164,7 @@ module.exports = {
         ETHEREUM_URL: JSON.stringify(ethereumUrl),
         FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'development'),
         NODE_ENV: JSON.stringify(nodeEnv),
-        READ_ONLY: JSON.stringify(process.env.READ_ONLY),
+        CLAIM_ONLY: JSON.stringify(process.env.CLAIM_ONLY),
         VERSION: JSON.stringify(`${version}#${build}`),
         WHITELIST: JSON.stringify(whitelist),
       },

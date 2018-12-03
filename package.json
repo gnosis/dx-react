@@ -6,10 +6,10 @@
   "scripts": {
     "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
     "build:prod": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
-    "build:prod:readOnly": "npm run clean && cross-env READ_ONLY=true NODE_ENV=production webpack --config webpack.prod.config.js --progress",
+    "build:prod:claimOnly": "npm run clean && cross-env CLAIM_ONLY=true NODE_ENV=production webpack --config webpack.prod.config.js --progress",
     "build": "if test \"$NODE_ENV\" = \"production\"; then npm run build:prod; else npm run build:dev; fi;",
     "clean": "rimraf dist",
-    "start:dev:readOnly":"cross-env READ_ONLY=true npm start",
+    "start:dev:claimOnly":"cross-env CLAIM_ONLY=true npm start",
     "start:localProd": "FE_CONDITIONAL_ENV='production' npm start",
     "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.config.js --progress",
     "start:prod": "cross-env NODE_ENV=production webpack-dev-server --config webpack.prod.config.js --progress",
