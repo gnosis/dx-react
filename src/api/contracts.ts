@@ -125,6 +125,44 @@ if (process.env.FE_CONDITIONAL_ENV === 'development') {
   }
 }
 
+// in CLAIM_ONLY mode use different contract addresses
+if (process.env.FE_CONDITIONAL_ENV === 'production' && process.env.CLAIM_ONLY) {
+  const localForage = require('localforage')
+
+  const grabOldDXNetworksAndSet = async () => {
+    // let ALL_OLD_CONTRACT_ADDRESSES = await localForage.getItem('ALL_OLD_CONTRACT_ADDRESSES')
+    let [ALL_OLD_CONTRACT_ADDRESSES, CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
+      localForage.getItem('ALL_OLD_CONTRACT_ADDRESSES'),
+      localForage.getItem('CONTRACT_ADDRESSES_TO_USE'),
+    ])
+
+    if (!ALL_OLD_CONTRACT_ADDRESSES || !CONTRACT_ADDRESSES_TO_USE) {
+      // from networks-old - old versions of DX to grab addresses
+      ALL_OLD_CONTRACT_ADDRESSES    = require('../../test/networks-old')
+      const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
+      await Promise.all([
+        localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
+        localForage.setItem('CONTRACT_ADDRESSES_TO_USE', ALL_OLD_CONTRACT_ADDRESSES[latestVersion]),
+      ])
+      return ALL_OLD_CONTRACT_ADDRESSES[latestVersion]
+    }
+    console.debug(CONTRACT_ADDRESSES_TO_USE)
+    return CONTRACT_ADDRESSES_TO_USE
+  }
+
+  grabOldDXNetworksAndSet()
+  .then((networks: any) => {
+    console.debug('​grabOldDXNetworksAndSet -> networks', networks)
+    // console.debug("​grabOldDXNetworksAndSet -> CONTRACT_ADDRESSES_TO_USE", networksDX[0])
+    for (const contrArt of ContractsArtifacts) {
+      const { contractName } = contrArt
+      // assign networks from the file, overriding from /build/contracts with same network id
+      // but keeping local network ids
+      Object.assign(contrArt.networks, networks[contractName])
+    }
+  })
+}
+
 const Contracts: SimpleContract[] = ContractsArtifacts.map(
   art => TruffleContract(art),
 )
