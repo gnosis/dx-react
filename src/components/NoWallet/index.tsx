@@ -1,5 +1,6 @@
 import React from 'react'
 import { COMPANY_NAME, URLS } from 'globals'
+import DXContractPicker from 'components/DXContractSwitcher'
 
 interface NoWalletProps {
   handleClick?(): void,
@@ -35,15 +36,16 @@ export const NoWallet: React.SFC<NoWalletProps> = ({
 
 export const ClaimOnly: React.SFC<any> = () =>
     <div className="noWallet">
-        <h2><strong><span className="underline">ATTENTION</span>: CLAIM ONLY MODE</strong> <br/></h2>
 
-        <h2>
+        <h2><strong><span className="underline">ATTENTION</span>: CLAIM ONLY MODE</strong></h2>
+        <DXContractPicker />
+        <p>
           <strong>This is a deprecated version of {COMPANY_NAME}.</strong>
           <br/><br/>
           Trading is no longer available on this contract version. You may only <span className="underline">withdraw</span> your funds.
           <br/><br/>
           For trading, please head to the latest, up-to-date version available below:
-        </h2>
+        </p>
 
         <a className="buttonCTA" href={`https://${URLS.APP_URL_MAIN}`} rel="noopener noreferrer">
           Trade on {COMPANY_NAME} <i className="icon icon-arrowDown"></i>
