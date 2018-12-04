@@ -74,17 +74,23 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
     return (
       <ConnectedRouter history={history}>
         <div className="appFlex">
-          <WalletIntegration>
-              <AppValidator>
-                <Switch>
-                  <Route
-                    exact path="/"
-                    component={HomeClaimOnly}
-                  />
-                  <Redirect to="/" />
-                </Switch>
-              </AppValidator>
-          </WalletIntegration>
+          <RedirectToDisclaimer/>
+
+          <Switch>
+            <Route path="/verification" component={Disclaimer} />
+
+            <WalletIntegration>
+                <AppValidator>
+                  <Switch>
+                    <Route
+                      exact path="/"
+                      component={HomeClaimOnly}
+                    />
+                    <Redirect to="/" />
+                  </Switch>
+                </AppValidator>
+            </WalletIntegration>
+          </Switch>
         </div>
       </ConnectedRouter>
     )
