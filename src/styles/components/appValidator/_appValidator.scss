@@ -26,13 +26,7 @@
   }
 
   @media #{$mobile} {
-    font-size: 16px;
-  }
-}
-
-.offlineBanner {
-  @media #{$mobile} {
-    position: absolute;
+    position: relative;
     top: 136px;
     font-size: 16px;
     z-index: 88;
