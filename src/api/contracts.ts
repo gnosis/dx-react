@@ -130,15 +130,14 @@ if (process.env.FE_CONDITIONAL_ENV === 'production' && process.env.CLAIM_ONLY) {
   const localForage = require('localforage')
 
   const grabOldDXNetworksAndSet = async () => {
-    // let ALL_OLD_CONTRACT_ADDRESSES = await localForage.getItem('ALL_OLD_CONTRACT_ADDRESSES')
-    let [ALL_OLD_CONTRACT_ADDRESSES, CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
-      localForage.getItem('ALL_OLD_CONTRACT_ADDRESSES'),
+    const ALL_OLD_CONTRACT_ADDRESSES = require('../../test/networks-old')
+    const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
       localForage.getItem('CONTRACT_ADDRESSES_TO_USE'),
+      localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
     ])
 
-    if (!ALL_OLD_CONTRACT_ADDRESSES || !CONTRACT_ADDRESSES_TO_USE) {
+    if (!CONTRACT_ADDRESSES_TO_USE) {
       // from networks-old - old versions of DX to grab addresses
-      ALL_OLD_CONTRACT_ADDRESSES    = require('../../test/networks-old')
       const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
       await Promise.all([
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
