@@ -11,7 +11,7 @@ const mapStateToProps = (state: State) => {
   const selectedProvider = getSelectedProvider(state)
   return {
     walletEnabled: supportedProviders.has(activeProvider)
-      && (selectedProvider.available || selectedProvider.keyName === 'LEDGER')
+      && selectedProvider && (selectedProvider.available || selectedProvider.keyName === 'LEDGER')
       && !!getAccount(state),
   }
 }
