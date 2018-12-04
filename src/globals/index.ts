@@ -1,5 +1,4 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
-import { geoBlockedCitiesToString } from 'utils'
 
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
@@ -203,4 +202,10 @@ export const BLOCKED_COUNTRIES = {
 }
 
 export const MAX_SELL_USD = 500 // temporary for MAINNET
-export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
+// export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
+
+/**
+ * Show/Hide Footer in relevant places (see router)
+ * @type {boolean}
+ */
+export const SHOW_FOOTER_CONTENT = true

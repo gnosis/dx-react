@@ -4,6 +4,7 @@ import { promisedWeb3 } from 'api/web3Provider'
 import { logDecoder } from 'ethjs-abi'
 import { store } from 'components/App'
 
+import { getNetwork } from 'integrations/provider'
 import { DefaultTokenList, ProviderInterface, DefaultTokenObject, Receipt, ABI, Web3EventLog, TransactionObject } from 'api/types'
 import { Account } from 'types'
 import { ETH_ADDRESS, WALLET_PROVIDER, DEFAULT_ERROR, CANCEL_TX_ERROR, NO_INTERNET_TX_ERROR, LOW_GAS_ERROR, ProviderName, ProviderType, GAS_LIMIT, URLS, BLOCKED_COUNTRIES } from 'globals'
@@ -13,7 +14,7 @@ import STATUS_SVG from 'assets/img/icons/icon_status.svg'
 import LEDGER_SVG from 'assets/img/icons/icon_ledger.svg'
 import METAMASK_SVG from 'assets/img/icons/icon_metamask3.svg'
 import COINBASE_PNG from 'assets/img/icons/icon_coinbase.png'
-import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_cross.svg'
+import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_defaultWallet.svg'
 
 export const getDutchXOptions = (provider: any) => {
   console.log('FIRING getDutchXOptions')
@@ -97,23 +98,32 @@ export const windowLoaded = new Promise((accept, reject) => {
 
   window.addEventListener('load', function loadHandler(event) {
     window.removeEventListener('load', loadHandler, false)
+
+    // return setTimeout(() => accept(event), 2000)
     return accept(event)
   }, false)
+
+  // document.addEventListener('EV_SCRIPT_READY', function handler(event){
+  //   removeEventListener('EV_SCRIPT_READY', handler)
+
+  //   console.debug('SAFE EVENT: ', event)
+  //   return accept(event)
+  // })
 })
 
 export const readFileUpload = (file: File) =>
-    new Promise((resolve) => {
-      const r = new FileReader()
-      r.onload = (e: any) => resolve(e.target.result)
-      r.readAsArrayBuffer(file)
-    })
+  new Promise((resolve) => {
+    const r = new FileReader()
+    r.onload = (e: any) => resolve(e.target.result)
+    r.readAsArrayBuffer(file)
+  })
 
 export const readFileAsText = (file: File): Promise<string> =>
-    new Promise((resolve) => {
-      const r = new FileReader()
-      r.onload = (e: any) => resolve(e.target.result)
-      r.readAsText(file)
-    })
+  new Promise((resolve) => {
+    const r = new FileReader()
+    r.onload = (e: any) => resolve(e.target.result)
+    r.readAsText(file)
+  })
 
 export const promisify = (func: Function, context: object, ...defArgs: any[]) =>
   (...args: any[]): Promise<any> => new Promise((res, rej) => {
@@ -195,13 +205,13 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
 export const web3CompatibleNetwork = async () => {
   await windowLoaded
-  if (typeof window === 'undefined' || !window.web3 || !window.web3.version) return 'UNKNOWN'
+  if (typeof window === 'undefined' || !window.web3 || !window.web3.version) return (console.debug('no window or window.web3 or window.web3.version'), 'UNKNOWN')
 
-  let netID
+  let netID: string
 
   // 1.X.X API
   if (typeof window.web3.version === 'string') {
-    netID = await new Promise((accept, reject) => {
+    netID = await new Promise<string>((accept, reject) => {
       window.web3.eth.net.getId((err: string, res: string) => {
         if (err) {
           reject('UNKNOWN')
@@ -211,9 +221,9 @@ export const web3CompatibleNetwork = async () => {
       })
     })
   } else {
-    // 0.2X.xx API
+    // 0.XX.xx API
     // without windowLoaded web3 can be injected but network id not yet set
-    netID = window.web3.version.network
+    netID = await getNetwork(window as any).catch((err: Error) => (console.error(err), 'UNKNOWN'))
   }
 
   return netID
@@ -233,7 +243,6 @@ export const estimateGas = async (
 
   if (network === 'MAIN' || network === 'RINKEBY') {
     const GAS_STATION_URL = network === 'MAIN' ? URLS.MAIN_GAS_STATION : URLS.RINKEBY_GAS_STATION
-    console.warn('TCL: GAS_STATION_URL', GAS_STATION_URL)
 
     try {
       estimatedGasPrice = (await (await fetch(GAS_STATION_URL)).json()).standard
@@ -242,8 +251,6 @@ export const estimateGas = async (
       estimatedGasPrice = '1000000000'
     }
   }
-
-  console.warn('ESTIMATE GAS FINAL FUNCTION PARAMS: ', mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 
   return (type ? cb[type] : cb)(...mainParams, { ...txParams, gas: estimatedGasLimit, gasPrice: estimatedGasPrice })
 }
