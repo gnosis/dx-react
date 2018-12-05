@@ -7,8 +7,27 @@ import { State } from 'types'
 
 export const TermsText = (props: HTMLAttributes<HTMLDivElement> & { network: string }) => (
   <div {...props}>
-  {props.network === '1' || props.network === 'MAIN' || props.network === 'UNKNOWN'
+  {props.network === '4' || props.network === 'RINKEBY'
     ?
+    <span>
+      <h4>Disclaimer:</h4>
+      <ul className="scrollableDisclaimerList">
+        <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
+        <li>You are solely responsible to safekeep your wallet and private information.</li>
+        <li>Please bookmark {`https://${URLS.APP_URL_RINKEBY}`} as web address imitation by hackers is a risk!</li>
+        <li>ERC20 tokens are neither legal tender backed by governments nor by assets. The tokens’ value is highly volatile causing price fluctuations, as auctions typically run for some time and trades are not executed instantly.</li>
+        <li>Your jurisdiction allows you to trade on the DutchX.</li>
+        <li>Blockchain transactions are irreversible. The wallet address and your transaction is displayed permanently and publicly. You agree to relinquish any right of rectification or erasure of personal data, which is not possible on the blockchain.</li>
+        <li>You are not using the DutchX to trade tokens that are proceeds of criminal or fraudulent activity.</li>
+        <li>The DutchX and the underlying Ethereum blockchain are in an early development stage. We do not guarantee an error-free process and give no price or liquidity guarantee.</li>
+        <li>You recognize and agree to using the DutchX at your own risk.</li>
+        <li>In no event shall any initiator, programmer, auditor, auctioneer, participant, or other person (all, the “Initiators”) involved in the creation or other interaction with the DutchX be liable for any loss or damage arising out of or in connection with the DutchX. </li>
+        <li>You will indemnify the Initiators against any claims, actions, and costs that arise out of or in connection with you breaching this Disclaimer.</li>
+        <li>You are prohibited from interacting with the DutchX, where your jurisdiction disallows our exclusions of liability or applies mandatory laws overriding this Disclaimer.</li>
+        <li>This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk</li>
+      </ul>
+    </span>
+    :
     <>
       <p>
         <strong>
@@ -494,25 +513,6 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement> & { network: str
         Our Platform may in part be established on servers at data centre facilities of third party providers. We may be required to transfer our Platform to different facilities, and may incur service interruption in connection with such relocation. Data centre facilities are vulnerable to force majeure events or other failures. Third party providers may suffer breaches of security and others may obtain unauthorised access to our server data. As techniques used to obtain unauthorised access change frequently and generally are not recognised until used against a target, it may not be possible to anticipate these techniques or to implement adequate preventive measures.
                 </p>
     </>
-    :
-    <span>
-      <h4>Disclaimer:</h4>
-      <ul className="scrollableDisclaimerList">
-        <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
-        <li>You are solely responsible to safekeep your wallet and private information.</li>
-        <li>Please bookmark {`https://${URLS.APP_URL_RINKEBY}`} as web address imitation by hackers is a risk!</li>
-        <li>ERC20 tokens are neither legal tender backed by governments nor by assets. The tokens’ value is highly volatile causing price fluctuations, as auctions typically run for some time and trades are not executed instantly.</li>
-        <li>Your jurisdiction allows you to trade on the DutchX.</li>
-        <li>Blockchain transactions are irreversible. The wallet address and your transaction is displayed permanently and publicly. You agree to relinquish any right of rectification or erasure of personal data, which is not possible on the blockchain.</li>
-        <li>You are not using the DutchX to trade tokens that are proceeds of criminal or fraudulent activity.</li>
-        <li>The DutchX and the underlying Ethereum blockchain are in an early development stage. We do not guarantee an error-free process and give no price or liquidity guarantee.</li>
-        <li>You recognize and agree to using the DutchX at your own risk.</li>
-        <li>In no event shall any initiator, programmer, auditor, auctioneer, participant, or other person (all, the “Initiators”) involved in the creation or other interaction with the DutchX be liable for any loss or damage arising out of or in connection with the DutchX. </li>
-        <li>You will indemnify the Initiators against any claims, actions, and costs that arise out of or in connection with you breaching this Disclaimer.</li>
-        <li>You are prohibited from interacting with the DutchX, where your jurisdiction disallows our exclusions of liability or applies mandatory laws overriding this Disclaimer.</li>
-        <li>This DutchX Version runs on the Rinkeby Test Network: Real funds are not at risk</li>
-      </ul>
-    </span>
   }
   </div>
 )
