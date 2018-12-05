@@ -1011,7 +1011,7 @@ header {
     margin: 0;
     text-transform: capitalize;
     word-wrap: break-word;
-    min-width: 50px;
+    // min-width: 50px;
     font-weight: $normal;
 
     @media #{$mobile} {
@@ -1032,6 +1032,10 @@ header {
       @media #{$mobile} {
         text-align: right;
       }
+    }
+
+    > a {
+      color: inherit;
     }
   }
 

@@ -18,7 +18,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     <h1>How it works</h1>
 
     <section className="drawer active" id="what-is-slowtrade" onClick={handleClick}>
-      <h3>What is slow.trade</h3>
+      <h3>What is <strong>slow.trade</strong></h3>
       <span>
         <p>
           Slow.trade is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
@@ -34,7 +34,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           The DutchX is a <strong>decentralized, open trading protocol</strong> for ERC20 token pairs (the "DutchX Protocol"). Using slow.trade, you will participate in the next running auction of the DutchX Protocol.
         </p>
         <p>
-          It is different from other protocols or trading platforms because it uses the Dutch auction mechanism instead of an order book. This mechanism brings several benefits including the <strong>same price for all auction participants</strong>, the ability to trade in markets with low liquidity and protections against frontrunning by high frequency traders, the trading platform itself or miners, and a lot more!
+          It is different from other protocols or trading platforms because it uses the Dutch auction mechanism instead of an order book. This mechanism brings several benefits including the <strong>same price for all auction participants</strong>, the ability to trade in markets with low liquidity and protection against frontrunning by other users, the trading platform itself, and miners!
         </p>
         <p>
           The DutchX is not only a trading protocol, but also <strong>open source protocol that</strong> anyone can build on.
@@ -60,7 +60,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         </p>
         <p>
           There are market economics at work to ensure this. But to put your mind at ease:
-          all token trades on slow.trade will get a comparable price to other trading
+          all token trades on <strong>slow.trade</strong> will get a comparable price to other trading
           platforms, if not a better one.
         </p>
         <p>
@@ -135,20 +135,20 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Which tokens can I trade?</h3>
       <span>
         <p>
-        You may find the tokens available to trade in the token list on slow.trade <strong>(click on either the <i>deposit</i> or <i>receive</i> token)</strong>. Note that all listed tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
+        You may find the tokens available to trade in the token list on <strong>slow.trade</strong> <strong>(click on either the <i>deposit</i> or <i>receive</i> token)</strong>. Note that all listed tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
         </p>
       </span>
     </section>
 
     <section className="drawer" id="what-do-i-need-to-trade-on-slow.trade" onClick={handleClick}>
-      <h3>What do I need to trade a token on the slow.trade?</h3>
+      <h3>What do I need to trade a token on the <strong>slow.trade</strong>?</h3>
       <span>
         <p>
         You only need three things:
         </p><ol>
 
         <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">Metamask</a> is supported.</li>
-        <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on slow.trade, click on the <em>deposit</em> or <em>receive</em> token.</li>
+        <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on <strong>slow.trade</strong>, click on the <em>deposit</em> or <em>receive</em> token.</li>
         <li>ETH in your Wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
 
         <p>
@@ -173,7 +173,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your Wallet provider.
               </li>
               <li>
-                Paying for fees in OWL: If you have <Link to={URLS.FEES + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to pay for half of your <Link to={URLS.FEES + '#fees'}>fees</Link> in OWL (as long as you have a positive OWL balance).
+                Paying for fees in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to pay for half of your <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>fees</Link> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -187,7 +187,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
             </ul>
           </li>
           <li>
-            Once your deposit has been submitted, you will be provided with the auction status and a link to more information. The auction is also added to “Your Auctions” at the top of the page—no need to save the URL. Come back to slow.trade with your linked Wallet at any time to view your auctions.
+            Once your deposit has been submitted, you will be provided with the auction status and a link to more information. The auction is also added to “Your Auctions” at the top of the page—no need to save the URL. Come back to <strong>slow.trade</strong> with your linked Wallet at any time to view your auctions.
           </li>
           <li>
             Don’t forget to claim your new tokens when the auction has closed.
@@ -210,7 +210,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
 
       <span>
         <p>
-        Once you have submitted your deposit and the auction round you participated in has closed, you may proceed to claim your new tokens. A red claim button will alert you on slow.trade that you can claim your <em>Receive</em> token. You should therefore revisit slow.trade frequently.
+        Once you have submitted your deposit and the auction round you participated in has closed, you may proceed to claim your new tokens. A red claim button will alert you on <strong>slow.trade</strong> that you can claim your <em>Receive</em> token. You should therefore revisit <strong>slow.trade</strong> frequently.
         </p>
         <p>
         Slow.trade provides you with <strong>two different options to claim your new tokens</strong>:
@@ -220,7 +220,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         <li>The second option is <strong>via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process.</strong> From there, you may claim the token that are particular to that specific auction. You will only need to sign once.</li></ul>
 
         <p>
-        Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, they will be credited to your Wallet automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of slow.trade.
+        Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, they will be credited to your Wallet automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of <strong>slow.trade</strong>.
         </p>
         <p>
         Note that you have to be connected to the same Wallet that you used to participate in the auction in order to claim your new tokens!
@@ -256,10 +256,10 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           For more info, check out the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
           </p>
           <p>
-          In the header bar of slow.trade, the amount of locked MGN associated with your linked Wallet is displayed. However, you will not see this amount in your Wallet.
+          In the header bar of <strong>slow.trade</strong>, the amount of locked MGN associated with your linked Wallet is displayed. However, you will not see this amount in your Wallet.
           </p>
           <p>
-          Of course, you do not need to hold any MGN to participate on slow.trade or the DutchX Protocol!
+          Of course, you do not need to hold any MGN to participate on <strong>slow.trade</strong> or the DutchX Protocol!
           </p>
           <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
@@ -270,7 +270,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     <section className="drawer" id="what-is-fee-level" onClick={handleClick}>
       <h3>What is my fee level?</h3>
       <span>
-        <p>The fee level on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your fee can be 0. Fees normally start at 0.5% of the trading volume, and are gradually reduced depending on the amount of MGN you hold. Additionally, fees are not paid to us but paid into the next auction running for the respective auction pair and are thus redistributed to the users of the DutchX Protocol! Please read more in the <Link to={URLS.FEES + '#fees'}>Fee</Link> section.</p>
+        <p>The fee level on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your fee can be 0. Fees normally start at 0.5% of the trading volume, and are gradually reduced depending on the amount of MGN you hold. Additionally, fees are not paid to us but paid into the next auction running for the respective auction pair and are thus redistributed to the users of the DutchX Protocol! Please read more in the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>Fee</Link> section.</p>
       </span>
     </section>
 
@@ -278,7 +278,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
       <span>
         <p>
-          This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. You can use slow.trade in the same manner for tokens that do and do not generate Magnolia.
+          This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
@@ -291,7 +291,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <span>
 
         <p>
-          This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use slow.trade in the same manner for tokens that do and do not generate Magnolia.
+          This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
@@ -319,10 +319,10 @@ export const Tokens = ({ handleClick }: ContentPages) =>
     <h1>Tokens</h1>
 
     <section className="drawer" onClick={handleClick} id="token-pairs-currently-traded">
-      <h3>Which token pairs are currently available for trading on slow.trade?</h3>
+      <h3>Which token pairs are currently available for trading on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          To see which tokens are currently supported on slow.trade, check out the token list by clicking<strong> on either <em>Deposit</em> </strong>or<strong> <em>Receive</em> token</strong>. All tokens on the list can always be traded with ETH (or wrapped ETH).
+          To see which tokens are currently supported on <strong>slow.trade</strong>, check out the token list by clicking<strong> on either <em>Deposit</em> </strong>or<strong> <em>Receive</em> token</strong>. All tokens on the list can always be traded with ETH (or wrapped ETH).
           <br />
           Unrelated to our offering, there may be more tokens available on the smart contract level. Technical readers may refer to the documentation linked at <a href={URLS.DUTCHX_DEVS_AND_API}>Devs &amp; API</a>.
         </p>
@@ -333,16 +333,16 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Which token pairs can be traded on the DutchX Protocol?</h3>
       <span>
         <p>
-          Although we  only support the tokens listed on our slow.trade Platform, we note, for information purposes only, that all tokens compatible with the ERC20 standard may be traded on the DutchX Protocol. This is independent of and unrelated to us, d.ex OÜ and the services offered on our slow.trade Platform. For more and very detailed information, click on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
+          Although we  only support the tokens listed on our <strong>slow.trade</strong> Platform, we note, for information purposes only, that all tokens compatible with the ERC20 standard may be traded on the DutchX Protocol. This is independent of and unrelated to us, d.ex OÜ and the services offered on our <strong>slow.trade</strong> Platform. For more and very detailed information, click on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
         </p>
       </span>
     </section>
 
     <section className="drawer" onClick={handleClick} id="token-needed-to-trade">
-      <h3>What token do I need to participate on the slow.trade?</h3>
+      <h3>What token do I need to participate on the <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          You do not need to own any particular token to use slow.trade! However, keep in mind that you need ETH to pay for gas costs. For more information, check out "<Link to={URLS.HOW_IT_WORKS + '#what-do-i-need-to-trade-on-dx'}>What do I need to trade a token on slow.trade</Link>"?
+          You do not need to own any particular token to use <strong>slow.trade</strong>! However, keep in mind that you need ETH to pay for gas costs. For more information, check out "<Link to={URLS.HOW_IT_WORKS + '#what-do-i-need-to-trade-on-dx'}>What do I need to trade a token on <strong>slow.trade</strong></Link>"?
       </p>
       </span>
     </section>
@@ -355,7 +355,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
         <br />
           Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
         <br />
-          Of course, you are not required to hold any Magnolia (MGN) to participate on slow.trade or interact with the DutchX Protocol.
+          Of course, you are not required to hold any Magnolia (MGN) to participate on <strong>slow.trade</strong> or interact with the DutchX Protocol.
         <br />
           <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
@@ -377,7 +377,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Does my trade generate Magnolia?</h3>
       <span>
         <p>
-          Trades only generate Magnolia if both tokens traded are <Link to="#what-are-whitelisted-tokens">whitelisted</Link>. To see if a token that is tradable on slow.trade is whitelisted, check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token. Where a token is not whitelisted, the following message will be displayed: "Any auction with [Token] won't generate MGN". Once you proceed to the next screen, you will see "Note: this token pair won't generate MGN tokens".
+          Trades only generate Magnolia if both tokens traded are <Link to="#what-are-whitelisted-tokens">whitelisted</Link>. To see if a token that is tradable on <strong>slow.trade</strong> is whitelisted, check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token. Where a token is not whitelisted, the following message will be displayed: "Any auction with [Token] won't generate MGN". Once you proceed to the next screen, you will see "Note: this token pair won't generate MGN tokens".
         <br />
           <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
@@ -388,7 +388,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>Which tokens are currently whitelisted?</h3>
       <span>
         <p>
-          To find out whether a token that is tradable on slow.trade is whitelisted, <strong>check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token.</strong> If the token is not whitelisted, you will see the following message displayed: "Any auction with [Token] won't generate MGN".
+          To find out whether a token that is tradable on <strong>slow.trade</strong> is whitelisted, <strong>check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token.</strong> If the token is not whitelisted, you will see the following message displayed: "Any auction with [Token] won't generate MGN".
         <br />
           <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
@@ -397,15 +397,15 @@ export const Tokens = ({ handleClick }: ContentPages) =>
 
   </article>
 
-export const Fees = ({ handleClick }: ContentPages) =>
+export const LiquidityContribution = ({ handleClick }: ContentPages) =>
   <article id="fees">
     <h1>Fees</h1>
 
     <section className="drawer" onClick={handleClick} id="what-fees-are-due">
-      <h3>What fees are due on slow.trade?</h3>
+      <h3>What fees are due on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          <strong>No fees</strong> are levied on the slow.trade Platform. However, you will still need to pay the fees that are due on the DutchX Protocol level. For more information please see the next question.
+          <strong>No fees</strong> are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the fees that are due on the DutchX Protocol level. For more information please see the next question.
         </p>
       </span>
     </section>
@@ -456,7 +456,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How do I obtain Magnolia (MGN)?</h3>
       <span>
         <p>
-          You may either generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair),for example via slow.trade. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
+          You may either generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair),for example via <strong>slow.trade</strong>. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
         <br />
           Alternatively, you may purchase MGN as they are freely tradable. This may be particularly useful if you are close to the next fee reduction level.
       </p>
@@ -467,7 +467,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>How do I trade Magnolia?</h3>
       <span>
         <p>
-          To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction. Currently, it is not possible to trade MGN on slow.trade.
+          To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction. Currently, it is not possible to trade MGN on <strong>slow.trade</strong>.
         </p>
       </span>
     </section>
@@ -489,7 +489,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
         <p>
           OWL gives the <a href={URLS.GNO_TOKEN_ETHERSCAN_URL} target="_blank">GNO token</a> its utility: it is generated by locking GNO and may be used on some applications created or run by Gnosis to pay for fees. Read up on <a href={URLS.OWL_BLOG_URL} target="_blank">OWL</a> and the<a href={URLS.INITIAL_OWL_GENERATION_BLOG_URL} target="_blank"> initial OWL generation</a>.
         <br />
-          OWL is not needed to use slow.trade or the DutchX Protocol.
+          OWL is not needed to use <strong>slow.trade</strong> or the DutchX Protocol.
         </p>
         <p>
           Note that OWL is not needed to use the DutchX.
@@ -532,7 +532,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
         <p>
           Slow.trade will prompt you automatically during the trading process and ask if you would like to use OWL to pay for fees. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to pay for your fees and you will be prompted again the next time.
         <br />
-          Note that you might not be prompted because you have no OWL in your Wallet! To create a better user experience for you on slow.trade, you are only prompted if you have OWL in your connected Wallet.
+          Note that you might not be prompted because you have no OWL in your Wallet! To create a better user experience for you on <strong>slow.trade</strong>, you are only prompted if you have OWL in your connected Wallet.
         </p>
       </span>
     </section>
@@ -602,7 +602,7 @@ export const Fees = ({ handleClick }: ContentPages) =>
       <h3>Why do the fees get transferred into the next auction?</h3>
       <span>
         <p>
-          Users of the DutchX Protocol (and hence of slow.trade) should be its main beneficiaries. For this reason,<strong> </strong>the fees remain in the DutchX ecosystem<strong>.</strong> This means that users, and especially frequent users, benefit from the mechanism in two ways: it lowers their fees and they are credited part of these fees!
+          Users of the DutchX Protocol (and hence of slow.trade) should be its main beneficiaries. For this reason,<strong>the fees remain in the DutchX ecosystem.</strong> This means that users, and especially frequent users, benefit from the mechanism in two ways: it lowers their fees and they are credited part of these fees!
         </p>
       </span>
     </section>
@@ -704,7 +704,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     <h1>FAQ</h1>
     <section className="content">
       <p>
-        Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX Protocol was designed. For further information and the terms and conditions that apply to the use of our slow.trade Platform, please always consult the <Link to="/terms">Terms & Conditions</Link>. Capitalized terms used but not defined here, have the respective meanings given to them in the Terms and Conditions.
+        Please read this <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank">blog</a> to learn more about the motivation behind the way the DutchX Protocol was designed. For further information and the terms and conditions that apply to the use of our <strong>slow.trade</strong> Platform, please always consult the <Link to="/terms">Terms & Conditions</Link>. Capitalized terms used but not defined here, have the respective meanings given to them in the Terms and Conditions.
       </p>
     </section>
 
@@ -717,7 +717,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="do-i-need-account">
-      <h3>Do I need an account on slow.trade?</h3>
+      <h3>Do I need an account on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
           No account is needed.
@@ -725,18 +725,18 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="which-wallets-compatible">
-      <h3>Which wallets are compatible with slow.trade?</h3>
+      <h3>Which wallets are compatible with <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          Your wallet needs to be compatible to the slow.trade Platform (a "<strong>Wallet</strong>"). Currently, the only Wallet that has been tested is <strong><a href={URLS.METAMASK} target="_blank">Metamask</a></strong>. Thus, using Metamask is highly recommended. However, other wallet providers holding ERC20 tokens might also be compatible but may result in a less smooth user experience.
+          Your wallet needs to be compatible to the <strong>slow.trade</strong> Platform (a "<strong>Wallet</strong>"). Currently, the only Wallet that has been tested is <strong><a href={URLS.METAMASK} target="_blank">Metamask</a></strong>. Thus, using Metamask is highly recommended. However, other wallet providers holding ERC20 tokens might also be compatible but may result in a less smooth user experience.
         </p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="how-to-link-wallet">
-      <h3>How do I link my wallet to slow.trade?</h3>
+      <h3>How do I link my wallet to <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          Your Wallet is automatically linked to slow.trade. In case you are not logged into your Wallet, you need to log in first.
+          Your Wallet is automatically linked to <strong>slow.trade</strong>. In case you are not logged into your Wallet, you need to log in first.
         </p>
       </span>
     </section>
@@ -749,9 +749,9 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="which-wallet-is-linked">
-      <h3>What if I have multiple Wallets, which Wallet is linked to slow.trade?</h3>
+      <h3>What if I have multiple Wallets, which Wallet is linked to <strong>slow.trade</strong>?</h3>
       <span>
-        <p>It depends on which Wallet connects to the browser first. If you want to participate with a different Wallet, simply log out of the ones you do not want to use, and refresh your browser. Check out <Link to="#which-wallets-compatible">"Which wallets are compatible with slow.trade?"</Link>.</p>
+        <p>It depends on which Wallet connects to the browser first. If you want to participate with a different Wallet, simply log out of the ones you do not want to use, and refresh your browser. Check out <Link to="#which-wallets-compatible">"Which wallets are compatible with <strong>slow.trade</strong>?"</Link>.</p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="need-to-know-about-wallet">
@@ -765,21 +765,21 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="why-not-all-tokens-in-wallet-shown">
-      <h3>Why do I not see all tokens that I hold in my Wallet on the slow.trade header?</h3>
+      <h3>Why do I not see all tokens that I hold in my Wallet on the <strong>slow.trade</strong> header?</h3>
       <span>
-        <p>The slow.trade interface only displays the listed tokens you can trade through our Platform interface.</p>
+        <p>The <strong>slow.trade</strong> interface only displays the listed tokens you can trade through our Platform interface.</p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="why-0.0000-shown">
-      <h3>Why do I see 0.0000 of a particular token in the header of slow.trade?</h3>
+      <h3>Why do I see 0.0000 of a particular token in the header of <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          The slow.trade interface only displays four decimals. In case you have an available balance which is less than 0.0001, the interface will only display '0.0000'.
+          The <strong>slow.trade</strong> interface only displays four decimals. In case you have an available balance which is less than 0.0001, the interface will only display '0.0000'.
         </p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="which-browsers-compatible">
-      <h3>Which browsers are compatible with slow.trade?</h3>
+      <h3>Which browsers are compatible with <strong>slow.trade</strong>?</h3>
       <span>
         <p>
           Only browsers supported by Metamask have been tested so far. It is highly recommended that you use a browser that is Metamask compatible. <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> is likely the most popular browser that supports Metamask.
@@ -836,7 +836,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>When/how do I get Magnolia (MGN) credited?</h3>
       <span>
         <p>
-          If your trade generated Magnolia, they are credited to you <strong>automatically</strong> once you claim your new tokens from the auction. However, you will not see MGN as a balance in your Wallet, as they will still be locked. For your convenience, the amount of locked MGN is displayed in the header of slow.trade.
+          If your trade generated Magnolia, they are credited to you <strong>automatically</strong> once you claim your new tokens from the auction. However, you will not see MGN as a balance in your Wallet, as they will still be locked. For your convenience, the amount of locked MGN is displayed in the header of <strong>slow.trade</strong>.
         </p>
       </span>
     </section>
@@ -862,7 +862,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Is Magnolia (MGN) tradable?</h3>
       <span>
         <p>
-          Yes. MGN is an ERC20 token. However, MGN are locked by default in order for you to make use of the fee reduction inherent to the DutchX Protocol. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on slow.trade.
+          Yes. MGN is an ERC20 token. However, MGN are locked by default in order for you to make use of the fee reduction inherent to the DutchX Protocol. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on <strong>slow.trade</strong>.
         </p>
       </span>
     </section>
@@ -878,7 +878,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>When is my order final?</h3>
       <span>
         <p>
-          When you have gone through the last screen on slow.trade you have to click on "<strong>submit deposit</strong>" before you're directed through your Wallet provider's screens. This is the last step before your order is final. After this point there are no refunds for submitted amounts.
+          When you have gone through the last screen on <strong>slow.trade</strong> you have to click on "<strong>submit deposit</strong>" before you're directed through your Wallet provider's screens. This is the last step before your order is final. After this point there are no refunds for submitted amounts.
         </p>
       </span>
     </section>
@@ -894,7 +894,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>How can I claim my new tokens (funds)?</h3>
       <span>
         <p>
-          As a seller, you may claim the tokens you received once the auction has cleared. The price and your amount deposited will give you the amount of tokens you will receive. There is no rush - you can claim your tokens at any point after the auction has cleared! Just come back to slow.trade and, make sure you are logged into the same Wallet you participated with in the auction and you will see which of your auctions have ended and where you can claim the tokens received.
+          As a seller, you may claim the tokens you received once the auction has cleared. The price and your amount deposited will give you the amount of tokens you will receive. There is no rush - you can claim your tokens at any point after the auction has cleared! Just come back to <strong>slow.trade</strong> and, make sure you are logged into the same Wallet you participated with in the auction and you will see which of your auctions have ended and where you can claim the tokens received.
         </p>
       </span>
     </section>
@@ -902,15 +902,15 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Can I receive a notification indicating I can claim my new tokens (funds)?</h3>
       <span>
         <p>
-          Unfortunately not at this point. However, this is work in progress! For now, you will have to come back to slow.trade and check whether your new tokens are ready to be claimed. You will be alerted by a red "claim" button if there are claimable tokens connected to your linked Wallet address.
+          Unfortunately not at this point. However, this is work in progress! For now, you will have to come back to <strong>slow.trade</strong> and check whether your new tokens are ready to be claimed. You will be alerted by a red "claim" button if there are claimable tokens connected to your linked Wallet address.
         </p>
       </span>
     </section>
     <section className="drawer" onClick={handleClick} id="participate-with-fiat">
-      <h3>Am I able to participate on slow.trade using fiat (e.g. USD, EUR)?</h3>
+      <h3>Am I able to participate on <strong>slow.trade</strong> using fiat (e.g. USD, EUR)?</h3>
       <span>
         <p>
-          No, you can only trade listed ERC20 tokens and ETH on slow.trade and the DutchX Protocol.
+          No, you can only trade listed ERC20 tokens and ETH on <strong>slow.trade</strong> and the DutchX Protocol.
         </p>
       </span>
     </section>
@@ -930,7 +930,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           Yes! For a smooth user experience, the interface will wrap ETH for you in case you don't have any wrapped ETH available. In this case, wrapping your ETH is the first transaction you will have to approve before proceeding with the deposit.
           <br />
-          However, slow.trade <strong>will not unwrap ETH for you</strong>: If you trade a token for ETH, you will always receive W-ETH. Make sure to add the W-ETH token address to your Wallet: (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2). W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped on many other trading platforms</a>.
+          However, <strong>slow.trade</strong> <strong>will not unwrap ETH for you</strong>: If you trade a token for ETH, you will always receive W-ETH. Make sure to add the W-ETH token address to your Wallet: (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2). W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped on many other trading platforms</a>.
         </p>
       </span>
     </section>
@@ -947,9 +947,9 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>I have claimed my ETH, but can't find them in my wallet—what happened?</h3>
       <span>
         <p>
-          If you trade a token for ETH on slow.trade, <strong>you will always receive W-ETH. </strong>Make sure to add the W-ETH token address to your Wallet (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2).
+          If you trade a token for ETH on <strong>slow.trade</strong>, <strong>you will always receive W-ETH. </strong>Make sure to add the W-ETH token address to your Wallet (Rinkeby Test Network: 0xc778417e063141139fce010982780140aa0cd5ab; Ethereum Mainnet: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2).
         <br />
-          W-ETH is the ERC20 compatible version of ETH. Since slow.trade provides no unwrapping at this time, you will always receive W-ETH instead of ETH. W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> back to ETH on various other trading platforms.
+          W-ETH is the ERC20 compatible version of ETH. Since <strong>slow.trade</strong> provides no unwrapping at this time, you will always receive W-ETH instead of ETH. W-ETH is worth the same as ETH and can be <a href={URLS.WETH_TOKEN_URL} target="_blank">unwrapped</a> back to ETH on various other trading platforms.
         </p>
       </span>
     </section>
@@ -970,7 +970,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="why-these-tokens-available">
-      <h3>Why are only these tokens available on slow.trade?</h3>
+      <h3>Why are only these tokens available on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
           We support tokens <strong>for which liquidity is provided for both sides of the market and from projects with which we are familiar and where we see no regulatory hurdles to offer them on our Platform.</strong> We plan to add more tokens over time. Other developers may provide an interface enabling more/other tokens to be traded.
@@ -979,7 +979,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="requirements-to-add-token">
-      <h3>What are the requirements for a token to be part of the curated list on slow.trade?</h3>
+      <h3>What are the requirements for a token to be part of the curated list on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
           It is expected that a<strong> minimal liquidity is guaranteed.</strong> Apart from that, there must be no regulatory hurdle following our assessment. Among other things, the <strong>token must not be considered a security, financial instrument or equivalent </strong>by any authority, law firm or decentralized or centralized exchange. A relatively high market cap is often a good indicator  of sufficient liquidity. For more information, please reach out to us.
@@ -1024,7 +1024,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
           <br />
           By accumulating orders that are executed at the same time, a batch auction not only represents a better price finding mechanism than an order book, but also eliminates the inherent flaw of the order book exchange: front-running. However, batching orders comes at the expense of speedy trading as order execution time is slow.
           <br />
-          Through slow.trade, we provide you with a Platform to interact with the DutchX Protocol.
+          Through <strong>slow.trade</strong>, we provide you with a Platform to interact with the DutchX Protocol.
         </p>
       </span>
     </section>
@@ -1051,7 +1051,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>How can I be sure that my deposit is not stuck?</h3>
       <span>
         <p>
-          For tokens listed on our slow.trade interface, minimum liquidity is guaranteed and the next auction will start without time delay.
+          For tokens listed on our <strong>slow.trade</strong> interface, minimum liquidity is guaranteed and the next auction will start without time delay.
         </p>
       </span>
     </section>
@@ -1062,7 +1062,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           The DutchX mechanism is as fair as it gets! However, it reflects the current market price. Of course, the mechanism only works if there is a critical mass participating. This is why<strong> an automated trading service for tokens listed on slow.trade will guarantee that the price does not drop significantly below the market price of other trading platforms. </strong>
           <br />
-          On slow.trade, you can safely take part in the DutchX Protocol from day one!
+          On <strong>slow.trade</strong>, you can safely take part in the DutchX Protocol from day one!
         </p>
       </span>
     </section>
@@ -1071,7 +1071,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>How is liquidity provided?</h3>
       <span>
         <p>
-          To ensure that a critical trading mass is reached and markets work well,<strong> there will, at the beginning, be an automated trading service for tokens listed on slow.trade. This ensures that the market price does not drop significantly below the market price of other trading platforms</strong>. When markets on slow.trade develop sufficient liquidity, the automated trading service is expected to cease.
+          To ensure that a critical trading mass is reached and markets work well,<strong> there will, at the beginning, be an automated trading service for tokens listed on slow.trade. This ensures that the market price does not drop significantly below the market price of other trading platforms</strong>. When markets on <strong>slow.trade</strong> develop sufficient liquidity, the automated trading service is expected to cease.
         </p>
       </span>
     </section>
@@ -1152,7 +1152,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>What happens in case of downtime?</h3>
       <span>
         <p>
-          We do not guarantee to keep this interface available to you at all times. If slow.trade is scheduled for maintenance, we will communicate this within a reasonable time frame. In case the site is down due to unforeseen reasons, we will try our best to be back up and running as soon as possible.
+          We do not guarantee to keep this interface available to you at all times. If <strong>slow.trade</strong> is scheduled for maintenance, we will communicate this within a reasonable time frame. In case the site is down due to unforeseen reasons, we will try our best to be back up and running as soon as possible.
         <br />
           <strong>It's important to note that funds can always be claimed, even if slow.trade is down. In other words,</strong> interaction with the DutchX Protocol is always possible as all the DutchX smart contracts are stored on the Ethereum Blockchain.
         </p>

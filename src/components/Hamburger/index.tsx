@@ -41,7 +41,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
           {/* <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink> */}
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
-          <NavLink to="/content/Fees" onClick={this.handleClick}> Fees </NavLink>
+          <NavLink to="/content/LiquidityContribution" onClick={this.handleClick}> Liquidity Contribution </NavLink>
           <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
           {/* <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink> */}
           {/* <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink> */}
