@@ -662,7 +662,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>What if I have multiple Wallets?</h3>
       <span>
         <p>
-          We recommend that you <strong>hold your relevant tokens,</strong> i.e. (1) <strong>those you want to trade with </strong>and (2) any <strong>OWL tokens</strong> you have in one Wallet. (3) Additionally, we recommend that you have your locked <strong>Magnolia</strong> (MGN) stored in the <strong>same Wallet</strong>. In other words, we strongly advise that you don't spread your Magnolia over many Wallet addresses as they are important for reducing your fees!
+          We recommend that you <strong>hold your relevant tokens,</strong> i.e. (1) <strong>those you want to trade with </strong>and (2) any <strong>OWL tokens</strong> you have in one Wallet. (3) Additionally, we recommend that you have your locked <strong>Magnolia</strong> (MGN) stored in the <strong>same Wallet</strong>. In other words, we strongly advise that you don't spread your Magnolia over many Wallet addresses as they are important for reducing your liquidity contribution!
         </p>
       </span>
     </section>
@@ -678,7 +678,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           Very important—<strong>you need to have access to your private key!</strong> It's possible to send tokens to the DutchX Protocol from an address for which you do not have access to the private key. Please keep in mind that you can only claim tokens with the address you have sent tokens from!
         <br />
-          Furthermore, it is recommended that you <strong>always use the same Wallet address</strong> in order to optimize fee reduction associated with that Wallet address.
+          Furthermore, it is recommended that you <strong>always use the same Wallet address</strong> in order to optimize the reduction of your liquidity contribution associated with that Wallet address.
         </p>
       </span>
     </section>
@@ -762,7 +762,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Why do I not see Magnolia (MGN) as a balance in my Wallet?</h3>
       <span>
         <p>
-          This is because Magnolia are locked by default as they can only be used for fee reduction when they are locked. Once you have claimed your new tokens, your MGN will be automatically credited to the wallet address used for the trade and displayed in the header of our interface.
+          This is because Magnolia are locked by default as they can only be used for the reduction of your liquidity contribution level when they are locked. Once you have claimed your new tokens, your MGN will be automatically credited to the wallet address used for the trade and displayed in the header of our interface.
         </p>
       </span>
     </section>
@@ -772,7 +772,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           <strong>Make sure you are connected to the same Wallet you participated with</strong> in the trade that generated those MGN (see section 'whitelisted tokens').
         <br />
-          It is recommended to make all trades from the same Wallet for this reason. The more MGN you have, the less fees you pay.
+          It is recommended to make all trades from the same Wallet for this reason. The more MGN you have, the less liquidity contribution is levied.
         </p>
       </span>
     </section>
@@ -780,7 +780,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Is Magnolia (MGN) tradable?</h3>
       <span>
         <p>
-          Yes. MGN is an ERC20 token. However, MGN are locked by default in order for you to make use of the fee reduction inherent to the DutchX Protocol. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on <strong>slow.trade</strong>.
+          Yes. MGN is an ERC20 token. However, MGN are locked by default in order for you to make use of the reduction of your liquidity contribution level inherent to the DutchX Protocol. MGN are fungible and not personalized. At the moment, you won't be able to unlock your MGN on <strong>slow.trade</strong>.
         </p>
       </span>
     </section>
@@ -1050,7 +1050,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Why does the DutchX Protocol need the ETH/USD price feed?</h3>
       <span>
         <p>
-          The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of fees in USD or OWL.
+          The ETH/USD price feed is needed for three calculations: 1) the initialisation (first listing) of a token, 2) the start of an auction, and 3) the calculation of liquidity contribution in USD or OWL.
         </p>
       </span>
     </section>
