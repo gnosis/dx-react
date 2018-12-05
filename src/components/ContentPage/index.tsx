@@ -419,7 +419,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="what-fees-need-to-pay">
-      <h3>What liquidity contribution fees do I have to pay to be active on the DutchX Protocol?</h3>
+      <h3>What liquidity contribution do I have to pay to be active on the DutchX Protocol?</h3>
       <span>
         <p>
           If you hold enough Magnolia (MGN), your liquidity contributionfee is 0. The default liquidity contribution is 0.5% of your trading volume, which isand are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributionsFees paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
