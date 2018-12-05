@@ -413,7 +413,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Are there no fees due on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contributionfees that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
+          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contribution fees that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
         </p>
       </span>
     </section>
