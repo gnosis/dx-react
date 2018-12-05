@@ -173,7 +173,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your Wallet provider.
               </li>
               <li>
-                Settling liquidity contribution in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to settle half of the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>liquidity contribution</Link> in OWL (as long as you have a positive OWL balance).
+                Settling liquidity contribution in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to settle half of the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#liquidity-contribution'}>liquidity contribution</Link> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -397,7 +397,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
   </article>
 
 export const LiquidityContribution = ({ handleClick }: ContentPages) =>
-  <article id="fees">
+  <article id="liquidity-contribution">
     <h1>Liquidity contribution</h1>
 
     <section className="drawer" onClick={handleClick} id="what-id-liquid-contrib">
