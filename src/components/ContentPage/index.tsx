@@ -74,7 +74,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-        Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+          Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
         </p>
       </span>
     </section>
@@ -92,7 +92,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>When do I claim my tokens?</h3>
       <span>
         <p>
-        Once you have placed the tokens that you want to sell in the auction by submitting your deposit, you will take part in the next auction that runs. The next auction might start right away, or in a couple of hours time if there is still an auction running for your chosen token pair. Once your auction has started, <strong>it will take around 6 hours to finish. After the auction has come to a close, you can claim your tokens</strong>. A red claim button will alert you that you are able to claim your new tokens.
+          Once you have placed the tokens that you want to sell in the auction by submitting your deposit, you will take part in the next auction that runs. The next auction might start right away, or in a couple of hours time if there is still an auction running for your chosen token pair. Once your auction has started, <strong>it will take around 6 hours to finish. After the auction has come to a close, you can claim your tokens</strong>. A red claim button will alert you that you are able to claim your new tokens.
         </p>
       </span>
     </section>
@@ -101,16 +101,16 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>How do I claim my new tokens?</h3>
       <span>
         <p>
-        Slow.trade provides you with two options to claim your new tokens:
+          Slow.trade provides you with two options to claim your new tokens:
         </p>
         <p>
-        The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that specific token pair (please note: you might need to sign two transactions with your Wallet provider).
+          The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that specific token pair (please note: you might need to sign two transactions with your Wallet provider).
         </p><br />
         <p>
-        The second option is <strong>via the specific URL for the auction pair (auction overview page)</strong>. You will automatically be directed to this URL at the end of the order process. From there, you may claim the new token particular to that specific auction. Accordingly, you will only need to sign one transaction with your Wallet provider.
+          The second option is <strong>via the specific URL for the auction pair (auction overview page)</strong>. You will automatically be directed to this URL at the end of the order process. From there, you may claim the new token particular to that specific auction. Accordingly, you will only need to sign one transaction with your Wallet provider.
         </p><br />
         <p>
-        Note that you have to be connected to the same Wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <Link to="#step-by-step-claiming">step-by-step guide</Link> to claim tokens.
+          Note that you have to be connected to the same Wallet that you used to participate in the auction in order to claim your new tokens! Please also check out the <Link to="#step-by-step-claiming">step-by-step guide</Link> to claim tokens.
         </p>
       </span>
     </section>
@@ -119,7 +119,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>When do auctions start?</h3>
       <span>
         <p>
-        There is no set schedule for the auctions. However, there will never  be more than one auction running for a particular trading pair (e.g. ETH-RDN, RDN-ETH) at any point in time. They start <strong>at least 10 minutes after the last of the auction pair has finished</strong> and only if the sell volume (i.e. deposit) of one of the auction pairs is worth at least 1,000 USD. For this reason, the time of the auction depends on the prior auctions' closing time.
+          There is no set schedule for the auctions. However, there will never  be more than one auction running for a particular trading pair (e.g. ETH-RDN, RDN-ETH) at any point in time. They start <strong>at least 10 minutes after the last of the auction pair has finished</strong> and only if the sell volume (i.e. deposit) of one of the auction pairs is worth at least 1,000 USD. For this reason, the time of the auction depends on the prior auctions' closing time.
         </p>
       </span>
     </section>
@@ -127,7 +127,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     <section className="drawer" id="when-auctions-end" onClick={handleClick}>
       <h3>When do auctions end?</h3>
       <span>
-      <strong>Auctions end when all deposits (<i>sellTokens</i>) have been bought</strong> and have subsequently been allocated to bidders at the auction clearing price. The auction clearing price is the price that all <i>sellTokens</i> are traded at (i.e. clearing price * <i>bidVolume</i> = <i>sellVolume</i>).
+        <strong>Auctions end when all deposits (<i>sellTokens</i>) have been bought</strong> and have subsequently been allocated to bidders at the auction clearing price. The auction clearing price is the price that all <i>sellTokens</i> are traded at (i.e. clearing price * <i>bidVolume</i> = <i>sellVolume</i>).
       </span>
     </section>
 
@@ -135,7 +135,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Which tokens can I trade?</h3>
       <span>
         <p>
-        You may find the tokens available to trade in the token list on <strong>slow.trade</strong> <strong>(click on either the <i>deposit</i> or <i>receive</i> token)</strong>. Note that all listed tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
+          You may find the tokens available to trade in the token list on <strong>slow.trade</strong> <strong>(click on either the <i>deposit</i> or <i>receive</i> token)</strong>. Note that all listed tokens are always available to trade with ETH (or WETH), but may not yet exist as a pair with one another.
         </p>
       </span>
     </section>
@@ -144,15 +144,15 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>What do I need to trade a token on the <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-        You only need three things:
+          You only need three things:
         </p><ol>
 
-        <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">Metamask</a> is supported.</li>
-        <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on <strong>slow.trade</strong>, click on the <em>deposit</em> or <em>receive</em> token.</li>
-        <li>ETH in your Wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
+          <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">Metamask</a> is supported.</li>
+          <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on <strong>slow.trade</strong>, click on the <em>deposit</em> or <em>receive</em> token.</li>
+          <li>ETH in your Wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
 
         <p>
-        No other tokens are needed!
+          No other tokens are needed!
         </p>
       </span>
     </section>
@@ -210,20 +210,20 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
 
       <span>
         <p>
-        Once you have submitted your deposit and the auction round you participated in has closed, you may proceed to claim your new tokens. A red claim button will alert you on <strong>slow.trade</strong> that you can claim your <em>Receive</em> token. You should therefore revisit <strong>slow.trade</strong> frequently.
+          Once you have submitted your deposit and the auction round you participated in has closed, you may proceed to claim your new tokens. A red claim button will alert you on <strong>slow.trade</strong> that you can claim your <em>Receive</em> token. You should therefore revisit <strong>slow.trade</strong> frequently.
         </p>
         <p>
-        Slow.trade provides you with <strong>two different options to claim your new tokens</strong>:
+          Slow.trade provides you with <strong>two different options to claim your new tokens</strong>:
         </p><ul>
 
-        <li>At the top of the page in the section <em>"Your Auctions"</em>. <strong>Clicking the claim button in the <em>Your Auctions </em>section</strong> will claim the tokens from all prior auctions of that particular pair in which you have participated and have not yet claimed. Once you have clicked on the red claim button, you will see your Wallet provider's screens. You may need to confirm twice to claim the tokens (the first confirmation is to claim and the second is to withdraw the tokens back into your Wallet).</li>
-        <li>The second option is <strong>via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process.</strong> From there, you may claim the token that are particular to that specific auction. You will only need to sign once.</li></ul>
+          <li>At the top of the page in the section <em>"Your Auctions"</em>. <strong>Clicking the claim button in the <em>Your Auctions </em>section</strong> will claim the tokens from all prior auctions of that particular pair in which you have participated and have not yet claimed. Once you have clicked on the red claim button, you will see your Wallet provider's screens. You may need to confirm twice to claim the tokens (the first confirmation is to claim and the second is to withdraw the tokens back into your Wallet).</li>
+          <li>The second option is <strong>via the specific URL for the auction pair. You will automatically access the URL at the end of the deposit process.</strong> From there, you may claim the token that are particular to that specific auction. You will only need to sign once.</li></ul>
 
         <p>
-        Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, they will be credited to your Wallet automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of <strong>slow.trade</strong>.
+          Important: If your trade generated <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia (MGN)</Link>, they will be credited to your Wallet automatically upon claiming your new tokens. MGN are locked by default and are visible to you in the header bar of <strong>slow.trade</strong>.
         </p>
         <p>
-        Note that you have to be connected to the same Wallet that you used to participate in the auction in order to claim your new tokens!
+          Note that you have to be connected to the same Wallet that you used to participate in the auction in order to claim your new tokens!
         </p>
       </span>
     </section>
@@ -252,16 +252,16 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         <p>
           <strong>Magnolia (MGN) is the token used for reducing your individual liquidity contribution due on the DutchX Protocol.</strong> One MGN is automatically created for every trade you make that is worth one ETH (or any fraction thereof). You will receive them automatically upon claiming your new tokens. The more you trade, the more MGN you will receive, and the lower your individual liquidity contribution.
           </p>
-          <p>
+        <p>
           For more info, check out the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
           </p>
-          <p>
+        <p>
           In the header bar of <strong>slow.trade</strong>, the amount of locked MGN associated with your linked Wallet is displayed. However, you will not see this amount in your Wallet.
           </p>
-          <p>
+        <p>
           Of course, you do not need to hold any MGN to participate on <strong>slow.trade</strong> or the DutchX Protocol!
           </p>
-          <p>
+        <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
@@ -285,7 +285,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
       <span>
         <p>
-        This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
+          This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
@@ -298,14 +298,14 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <span>
 
         <p>
-        This message is to inform you about whether the token pair generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
+          This message is to inform you about whether the token pair generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
     </section>
-    <br/>
+    <br />
     <p>
       Want to bid in an auction? This is currently only possible for technical participants on the DutchX Protocol level: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
     </p>
@@ -350,9 +350,9 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are Magnolia (MGN)?</h3>
       <span>
         <p>
-          Magnolia (MGN) tokens lower the fees on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
+          Magnolia (MGN) tokens lower the default liquidity contributions on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
         <br />
-          Note that MGN are locked by default in order to reduce fees for you. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
+          Note that MGN are locked by default in order to reduce your liquidity contribution. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
         <br />
           Of course, you are not required to hold any Magnolia (MGN) to participate on <strong>slow.trade</strong> or interact with the DutchX Protocol.
         <br />
@@ -365,7 +365,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are whitelisted tokens?</h3>
       <span>
         <p>
-          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from lower fees.
+          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from liquidity contribution.
         <br />
           <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
@@ -398,13 +398,22 @@ export const Tokens = ({ handleClick }: ContentPages) =>
 
 export const LiquidityContribution = ({ handleClick }: ContentPages) =>
   <article id="fees">
-    <h1>Fees</h1>
+    <h1>Liquidity contribution</h1>
 
-    <section className="drawer" onClick={handleClick} id="what-fees-are-due">
-      <h3>What fees are due on <strong>slow.trade</strong>?</h3>
+    <section className="drawer" onClick={handleClick} id="what-id-liquid-contrib">
+      <h3>What is liquidity contribution?</h3>
       <span>
         <p>
-          <strong>No fees</strong> are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the fees that are due on the DutchX Protocol level. For more information please see the next question.
+          On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol.
+        </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="what-fees-are-due">
+      <h3>Are there no fees due on <strong>slow.trade</strong>?</h3>
+      <span>
+        <p>
+          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contributionfees that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
         </p>
       </span>
     </section>
@@ -1084,15 +1093,15 @@ export const Help = ({ network }: ContentPages) =>
     <h1>Help</h1>
     <section className="content">
       <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
-      <br/>
-      For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
+      <br />
+        For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
       {network === 'MAIN' &&
-      <>
-        <br/><br/>
-        You may also reach us at <a href="mailTo: support@slow.trade">support@slow.trade</a>
-        <br/><br/>
-        For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
-      </>}
+          <>
+            <br /><br />
+            You may also reach us at <a href="mailTo: support@slow.trade">support@slow.trade</a>
+            <br /><br />
+            For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
+          </>}
       </p>
     </section>
   </article>
