@@ -274,7 +274,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" id="what-is-fee-level" onClick={handleClick}>
+    <section className="drawer" id="what-is-individual-liquidity-contribution" onClick={handleClick}>
       <h3>What is my individual liquidity contribution?</h3>
       <span>
         <p>The liquidity contribution on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your individual liquidity contribution can be 0. Without a reduction, the liquidity contribution is 0.5% of your trading volume, and is gradually reduced depending on the amount of MGN you hold.</p>
