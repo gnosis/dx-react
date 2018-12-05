@@ -422,7 +422,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>What liquidity contribution do I have to pay to be active on the DutchX Protocol?</h3>
       <span>
         <p>
-          If you hold enough Magnolia (MGN), your liquidity contributionfee is 0. The default liquidity contribution is 0.5% of your trading volume, which isand are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributionsFees paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
+          If you hold enough Magnolia (MGN), your liquidity contribution is 0. The default liquidity contribution is 0.5% of your trading volume, which isand are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributions paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
         </p>
       </span>
     </section>
@@ -435,7 +435,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
         </p>
         <img src={feeReductionModel} />
         <p>
-          Note: If you want to make use of the Magnolia fee reduction mechanism, you must hold Magnolia tokens in the<strong> same Wallet</strong> that you are using for the auction.
+          Note: If you want to make use of the Magnolia reduction mechanism, you must hold Magnolia tokens in the<strong> same Wallet</strong> that you are using for the auction.
         </p>
       </span>
     </section>
@@ -453,7 +453,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>What does it mean that Magnolia generation is inactive for this version?</h3>
       <span>
         <p>
-          Currently no token is whitelisted to generate Magnolia and no Magnolia tokens are in circulation. When the DutchX smart contracts are released again by a decentralized autonomous organisation (a DAO), the Magnolia fee reduction will be activated. We have kept the explanatory notes for you to learn about this mechanism.
+          Currently no token is whitelisted to generate Magnolia and no Magnolia tokens are in circulation. When the DutchX smart contracts are released again by a decentralized autonomous organisation (a DAO), the Magnolia liquidity contribution reduction will be activated. We have kept the explanatory notes for you to learn about this mechanism.
         <br />
           Note that the absence of Magnolia does not impact the <strong>liquidity contribution redistribution, which is fully functioning.</strong> All liquidity contributions remain within the DutchX Protocol and go to all its users.
         </p>
@@ -546,7 +546,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>What happens to the OWL used to partially settle the liquidity contribution?</h3>
       <span>
         <p>
-          OWL used to pay for fees are <strong>not credited</strong> to anyone! <strong>They are instead consumed ("burned")</strong>. Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.
+          Actually, OWL used to settle half of the liquidity contribution are <strong>not credited</strong> to anyone! <strong>They are instead consumed (“burned”)</strong>. Burning OWL means that they will be collected in a smart contract that cannot be accessed by anyone.
         </p>
       </span>
     </section>
@@ -555,7 +555,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>How do I settle my liquidity contribution?</h3>
       <span>
         <p>
-        The liquidity contribution is done <strong>automatically</strong>. The liquidity contribution(or remaining level in case you choose to partially settle with OWL) are automatically deducted from the token you are depositing for sale.
+        The liquidity contribution is done <strong>automatically</strong>. The liquidity contribution (or remaining level in case you choose to partially settle with OWL) are automatically deducted from the token you are depositing for sale.
         </p>
       </span>
     </section>
