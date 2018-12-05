@@ -270,7 +270,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     <section className="drawer" id="what-is-liquidity-contribution" onClick={handleClick}>
       <h3>What is liquidity contribution?</h3>
       <span>
-        <p>On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol. Please read more in the section on <Link to={URLS.LIQUIDITY_CONTRIBUTION}>liquidity contribution</Link>.</p>
+        <p>On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol. Please read more in the section on <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#liquidity-contribution'}>liquidity contribution</Link>.</p>
       </span>
     </section>
 
