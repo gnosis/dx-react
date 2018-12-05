@@ -173,7 +173,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your Wallet provider.
               </li>
               <li>
-                Settling liquidity contribution in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to settle half of the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>liquidity contribution</Link> in OWL (as long as you have a positive OWL balance).
+                Settling liquidity contribution in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to settle half of the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#liquidity-contribution'}>liquidity contribution</Link> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -397,7 +397,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
   </article>
 
 export const LiquidityContribution = ({ handleClick }: ContentPages) =>
-  <article id="fees">
+  <article id="liquidity-contribution">
     <h1>Liquidity contribution</h1>
 
     <section className="drawer" onClick={handleClick} id="what-id-liquid-contrib">
@@ -413,7 +413,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Are there no fees due on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contributionfees that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
+          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contribution that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
         </p>
       </span>
     </section>
