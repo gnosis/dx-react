@@ -1,6 +1,8 @@
 interface Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any,
   TextDecoder: any,
+  ethereum: any,
+  mist: any,
   web3: any,
 }
 

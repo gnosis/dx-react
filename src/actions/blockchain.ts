@@ -177,7 +177,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(FIXED_DECIMALS) }),
     setCurrentAccountAddress({ currentAccount }),
-    setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
+    setCurrentBalance({ currentBalance: balance ? balance.div(10 ** 18) : toBigNumber(0) }),
   ], 'HYDRATING_MAIN_STATE'))
 
   return status
@@ -499,21 +499,21 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
           dispatch(openModal({
             modalName: 'ApprovalModal',
             modalProps: {
-              header: 'Using OWL to pay for fees',
-              body: `You have the option to pay half of your fees on ${COMPANY_NAME} in OWL.
-              Any fee reduction due to your MGN token balance remains valid and is applied before the final fee calculation.
+              header: 'USING OWL TO SETTLE HALF OF YOUR LIQUIDITY CONTRIBUTION',
+              body: `You have the option to settle half of your liquidity contribution due on DutchX protocol level in OWL.
+              Any reduction in your level of liquidity contribution due to your MGN token balance remains valid and is applied before the final liquidity contribution calculation.
               `,
               buttons: {
                 button2: {
-                  buttonTitle2: 'Use OWL to pay for fees',
+                  buttonTitle2: 'Use OWL to settle half of liquidity contribution',
                 },
                 button1: {
-                  buttonTitle1: 'Don\'t use OWL to pay for fees',
+                  buttonTitle1: 'Don\'t use OWL to settle half of liquidity contribution',
                 },
               },
               footer: {
-                url: '#/content/Fees',
-                urlMsg: 'Fees',
+                url: '#/content/LiquidityContribution',
+                urlMsg: 'Liquidity Contribution',
               },
               onClick: accept,
             },
@@ -701,7 +701,7 @@ export const approveTokens = (choice: string, tokenType: 'SELLTOKEN' | 'OWLTOKEN
           modalName: 'TransactionModal',
           modalProps: {
             header: 'Approving use of OWL',
-            body: 'You are approving the use of OWL tokens towards fee reduction - you will not see this message again.',
+            body: 'You are approving the use of OWL tokens towards liquidity contribution - you will not see this message again.',
             loader: true,
           },
         }))

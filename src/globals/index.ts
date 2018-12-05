@@ -1,5 +1,4 @@
 import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
-import { geoBlockedCitiesToString } from 'utils'
 
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
@@ -139,7 +138,7 @@ export const URLS = {
   METAMASK: 'https://metamask.io',
   HOW_IT_WORKS: '/content/HowItWorks',
   TOKENS: '/content/Tokens',
-  FEES: '/content/Fees',
+  LIQUIDITY_CONTRIBUTION: '/content/LiquidityContribution',
   FAQ: '/content/FAQ',
   MARKET_MAKERS: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Market_Makers.pdf',
   LISTING_A_TOKEN: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Handbook_New_Tokens.pdf',
@@ -203,4 +202,10 @@ export const BLOCKED_COUNTRIES = {
 }
 
 export const MAX_SELL_USD = 500 // temporary for MAINNET
-export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
+// export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
+
+/**
+ * Show/Hide Footer in relevant places (see router)
+ * @type {boolean}
+ */
+export const SHOW_FOOTER_CONTENT = true
