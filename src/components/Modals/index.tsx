@@ -9,20 +9,20 @@ import { displayUserFriendlyError, geoBlockedCitiesToString } from 'utils'
 const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString({ DE: 'Germany' })
 
 interface TransactionModalProps {
-    activeProvider?: string,
-    closeModal?: typeof closeModal,
-    modalProps: Modal['modalProps'],
-    error?: string,
-  }
+   activeProvider?: string,
+   closeModal?: typeof closeModal,
+   modalProps: Modal['modalProps'],
+   error?: string,
+ }
 
 interface ApprovalModalProps extends TransactionModalProps {
-    approvalButton: any,
-  }
+   approvalButton: any,
+ }
 
 interface BlockModalProps extends TransactionModalProps {
-    disabledReason: string,
-    networkAllowed?: Partial<ETHEREUM_NETWORKS>,
-  }
+   disabledReason: string,
+   networkAllowed?: Partial<ETHEREUM_NETWORKS>,
+ }
 
 export const TransactionModal: React.SFC<TransactionModalProps> = ({
   modalProps: {
@@ -152,9 +152,9 @@ export const ApprovalModal: React.SFC<ApprovalModalProps> = ({
 const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
 
 const disabledReasons = {
-    geoblock: {
-    title: `${COMPANY_NAME} is currently not available.`,
-    render: () =>
+   geoblock: {
+      title: `${COMPANY_NAME} is currently not available.`,
+      render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
         <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region. The following countries are geo-blocked:</p>
@@ -163,20 +163,20 @@ const disabledReasons = {
         </p>
         <br />
         <br />
-        <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
+        <small><i>Read about the many trading advantages of slow.trade’s underlying DutchX protocol <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">here</a>.</i></small>
       </div>,
-  },
-    networkblock: {
-    title: `${COMPANY_NAME} is not available on your network.`,
-    render: (network = 'RINKEBY Test Network') =>
+    },
+   networkblock: {
+      title: `${COMPANY_NAME} is not available on your network.`,
+      render: (network = 'RINKEBY Test Network') =>
     <div style={blockModalStyle}>
       <p>{`Make sure you’re connected to the ${network}.`}</p>
       <br />
       <br />
-      <small><i>For more information, read the <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">Blog</a> to learn more about {COMPANY_NAME}.</i></small>
+      <small><i>Read about the many trading advantages of slow.trade’s underlying DutchX protocol <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">here</a>.</i></small>
     </div>,
-  },
-  }
+    },
+ }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({
   disabledReason,
