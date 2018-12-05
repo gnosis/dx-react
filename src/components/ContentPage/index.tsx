@@ -419,19 +419,19 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="what-fees-need-to-pay">
-      <h3>What fees do I have to pay to be active on the DutchX Protocol?</h3>
+      <h3>What liquidity contribution fees do I have to pay to be active on the DutchX Protocol?</h3>
       <span>
         <p>
-          Fee level is one of the most interesting aspects of the DutchX Protocol. If you hold enough Magnolia (MGN), your fee is 0. Fees normally start at 0.5% of your trading volume, and are gradually reduced depending on the amount of MGN you hold. <strong>Fees paid are redistributed to all users of the DutchX Protocol! </strong>
+          If you hold enough Magnolia (MGN), your liquidity contributionfee is 0. The default liquidity contribution is 0.5% of your trading volume, which isand are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributionsFees paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
         </p>
       </span>
     </section>
 
     <section className="drawer" id="fee-reduction-image" onClick={handleClick}>
-      <h3>How can I lower my fees?</h3>
+      <h3>How can I lower my liquidity contribution?</h3>
       <span>
         <p>
-          Your fees will be lowered automatically if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the fees are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this step function integrated within the DutchX Protocol:
+          Your liquidity contribution will be lowered automatically if you hold <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> tokens. The amount by which the liquidity contribution are lowered depends on how much Magnolia you hold in relation to the entire Magnolia market volume. It is based on this step function integrated within the DutchX Protocol:
         </p>
         <img src={feeReductionModel} />
         <p>
@@ -441,10 +441,10 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="where-to-see-fees">
-      <h3>Where do I see my fees?</h3>
+      <h3>Where do I see my level of liquidity contribution?</h3>
       <span>
         <p>
-          <strong>Your fee level is displayed on the header bar of slow.trade</strong>. Note that this figure is subject to change as the Magnolia market volume changes. For this reason, this number should be considered an estimate.
+          <strong>Your liquidity contribution level is displayed on the header bar of slow.trade</strong>. Note that this figure is subject to change as the Magnolia market volume changes. For this reason, this number should be considered an estimate.
         </p>
       </span>
     </section>
@@ -455,7 +455,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
         <p>
           Currently no token is whitelisted to generate Magnolia and no Magnolia tokens are in circulation. When the DutchX smart contracts are released again by a decentralized autonomous organisation (a DAO), the Magnolia fee reduction will be activated. We have kept the explanatory notes for you to learn about this mechanism.
         <br />
-          Note that the absence of Magnolia does not impact the <strong>fee redistribution, which is fully functioning.</strong> All fees remain within the DutchX Protocol and go to all its users.
+          Note that the absence of Magnolia does not impact the <strong>liquidity contribution redistribution, which is fully functioning.</strong> All liquidity contributions remain within the DutchX Protocol and go to all its users.
         </p>
       </span>
     </section>
@@ -466,7 +466,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
         <p>
           You may either generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair),for example via <strong>slow.trade</strong>. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
         <br />
-          Alternatively, you may purchase MGN as they are freely tradable. This may be particularly useful if you are close to the next fee reduction level.
+          Alternatively, you may purchase MGN as they are freely tradable. This may be particularly useful if you are close to the next lower liquidity contribution level.
       </p>
       </span>
     </section>
@@ -475,7 +475,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>How do I trade Magnolia?</h3>
       <span>
         <p>
-          To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the fee reduction. Currently, it is not possible to trade MGN on <strong>slow.trade</strong>.
+          To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the liquidity contribution reduction. Currently, it is not possible to trade MGN on <strong>slow.trade</strong>.
         </p>
       </span>
     </section>
@@ -484,7 +484,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Why is it beneficial to hold a lot of Magnolia (MGN)?</h3>
       <span>
         <p>
-          <strong>Magnolia</strong> (MGN) tokens <strong>reduce your fees</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your fee is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your fees are lowered depends on how much MGN you hold relative to the entire MGN market.
+          <strong>Magnolia</strong> (MGN) tokens <strong>reduce your liquidity contributions</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your liquidity contribution is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your liquidity contributions is lowered depends on how much MGN you hold relative to the entire MGN market.
         <br />
           <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
