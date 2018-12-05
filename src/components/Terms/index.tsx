@@ -10,7 +10,7 @@ export const TermsText = (props: HTMLAttributes<HTMLDivElement> & { network: str
   {props.network === '4' || props.network === 'RINKEBY'
     ?
     <span>
-      <h4>Disclaimer:</h4>
+      <br/>
       <ul className="scrollableDisclaimerList">
         <li>The DutchX is a decentralized trading protocol for ERC20 tokens, governed by smart contracts that allow peer-to-peer trades between sellers and bidders without intermediary.</li>
         <li>You are solely responsible to safekeep your wallet and private information.</li>
