@@ -177,7 +177,7 @@ export const updateMainAppState = (condition?: any) => async (dispatch: Dispatch
     setFeeRatio({ feeRatio: feeRatio.toNumber() }),
     setTokenSupply({ mgnSupply: mgnLockedBalance.div(10 ** 18).toFixed(FIXED_DECIMALS) }),
     setCurrentAccountAddress({ currentAccount }),
-    setCurrentBalance({ currentBalance: balance.div(10 ** 18) }),
+    setCurrentBalance({ currentBalance: balance ? balance.div(10 ** 18) : toBigNumber(0) }),
   ], 'HYDRATING_MAIN_STATE'))
 
   return status
