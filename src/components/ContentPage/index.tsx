@@ -306,14 +306,6 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
   </article>
 )
 
-export const Screencast = () =>
-  <article>
-    <h1>Screencast</h1>
-    <section className="content">
-      <p>A screencast on how to exchange tokens on the DutchX will follow shortly. For now, please read the <a href="#">How the DutchX works</a> section.</p>
-    </section>
-  </article>
-
 export const Tokens = ({ handleClick }: ContentPages) =>
   <article>
     <h1>Tokens</h1>
@@ -618,87 +610,6 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
 
   </article>
 
-export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
-  <article>
-    <h1>Auction Mechanisms</h1>
-    <section className="drawer" onClick={handleClick} id="dutchx">
-      <h3>DutchX</h3>
-      <span>
-        <p>The DutchX is a decentralized exchange for ERC20 token pairings, based on the Dutch auction principle. Taking the traditional order book model to the blockchain makes little sense: problems such as front-running are magnified in discrete time. The mechanism of the DutchX is designed such that sellers submit their tokens ahead of an auction. Then, the auction starts with a high price which falls until the market for the specific token-pairing clears. Bidders submit their bids during the auction, but pay the same final price. Hence, the dominant strategy for bidders to reveal their true willingness to pay will result in fair market prices. Coupled with a pure on-chain design, the DutchX may function as a price oracle and is also usable for other smart contracts to convert tokens. Participants benefit from the redistribution of fees within the DutchX ecosystem as well.
-      </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="how-dutchx-works">
-      <h3>How a Dutch auction works</h3>
-      <span>
-        <p>While there are some variations to the mechanism, the main concept of a Dutch auction is that it starts with a high but falling price. The first person to make a bid will purchase the auctioned item for the current price at the bidding time.
-          If there are multiple fungible items in one auction (e.g. shares or tokens), then the auction only ends when all the items have been allocated to bidders and each successful bidder will receive their purchase at the same final (lowest!) price.
-      </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="what-is-batch-auction">
-      <h3>What is a batch auction?</h3>
-      <span>
-        <p>Instead of trading continuously, the exchange collects the sell orders as batches until the auction starts, and clear them at the end of the auction all at once.<br /><br />
-          Therefore, by accumulating orders that are executed at the same time, a batch auction exchange not only represents a better price finding mechanism than an order book, but also eliminates the inherent flaw of the order book exchange: front-running.
-          On the DutchX, your orders will get batched so that you benefit from these advantages (which is a reason for slow execution as well).
-      </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="dutchx-in-detail">
-      <h3>The DutchX in detail</h3>
-      <span>
-        <p>The DutchX for a particular token-pairing (e.g. exchange Token A for Token B) changes between two states: (i) before the particular auction starts, and (ii) when an auction is running.
-          In the first state (i) sellers deposit their tokens (here: Token A). In the second state (ii), while the auction is running, bidders submit their bids (here: Token B).
-        <br /><br />
-          (include seller/bidder picture from this slide deck, slide 6; I don’t think there is a separate graphic for this).
-        <br /><br />
-          State (i) closes before state (ii) starts and hence sellers cannot deposit tokens into a running auction (these automatically go into the next auction). This means that there is a fixed amount of tokens to be auctioned off.
-        <br /><br />
-          This is what the second state (the auction) looks like (Token A for Token B):
-          (include picture of the running auction, slide 7, there should be a graph)
-        <br /><br />
-          The price starts at a very high price point (twice the last closing price) and falls over time. The price falls quickly at first and slows down to decrease less rapidly. During the entire auction, bids are accepted. <strong>When the auction ends, all bidders pay the same closing price!</strong> The “price” is paid in the currency determined by the particular token-pairing. In this example, Token B was used to purchase A Token and the price is set by the exchange rate between Token A and Token B.
-      </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="auction-over-time">
-      <h3>What does each auction look like over time?</h3>
-      <span>
-        <p>Only one auction of the same pairing is run at the same time. Note that opposite auctions (i.e. opposite auction of Token A as sellToken and Token B as bidToken is Token B as sellToken and Token A as bidToken) run at the same time (they start simultaneously and finishing at their individual times).<br /><br />
-          Of course for all unique pairings the same logic is applied and those auctions run independently from one another. Each pairing goes through the stages (i) sellers deposit, (ii) bidders bid, and (iii) payouts are claimed. Over time, it looks like this:
-          (include slide 9 of the slide deck; I don’t think this graphic exists in the repo)
-      </p>
-      </span>
-    </section>
-
-  </article>
-
-export const MarketMarker = () =>
-  <article>
-    <h1>Market Maker on the DutchX</h1>
-
-    TBD
-
-  </article>
-export const ListingToken = () =>
-  <article>
-    <h1>Listing a Token on the DutchX</h1>
-
-    TBD
-
-  </article>
-export const OpenPlatform = () =>
-  <article>
-    <h1>DutchX as an Open Platform</h1>
-
-    TBD
-
-  </article>
 export const FAQ = ({ handleClick }: ContentPages) =>
   <article id="FAQ">
     <h1>FAQ</h1>
@@ -1161,31 +1072,6 @@ export const FAQ = ({ handleClick }: ContentPages) =>
 
   </article >
 
-export const Technical = () =>
-  <article>
-    <h1>API and Technical Links</h1>
-    <section className="content">
-      <p>
-        <a href="#">Read API</a><br />
-        <a href="#">Technical documentation </a><br />
-        <a href="#">Github Repo</a><br />
-        <a href="#">Listing a Token to the Smart Contract</a><br />
-        <a href="#">Listing a Token to the Interface</a><br />
-        <a href="#">Providing Liquidity</a>
-      </p>
-    </section>
-
-  </article>
-
-export const Downtime = () =>
-  <article>
-    <h1>Downtime and Maintenance</h1>
-    <section className="content">
-      <p>Unfortunately, there is no guarantee of keeping this interface available to you. We try our best to facilitate an easy use. If we are down for maintenance, we will try to communicate this early. In case the site is down due to unforeseen reasons, we will reach out via other channels (e.g. <a href="#">twitter</a>).<br /><br />
-        It’s important to note that funds can always be claimed: interactions with the DutchX smart contract is always possible as the entire DutchX smart contracts are on the Ethereum blockchain.</p>
-    </section>
-  </article>
-
 export const Help = ({ network }: ContentPages) =>
   <article>
     <h1>Help</h1>
@@ -1201,5 +1087,117 @@ export const Help = ({ network }: ContentPages) =>
         For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
       </>}
       </p>
+    </section>
+  </article>
+
+// NOT USED RIGHT NOW
+export const Screencast = () =>
+  <article>
+    <h1>Screencast</h1>
+    <section className="content">
+      <p>A screencast on how to exchange tokens on the DutchX will follow shortly. For now, please read the <a href="#">How the DutchX works</a> section.</p>
+    </section>
+  </article>
+export const AuctionMechanisms = ({ handleClick }: ContentPages) =>
+  <article>
+    <h1>Auction Mechanisms</h1>
+    <section className="drawer" onClick={handleClick} id="dutchx">
+      <h3>DutchX</h3>
+      <span>
+        <p>The DutchX is a decentralized exchange for ERC20 token pairings, based on the Dutch auction principle. Taking the traditional order book model to the blockchain makes little sense: problems such as front-running are magnified in discrete time. The mechanism of the DutchX is designed such that sellers submit their tokens ahead of an auction. Then, the auction starts with a high price which falls until the market for the specific token-pairing clears. Bidders submit their bids during the auction, but pay the same final price. Hence, the dominant strategy for bidders to reveal their true willingness to pay will result in fair market prices. Coupled with a pure on-chain design, the DutchX may function as a price oracle and is also usable for other smart contracts to convert tokens. Participants benefit from the redistribution of fees within the DutchX ecosystem as well.
+      </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="how-dutchx-works">
+      <h3>How a Dutch auction works</h3>
+      <span>
+        <p>While there are some variations to the mechanism, the main concept of a Dutch auction is that it starts with a high but falling price. The first person to make a bid will purchase the auctioned item for the current price at the bidding time.
+          If there are multiple fungible items in one auction (e.g. shares or tokens), then the auction only ends when all the items have been allocated to bidders and each successful bidder will receive their purchase at the same final (lowest!) price.
+      </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="what-is-batch-auction">
+      <h3>What is a batch auction?</h3>
+      <span>
+        <p>Instead of trading continuously, the exchange collects the sell orders as batches until the auction starts, and clear them at the end of the auction all at once.<br /><br />
+          Therefore, by accumulating orders that are executed at the same time, a batch auction exchange not only represents a better price finding mechanism than an order book, but also eliminates the inherent flaw of the order book exchange: front-running.
+          On the DutchX, your orders will get batched so that you benefit from these advantages (which is a reason for slow execution as well).
+      </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="dutchx-in-detail">
+      <h3>The DutchX in detail</h3>
+      <span>
+        <p>The DutchX for a particular token-pairing (e.g. exchange Token A for Token B) changes between two states: (i) before the particular auction starts, and (ii) when an auction is running.
+          In the first state (i) sellers deposit their tokens (here: Token A). In the second state (ii), while the auction is running, bidders submit their bids (here: Token B).
+        <br /><br />
+          (include seller/bidder picture from this slide deck, slide 6; I don’t think there is a separate graphic for this).
+        <br /><br />
+          State (i) closes before state (ii) starts and hence sellers cannot deposit tokens into a running auction (these automatically go into the next auction). This means that there is a fixed amount of tokens to be auctioned off.
+        <br /><br />
+          This is what the second state (the auction) looks like (Token A for Token B):
+          (include picture of the running auction, slide 7, there should be a graph)
+        <br /><br />
+          The price starts at a very high price point (twice the last closing price) and falls over time. The price falls quickly at first and slows down to decrease less rapidly. During the entire auction, bids are accepted. <strong>When the auction ends, all bidders pay the same closing price!</strong> The “price” is paid in the currency determined by the particular token-pairing. In this example, Token B was used to purchase A Token and the price is set by the exchange rate between Token A and Token B.
+      </p>
+      </span>
+    </section>
+
+    <section className="drawer" onClick={handleClick} id="auction-over-time">
+      <h3>What does each auction look like over time?</h3>
+      <span>
+        <p>Only one auction of the same pairing is run at the same time. Note that opposite auctions (i.e. opposite auction of Token A as sellToken and Token B as bidToken is Token B as sellToken and Token A as bidToken) run at the same time (they start simultaneously and finishing at their individual times).<br /><br />
+          Of course for all unique pairings the same logic is applied and those auctions run independently from one another. Each pairing goes through the stages (i) sellers deposit, (ii) bidders bid, and (iii) payouts are claimed. Over time, it looks like this:
+          (include slide 9 of the slide deck; I don’t think this graphic exists in the repo)
+      </p>
+      </span>
+    </section>
+
+  </article>
+export const MarketMarker = () =>
+  <article>
+    <h1>Market Maker on the DutchX</h1>
+
+    TBD
+
+  </article>
+export const ListingToken = () =>
+  <article>
+    <h1>Listing a Token on the DutchX</h1>
+
+    TBD
+
+  </article>
+export const OpenPlatform = () =>
+  <article>
+    <h1>DutchX as an Open Platform</h1>
+
+    TBD
+
+  </article>
+export const Technical = () =>
+  <article>
+    <h1>API and Technical Links</h1>
+    <section className="content">
+      <p>
+        <a href="#">Read API</a><br />
+        <a href="#">Technical documentation </a><br />
+        <a href="#">Github Repo</a><br />
+        <a href="#">Listing a Token to the Smart Contract</a><br />
+        <a href="#">Listing a Token to the Interface</a><br />
+        <a href="#">Providing Liquidity</a>
+      </p>
+    </section>
+
+  </article>
+export const Downtime = () =>
+  <article>
+    <h1>Downtime and Maintenance</h1>
+    <section className="content">
+      <p>Unfortunately, there is no guarantee of keeping this interface available to you. We try our best to facilitate an easy use. If we are down for maintenance, we will try to communicate this early. In case the site is down due to unforeseen reasons, we will reach out via other channels (e.g. <a href="#">twitter</a>).<br /><br />
+        It’s important to note that funds can always be claimed: interactions with the DutchX smart contract is always possible as the entire DutchX smart contracts are on the Ethereum blockchain.</p>
     </section>
   </article>
