@@ -203,7 +203,7 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
   }
 }
 
-export const web3CompatibleNetwork = async () => {
+export const web3CompatibleNetwork = async (id?: boolean) => {
   await windowLoaded
   if (typeof window === 'undefined' || !window.web3 || !window.web3.version) return (console.debug('no window or window.web3 or window.web3.version'), 'UNKNOWN')
 
@@ -223,7 +223,7 @@ export const web3CompatibleNetwork = async () => {
   } else {
     // 0.XX.xx API
     // without windowLoaded web3 can be injected but network id not yet set
-    netID = await getNetwork(window as any).catch((err: Error) => (console.error(err), 'UNKNOWN'))
+    netID = await getNetwork(window as any, id).catch((err: Error) => (console.error(err), 'UNKNOWN'))
   }
 
   return netID

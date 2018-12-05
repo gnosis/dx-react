@@ -26,8 +26,8 @@ export const isNetBlocked = async (idsToAllow: (string | number)[]) => {
   if (typeof window === 'undefined' || !window.web3) return false
 
   try {
-    const id = await web3CompatibleNetwork()
-
+    // grab net ID, not string name - [true = IDs e.g 4] WHILE [blank or FALSE = NetworkName e.g 'Rinkeby']
+    const id = await web3CompatibleNetwork(true)
     // allow network ID matching at least 1 passed in from idsToAllow
     // and local testrpc (id = Date.now()) >> Apr 29 2018
     if (idsToAllow.includes(id as string) || +id > 1525000000000) return false
