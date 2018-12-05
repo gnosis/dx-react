@@ -413,7 +413,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Are there no fees due on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contribution that isare due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
+          <strong>No fees</strong> or additional liquidity contributions are levied on the <strong>slow.trade</strong> Platform. However, you will still need to pay the liquidity contribution that is due on the DutchX Protocol level. Note that there are no traditional fees on the DutchX protocol; rather but  the contribution levied remains in the DutchX protocol and is not extracted from the system. For more information please see the next question.
         </p>
       </span>
     </section>
@@ -485,7 +485,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <span>
         <p>
           <strong>Magnolia</strong> (MGN) tokens <strong>reduce your liquidity contributions</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your liquidity contribution is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your liquidity contributions is lowered depends on how much MGN you hold relative to the entire MGN market.
-        <br />
+        <br /><br />
           <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
         </p>
       </span>
