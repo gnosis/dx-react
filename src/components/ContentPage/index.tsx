@@ -74,7 +74,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-        Yes, absolutely! The DutchX Protocol has an alternative interface available on the Rinkeby Testnet: <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank" rel="noopener noreferrer">DutchX Interface</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+        Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URL_RINKEBY}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
         </p>
       </span>
     </section>
@@ -104,7 +104,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
         Slow.trade provides you with two options to claim your new tokens:
         </p>
         <p>
-        The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that token pair (please note: you might need to sign two transactions with your Wallet provider).
+        The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that specific token pair (please note: you might need to sign two transactions with your Wallet provider).
         </p><br />
         <p>
         The second option is <strong>via the specific URL for the auction pair (auction overview page)</strong>. You will automatically be directed to this URL at the end of the order process. From there, you may claim the new token particular to that specific auction. Accordingly, you will only need to sign one transaction with your Wallet provider.
@@ -173,7 +173,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
                 Wrapping ETH will be the first confirmation which you will see, but only if you need to wrap ETH (i.e. to make it ERC20 compatible). Please always confirm with your Wallet provider.
               </li>
               <li>
-                Paying for fees in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to pay for half of your <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>fees</Link> in OWL (as long as you have a positive OWL balance).
+                Settling liquidity contribution in OWL: If you have <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#what-are-owl'}>OWL</Link> in your linked Wallet, you will be asked whether you would like to settle half of the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>liquidity contribution</Link> in OWL (as long as you have a positive OWL balance).
               </li>
               <li>
                 Confirming the token transfer on the screen (either for this trade only or for future transaction with the same tokens).
@@ -250,7 +250,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <span>
 
         <p>
-          <strong>Magnolia (MGN) is the fee reduction token for the DutchX</strong> <strong>Protocol</strong>. Magnolia reduce your fee level. One MGN is automatically created for every trade you make that is worth one ETH (or any fraction thereof). You will receive them automatically upon claiming your new tokens. The more you trade, the more MGN you will receive, and the lower your fee.
+          <strong>Magnolia (MGN) is the token used for reducing your individual liquidity contribution due on the DutchX Protocol.</strong> One MGN is automatically created for every trade you make that is worth one ETH (or any fraction thereof). You will receive them automatically upon claiming your new tokens. The more you trade, the more MGN you will receive, and the lower your individual liquidity contribution.
           </p>
           <p>
           For more info, check out the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link>.
@@ -267,10 +267,17 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       </span>
     </section>
 
-    <section className="drawer" id="what-is-fee-level" onClick={handleClick}>
-      <h3>What is my fee level?</h3>
+    <section className="drawer" id="what-is-liquidity-contribution" onClick={handleClick}>
+      <h3>What is liquidity contribution?</h3>
       <span>
-        <p>The fee level on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your fee can be 0. Fees normally start at 0.5% of the trading volume, and are gradually reduced depending on the amount of MGN you hold. Additionally, fees are not paid to us but paid into the next auction running for the respective auction pair and are thus redistributed to the users of the DutchX Protocol! Please read more in the <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#fees'}>Fee</Link> section.</p>
+        <p>On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol. Please read more in the section on <Link to={URLS.LIQUIDITY_CONTRIBUTION}>liquidity contribution</Link>.</p>
+      </span>
+    </section>
+
+    <section className="drawer" id="what-is-fee-level" onClick={handleClick}>
+      <h3>What is my individual liquidity contribution?</h3>
+      <span>
+        <p>The liquidity contribution on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your individual liquidity contribution can be 0. Without a reduction, the liquidity contribution is 0.5% of your trading volume, and is gradually reduced depending on the amount of MGN you hold.</p>
       </span>
     </section>
 
@@ -278,7 +285,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>What does “Any auction with [Token] won’t generate MGN” mean?</h3>
       <span>
         <p>
-          This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for fee-reduction) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
+        This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
@@ -291,7 +298,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <span>
 
         <p>
-          This message is to inform you about whether the token pair generates Magnolia (which is used for fee-reduction) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
+        This message is to inform you about whether the token pair generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
           <em>Note that Magnolia generation is inactive for this version.</em>
