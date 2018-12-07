@@ -169,16 +169,16 @@ async function init(provider: Provider) {
     }, {}) as ContractsMapWProxy
 
     const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
-    deployedContracts.DutchExchange = await contractsMap.DutchExchange.at(proxyAddress)
+    deployedContracts.DutchExchange = await contractsMap.DutchExchange.at<Promise<DXAuction>>(proxyAddress)
 
     const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
-    deployedContracts.TokenOWL = await contractsMap.TokenOWL.at(owlProxyAddress)
+    deployedContracts.TokenOWL = await contractsMap.TokenOWL.at<Promise<OWLInterface>>(owlProxyAddress)
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
 
     const oracleAddress = await deployedContracts.DutchExchange.ethUSDOracle()
     console.debug('OracleAddress: ', oracleAddress)
-    deployedContracts.PriceOracleInterface = await contractsMap.PriceOracleInterface.at(oracleAddress)
+    deployedContracts.PriceOracleInterface = await contractsMap.PriceOracleInterface.at<Promise<PriceOracleInterface>>(oracleAddress)
     console.debug('PriceOracleInterface.getUSDETHPrice = ', (await deployedContracts.PriceOracleInterface.getUSDETHPrice.call()).toString())
 
     if (process.env.FE_CONDITIONAL_ENV === 'development') {
