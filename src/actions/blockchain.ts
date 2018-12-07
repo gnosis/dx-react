@@ -960,7 +960,7 @@ export async function getFeeReductionFromOWL(sellAmount: string | BigNumber, use
   const owlsBurned =  toBigNumber(Math.min(owlBalance.toNumber(), Math.min(owlAllowance.toNumber(), feeInUSD.div(2).toNumber())))
   const adjustment = owlsBurned.gt(0) ? (owlsBurned.mul(fee)).div(feeInUSD) : toBigNumber(0)
 
-  console.warn('getFeeReductionFromOWL ==> ', { TokenOWLaddr: TokenOWL.address, fee, ethUSDPrice, owlBalance, owlAllowance, feeInUSD, owlsBurned, adjustment })
+  // console.warn('getFeeReductionFromOWL ==> ', { TokenOWLaddr: TokenOWL.address, fee, ethUSDPrice, owlBalance, owlAllowance, feeInUSD, owlsBurned, adjustment })
   return { adjustment, ethUSDPrice }
 }
 

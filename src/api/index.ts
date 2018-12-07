@@ -129,7 +129,7 @@ export const getTokenBalances = async (tokenList: DefaultTokenObject[], account?
     name: token.symbol || token.name || token.address || 'Unknown Token',
     decimals: token.decimals,
     address: token.address,
-    balance: balances[i] as BigNumber,
+    balance: balances[i] || toBigNumber(0) as BigNumber,
   }))
 }
 
