@@ -173,10 +173,12 @@ async function init(provider: Provider) {
 
     const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
     deployedContracts.TokenOWL = await contractsMap.TokenOWL.at<Promise<OWLInterface>>(owlProxyAddress)
+
+    // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
 
-    const oracleAddress = await deployedContracts.DutchExchange.ethUSDOracle()
+    const oracleAddress = await deployedContracts.DutchExchange.ethUSDOracle.call()
     console.debug('OracleAddress: ', oracleAddress)
     deployedContracts.PriceOracleInterface = await contractsMap.PriceOracleInterface.at<Promise<PriceOracleInterface>>(oracleAddress)
     console.debug('PriceOracleInterface.getUSDETHPrice = ', (await deployedContracts.PriceOracleInterface.getUSDETHPrice.call()).toString())
