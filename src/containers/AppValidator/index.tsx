@@ -52,7 +52,7 @@ class AppValidator extends React.Component<any> {
           timeoutCondition(15000, 'Wallet setup timeout. Please try refreshing the page.'),
         ])
 
-        this.setState({
+        return this.setState({
           loading: false,
           set_up_complete: true,
         })
