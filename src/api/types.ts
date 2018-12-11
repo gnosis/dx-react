@@ -183,7 +183,7 @@ export interface ContractArtifact {
 export interface SimpleContract {
   address: Account | void,
   contractName: string,
-  at<T = SimpleContract>(address: Account): T,
+  at<T = SimpleContract>(address: Account): Promise<T>,
   setProvider(provider: any): void,
   deployed<T = DeployedContract>(): Promise<T>,
   abi?: ABI,
