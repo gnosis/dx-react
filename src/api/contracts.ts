@@ -169,13 +169,12 @@ async function init(provider: Provider) {
     }, {}) as ContractsMapWProxy
 
     const { address: proxyAddress } = deployedContracts.DutchExchangeProxy
-    deployedContracts.DutchExchange = await contractsMap.DutchExchange.at<DXAuction>(proxyAddress)
+    deployedContracts.DutchExchange = contractsMap.DutchExchange.at<DXAuction>(proxyAddress)
 
     const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
-    deployedContracts.TokenOWL = await contractsMap.TokenOWL.at<OWLInterface>(owlProxyAddress)
+    deployedContracts.TokenOWL = contractsMap.TokenOWL.at<OWLInterface>(owlProxyAddress)
 
-    const oracleAddress = await deployedContracts.DutchExchange.ethUSDOracle.call()
-    deployedContracts.PriceOracleInterface = await contractsMap.PriceOracleInterface.at<PriceOracleInterface>(oracleAddress)
+    // TODO: prepare for TokenMGN or TokenFart proxy wrapping
 
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
