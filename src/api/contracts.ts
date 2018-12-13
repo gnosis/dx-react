@@ -135,9 +135,15 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
   return acc
 }, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
 
-export const setProvider = (provider: any) => Contracts.concat(HumanFriendlyToken).forEach((contract) => {
-  contract.setProvider(provider)
-})
+export const setProvider = (provider: any) => {
+  // const states = [provider, false]
+  // provider = states[Math.round(Math.random())]
+
+  if (!provider) throw new Error('No provider passed in. Please try refreshing the page and trying again.')
+  return Contracts.concat(HumanFriendlyToken).forEach((contract) => {
+    contract.setProvider(provider)
+  })
+}
 
 const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deployed()))
 
@@ -191,5 +197,6 @@ async function init(provider: Provider) {
     return deployedContracts as ContractsMap
   } catch (err) {
     console.error('Contract initialisation error: ', err)
+    throw new Error(err)
   }
 }
