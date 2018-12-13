@@ -12,10 +12,10 @@ import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
 import { lastArrVal } from 'utils'
 
 let API: dutchXAPI
-export const dxAPI = /* (window as any).AP = */ async (provider?: Provider) => {
-  if (API) return API
+export const dxAPI = /* (window as any).AP = */ async (provider?: Provider, force?: boolean | 'FORCE') => {
+  if (API && !force) return API
 
-  API = await initAPI(provider)
+  API = await initAPI(provider, force)
   return API
 }
 
@@ -1139,10 +1139,10 @@ export const getTokenPriceInUSD = async (tokenAddress: string) => {
   return ethUSDPrice.mul(num).div(den)
 }
 
-async function initAPI(provider: Provider): Promise<dutchXAPI> {
+async function initAPI(provider: Provider, force?: boolean | 'FORCE'): Promise<dutchXAPI> {
   try {
     const [web3, Tokens, DutchX, PriceOracle] = await Promise.all([
-      promisedWeb3(provider),
+      promisedWeb3(provider, force),
       promisedTokens(),
       promisedDutchX(),
       promisedPriceOracle(),
