@@ -10,11 +10,13 @@
   padding: 0;
     
   > h1 {
-    margin: 20px 0 40px;
-    font-family: $font;
-    font-weight: $bold;
     color: $white;
+    font-family: $font;
     font-size: 2.4em;
+    font-weight: $bold;
+    line-height: 1;
+    margin: 20px 0 40px;
+    text-align: center;
   }
     
   > div {
@@ -29,10 +31,18 @@
     border-radius: 2px;
     min-height: 300px;
 
-      &.ready {
-        background: $white;
-        box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
-      }
+    border-radius: 250px;
+
+    @media #{$mobile} {
+      border-radius: 20px;
+    }
+
+    &.ready {
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    }
+
+    transition: all 0.5s ease-in-out;
   }
 
   > h3 {
@@ -49,36 +59,37 @@
     align-items: center;
     text-align: center;
     height: 200px;
-    border: 1px solid $greyBorder;
+    border: 1px solid transparent;
     padding: 20px;
     box-sizing: border-box;
     cursor: pointer;
     transition: all 0.2s ease-in;
     margin: 3px;
 
-    @media #{$mobile} { 
-      max-width: 47%;
-      flex: 1;
+    border-radius: 250px;
+
+    @media #{$mobile} {
+      flex: 1 1 100%;
     }
           
-      &:hover {
-        border: 1px solid $brandPrimary;
-        transform: translateY(-1px);
-        box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-      }
+    &:hover {
+      border: 1px solid $greyBorder;
+      transform: translateY(-1px);
+      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
 
-      > img {
-        width: 120px;
-        height: 120px;
-        object-fit: contain;
-      }
+    > img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
 
-      > h4 {
-        margin: 0;
-        width: 100%;
-        text-align: center;
-        color: $blackShade;
-        font-size: 1.2em;
-      }
+    > h4 {
+      margin: 0;
+      width: 100%;
+      text-align: center;
+      color: $white;
+      font-size: 1.2em;
+    }
   }
 }

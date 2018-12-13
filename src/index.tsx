@@ -82,7 +82,21 @@ async function conditionalRender() {
     ReactGA.initialize(GA_CODES.MAIN)
   }
 
-  else if (hostname === URLS.APP_URL_IPFS.hostname) ReactGA.initialize(GA_CODES.IPFS)
+  /* Scenario 4: User is accessing from ENS - http://slow-trade.eth */
+  // else if (hostname === URLS.APP_URL_IPFS.hostname) {
+  //   ALLOWED_NETWORK = 'Ethereum Mainnet'
+  //   const netBlockedPromise = isNetBlocked(['1'])
+  //   // geoblock gets precedence, checked first
+  //   blocked = await isGeoBlocked()
+
+  //   if (blocked) {
+  //     disabledReason = 'geoblock'
+  //   } else {
+  //     blocked = await netBlockedPromise
+  //     if (blocked) disabledReason = 'networkblock'
+  //   }
+  //   ReactGA.initialize(GA_CODES.IPFS)
+  // }
 
   if (blocked) {
     window.history.replaceState(null, '', '/')

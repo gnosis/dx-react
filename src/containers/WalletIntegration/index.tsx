@@ -60,8 +60,8 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
 
   initiateAPI = async (web3: any) => {
     // interface with contracts & connect entire DX API
-    await connectContracts(web3.currentProvider)
-    return connectDXAPI(web3.currentProvider)
+    await connectContracts(web3.currentProvider, 'FORCE')
+    return connectDXAPI(web3.currentProvider, 'FORCE')
   }
 
   setActiveAndInitProvider = async (providerInfo: string) => {
@@ -116,7 +116,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
               </div>
             </>
           )}/>
-          {this.state.error && <h3>{this.state.error.message}</h3>}
+          {this.state.error && <h3 className="geoBlockBanner" style={{ maxWidth: '60%' }}>{this.state.error.message}</h3>}
       </div>
     )
   }
