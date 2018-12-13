@@ -136,10 +136,11 @@ export const contractsMap = contractNames.reduce((acc, name, i) => {
 }, {}) as {[K in keyof ContractsMapWProxy]: SimpleContract}
 
 export const setProvider = (provider: any) => {
+  // Testing:
   // const states = [provider, false]
   // provider = states[Math.round(Math.random())]
+  if (!provider) throw new Error('Provider failed to instantiate. Please retry selecting a provider or refreshing the page.')
 
-  if (!provider) throw new Error('No provider passed in. Please try refreshing the page and trying again.')
   return Contracts.concat(HumanFriendlyToken).forEach((contract) => {
     contract.setProvider(provider)
   })
@@ -149,8 +150,8 @@ const getPromisedIntances = () => Promise.all(Contracts.map(contr => contr.deplo
 
 let contractsAPI: ContractsMap
 
-export const promisedContractsMap = async (provider?: Provider) => {
-  if (contractsAPI) return contractsAPI
+export const promisedContractsMap = async (provider?: Provider, force?: boolean | 'FORCE') => {
+  if (contractsAPI && !force) return contractsAPI
 
   contractsAPI = await init(provider)
   return contractsAPI
@@ -196,7 +197,7 @@ async function init(provider: Provider) {
 
     return deployedContracts as ContractsMap
   } catch (err) {
-    console.error('Contract initialisation error: ', err)
-    throw new Error(err)
+    console.error('Contract initialisation error: ', err + '. Please refresh the page or retry selecting a provider.')
+    throw new Error(err + '. Please refresh the page or retry selecting a provider.')
   }
 }
