@@ -8,4 +8,4 @@ const mapStateToProps = (state: State) => ({
   pairs: selectTop5Pairs(state),
 })
 
-export default connect(mapStateToProps, { selectTokenPairAndSetClosingPrice })(TopAuctions)
+export default connect(mapStateToProps, { selectTokenPairAndSetClosingPrice })(TopAuctions as any)

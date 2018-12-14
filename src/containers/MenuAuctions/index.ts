@@ -13,4 +13,4 @@ const mapStateToProps = (state: State) => ({
   claimable: auctionClaimable(state),
 })
 
-export default connect(mapStateToProps, { claimSellerFundsFromSeveral, push })(MenuAuctions)
+export default connect(mapStateToProps, { claimSellerFundsFromSeveral, push })(MenuAuctions as any)
