@@ -217,7 +217,7 @@ export const initApp = () => async (dispatch: Dispatch<any>, getState: () => Sta
         throw e
       }
     }
-    await Promise.race([getConnection(), timeoutCondition(NETWORK_TIMEOUT, 'connection timed out')])
+    await Promise.race([getConnection(), timeoutCondition(200000, 'connection timed out')])
 
     // batch init app actions
     dispatch(
@@ -737,7 +737,7 @@ export const withdrawFromDutchX = ({ name, address }: { name: string, address: s
 
     const withdrawHash = await withdraw.sendTransaction(address)
     // get receipt or throw TIMEOUT
-    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)
 
     // next line unreachable in case of TIMEOUT
@@ -846,7 +846,7 @@ export const claimSellerFundsFromSeveral = (
 
     const withdrawHash = await withdraw.sendTransaction(buy.address)
     // get receipt or throw TIMEOUT
-    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(120000, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
+    const withdrawReceipt = await Promise.race([waitForTx(withdrawHash), timeoutCondition(NETWORK_TIMEOUT, 'TIMEOUT')]).catch(() => { throw new Error('SAFETY NETWORK TIMEOUT - PLEASE REFRESH YOUR PAGE') })
     console.log('Withdraw TX receipt: ', withdrawReceipt)
 
     decoder = getDecoderForABI(DutchExchange.abi)
