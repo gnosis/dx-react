@@ -34,8 +34,8 @@ export const setupWeb3 = async (provider?: Provider) => {
 
 let web3API: ProviderInterface
 
-export const promisedWeb3 = async (provider?: Provider) => {
-  if (web3API) return web3API
+export const promisedWeb3 = async (provider?: Provider, force?: boolean | 'FORCE') => {
+  if (web3API && !force) return web3API
 
   web3API = await init(provider)
   return web3API

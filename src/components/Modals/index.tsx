@@ -153,29 +153,29 @@ const blockModalStyle: CSSProperties = { fontSize: 16, fontWeight: 100 }
 
 const disabledReasons = {
    geoblock: {
-      title: `${COMPANY_NAME} is currently not available.`,
-      render: () =>
+     title: `${COMPANY_NAME} is currently not available.`,
+     render: () =>
       <div style={blockModalStyle}>
         <p>Please try again later. No funds are lost due to downtime.</p>
         <p>Still experiencing issues? You may be accessing {COMPANY_NAME} from a restricted country or region. The following countries are geo-blocked:</p>
-        <p className="offlineBanner" style={{ margin: 'auto', padding: 20, width: '57%' }}>
+        <p className="geoBlockBanner" style={{ margin: 'auto', padding: 20, width: '57%' }}>
           {GEO_BLOCKED_COUNTIES_LIST}
         </p>
         <br />
         <br />
         <small><i>Read about the many trading advantages of slow.trade’s underlying DutchX protocol <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">here</a>.</i></small>
       </div>,
-    },
+   },
    networkblock: {
-      title: `${COMPANY_NAME} is not available on your network.`,
-      render: (network = 'RINKEBY Test Network') =>
+     title: `${COMPANY_NAME} is not available on your network.`,
+     render: (network = 'RINKEBY Test Network') =>
     <div style={blockModalStyle}>
       <p>{`Make sure you’re connected to the ${network}.`}</p>
       <br />
       <br />
       <small><i>Read about the many trading advantages of slow.trade’s underlying DutchX protocol <a href="https://blog.gnosis.pm/tagged/dutchx" target="_blank" rel="noopener noreferrer">here</a>.</i></small>
     </div>,
-    },
+   },
  }
 
 export const BlockModal: React.SFC<BlockModalProps> = ({

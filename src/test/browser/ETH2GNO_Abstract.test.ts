@@ -90,6 +90,7 @@ describe('ETH 2 GNO contract via DutchX Class', () => {
       getClaimedAmounts,
       claimSellerFunds,
       claimBuyerFunds,
+      // @ts-ignore
       postBuyOrder,
     } = await promisedDutchX())
 

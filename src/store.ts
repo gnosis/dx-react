@@ -29,6 +29,7 @@ export default function (history: History, initialState?: Partial<State>) {
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
+      // @ts-ignore
       const nextReducer = require('./reducers').default
       store.replaceReducer(connectRouter(history)(nextReducer))
     })

@@ -1,4 +1,4 @@
-.offlineBanner {
+.offlineBanner, .geoBlockBanner {
   position: relative;
   background: $yellow;
   color: $red;
@@ -7,7 +7,7 @@
   width: 100%;
   font-size: 1.4em;
   font-weight: $normal;
-  padding: 20px 0;
+  padding: 20px 10px;
   border-bottom: 1px solid #dce0e4;
 
   > span {
@@ -25,6 +25,12 @@
     vertical-align: middle;
   }
 
+  @media #{$mobile} {
+    font-size: 16px;
+  }
+}
+
+.offlineBanner {
   @media #{$mobile} {
     position: absolute;
     top: 136px;

@@ -13,7 +13,9 @@ import createStoreWithHistory from 'store'
 import ModalContainer from 'containers/Modals'
 
 import { asyncLoadSettings } from 'actions'
-import { ETHEREUM_NETWORKS, URLS } from 'globals'
+import { ETHEREUM_NETWORKS } from 'globals'
+
+import locationListener from 'utils/location'
 
 export const history = createHistory()
 export const store = createStoreWithHistory(history)
@@ -38,12 +40,7 @@ const App = (props: AppProps): any => {
     </Provider>
   )}
 
-// history listen on change
-if (window.location.hostname !== URLS.APP_URL_MAIN) {
-  history.listen((loc: any) => {
-    const searchParams = new URLSearchParams(loc.search)
-    searchParams.has('retro-x') && document.body.classList.add('THEME')
-  })
-}
+// location based events
+locationListener(history)
 
 export default App

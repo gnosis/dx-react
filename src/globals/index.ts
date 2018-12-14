@@ -92,7 +92,7 @@ export enum ProviderName {
 }
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
-export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 200000
+export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 600000 // 3.33 min dev vs 10 min prod
 
 export const ETH_ADDRESS = '0x0'
 export const WETH_ADDRESS_RINKEBY = '0xc778417e063141139fce010982780140aa0cd5ab'
