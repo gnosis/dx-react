@@ -403,11 +403,12 @@ const changeETHforWETH = (dispatch: Function, getState: () => State, TokenETHAdd
  *
 */
 export const checkUserStateAndSell = () => async (dispatch: Function, getState: () => State) => {
+  // Sync with network chain and check user state
   dispatch(openModal({
     modalName: 'TransactionModal',
     modalProps: {
-      header: 'Checking user state',
-      body: 'Verifying/updating user state again blockchain, please wait',
+      header: 'Verifying and updating user state',
+      body: `Syncing with ${getState().blockchain.network || 'UNKNOWN'} chain...`,
     },
   }))
 
