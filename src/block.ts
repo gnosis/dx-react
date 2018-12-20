@@ -4,11 +4,13 @@ import { web3CompatibleNetwork } from 'utils'
 export const geoBlockedCountryCodes = new Set(blocked_codes)
 
 export const isGeoBlocked = async () => {
+  // default is true
+  // except for DEV env + countries exempt
   try {
     const res = await fetch('https://geoip.gnosis.pm/json/')
 
-      // this DOES NOT block even if the URL above starts returning 404
-    if (!res.ok) return false
+    // this DOES NOT block even if the URL above starts returning 404
+    if (!res.ok) return true
 
     const { country_code } = await res.json()
 
@@ -17,7 +19,7 @@ export const isGeoBlocked = async () => {
     console.error('Geo Blocking check is unavailable:', error.message || error, 'This is most likely a client side network connectivity issue - please retry connecting to the internet and refreshing the page.')
 
       // this does NOT block if there is a network error, e.g. URL is blocked
-    return false
+    return true
   }
 }
 
