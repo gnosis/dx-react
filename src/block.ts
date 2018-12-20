@@ -14,11 +14,13 @@ export const isGeoBlocked = async () => {
 
     const { country_code } = await res.json()
 
+    // if user's country code does NOT match our blocked map
+    // return false (= do not block)
     return geoBlockedCountryCodes.has(country_code)
   } catch (error) {
     console.error('Geo Blocking check is unavailable:', error.message || error, 'This is most likely a client side network connectivity issue - please retry connecting to the internet and refreshing the page.')
 
-      // this does NOT block if there is a network error, e.g. URL is blocked
+    // Blocks incase of error. Precaution
     return true
   }
 }
