@@ -13,7 +13,6 @@ import createStoreWithHistory from 'store'
 import ModalContainer from 'containers/Modals'
 
 import { asyncLoadSettings } from 'actions'
-import { ETHEREUM_NETWORKS } from 'globals'
 
 import locationListener from 'utils/location'
 
@@ -23,11 +22,14 @@ export const store = createStoreWithHistory(history)
 export const loadLocalSettings = () => store.dispatch(asyncLoadSettings() as any)
 export const initializeWallet = () => walletIntegrationCallback(store)
 
+// location based events
+locationListener(history)
+
 interface AppProps {
-  analytics: boolean;
+  analytics?: boolean;
   disabled?: boolean;
   disabledReason?: string;
-  networkAllowed?: Partial<ETHEREUM_NETWORKS>
+  networkAllowed?: string;
 }
 
 const App = (props: AppProps): any => {
@@ -39,8 +41,5 @@ const App = (props: AppProps): any => {
       </ModalContainer>
     </Provider>
   )}
-
-// location based events
-locationListener(history)
 
 export default App
