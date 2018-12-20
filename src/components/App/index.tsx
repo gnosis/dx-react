@@ -13,7 +13,6 @@ import createStoreWithHistory from 'store'
 import ModalContainer from 'containers/Modals'
 
 import { asyncLoadSettings } from 'actions'
-import { ETHEREUM_NETWORKS } from 'globals'
 
 import locationListener from 'utils/location'
 
@@ -30,7 +29,7 @@ interface AppProps {
   analytics?: boolean;
   disabled?: boolean;
   disabledReason?: string;
-  networkAllowed?: Partial<ETHEREUM_NETWORKS>
+  networkAllowed?: string;
 }
 
 const App = (props: AppProps): any => {
