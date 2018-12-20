@@ -37,67 +37,59 @@ conditionalRender()
  * Scenario 2: User is using the dx on dutchx.app (MAIN):           BLOCK: all networks + geoblock
  * Scenario 3: User is using the dx on dutchx-rinkeby (RINKEBY):    BLOCK: networks
 */
-
 async function conditionalRender() {
-  let blocked = false, disabledReason, ALLOWED_NETWORK
   /* User's environment does not have access to window API (e.g user on mobile?) */
   if (typeof window === 'undefined') return false
+  let blocked = true, disabledReason, ALLOWED_NETWORK
+
   const { hostname } = window.location
+  const { FE_CONDITIONAL_ENV } = process.env
 
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
-  if (hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
+  if (FE_CONDITIONAL_ENV !== 'production' || hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
 
-  /* Scenario 1a: User is a developer on dx.staging */
-  else if (hostname === URLS.APP_STAGING) {
-    blocked = await isGeoBlocked()
-    blocked && (disabledReason = 'geoblock')
-  }
+  /* PRODUCTION builds should be geoBlocked */
+  if (FE_CONDITIONAL_ENV === 'production') {
+    /* Scenario 1a: User is a developer on dx.staging OR ipfs */
+    if (
+     hostname === URLS.APP_STAGING ||
+     hostname.includes(URLS.APP_URL_IPFS.ipfs)
+    ) {
+      blocked = await isGeoBlocked()
+      blocked && (disabledReason = 'geoblock')
 
-  // Main release Scenarios:
-  /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
-  else if (hostname === URLS.APP_URL_RINKEBY) {
-    ALLOWED_NETWORK = 'Rinkeby Test Network'
-    blocked = await isNetBlocked(['4'])
-
-    if (blocked) disabledReason = 'networkblock'
-
-    // init GA
-    ReactGA.initialize(GA_CODES.RINKEBY)
-  }
-
-  /* Scenario 3: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-  else if (hostname === URLS.APP_URL_MAIN) {
-    ALLOWED_NETWORK = 'Ethereum Mainnet'
-    const netBlockedPromise = isNetBlocked(['1'])
-    // geoblock gets precedence, checked first
-    blocked = await isGeoBlocked()
-
-    if (blocked) {
-      disabledReason = 'geoblock'
-    } else {
-      blocked = await netBlockedPromise
-      if (blocked) disabledReason = 'networkblock'
+      hostname !== URLS.APP_STAGING && ReactGA.initialize(GA_CODES.IPFS)
     }
-    // init GA
-    ReactGA.initialize(GA_CODES.MAIN)
+    // Main release Scenarios:
+    /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
+    else if (hostname === URLS.APP_URL_RINKEBY) {
+      ALLOWED_NETWORK = 'Rinkeby Test Network'
+      blocked = await isNetBlocked(['4'])
+      if (blocked) disabledReason = 'networkblock'
+      // init GA
+      ReactGA.initialize(GA_CODES.RINKEBY)
+    }
+    /* Scenario 3: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
+    else if (hostname === URLS.APP_URL_MAIN) {
+      ALLOWED_NETWORK = 'Ethereum Mainnet'
+      const netBlockedPromise = isNetBlocked(['1'])
+      // geoblock gets precedence, checked last
+      blocked = await isGeoBlocked()
+      if (blocked) {
+        disabledReason = 'geoblock'
+      } else {
+        blocked = await netBlockedPromise
+        if (blocked) disabledReason = 'networkblock'
+      }
+      // init GA
+      ReactGA.initialize(GA_CODES.MAIN)
+    }
+  } else {
+    // fallback
+    disabledReason = 'geoblock'
   }
 
-  /* Scenario 4: User is accessing from ENS - http://slow-trade.eth */
-  // else if (hostname === URLS.APP_URL_IPFS.hostname) {
-  //   ALLOWED_NETWORK = 'Ethereum Mainnet'
-  //   const netBlockedPromise = isNetBlocked(['1'])
-  //   // geoblock gets precedence, checked first
-  //   blocked = await isGeoBlocked()
-
-  //   if (blocked) {
-  //     disabledReason = 'geoblock'
-  //   } else {
-  //     blocked = await netBlockedPromise
-  //     if (blocked) disabledReason = 'networkblock'
-  //   }
-  //   ReactGA.initialize(GA_CODES.IPFS)
-  // }
-
+  // Blocked for one reason or another
   if (blocked) {
     window.history.replaceState(null, '', '/')
     return rootElement.innerHTML = ReactDOMServer.renderToStaticMarkup(<App disabled disabledReason={disabledReason} networkAllowed={ALLOWED_NETWORK}/>)
