@@ -160,6 +160,7 @@ export const URLS = {
   APP_STAGING: 'dx.staging.gnosisdev.com',
   APP_DEV: 'dx.dev.gnosisdev.com',
   APP_URL_IPFS: {
+    ipfs: 'ipfs',
     hostname: 'ipfs.io',
     pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV',
   },

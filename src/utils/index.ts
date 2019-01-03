@@ -205,14 +205,23 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
 export const web3CompatibleNetwork = async (id?: boolean) => {
   await windowLoaded
-  if (typeof window === 'undefined' || !window.web3 || !window.web3.version) return (console.debug('no window or window.web3 or window.web3.version'), 'UNKNOWN')
+  // blocks access via load
+  if (typeof window === 'undefined' || !window.web3) return (console.error('No Provider detected. Returning UNKNOWN network.'), 'UNKNOWN')
 
+  let web3 = window.web3
   let netID: string
 
+  // irregular APIs - Opera, new MM, some other providers
+  if (web3.currentProvider && !web3.version) {
+    console.warn('Non-Metamask or Gnosis Safe Provider injected web3 API detected')
+
+    window.web3 = web3 = new Web3(web3.currentProvider)
+  }
+
   // 1.X.X API
-  if (typeof window.web3.version === 'string') {
+  if (typeof web3.version === 'string') {
     netID = await new Promise<string>((accept, reject) => {
-      window.web3.eth.net.getId((err: string, res: string) => {
+      web3.eth.net.getId((err: string, res: string) => {
         if (err) {
           reject('UNKNOWN')
         } else {
