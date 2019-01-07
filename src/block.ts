@@ -7,6 +7,7 @@ export const isGeoBlocked = async () => {
   // default is true
   // except for DEV env + countries exempt
   try {
+    // SERVER
     const res = await fetch('https://geoip.gnosis.pm/json/')
 
     // this DOES NOT block even if the URL above starts returning 404

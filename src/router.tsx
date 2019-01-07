@@ -130,7 +130,7 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
             </AppValidator>
           </WalletIntegration>
         </Switch>
-
+        {/* SERVER */}
         {analytics && <GoogleAnalyticsTracking />}
       </div>
   </ConnectedRouter>
