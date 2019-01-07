@@ -81,7 +81,7 @@ export const displayUserFriendlyError = (error: string) => {
   const err = error.toLowerCase()
 
   if (err.includes('user denied transaction signature')) return CANCEL_TX_ERROR
-  else if (err.includes('failed to fetch')) return NO_INTERNET_TX_ERROR
+   if (err.includes('failed to fetch')) return NO_INTERNET_TX_ERROR
   else if (err.includes('intrinsic gas too low')) return LOW_GAS_ERROR
 
   return DEFAULT_ERROR
@@ -254,6 +254,7 @@ export const estimateGas = async (
     const GAS_STATION_URL = network === 'MAIN' ? URLS.MAIN_GAS_STATION : URLS.RINKEBY_GAS_STATION
 
     try {
+      // SERVER
       estimatedGasPrice = (await (await fetch(GAS_STATION_URL)).json()).standard
     } catch (error) {
       console.warn('Safe gas estimation error: ', error, 'Defaulting to lowest gas price')
