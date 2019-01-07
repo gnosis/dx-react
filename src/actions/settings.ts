@@ -1,26 +1,40 @@
 import { createAction } from 'redux-actions'
-import { State, Settings } from 'types'
+import { Settings, CookieSettings } from 'types'
 import { Dispatch } from 'redux'
-
 import localForage from 'localforage'
 
-export const saveSettings = createAction<Partial<Settings>>('SAVE_SETTINGS')
+import { web3CompatibleNetwork } from 'utils'
+
+export const saveSettings = createAction<Partial<Settings | CookieSettings>>('SAVE_SETTINGS')
 
 export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
-  const settings = await Promise.all([
+  const [network, disclaimerSettings, cookieSettings] = await Promise.all<string, Settings, CookieSettings>([
+    web3CompatibleNetwork(),
     localForage.getItem('settings'),
     localForage.getItem('cookieSettings'),
   ])
 
-  if (settings) {
-    return settings.forEach(setting => dispatch(saveSettings(setting)))
+  if (disclaimerSettings) {
+    // check disclaimer settings for networks accepted
+    const { networks_accepted } = disclaimerSettings
+    // if user currently using MAIN
+    // check if networksAccepted includes MAIN or not
+    if (network && !networks_accepted[network]) {
+      // set disclaimer_accepted to false to reprompt verification
+      disclaimerSettings.disclaimer_accepted = false
+      // set it locally in forage
+      await localForage.setItem('settings', { ...disclaimerSettings, disclaimer_accepted: false })
+    }
   }
+  const settings = [disclaimerSettings, cookieSettings]
+  // save in redux store
+  return settings.forEach(setting => dispatch(saveSettings(setting)))
 }
 
 export const asyncSaveSettings = (payload: Partial<Settings>) =>
-  async (dispatch: Dispatch<any>, getState: () => State) => {
+  async (dispatch: Dispatch<any>) => {
     const action = dispatch(saveSettings(payload))
-
-    localForage.setItem('settings', getState().settings)
+    // const { settings: { disclaimer_accepted, networks_accepted, analytics, cookies } } = getState()
+    localForage.setItem('settings', payload)
     return action
   }
