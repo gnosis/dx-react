@@ -80,7 +80,7 @@
     ]
   },
   "dependencies": {
-    "@gnosis.pm/dx-contracts": "^2.0.0-RC6",
+    "@gnosis.pm/dx-contracts": "^2.0.0-RC7",
     "@gnosis.pm/gno-token": "^1.2.0-RC6",
     "@gnosis.pm/util-contracts": "^1.2.0-RC5",
     "bignumber.js": "5.0.0",
