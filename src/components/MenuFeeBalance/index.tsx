@@ -15,8 +15,16 @@ export interface MenuFeeBalanceProps {
 
 const MenuFeeBalance = ({ feeRatio, mgnSupply, showFeeRatio }: MenuFeeBalanceProps) =>
   <div className="menuFeeBalance">
-    <p>MGN <strong>{showFeeRatio ? mgnSupply : 'N/A'}</strong></p>
-    <p style={{ minWidth: 46 }}>
+    <p>
+      <a
+        href={URLS.DXDAO}
+        target="_blank"
+        title="MAGNOLIA - click for more info"
+      >
+      MGN <strong>{showFeeRatio ? mgnSupply : 'N/A'}</strong>
+      </a>
+    </p>
+    <p>
       <Link title="Liquidity Contribution - click for more info" to={URLS.LIQUIDITY_CONTRIBUTION}>
       Liq. Contr. <strong>{showFeeRatio ? `${feeRatio * 100}%` : 'N/A'}</strong>
       </Link>
