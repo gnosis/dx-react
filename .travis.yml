@@ -1,4 +1,4 @@
-if: (branch = develop) OR (branch = master) OR (type = pull_request) OR (tag IS present)
+if: (branch = develop) OR (branch = master) OR (type = pull_request) OR (tag IS present) OR (branch = release/1.6.0)
 sudo: required
 dist: trusty
 language: node_js
@@ -26,6 +26,16 @@ matrix:
   - if: NOT (branch =~ /^master$/) AND NOT (tag IS present)
     env: NODE_ENV=development
     node_js: '8'
+  - if: NODE_ENV = development OR NODE_ENV = production
+    env: CLAIM_ONLY=true
+    node_js: '9'
+  # FOR TESTING PURPOSES ONLY, DELETE ME WHEN YOU ARE DONE!
+  - if: branch = release/1.6.0
+    env:
+      - NODE_ENV=development
+      - CLAIM_ONLY=true
+    node_js: '9'
+
 after_success:
   # Pull Request - Deploy it to a review environment
   # Travis doesn't do deploy step with pull requests builds
@@ -50,6 +60,28 @@ deploy:
     on:
       branch: master
       node: '9'
+
+  - provider: s3
+    bucket: $DEV_LEGACY_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: dist
+    on:
+      branch: develop
+      node: '9'
+      condition: $CLAIM_ONLY = true
+  - provider: s3
+    bucket: $STAGING_LEGACY_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: dist
+    upload-dir: current
+    on:
+      branch: master
+      node: '9'
+      condition: $CLAIM_ONLY = true
 
   # Prepare production deployment
   - provider: s3
