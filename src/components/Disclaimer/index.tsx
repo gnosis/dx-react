@@ -13,8 +13,8 @@ import 'assets/pdf/PrivacyPolicy.pdf'
 
 export interface DisclaimerProps extends RouteComponentProps<any> {
   accepted: boolean,
-  acceptDisclaimer: () => any,
   network: string,
+  acceptDisclaimer: (network: string) => any,
 }
 
 export interface DisclaimerState {
@@ -67,7 +67,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     })
     // redirect to /
     if (accepted) {
-      this.props.acceptDisclaimer()
+      this.props.acceptDisclaimer(this.state.network)
     }
     return localForage.setItem('cookieSettings', { necessary: true, analytics: !!(this.state.cookies_analytics_accepted) })
   }

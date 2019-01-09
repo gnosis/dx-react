@@ -68,7 +68,6 @@ if (process.env.FE_CONDITIONAL_ENV === 'development') {
     /(DutchExchange|DutchExchangeProxy|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
   )
 }
-console.debug('REQ = ', req.keys())
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
@@ -152,7 +151,6 @@ const checkENVAndWriteContractAddresses = async () => {
         ])
         return ALL_OLD_CONTRACT_ADDRESSES[latestVersion]
       }
-      console.debug(CONTRACT_ADDRESSES_TO_USE)
       return CONTRACT_ADDRESSES_TO_USE
     }
 
