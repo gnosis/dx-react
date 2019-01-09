@@ -167,6 +167,8 @@ export const URLS = {
   FOOTER_LOGO_URL: 'https://gnosis.pm',
   MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
   RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
+
+  DXDAO: 'https://dxdao.daostack.io/',
 }
 
 export const GA_CODES = {
