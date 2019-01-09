@@ -4,6 +4,7 @@
   "description": "slow.trade - ERC20 Trading Platform",
   "main": "src/index.tsx",
   "scripts": {
+    "build:all":"npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress && cross-env CLAIM_ONLY=true NODE_ENV=production webpack --config webpack.prod.config.js --progress",
     "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --config webpack.dev.config.js --progress",
     "build:prod": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.prod.config.js --progress",
     "build:prod:claimOnly": "npm run clean && cross-env CLAIM_ONLY=true NODE_ENV=production webpack --config webpack.prod.config.js --progress",
