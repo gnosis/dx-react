@@ -46,7 +46,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: dist
+    local_dir: dist/prod
     on:
       branch: develop
       node: '9'
@@ -55,7 +55,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: dist
+    local_dir: dist/prod
     upload-dir: current
     on:
       branch: master
@@ -66,7 +66,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: dist
+    local_dir: dist/legacy
     on:
       branch: develop
       node: '9'
@@ -76,7 +76,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: dist
+    local_dir: dist/legacy
     upload-dir: current
     on:
       branch: master
@@ -89,7 +89,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: dist
+    local_dir: dist/prod
     upload-dir: releases/$TRAVIS_TAG
     on:
       tags: true
