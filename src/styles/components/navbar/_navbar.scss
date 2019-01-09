@@ -972,7 +972,7 @@ header {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 
   @media #{$mobile} {
     position: absolute;
@@ -1008,11 +1008,11 @@ header {
 
   > p {
     flex: 1;
-    margin: 0;
-    text-transform: capitalize;
-    word-wrap: break-word;
-    // min-width: 50px;
     font-weight: $normal;
+    margin: 0;
+    min-width: 46px;
+    text-transform: capitalize;
+    // word-wrap: break-word;
 
     @media #{$mobile} {
       min-width: initial;
@@ -1020,13 +1020,13 @@ header {
       margin: 0;
     }
 
-    &:first-child {
-      margin: 0 12px 0 0;
+    // &:first-child {
+    //   margin: 0 12px 0 0;
 
-      @media #{$mobile} {
-        margin: 0;
-      }
-    }
+    //   @media #{$mobile} {
+    //     margin: 0;
+    //   }
+    // }
 
     &:last-child {
       @media #{$mobile} {
@@ -1036,6 +1036,14 @@ header {
 
     > a {
       color: inherit;
+
+      > strong {
+        display: block;
+
+        @media #{$mobile} {
+          display: inline-block;
+        }
+      }
     }
   }
 
