@@ -22,8 +22,6 @@ export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
     if (network && !networks_accepted[network]) {
       // set disclaimer_accepted to false to reprompt verification
       disclaimerSettings.disclaimer_accepted = false
-      // set it locally in forage
-      await localForage.setItem('settings', { ...disclaimerSettings, disclaimer_accepted: false })
     }
   }
   const settings = [disclaimerSettings, cookieSettings]
@@ -33,8 +31,17 @@ export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
 
 export const asyncSaveSettings = (payload: Partial<Settings>) =>
   async (dispatch: Dispatch<any>) => {
+    const prevState: Settings | Partial<Settings> = (await localForage.getItem('settings')) || { networks_accepted: {} }
     const action = dispatch(saveSettings(payload))
+
     // const { settings: { disclaimer_accepted, networks_accepted, analytics, cookies } } = getState()
-    localForage.setItem('settings', payload)
+    localForage.setItem('settings', {
+      ...prevState,
+      disclaimer_accepted: payload.disclaimer_accepted,
+      networks_accepted: {
+        ...prevState.networks_accepted,
+        ...payload.networks_accepted,
+      },
+    })
     return action
   }

@@ -2,10 +2,9 @@ import { connect } from 'react-redux'
 import { asyncSaveSettings } from 'actions'
 import { RouteComponentProps } from 'react-router'
 
-import { State, Settings } from 'types'
+import { State } from 'types'
 
 import Disclaimer from 'components/Disclaimer'
-import localForage from 'localforage'
 
 const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
   accepted: settings.disclaimer_accepted,
@@ -14,13 +13,9 @@ const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
 
 const mapDispatchToProps = (dispatch: Function, ownProps: RouteComponentProps<any>) => ({
   acceptDisclaimer: async (network: string) => {
-    const prevState: Settings | {} = (await localForage.getItem('settings')) || {}
-
     await dispatch(asyncSaveSettings({
-      ...prevState,
       disclaimer_accepted: true,
       networks_accepted: {
-        ...(prevState as Settings).networks_accepted,
         [network]: true,
       },
     }))
