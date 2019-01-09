@@ -26,7 +26,7 @@ module.exports = {
   devtool: 'eval-source-map',
   output: {
     publicPath: '',
-    path: `${__dirname}/dist`,
+    path: process.env.CLAIM_ONLY ? `${__dirname}/dist/legacy` : `${__dirname}/dist/dev`,
     filename: 'bundle.js',
   },
   resolve: {
