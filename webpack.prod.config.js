@@ -22,7 +22,7 @@ module.exports = {
   entry: 'index.tsx',
   output: {
     publicPath: '',
-    path: `${__dirname}/dist`,
+    path: process.env.CLAIM_ONLY ? `${__dirname}/dist/legacy` : `${__dirname}/dist/prod`,
     chunkFilename: '[name].[chunkhash].js',
     filename: '[name].[chunkhash].js',
   },
