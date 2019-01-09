@@ -12,9 +12,12 @@ const mapStateToProps = ({ blockchain: { network }, settings }: State) => ({
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: RouteComponentProps<any>) => ({
-  acceptDisclaimer: async () => {
+  acceptDisclaimer: async (network: string) => {
     await dispatch(asyncSaveSettings({
       disclaimer_accepted: true,
+      networks_accepted: {
+        [network]: true,
+      },
     }))
 
     ownProps.history.replace(ownProps.location.state && ownProps.location.state.from || '/')
@@ -22,4 +25,4 @@ const mapDispatchToProps = (dispatch: Function, ownProps: RouteComponentProps<an
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Disclaimer)
+export default connect(mapStateToProps, mapDispatchToProps)(Disclaimer as any)

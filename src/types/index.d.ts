@@ -259,6 +259,12 @@ export interface IPFS {
 
 export interface Settings {
   disclaimer_accepted: boolean;
+  networks_accepted: {
+    [networkName: string]: boolean;
+  }
+}
+
+export interface CookieSettings {
   analytics: boolean;
   cookies: boolean;
 }
@@ -289,5 +295,5 @@ export interface State {
   tokenPair: TokenPair,
   tokenOverlay: TokenOverlay,
   approvedTokens: AccountsSet,
-  settings: Settings,
+  settings: Settings & CookieSettings,
 }
