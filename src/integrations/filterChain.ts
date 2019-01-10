@@ -124,7 +124,7 @@ export const waitForTx = async (hash: Hash, reuse: boolean = false) => {
           console.log(`FOUND ${hash} receipt after block ${bl}`)
           // tx is mined
           // based on if succeeded, resolve or reject
-          txReceipt.status === '0x1' ? resolve(txReceipt) : reject(txReceipt)
+          txReceipt.status === '0x1' ? resolve(txReceipt) : (console.error('ERROR: Non 0x1 status found with txHash'), reject(txReceipt))
         } else console.log(`NO ${hash} receipt after block ${bl}`)
       })
     })
