@@ -26,14 +26,10 @@ matrix:
   - if: NOT (branch =~ /^master$/) AND NOT (tag IS present)
     env: NODE_ENV=development
     node_js: '8'
-  - if: NODE_ENV = development OR NODE_ENV = production
-    env: CLAIM_ONLY=true
-    node_js: '9'
   # FOR TESTING PURPOSES ONLY, DELETE ME WHEN YOU ARE DONE!
   - if: branch = release/1.6.0
     env:
       - NODE_ENV=development
-      - CLAIM_ONLY=true
     node_js: '9'
 
 after_success:
