@@ -179,6 +179,26 @@
   }
 }
 
+// .modalDisclaimer {
+//   background: #154471b0;
+//   border-radius: 40px;
+//   font-size: 12px;
+//   margin: 20px auto 0;
+//   padding: 2px 0;
+//   width: 30%;
+// }
+
+.modalDisclaimer {
+  background: #2b2f37;
+  border-radius: 40px;
+  font-size: 12px;
+  margin: 20px auto;
+  padding: 2px 0;
+  width: 40%;
+  text-align: center;
+  color: white;
+}
+
 .disclaimerError {
   color: $red;
   width: 100%;
@@ -186,7 +206,7 @@
   line-height: 1.5;
   font-size: 1.3em;
   font-weight: bold;
-  margin: 2em auto;
+  margin: 1em auto;
 }
 
 .subText {
