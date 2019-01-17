@@ -1,6 +1,7 @@
 .disclaimer {
   width: 100%;
   max-width: 850px;
+  min-height: 100vh;
   margin: 0 auto;
   display: table;
 
@@ -189,14 +190,17 @@
 // }
 
 .modalDisclaimer {
-  background: #2b2f37;
-  border-radius: 40px;
-  font-size: 12px;
-  margin: 20px auto;
-  padding: 2px 0;
-  width: 40%;
-  text-align: center;
+  background: #0e345a; // #0000007d;
   color: white;
+  // border-radius: 40px;
+  font-size: 12px;
+  // margin: 20px auto;
+  padding: 2px 0;
+  // position: absolute;
+  text-align: center;
+  // width: 100%;
+
+  // bottom: 0;
 }
 
 .disclaimerError {
