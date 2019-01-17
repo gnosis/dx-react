@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.2;
 
 import "@gnosis.pm/util-contracts/contracts/GnosisStandardToken.sol";
 
@@ -7,7 +7,7 @@ contract TokenRDN is GnosisStandardToken {
     string public constant name = "Raiden Token";
     uint8 public constant decimals = 18;
 
-    function TokenRDN(
+    constructor(
     	uint amount
     )
     	public 
