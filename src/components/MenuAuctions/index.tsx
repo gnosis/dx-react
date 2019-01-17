@@ -10,7 +10,7 @@ export interface MenuAuctionProps {
   claimable: any;
   name?: string;
   ongoingAuctions: OngoingAuctions;
-  claimSellerFundsFromSeveral(
+  claimAndWithdrawSellerFundsFromSeveral(
     sell: Partial<DefaultTokenObject>, buy: Partial<DefaultTokenObject>, indicesWithSellerBalance?: number,
   ): any;
   push({}): RouterAction;
@@ -41,7 +41,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
       claimable,
       name = 'Your Auctions',
       ongoingAuctions,
-      claimSellerFundsFromSeveral,
+      claimAndWithdrawSellerFundsFromSeveral,
       push,
     } = this.props
 
@@ -135,7 +135,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                             <p>{auction.past.balanceNormal.toString()} {auction.sell.symbol}</p>
                           </td>
                           {auction.past.claimableNormal &&
-                            <td className="pointer" onClick={() => (claimSellerFundsFromSeveral(auction.sell, auction.buy))}>
+                            <td className="pointer" onClick={() => (claimAndWithdrawSellerFundsFromSeveral(auction.sell, auction.buy))}>
                               {auction.past.claimableBalanceNormal} {auction.buy.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
@@ -199,7 +199,7 @@ export class MenuAuctions extends React.Component <MenuAuctionProps> {
                             <p>{auction.past.balanceInverse.toString()} {auction.buy.symbol}</p>
                           </td>
                           {auction.past.claimableInverse &&
-                            <td className="pointer" onClick={() => claimSellerFundsFromSeveral(auction.buy, auction.sell)}>
+                            <td className="pointer" onClick={() => claimAndWithdrawSellerFundsFromSeveral(auction.buy, auction.sell)}>
                               {auction.past.claimableBalanceInverse} {auction.sell.symbol} <img src={require('assets/claim.svg')} />
                             </td>
                           }
