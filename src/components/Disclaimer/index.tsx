@@ -7,6 +7,8 @@ import localForage from 'localforage'
 import disclaimerSVG from 'assets/disclaimer.svg'
 
 import { web3CompatibleNetwork, geoBlockedCitiesToString } from 'utils'
+
+import Imprint from 'components/Imprint'
 import { TermsText } from '../Terms'
 
 import 'assets/pdf/PrivacyPolicy.pdf'
@@ -94,7 +96,11 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     const { accepted } = this.props
 
     let disclaimerConfirmClasses = 'buttonCTA'
-    const disclaimerErrorStyle: React.CSSProperties = {}
+    let disclaimerErrorStyle: React.CSSProperties = {
+      height: '20px',
+      overflow: 'hidden',
+      transition: 'all 0.4s ease-in-out',
+    }
 
     if (
       formInvalid
@@ -102,7 +108,11 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
       ) {
       disclaimerConfirmClasses += ' buttonCTA-disabled'
     } else {
-      disclaimerErrorStyle.visibility = 'hidden'
+      disclaimerErrorStyle = {
+        ...disclaimerErrorStyle,
+        height: '0px',
+        // margin: '0 auto 5px auto',
+      }
     }
 
     return (
@@ -188,6 +198,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
             <p className="disclaimerError" style={disclaimerErrorStyle}>
               Please read and truly confirm all sections before you continue
             </p>
+            <Imprint cssClass="modalDisclaimer" noTitle={true} />
           </form>
 
           <span className="disclaimerFooterActions">
@@ -202,7 +213,6 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
           </span>
 
         </div>
-
       </section>
     )
   }

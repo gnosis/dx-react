@@ -4,6 +4,8 @@ import { closeModal } from 'actions'
 import { network2URL, ETHEREUM_NETWORKS, FIXED_DECIMALS, COMPANY_NAME } from 'globals'
 
 import Loader from 'components/Loader'
+import Imprint from 'components/Imprint'
+
 import { displayUserFriendlyError, geoBlockedCitiesToString } from 'utils'
 
 const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString({ DE: 'Germany' })
@@ -185,4 +187,5 @@ export const BlockModal: React.SFC<BlockModalProps> = ({
   <div className="modalDivStyle">
     <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
     {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render(networkAllowed)}
+    <Imprint cssClass="modalDisclaimer" noTitle={true} />
   </div>
