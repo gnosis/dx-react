@@ -12,7 +12,7 @@ if (!privateKey && !mnemonic) {
 }
 
 // Solc
-const compatibilityTruffle4 = true
+const compatibilityTruffle4 = false
 let solcUseDocker, solcVersion
 if (!compatibilityTruffle4) {
   // Use truffle 5
