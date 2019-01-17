@@ -532,7 +532,7 @@ export const claimSellerFundsFromSeveralAuctions: ClaimSellerFundsFromSeveralAuc
 
   const claimableIndices = (
     await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
-  )[0].map(i => i.toNumber())
+  )[0].map(i => i.toString())
 
   if (claimableIndices.length === 0) return
 
