@@ -184,8 +184,10 @@ export const BlockModal: React.SFC<BlockModalProps> = ({
   disabledReason,
   networkAllowed,
 }) =>
-  <div className="modalDivStyle">
-    <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
-    {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render(networkAllowed)}
+  <>
+    <div className="modalDivStyle">
+      <h1 className="modalH1">{disabledReasons[disabledReason].title}</h1>
+      {disabledReasons[disabledReason].render && disabledReasons[disabledReason].render(networkAllowed)}
+    </div>
     <Imprint cssClass="modalDisclaimer" noTitle={true} />
-  </div>
+  </>
