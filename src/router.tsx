@@ -49,7 +49,7 @@ const ContentPageContainerWHF =
 const CookiesWHF =
   withHeaderAndFooter(Cookies, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
 const ImprintWHF =
-  withHeaderAndFooter(Imprint, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
+  withHeaderAndFooter(Imprint as any, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
 const TermsWHF =
   withHeaderAndFooter(Terms, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
 const FourOhFourWHF =

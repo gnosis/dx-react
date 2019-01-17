@@ -116,104 +116,106 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
     }
 
     return (
-      <section className="disclaimer">
+      <>
+        <section className="disclaimer">
 
-        <span>
-          <img src={disclaimerSVG} />
-          <h1>Verification and Terms</h1>
-        </span>
-
-        <div>
-          <h2>Please confirm before continuing:</h2>
-          <form
-            id="disclaimer"
-            ref={c => this.form = c}
-            onSubmit={this.onSubmit}
-            onChange={this.onChange}
-          >
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer1">
-                I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
-                {' ' + GEO_BLOCKED_COUNTRIES_LIST}
-              </label>
-            </div>
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer2">
-                I certify that I am NEITHER on any of the U.S. Treasury Department’s Office of Foreign Asset Control’s sanctions lists, the U.S. Commerce Department's Consolidated Screening List, the EU consolidated list of persons, groups or entities subject to EU financial sanctions, NOR do I act on behalf of a person sanctioned thereunder or a U.S.-, EU- or UN-sanctioned state.
-              </label>
-            </div>
-
-            <div className="disclaimerBox md-checkbox">
-              <input
-                id="disclaimer3"
-                type="checkbox"
-                // onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} <-- Scroll check removed. See handleScroll method.
-                required
-                defaultChecked={accepted}
-                disabled={accepted/*  || !termsOfUseScrolled <-- Scroll check removed. See handleScroll method. */}
-              />
-              <label htmlFor="disclaimer3">
-                I have read, understood, and agree to the full Terms and Conditions:
-              </label>
-            </div>
-
-            {network
-              ?
-            <TermsText
-              className="disclaimerTextbox"
-              // onScroll={this.handleTermsScroll} <-- Scroll check removed. See handleScroll method.
-              network={network}
-            />
-              :
-            null}
-
-            <div className="disclaimerBox md-checkbox">
-              <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-              <label htmlFor="disclaimer5">
-                I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-              </label>
-            </div>
-
-            {/* COOKIE DISCLAIMER */}
-            <div className="disclaimerCookiePolicy">
-              <div>
-                <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
-                <div>
-                    <div className="disclaimerBoxCookie md-checkbox">
-                      <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
-                      <label htmlFor="disclaimer5">Necessary</label>
-                    </div>
-                    <div className="disclaimerBoxCookie md-checkbox">
-                      <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked={cookies_analytics_accepted} disabled={accepted}/>
-                      <label htmlFor="disclaimer6">Analytics</label>
-                    </div>
-                </div>
-              </div>
-            </div>
-
-            <p className="disclaimerError" style={disclaimerErrorStyle}>
-              Please read and truly confirm all sections before you continue
-            </p>
-            <Imprint cssClass="modalDisclaimer" noTitle={true} />
-          </form>
-
-          <span className="disclaimerFooterActions">
-            <button
-              id="disclaimer-submit"
-              form="disclaimer"
-              type="confirm"
-              className={disclaimerConfirmClasses}
-            >
-              Continue
-            </button>
+          <span>
+            <img src={disclaimerSVG} />
+            <h1>Verification and Terms</h1>
           </span>
 
-        </div>
-      </section>
+          <div>
+            <h2>Please confirm before continuing:</h2>
+            <form
+              id="disclaimer"
+              ref={c => this.form = c}
+              onSubmit={this.onSubmit}
+              onChange={this.onChange}
+            >
+
+              <div className="disclaimerBox md-checkbox">
+                <input id="disclaimer1" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+                <label htmlFor="disclaimer1">
+                  I am NEITHER a citizen or resident of, NOR currently located in any of the following states or territories, NOR an entity formed under the laws of:
+                  {' ' + GEO_BLOCKED_COUNTRIES_LIST}
+                </label>
+              </div>
+
+              <div className="disclaimerBox md-checkbox">
+                <input id="disclaimer2" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+                <label htmlFor="disclaimer2">
+                  I certify that I am NEITHER on any of the U.S. Treasury Department’s Office of Foreign Asset Control’s sanctions lists, the U.S. Commerce Department's Consolidated Screening List, the EU consolidated list of persons, groups or entities subject to EU financial sanctions, NOR do I act on behalf of a person sanctioned thereunder or a U.S.-, EU- or UN-sanctioned state.
+                </label>
+              </div>
+
+              <div className="disclaimerBox md-checkbox">
+                <input
+                  id="disclaimer3"
+                  type="checkbox"
+                  // onChange={() => this.setState({ termsOfUseAccepted: !this.state.termsOfUseAccepted })} <-- Scroll check removed. See handleScroll method.
+                  required
+                  defaultChecked={accepted}
+                  disabled={accepted/*  || !termsOfUseScrolled <-- Scroll check removed. See handleScroll method. */}
+                />
+                <label htmlFor="disclaimer3">
+                  I have read, understood, and agree to the full Terms and Conditions:
+                </label>
+              </div>
+
+              {network
+                ?
+              <TermsText
+                className="disclaimerTextbox"
+                // onScroll={this.handleTermsScroll} <-- Scroll check removed. See handleScroll method.
+                network={network}
+              />
+                :
+              null}
+
+              <div className="disclaimerBox md-checkbox">
+                <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+                <label htmlFor="disclaimer5">
+                  I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                </label>
+              </div>
+
+              {/* COOKIE DISCLAIMER */}
+              <div className="disclaimerCookiePolicy">
+                <div>
+                  <p>I agree to the storing of cookies on my device to enhance site navigation and analyze site usage. Please read the <Link to="/cookies">Cookie Policy</Link> for more information.</p>
+                  <div>
+                      <div className="disclaimerBoxCookie md-checkbox">
+                        <input id="disclaimer5" type="checkbox" required defaultChecked disabled/>
+                        <label htmlFor="disclaimer5">Necessary</label>
+                      </div>
+                      <div className="disclaimerBoxCookie md-checkbox">
+                        <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked={cookies_analytics_accepted} disabled={accepted}/>
+                        <label htmlFor="disclaimer6">Analytics</label>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="disclaimerError" style={disclaimerErrorStyle}>
+                Please read and truly confirm all sections before you continue
+              </p>
+            </form>
+
+            <span className="disclaimerFooterActions">
+              <button
+                id="disclaimer-submit"
+                form="disclaimer"
+                type="confirm"
+                className={disclaimerConfirmClasses}
+              >
+                Continue
+              </button>
+            </span>
+
+          </div>
+        </section>
+        <Imprint cssClass="modalDisclaimer" noTitle={true} />
+      </>
     )
   }
 
