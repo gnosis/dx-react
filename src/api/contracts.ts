@@ -40,7 +40,11 @@ const filename2ContractNameMap = {
 
 interface ContractsMap {
   DutchExchange:        DXAuction,
-  DutchExchangeHelper:  any,
+  DutchExchangeHelper:  Pick<DXAuction,
+    'getRunningTokenPairs' |
+    'getIndicesWithClaimableTokensForSellers' |
+    'getIndicesWithClaimableTokensForBuyers' |
+    'getSellerBalancesOfCurrentAuctions'>
   PriceOracleInterface: PriceOracleInterface,
   TokenMGN:             MGNInterface,
   TokenETH?:            ETHInterface,
