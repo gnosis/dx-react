@@ -36,6 +36,7 @@ import {
   getApprovedTokensFromAllTokens,
   getAvailableAuctionsFromAllTokens,
   dxAPI,
+  claimAndWithdrawSellerFundsFromSeveralAuctions,
 } from 'api'
 
 import { promisedContractsMap, contractsMap } from 'api/contracts'
@@ -864,6 +865,58 @@ export const claimSellerFundsFromSeveral = (
     // >>> ======== >>>
     // END WITHDRAW TX WATCHING
     // >>> ======== >>>
+
+    return dispatch(closeModal())
+  } catch (error) {
+    if (error.message && error.message.includes('Web3ProviderEngine does not support synchronous requests.')) {
+      console.warn(`
+      WARNING! ${error.message}
+
+      Your wallet's Web3 provider engine does not support Web3
+      eth.filter implementation. This is generally not a serious
+      problem and can be safely ignored.
+
+      Please check that your tokens have been properly withdrawn
+      into your wallet to confirm.
+      `)
+      dispatch(closeModal())
+      // jump to home Page
+      dispatch(push('/'))
+
+      // grab balance of sold token after claim
+      const balance = await getTokenBalance(sell.address, currentAccount)
+
+      // dispatch Actions
+      dispatch(setTokenBalance({ address: sell.address, balance }))
+      // indicate that claiming worked
+      return true
+    }
+    console.error(error.message)
+    dispatch(errorHandling(error))
+  }
+}
+
+export const claimAndWithdrawSellerFundsFromSeveral = (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  lastNIndex?: number,
+) => async (dispatch: Function, getState: () => State) => {
+  const { blockchain: { activeProvider, currentAccount, providers: { [activeProvider]: { name } } } } = getState()
+  const sellName = sell.symbol.toUpperCase() || sell.name.toUpperCase() || sell.address
+  const buyName = buy.symbol.toUpperCase() || buy.name.toUpperCase() || buy.address
+
+  try {
+    dispatch(openModal({
+      modalName: 'TransactionModal',
+      modalProps: {
+        header: 'Claiming and withdrawing funds',
+        body: `You are claiming and withdrawing into your wallet ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${name || 'your wallet provider'}.`,
+        loader: true,
+      },
+    }))
+
+    const claimReceipt = await claimAndWithdrawSellerFundsFromSeveralAuctions(sell, buy, currentAccount, lastNIndex)
+    console.log('ClaimSellerFundsFromSeveralAuctions TX claimReceipt: ', claimReceipt)
 
     return dispatch(closeModal())
   } catch (error) {
