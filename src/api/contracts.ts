@@ -13,10 +13,11 @@ import {
 import { Provider } from 'types'
 
 const contractNames = [
-  'DutchExchange',          // Stays in dx-contracts
-  'TokenFRT',               // Stays in dx-contracts
+  'DutchExchange',
+  'DutchExchangeProxy',
+  'DutchExchangeHelper',
+  'TokenFRT',
   'TokenFRTProxy',
-  'DutchExchangeProxy',     // Stays in dx-contracts - will be renamed DutchExchangeProxy
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
@@ -25,12 +26,12 @@ const contractNames = [
 ]
 
 // breaks in rinkeby, cancel for now
-// if (process.env.NODE_ENV === 'development') {
-//   contractNames.push(
-//     'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
-//     'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
-//   )
-// }
+if (process.env.FE_CONDITIONAL_ENV === 'development') {
+  contractNames.push(
+    'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
+    'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
+  )
+}
 
 // fill contractsMap from here if available
 const filename2ContractNameMap = {
@@ -38,14 +39,15 @@ const filename2ContractNameMap = {
 }
 
 interface ContractsMap {
-  DutchExchange:  DXAuction,
-  TokenMGN:       MGNInterface,
-  TokenETH?:      ETHInterface,
-  TokenGNO?:      GNOInterface,
-  TokenOWL?:      OWLInterface,
-  TokenOMG?:      GNOInterface,
-  TokenRDN?:      GNOInterface,
+  DutchExchange:        DXAuction,
+  DutchExchangeHelper:  any,
   PriceOracleInterface: PriceOracleInterface,
+  TokenMGN:             MGNInterface,
+  TokenETH?:            ETHInterface,
+  TokenGNO?:            GNOInterface,
+  TokenOWL?:            OWLInterface,
+  TokenOMG?:            GNOInterface,
+  TokenRDN?:            GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
@@ -59,27 +61,28 @@ if (process.env.FE_CONDITIONAL_ENV === 'development') {
   req = require.context(
     '../../build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|DutchExchangeHelper|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface|TokenOMG|TokenRDN)\.json$/,
   )
 } else {
   req = require.context(
     '@gnosis.pm/dx-contracts/build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|DutchExchangeHelper|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
   )
 }
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
-  './DutchExchange.json'      |
-  './DutchExchangeProxy.json' |
-  './TokenFRT.json'           |
-  './TokenFRTProxy.json'      |
-  './TokenOWL.json'           |
-  './TokenOWLProxy.json'      |
-  './EtherToken.json'         |
-  './TokenGNO.json'           |
-  './TokenOMG.json'           |
+  './DutchExchange.json'       |
+  './DutchExchangeProxy.json'  |
+  './DutchExchangeHelper.json' |
+  './TokenFRT.json'            |
+  './TokenFRTProxy.json'       |
+  './TokenOWL.json'            |
+  './TokenOWLProxy.json'       |
+  './EtherToken.json'          |
+  './TokenGNO.json'            |
+  './TokenOMG.json'            |
   './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
@@ -98,9 +101,9 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
 const checkENVAndWriteContractAddresses = async () => {
   // inject network addresses
   const networksUtils = require('@gnosis.pm/util-contracts/networks.json'),
-    networksGNO   = require('@gnosis.pm/gno-token/networks.json'),
-    networksOWL   = require('@gnosis.pm/owl-token/networks.json'),
-    networksDX   = require('@gnosis.pm/dx-contracts/networks.json')
+    networksGNO       = require('@gnosis.pm/gno-token/networks.json'),
+    networksOWL       = require('@gnosis.pm/owl-token/networks.json'),
+    networksDX        = require('@gnosis.pm/dx-contracts/networks.json')
 
   for (const contrArt of ContractsArtifacts) {
     const { contractName } = contrArt
@@ -239,13 +242,12 @@ async function init(provider: Provider) {
     // @ts-ignore
     deployedContracts.TokenMGN = contractsMap.TokenFRT.at<MGNInterface>(frtProxyAddress)
 
-    // TODO: prepare for TokenMGN or TokenFart proxy wrapping
-
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
     delete deployedContracts.TokenFRTProxy
 
+    // TODO: change back to === development
     if (process.env.FE_CONDITIONAL_ENV !== 'development') {
       console.debug(deployedContracts)
     }
