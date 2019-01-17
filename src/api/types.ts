@@ -520,7 +520,7 @@ interface DutchExchange<T = Receipt> {
   getDXTokenBalance(tokenAddress: Account, account: Account): Promise<BigNumber>, // user's balance for a Token inside DutchX
   getLatestAuctionIndex(pair: TokenPair): Promise<BigNumber>,
   getAuctionStart(pair: TokenPair): Promise<BigNumber>,
-  getClosingPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
+  getClosingPrice(pair: TokenPair, index: Index | string): Promise<[BigNumber, BigNumber]>,
   getLastAuctionPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
   getPrice(pair: TokenPair, index: Index): Promise<[BigNumber, BigNumber]>,
   getSellVolumesCurrent(pair: TokenPair): Promise<BigNumber>,
@@ -544,7 +544,7 @@ interface DutchExchange<T = Receipt> {
   claimTokensFromSeveralAuctionsAsSeller(
     sellTokenAddresses: Account[],
     buyTokenAddresses: Account[],
-    indices: number[],
+    indices: number[] | string[],
     account: Account,
   ): Promise<T>,
   claimAndWithdrawTokensFromSeveralAuctionsAsSeller(
