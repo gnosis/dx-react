@@ -246,8 +246,8 @@ async function init(provider: Provider) {
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
 
-    if (process.env.FE_CONDITIONAL_ENV === 'development') {
-      console.log(deployedContracts)
+    if (process.env.FE_CONDITIONAL_ENV !== 'development') {
+      console.debug(deployedContracts)
     }
 
     console.warn(`
