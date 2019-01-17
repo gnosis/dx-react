@@ -488,6 +488,12 @@ interface DXAuction<T = Receipt> {
     user: Account,
     tx: TransactionObject,
   ): Promise<T>,
+  claimAndWithdrawTokensFromSeveralAuctionsAsSeller(
+    sellTokens: Account[],
+    buyTokens: Account[],
+    auctionIndices: number[],
+    tx: TransactionObject,
+  ): Promise<T>,
   claimTokensFromSeveralAuctionsAsBuyer(
     sellTokens: Account[],
     buyTokens: Account[],
@@ -536,6 +542,12 @@ interface DutchExchange<T = Receipt> {
     lastNAuctions: number,
   ): Promise<[BigNumber[], BigNumber[]]>,
   claimTokensFromSeveralAuctionsAsSeller(
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
+    account: Account,
+  ): Promise<T>,
+  claimAndWithdrawTokensFromSeveralAuctionsAsSeller(
     sellTokenAddresses: Account[],
     buyTokenAddresses: Account[],
     indices: number[],
