@@ -2,6 +2,8 @@
 
 const TokenETH = artifacts.require('EtherToken')
 const TokenGNO = artifacts.require('TokenGNO')
+const TokenOMG = artifacts.require('TokenOMG')
+const TokenRDN = artifacts.require('TokenRDN')
 const PriceOracle = artifacts.require('PriceFeed')
 const Medianizer = artifacts.require('Medianizer')
 const DutchExchange = artifacts.require('DutchExchange')
@@ -24,6 +26,7 @@ const { mineCurrentBlock } = require('./utils')(web3)
  */
 
 module.exports = async () => {
+  console.log('HERE')
   const { accounts } = web3.eth
   const [master, seller, buyer] = accounts
 
@@ -43,8 +46,8 @@ module.exports = async () => {
   const dx = await DutchExchange.at(Proxy.address)
   const eth = await TokenETH.deployed()
   const gno = await TokenGNO.deployed()
-  const rdn = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
-  const omg = await TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
+  const rdn = await TokenRDN.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
+  const omg = await TokenOMG.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
   const oracle = await PriceOracle.deployed()
   const medianizer = await Medianizer.deployed()
 
@@ -90,9 +93,9 @@ module.exports = async () => {
   console.log('FundingUSD == ', startingETH * ethUSDPrice)
   console.log('Auction Index BEFORE == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
 
-  const funds = sell === 'eth' ?
-    [web3.toWei(10, 'ether'), 0, 2, 1] :
-    [0, web3.toWei(10, 'ether'), 1, 2]
+  const funds = sell === 'eth'
+    ? [web3.toWei(10, 'ether'), 0, 2, 1]
+    : [0, web3.toWei(10, 'ether'), 1, 2]
 
   await dx.addTokenPair(
     sellToken.address,                            // -----> SellToken Address
@@ -100,6 +103,7 @@ module.exports = async () => {
     ...funds,                                    // -----> sellFund, buyFund, closingPriceNum, closingPriceDen
     { from: account },
   )
+  await mineCurrentBlock()
   console.log('Auction Index AFTER == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
-  return mineCurrentBlock()
+  process.exit()
 }
