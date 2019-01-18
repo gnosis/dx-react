@@ -14,8 +14,8 @@ function deploy_pull_request {
   # TRAVIS_PULL_REQUEST contains pull request number
   REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NAME"
 
-  # Deploy safe-team project
-  aws s3 sync dist s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER} --delete
+  # Deploy dx-react project
+  aws s3 sync dist/prod s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER} --delete
 }
 
 function publish_pull_request_urls_in_github {
