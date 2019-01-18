@@ -69,8 +69,9 @@ const Providers = {
       if (window.mist && window.web3.currentProvider.constructor.name === 'EthereumProvider') return 'MIST'
       if (window.web3.currentProvider.constructor.name === 'StatusHttpProvider') return 'STATUS'
       if (window.web3.currentProvider.constructor.name === 'o') return 'COINBASE'
-      if (window.web3.currentProvider.isSafe) return 'GNOSIS SAFE'
+
       if ((window.web3.currentProvider || window.ethereum).isMetaMask) return 'METAMASK'
+      if (window.web3.currentProvider.isSafe) return 'GNOSIS SAFE'
 
       return 'UNKNOWN PROVIDER'
     },
