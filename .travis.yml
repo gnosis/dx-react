@@ -33,6 +33,7 @@ matrix:
     node_js: '9'
 
 before_script:
+  - truffle compile
   - npm run build:all
 
 script:
