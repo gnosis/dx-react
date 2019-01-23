@@ -3,16 +3,32 @@ import { web3CompatibleNetwork } from 'utils'
 
 export const geoBlockedCountryCodes = new Set(blocked_codes)
 
+const unblockDateCheck = async () => {
+  const lockPeriod = {
+    start: Date.UTC(2019, 1, 10, -1),
+    end: Date.UTC(2019, 2, 22, -1),
+  }
+
+  const { headers } = await fetch(window.location.origin, { mode:'same-origin', method:'HEAD' })
+  const dateNow = headers.get('date') ? Date.parse(headers.get('date')) : Date.now()
+
+  return (dateNow > lockPeriod.start && dateNow < lockPeriod.end)
+}
+
 export const isGeoBlocked = async () => {
   // default is true
   // except for DEV env + countries exempt
   try {
     const res = await fetch('https://geoip.gnosis.pm/json/')
 
-    // this DOES NOT block even if the URL above starts returning 404
+    // this blocks if the URL above starts returning 404
     if (!res.ok) return true
 
     const { country_code } = await res.json()
+
+    // TODO: remove as only TEMPORARY
+    // unblock Germany (DE) during: 12/02/2019 - 22/03/2019 (dxDAO)
+    if (await unblockDateCheck()) geoBlockedCountryCodes.delete('DE')
 
     // if user's country code does NOT match our blocked map
     // return false (= do not block)
