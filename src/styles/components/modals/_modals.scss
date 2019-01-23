@@ -7,7 +7,7 @@ $modal-max-width: 800px;
   align-items: center;
   background: $modalColorOpacity;
   color: $white;
-  min-height: calc(100vh - 164px);
+  min-height: 100vh;
   width: 100%; // 100vw;
   text-align: center;
   justify-content: center;
@@ -15,7 +15,7 @@ $modal-max-width: 800px;
 
   @media #{$mobile} {
     padding: 45px 25px;
-    overflow-y: scroll;
+    // overflow-y: scroll;
   }
 
   .modalParentDiv {
@@ -66,7 +66,7 @@ $modal-max-width: 800px;
   > .modalFooter {
     font-size: 1.4em;
     max-width: $modal-max-width;
-    background: $brandPrimaryShade;
+    // background: $brandPrimaryShade;
     border-radius: 2px;
     padding: 15px;
     box-sizing: border-box;
