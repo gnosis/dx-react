@@ -39,11 +39,11 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           </button>
           <Route path="/(.+)" render={() => <Link to="/" onClick={this.handleClick}> Home </Link>}/>
           <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
+          <a href={URLS.STEP_BY_STEP_GUIDE} target="_blank" rel="noopener noreferrer" onClick={this.handleClick}>Step By Step Guide</a>
           {/* <NavLink to="/content/Screencast" onClick={this.handleClick}> Screencast </NavLink> */}
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>
           <NavLink to="/content/LiquidityContribution" onClick={this.handleClick}> Liquidity Contribution </NavLink>
           <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
-          {/* <NavLink to="/content/Technical" onClick={this.handleClick}> Technical </NavLink> */}
           {/* <NavLink to="/content/Downtime" onClick={this.handleClick}> Downtime </NavLink> */}
           {/*  <a href={URLS.MARKET_MAKERS} target="_blank" onClick={this.handleClick}> Market Makers </a>
           <a href={URLS.LISTING_A_TOKEN} target="_blank" onClick={this.handleClick}> Listing a Token </a> */}

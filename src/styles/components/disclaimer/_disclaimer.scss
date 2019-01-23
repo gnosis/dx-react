@@ -1,6 +1,7 @@
 .disclaimer {
   width: 100%;
   max-width: 850px;
+  min-height: 100vh;
   margin: 0 auto;
   display: table;
 
@@ -179,6 +180,23 @@
   }
 }
 
+// .modalDisclaimer {
+//   background: #154471b0;
+//   border-radius: 40px;
+//   font-size: 12px;
+//   margin: 20px auto 0;
+//   padding: 2px 0;
+//   width: 30%;
+// }
+
+.modalDisclaimer {
+  background: #042a52; // #0000007d;
+  color: white;
+  font-size: 12px;
+  padding: 2px 0;
+  text-align: center;
+}
+
 .disclaimerError {
   color: $red;
   width: 100%;
@@ -186,7 +204,7 @@
   line-height: 1.5;
   font-size: 1.3em;
   font-weight: bold;
-  margin: 2em auto;
+  margin: 1em auto;
 }
 
 .subText {
