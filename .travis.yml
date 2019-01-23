@@ -33,7 +33,11 @@ matrix:
     node_js: '9'
 
 before_script:
+  - truffle compile
   - npm run build:all
+
+script:
+  - echo "Skip tests" # no test cases for the project
 
 after_success:
   # Pull Request - Deploy it to a review environment
