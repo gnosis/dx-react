@@ -46,23 +46,20 @@ async function conditionalRender() {
   const { FE_CONDITIONAL_ENV } = process.env
 
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
-  if (FE_CONDITIONAL_ENV !== 'production' || hostname === 'localhost' || hostname === '0.0.0.0') return preAppRender().catch(console.error)
+  if (FE_CONDITIONAL_ENV !== 'production' || URLS.APP_URLS_LOCAL.includes(hostname) || hostname.startsWith('10')) return preAppRender().catch(console.error)
 
   /* PRODUCTION builds should be geoBlocked */
   if (FE_CONDITIONAL_ENV === 'production') {
-    /* Scenario 1a: User is a developer on dx.staging OR ipfs */
-    if (
-     hostname === URLS.APP_STAGING ||
-     hostname.includes(URLS.APP_URL_IPFS.ipfs)
-    ) {
+    /* Scenario 1a: User is a developer on any of the STAGING URLS OR ipfs */
+    if (URLS.APP_URLS_STAGING.includes(hostname) || hostname.includes('ipfs')) {
       blocked = await isGeoBlocked()
       blocked && (disabledReason = 'geoblock')
 
-      hostname !== URLS.APP_STAGING && ReactGA.initialize(GA_CODES.IPFS)
+      !URLS.APP_URLS_STAGING.includes(hostname) && ReactGA.initialize(GA_CODES.IPFS)
     }
     // Main release Scenarios:
     /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
-    else if (hostname === URLS.APP_URL_RINKEBY) {
+    else if (hostname === URLS.APP_URLS_PROD[1]) {
       ALLOWED_NETWORK = 'Rinkeby Test Network'
       blocked = await isNetBlocked(['4'])
       if (blocked) disabledReason = 'networkblock'
@@ -70,7 +67,7 @@ async function conditionalRender() {
       ReactGA.initialize(GA_CODES.RINKEBY)
     }
     /* Scenario 3: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-    else if (hostname === URLS.APP_URL_MAIN) {
+    else if (hostname === URLS.APP_URLS_PROD[0]) {
       ALLOWED_NETWORK = 'Ethereum Mainnet'
       const netBlockedPromise = isNetBlocked(['1'])
       // geoblock gets precedence, checked last
@@ -84,11 +81,12 @@ async function conditionalRender() {
       // init GA
       ReactGA.initialize(GA_CODES.MAIN)
     }
-  } else {
-    // fallback
-    disabledReason = 'geoblock'
+    else {
+      // fallback
+      console.warn('No hostname match - fallingback to geographical block')
+      disabledReason = 'geoblock'
+    }
   }
-
   // Blocked for one reason or another
   if (blocked) {
     window.history.replaceState(null, '', '/')

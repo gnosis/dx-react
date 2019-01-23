@@ -47,7 +47,7 @@ export const ClaimOnly: React.SFC<any> = () =>
           For trading, please head to the latest, up-to-date version available below:
         </p>
 
-        <a className="buttonCTA" href={`https://${URLS.APP_URL_MAIN}`} rel="noopener noreferrer">
+        <a className="buttonCTA" href={`https://${URLS.APP_URLS_PROD[0]}`} rel="noopener noreferrer">
           Trade on {COMPANY_NAME} <i className="icon icon-arrowDown"></i>
         </a>
     </div >

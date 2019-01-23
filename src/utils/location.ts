@@ -6,15 +6,15 @@ const locationListener = (history: any) => {
   if (typeof window === 'undefined') return
 
     // history listen on change
-  if (window.location.hostname !== URLS.APP_URL_MAIN) {
+  if (window.location.hostname !== URLS.APP_URLS_PROD[0]) {
     history.listen((loc: any) => {
-        const searchParams = new URLSearchParams(loc.search)
-        searchParams.has('retro-x') && document.body.classList.add('THEME')
-      })
+      const searchParams = new URLSearchParams(loc.search)
+      searchParams.has('retro-x') && document.body.classList.add('THEME')
+    })
   }
     // fix slow.trade/rinkeby && rinkeby#/ issue
   if (window.location.href.startsWith(MAIN_RINKEBY_URL)) {
-    window.location.replace(`https://${URLS.APP_URL_RINKEBY}`)
+    window.location.replace(`https://${URLS.APP_URLS_PROD[1]}`)
   }
 }
 
