@@ -3,10 +3,16 @@ import { web3CompatibleNetwork } from 'utils'
 
 export const geoBlockedCountryCodes = new Set(blocked_codes)
 
-const unblockDateCheck = () => {
-  const lockPeriodStartCET = Date.UTC(2019, 1, 10, -1)
-  const lockPeriodEndCET = Date.UTC(2019, 2, 22, -1)
-  return (Date.now() > lockPeriodStartCET && Date.now() < lockPeriodEndCET)
+const unblockDateCheck = async () => {
+  const lockPeriod = {
+    start: Date.UTC(2019, 1, 10, -1),
+    end: Date.UTC(2019, 2, 22, -1),
+  }
+
+  const { headers } = await fetch(window.location.origin, { mode:'same-origin', method:'HEAD' })
+  const dateNow = headers.get('date') ? Date.parse(headers.get('date')) : Date.now()
+
+  return (dateNow > lockPeriod.start && dateNow < lockPeriod.end)
 }
 
 export const isGeoBlocked = async () => {
@@ -22,7 +28,7 @@ export const isGeoBlocked = async () => {
 
     // TODO: remove as only TEMPORARY
     // unblock Germany (DE) during: 12/02/2019 - 22/03/2019 (dxDAO)
-    if (unblockDateCheck()) geoBlockedCountryCodes.delete('DE')
+    if (await unblockDateCheck()) geoBlockedCountryCodes.delete('DE')
 
     // if user's country code does NOT match our blocked map
     // return false (= do not block)
