@@ -19,7 +19,7 @@ export const asyncLoadSettings = () => async (dispatch: Dispatch<any>) => {
     const { networks_accepted } = disclaimerSettings
     // if user currently using MAIN
     // check if networksAccepted includes MAIN or not
-    if (network && !networks_accepted[network]) {
+    if (network && (!networks_accepted || !networks_accepted[network])) {
       // set disclaimer_accepted to false to reprompt verification
       disclaimerSettings.disclaimer_accepted = false
     }
