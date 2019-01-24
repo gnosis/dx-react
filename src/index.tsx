@@ -46,7 +46,12 @@ async function conditionalRender() {
   const { FE_CONDITIONAL_ENV } = process.env
 
   /* Scenario 1: User is a developer running app locally: BLOCK: nothing */
-  if (FE_CONDITIONAL_ENV !== 'production' || URLS.APP_URLS_LOCAL.includes(hostname) || hostname.startsWith('10')) return preAppRender().catch(console.error)
+  if (
+      FE_CONDITIONAL_ENV !== 'production' ||
+      URLS.APP_URLS_DEV.includes(hostname) ||
+      URLS.APP_URLS_LOCAL.includes(hostname) ||
+      hostname.startsWith('10')
+  ) return preAppRender().catch(console.error)
 
   /* PRODUCTION builds should be geoBlocked */
   if (FE_CONDITIONAL_ENV === 'production') {
