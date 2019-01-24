@@ -146,9 +146,10 @@ const checkENVAndWriteContractAddresses = async () => {
           localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
           localForage.setItem('CONTRACT_ADDRESSES_TO_USE', ALL_OLD_CONTRACT_ADDRESSES[latestVersion]),
         ])
-        return ALL_OLD_CONTRACT_ADDRESSES[latestVersion]
+        return ALL_OLD_CONTRACT_ADDRESSES[latestVersion].contracts
       }
-      return CONTRACT_ADDRESSES_TO_USE
+
+      return CONTRACT_ADDRESSES_TO_USE.contracts
     }
 
     const networks = await grabOldDXNetworksAndSet()

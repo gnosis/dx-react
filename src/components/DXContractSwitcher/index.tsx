@@ -45,8 +45,8 @@ export default class DXContractPicker extends React.Component<{}, DXContractPick
     return this.setState({
       ALL_OLD_CONTRACT_ADDRESSES,
       CONTRACT_ADDRESSES_TO_USE,
-      DX_ADDRESS_TO_USE: CONTRACT_ADDRESSES_TO_USE['DutchExchangeProxy'][network].address,
-      VERSION_TO_USE: CONTRACT_ADDRESSES_TO_USE['DutchExchangeProxy'].version,
+      DX_ADDRESS_TO_USE: CONTRACT_ADDRESSES_TO_USE.contracts['DutchExchangeProxy'][network].address,
+      VERSION_TO_USE: CONTRACT_ADDRESSES_TO_USE.version,
       network,
     })
   }
@@ -61,7 +61,7 @@ export default class DXContractPicker extends React.Component<{}, DXContractPick
     this.setState({
       VERSION_TO_USE: version,
       CONTRACT_ADDRESSES_TO_USE: OLD_CONTRACT_OBJECT_TO_USE,
-      DX_ADDRESS_TO_USE: OLD_CONTRACT_OBJECT_TO_USE['DutchExchangeProxy'][network].address,
+      DX_ADDRESS_TO_USE: OLD_CONTRACT_OBJECT_TO_USE.contracts['DutchExchangeProxy'][network].address,
     })
     await localForage.setItem('CONTRACT_ADDRESSES_TO_USE', OLD_CONTRACT_OBJECT_TO_USE)
 
