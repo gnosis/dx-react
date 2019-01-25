@@ -83,9 +83,9 @@
     ]
   },
   "dependencies": {
-    "@gnosis.pm/dx-contracts": "2.0.0-RC12",
-    "@gnosis.pm/gno-token": "2.0.0-RC2",
-    "@gnosis.pm/util-contracts": "2.0.0-RC1",
+    "@gnosis.pm/dx-contracts": "2.0.0-RC15-David-Networks-Old-2",
+    "@gnosis.pm/gno-token": "2.0.0-RC3",
+    "@gnosis.pm/util-contracts": "2.0.0-RC4",
     "bignumber.js": "5.0.0",
     "connected-react-router": "4.4.1",
     "cross-env": "5.1.6",
