@@ -28,8 +28,8 @@ const contractNames = [
 // breaks in rinkeby, cancel for now
 if (process.env.FE_CONDITIONAL_ENV === 'development') {
   contractNames.push(
-    'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
-    'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
+    'TokenOMG',
+    'TokenRDN',
   )
 }
 
@@ -57,6 +57,7 @@ interface ContractsMap {
 interface ContractsMapWProxy extends ContractsMap {
   DutchExchangeProxy: DeployedContract,
   TokenOWLProxy: DeployedContract,
+  TokenFRTProxy: DeployedContract,
 }
 
 let req: any
@@ -140,7 +141,7 @@ const checkENVAndWriteContractAddresses = async () => {
 
     const grabOldDXNetworksAndSet = async () => {
       // Array of old contract addresses
-      const ALL_OLD_CONTRACT_ADDRESSES = require('../../test/networks-old')
+      const ALL_OLD_CONTRACT_ADDRESSES = require('@gnosis.pm/dx-contracts/networks-old.json') || require('../../test/networks-old')
 
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
@@ -247,9 +248,9 @@ async function init(provider: Provider) {
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
+    delete deployedContracts.TokenFRTProxy
 
-    // TODO: change back to === development
-    if (process.env.FE_CONDITIONAL_ENV !== 'development') {
+    if (process.env.FE_CONDITIONAL_ENV !== 'production') {
       console.debug(deployedContracts)
     }
 
