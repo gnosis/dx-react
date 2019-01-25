@@ -58,6 +58,7 @@ interface ContractsMap {
 interface ContractsMapWProxy extends ContractsMap {
   DutchExchangeProxy: DeployedContract,
   TokenOWLProxy: DeployedContract,
+  TokenFRTProxy: DeployedContract,
 }
 
 let req: any
@@ -259,9 +260,9 @@ async function init(provider: Provider) {
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
+    delete deployedContracts.TokenFRTProxy
 
-    // TODO: change back to === development
-    if (process.env.FE_CONDITIONAL_ENV !== 'development') {
+    if (process.env.FE_CONDITIONAL_ENV !== 'production') {
       console.debug(deployedContracts)
     }
 
