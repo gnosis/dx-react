@@ -11,23 +11,24 @@ import {
   PriceOracleInterface,
 } from './types'
 import { Provider } from 'types'
+import { contractVersionChecker } from 'utils'
 
 const contractNames = [
-  'DutchExchange',          // Stays in dx-contracts
-  'TokenFRT',               // Stays in dx-contracts
-  'DutchExchangeProxy',                  // Stays in dx-contracts - will be renamed DutchExchangeProxy
-  'EtherToken',             // TODO: > 0.9.0 will be @gnosis/util-contracts
-  'TokenGNO',               // TODO: > 0.9.0 will be @gnosis/token-gno
-  'TokenOWL',               // TODO: > 0.9.0 will be @gnosis/token-owl
-  'TokenOWLProxy',          // TODO: > 0.9.0 will be @gnosis/token-owl
+  'DutchExchange',
+  'TokenFRT',
+  'DutchExchangeProxy',
+  'EtherToken',
+  'TokenGNO',
+  'TokenOWL',
+  'TokenOWLProxy',
   'PriceOracleInterface',
 ]
 
 // breaks in rinkeby, cancel for now
 // if (process.env.NODE_ENV === 'development') {
 //   contractNames.push(
-//     'TokenOMG',               // TODO: > 0.9.0 will be deleted - use TokenERC20
-//     'TokenRDN',               // TODO: > 0.9.0 will be deleted - use TokenERC20)
+//     'TokenOMG',
+//     'TokenRDN',
 //   )
 // }
 
@@ -70,14 +71,14 @@ export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contr
 
 type TokenArtifact =
   './DutchExchange.json'      |
-  './DutchExchangeProxy.json' |   // rename to DutchExchangeProxy.json in dx-contracts@0.9.3
+  './DutchExchangeProxy.json' |
   './TokenFRT.json'           |
-  './TokenOWL.json'           |   // Moving to @gnosis.pm/owl-token
-  './TokenOWLProxy.json'      |   // Moving to @gnosis.pm/owl-token
-  './EtherToken.json'         |   // Moving to @gnosis.pm/util-contracts
-  './TokenGNO.json'           |   // Moving to @gnosis.pm/gno-token
-  './TokenOMG.json'           |   // deleted in dx-contracts@0.9.1+
-  './TokenRDN.json'               // deleted in dx-contracts@0.9.1+
+  './TokenOWL.json'           |
+  './TokenOWLProxy.json'      |
+  './EtherToken.json'         |
+  './TokenGNO.json'           |
+  './TokenOMG.json'           |
+  './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
 const ContractsArtifacts: ContractArtifact[] = contractNames.map(
@@ -131,7 +132,18 @@ const checkENVAndWriteContractAddresses = async () => {
 
     const grabOldDXNetworksAndSet = async () => {
       // Array of old contract addresses
-      const ALL_OLD_CONTRACT_ADDRESSES = require('../../test/networks-old')
+      let ALL_OLD_CONTRACT_ADDRESSES = require('@gnosis.pm/dx-contracts/networks-old.json') || require('../../test/networks-old')
+
+      // ONLY use version < 2 - safety
+      ALL_OLD_CONTRACT_ADDRESSES = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)
+        .reduce((acc, version) => {
+          const major = +version.split('.')[0]
+          if (major < 2) {
+            acc[version] = ALL_OLD_CONTRACT_ADDRESSES[version]
+            return acc
+          }
+          return acc
+        }, {})
 
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
@@ -139,7 +151,7 @@ const checkENVAndWriteContractAddresses = async () => {
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
       ])
 
-      if (!CONTRACT_ADDRESSES_TO_USE) {
+      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 2, 0)) {
         // from networks-old - old versions of DX to grab addresses
         const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
         await Promise.all([
@@ -229,8 +241,6 @@ async function init(provider: Provider) {
 
     const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
     deployedContracts.TokenOWL = contractsMap.TokenOWL.at<OWLInterface>(owlProxyAddress)
-
-    // TODO: prepare for TokenMGN or TokenFart proxy wrapping
 
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
