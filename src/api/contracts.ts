@@ -11,6 +11,7 @@ import {
   PriceOracleInterface,
 } from './types'
 import { Provider } from 'types'
+import { contractVersionChecker } from 'utils'
 
 const contractNames = [
   'DutchExchange',          // Stays in dx-contracts
@@ -131,7 +132,18 @@ const checkENVAndWriteContractAddresses = async () => {
 
     const grabOldDXNetworksAndSet = async () => {
       // Array of old contract addresses
-      const ALL_OLD_CONTRACT_ADDRESSES = require('../../test/networks-old')
+      let ALL_OLD_CONTRACT_ADDRESSES = require('@gnosis.pm/dx-contracts/networks-old.json') || require('../../test/networks-old')
+
+      // ONLY use version < 2 - safety
+      ALL_OLD_CONTRACT_ADDRESSES = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)
+        .reduce((acc, version) => {
+          const major = +version.split('.')[0]
+          if (major < 2) {
+            acc[version] = ALL_OLD_CONTRACT_ADDRESSES[version]
+            return acc
+          }
+          return acc
+        }, {})
 
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
@@ -139,7 +151,8 @@ const checkENVAndWriteContractAddresses = async () => {
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
       ])
 
-      if (!CONTRACT_ADDRESSES_TO_USE) {
+      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 2, 0)) {
+        alert('CHANGING CONTRACT ADDRESES TO USE')
         // from networks-old - old versions of DX to grab addresses
         const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
         await Promise.all([
