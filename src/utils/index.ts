@@ -81,8 +81,8 @@ export const displayUserFriendlyError = (error: string) => {
   const err = error.toLowerCase()
 
   if (err.includes('user denied transaction signature')) return CANCEL_TX_ERROR
-  else if (err.includes('failed to fetch')) return NO_INTERNET_TX_ERROR
-  else if (err.includes('intrinsic gas too low')) return LOW_GAS_ERROR
+  if (err.includes('failed to fetch')) return NO_INTERNET_TX_ERROR
+  if (err.includes('intrinsic gas too low')) return LOW_GAS_ERROR
 
   return DEFAULT_ERROR
 }
@@ -266,3 +266,10 @@ export const estimateGas = async (
 
 export const geoBlockedCitiesToString = (extraCountries?: {[p: string]: string}) =>
   Object.values({ ...BLOCKED_COUNTRIES, ...extraCountries }).sort().join(', ') + '.'
+
+export const contractVersionChecker = (contractObj: { version: string }, hiLimit: number, loLimit: number = 0) => {
+  const major = +contractObj.version.split('.')[0]
+
+  if (major < hiLimit && major >= loLimit) return false
+  return true
+}
