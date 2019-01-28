@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-react",
-  "version": "1.7.2",
+  "version": "2.0.0-RC1",
   "description": "slow.trade - ERC20 Trading Platform",
   "main": "src/index.tsx",
   "scripts": {
@@ -83,7 +83,7 @@
     ]
   },
   "dependencies": {
-    "@gnosis.pm/dx-contracts": "2.0.0-RC15-David-Networks-Old-2",
+    "@gnosis.pm/dx-contracts": "2.0.0-RC15",
     "@gnosis.pm/gno-token": "2.0.0-RC3",
     "@gnosis.pm/util-contracts": "2.0.0-RC4",
     "bignumber.js": "5.0.0",
