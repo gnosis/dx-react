@@ -14,7 +14,6 @@ import App, { loadLocalSettings } from 'components/App'
 import { isNetBlocked, isGeoBlocked } from 'block'
 
 import { GA_CODES, URLS } from 'globals'
-import appInfo from '../package.json'
 
 /* global document */
 const rootElement = document.getElementById('root')
@@ -52,7 +51,7 @@ async function conditionalRender() {
       URLS.APP_URLS_DEV.includes(hostname) ||
       URLS.APP_URLS_LOCAL.includes(hostname) ||
       hostname.startsWith('10')
-  ) return (alert(`Using DX React ${appInfo.version}`), preAppRender().catch(console.error))
+  ) return preAppRender().catch(console.error)
 
   /* PRODUCTION builds should be geoBlocked */
   if (FE_CONDITIONAL_ENV === 'production') {
