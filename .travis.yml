@@ -1,4 +1,4 @@
-if: (branch = develop) OR (branch = master) OR (type = pull_request) OR (tag IS present) OR (branch = slow-trade/1.0)
+if: (branch = develop) OR (branch = master) OR (type = pull_request) OR (tag IS present)
 sudo: required
 dist: trusty
 language: node_js
@@ -26,12 +26,6 @@ matrix:
   - if: NOT (branch =~ /^master$/) AND NOT (tag IS present)
     env: NODE_ENV=development
     node_js: '8'
-  # SLOW TRADE 1.0 RELEASES AND CLAIM ONLY
-  - if: branch = slow-trade/1.0
-    env:
-      - NODE_ENV=production
-    node_js: '9'
-
 before_script:
   - truffle compile
   - npm run build:all
