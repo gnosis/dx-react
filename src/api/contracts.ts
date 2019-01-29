@@ -155,6 +155,9 @@ const checkENVAndWriteContractAddresses = async () => {
           return acc
         }, {})
 
+      // throw if ALL_OLD_CONTRACTS doesn't pass above reducer
+      if (!Object.keys(ALL_OLD_CONTRACT_ADDRESSES).length) throw new Error('No compatible, legacy, claimable contracts. Are you sure the contracts have been upgraded?')
+
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
         localForage.getItem('CONTRACT_ADDRESSES_TO_USE'),
