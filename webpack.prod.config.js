@@ -176,6 +176,7 @@ module.exports = {
         VERSION: JSON.stringify(`${version}#${build}`),
         NODE_ENV: JSON.stringify(nodeEnv),
         FE_CONDITIONAL_ENV: JSON.stringify(process.env.FE_CONDITIONAL_ENV || 'production'),
+        USE_DEV_NETWORKS: JSON.stringify(process.env.USE_DEV_NETWORKS),
         CLAIM_ONLY: JSON.stringify(process.env.CLAIM_ONLY),
       },
     }),
