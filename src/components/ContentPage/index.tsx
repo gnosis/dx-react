@@ -74,7 +74,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-          Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URLS_PROD[1]}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+          Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URLS_PROD.RINKEBY[0]}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
         </p>
       </span>
     </section>

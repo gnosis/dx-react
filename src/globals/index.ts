@@ -157,7 +157,13 @@ export const URLS = {
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 
   APP_URLS_LOCAL: ['localhost', '0.0.0.0'],
-  APP_URLS_PROD: ['slow.trade', 'rinkeby.slow.trade', 'ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],
+  // APP_URLS_PROD: ['slow.trade', 'rinkeby.slow.trade', 'legacy.slow.trade', 'legacy.rinkeby.slow.trade', 'ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],
+  APP_URLS_PROD: {
+    ALL: ['slow.trade', 'rinkeby.slow.trade', 'legacy.slow.trade', 'legacy.rinkeby.slow.trade', 'ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],
+    MAIN: ['slow.trade', 'legacy.slow.trade'],
+    RINKEBY: ['rinkeby.slow.trade', 'legacy.rinkeby.slow.trade'],
+    IPFS: ['ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],
+  },
   APP_URLS_STAGING: ['dx.staging.gnosisdev.com', 'dx.legacy.staging.gnosisdev.com'],
   APP_URLS_DEV: ['dx.dev.gnosisdev.com', 'dx.legacy.dev.gnosisdev.com'],
   APP_IPFS_OBJECT: { ipfs: 'ipfs', hostnames: ['ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'], pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV' },
