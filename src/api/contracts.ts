@@ -148,7 +148,7 @@ const checkENVAndWriteContractAddresses = async () => {
       ALL_OLD_CONTRACT_ADDRESSES = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)
         .reduce((acc, version) => {
           const major = +version.split('.')[0]
-          if (major < 2) {
+          if (major < 3 && major >= 2) {
             acc[version] = ALL_OLD_CONTRACT_ADDRESSES[version]
             return acc
           }
@@ -161,7 +161,7 @@ const checkENVAndWriteContractAddresses = async () => {
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
       ])
 
-      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 2, 0)) {
+      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 3, 2)) {
         // from networks-old - old versions of DX to grab addresses
         const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
         await Promise.all([
