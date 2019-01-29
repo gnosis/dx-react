@@ -1,4 +1,5 @@
 /* eslint no-console:0 */
+const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 const {
   deployed,
   getTokenDeposits,
@@ -6,7 +7,6 @@ const {
   getExchangeStatsForTokenPair,
   postBuyOrder,
 } = require('./utils/contracts')(artifacts)
-const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**
  * truffle exec test/trufflescripts/buy_order.js
@@ -22,8 +22,8 @@ const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 
 module.exports = async () => {
-  const { eth, gno } = await deployed
-  const availableTokens = { eth, gno }
+  const { eth, gno, omg, rdn } = await deployed
+  const availableTokens = { eth, gno, omg, rdn }
 
   const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
   let sellToken = availableTokens[sell.toLowerCase()] || eth

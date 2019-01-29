@@ -15,8 +15,10 @@ import { contractVersionChecker } from 'utils'
 
 const contractNames = [
   'DutchExchange',
-  'TokenFRT',
   'DutchExchangeProxy',
+  'DutchExchangeHelper',
+  'TokenFRT',
+  'TokenFRTProxy',
   'EtherToken',
   'TokenGNO',
   'TokenOWL',
@@ -38,19 +40,25 @@ const filename2ContractNameMap = {
 }
 
 interface ContractsMap {
-  DutchExchange:  DXAuction,
-  TokenMGN:       MGNInterface,
-  TokenETH?:      ETHInterface,
-  TokenGNO?:      GNOInterface,
-  TokenOWL?:      OWLInterface,
-  TokenOMG?:      GNOInterface,
-  TokenRDN?:      GNOInterface,
+  DutchExchange:        DXAuction,
+  DutchExchangeHelper:  Pick<DXAuction,
+    'getRunningTokenPairs' |
+    'getIndicesWithClaimableTokensForSellers' |
+    'getIndicesWithClaimableTokensForBuyers' |
+    'getSellerBalancesOfCurrentAuctions'>
   PriceOracleInterface: PriceOracleInterface,
+  TokenMGN:             MGNInterface,
+  TokenETH?:            ETHInterface,
+  TokenGNO?:            GNOInterface,
+  TokenOWL?:            OWLInterface,
+  TokenOMG?:            GNOInterface,
+  TokenRDN?:            GNOInterface,
 }
 
 interface ContractsMapWProxy extends ContractsMap {
   DutchExchangeProxy: DeployedContract,
   TokenOWLProxy: DeployedContract,
+  TokenFRTProxy: DeployedContract,
 }
 
 let req: any
@@ -58,26 +66,28 @@ if (process.env.FE_CONDITIONAL_ENV === 'development') {
   req = require.context(
     '../../build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|DutchExchangeHelper|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface|TokenOMG|TokenRDN)\.json$/,
   )
 } else {
   req = require.context(
     '@gnosis.pm/dx-contracts/build/contracts/',
     false,
-    /(DutchExchange|DutchExchangeProxy|TokenFRT|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
+    /(DutchExchange|DutchExchangeProxy|DutchExchangeHelper|TokenFRT|TokenFRTProxy|EtherToken|TokenGNO|TokenOWL|TokenOWLProxy|PriceOracleInterface)\.json$/,
   )
 }
 export const HumanFriendlyToken = TruffleContract(require('@gnosis.pm/util-contracts/build/contracts/HumanFriendlyToken.json'))
 
 type TokenArtifact =
-  './DutchExchange.json'      |
-  './DutchExchangeProxy.json' |
-  './TokenFRT.json'           |
-  './TokenOWL.json'           |
-  './TokenOWLProxy.json'      |
-  './EtherToken.json'         |
-  './TokenGNO.json'           |
-  './TokenOMG.json'           |
+  './DutchExchange.json'       |
+  './DutchExchangeProxy.json'  |
+  './DutchExchangeHelper.json' |
+  './TokenFRT.json'            |
+  './TokenFRTProxy.json'       |
+  './TokenOWL.json'            |
+  './TokenOWLProxy.json'       |
+  './EtherToken.json'          |
+  './TokenGNO.json'            |
+  './TokenOMG.json'            |
   './TokenRDN.json'
 
 const reqKeys = req.keys() as TokenArtifact[]
@@ -96,9 +106,9 @@ const ContractsArtifacts: ContractArtifact[] = contractNames.map(
 const checkENVAndWriteContractAddresses = async () => {
   // inject network addresses
   const networksUtils = require('@gnosis.pm/util-contracts/networks.json'),
-    networksGNO   = require('@gnosis.pm/gno-token/networks.json'),
-    networksOWL   = require('@gnosis.pm/owl-token/networks.json'),
-    networksDX   = require('@gnosis.pm/dx-contracts/networks.json')
+    networksGNO       = require('@gnosis.pm/gno-token/networks.json'),
+    networksOWL       = require('@gnosis.pm/owl-token/networks.json'),
+    networksDX        = require('@gnosis.pm/dx-contracts/networks.json')
 
   for (const contrArt of ContractsArtifacts) {
     const { contractName } = contrArt
@@ -114,7 +124,7 @@ const checkENVAndWriteContractAddresses = async () => {
   }
 
   // in development use different contract addresses
-  if (process.env.FE_CONDITIONAL_ENV === 'development') {
+  if (process.env.FE_CONDITIONAL_ENV === 'development' || process.env.USE_DEV_NETWORKS) {
     // from networks-%ENV%.json
     const networksDX    = require('@gnosis.pm/dx-contracts/networks-dev.json')
 
@@ -138,12 +148,15 @@ const checkENVAndWriteContractAddresses = async () => {
       ALL_OLD_CONTRACT_ADDRESSES = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)
         .reduce((acc, version) => {
           const major = +version.split('.')[0]
-          if (major < 2) {
+          if (major < 3 && major >= 2) {
             acc[version] = ALL_OLD_CONTRACT_ADDRESSES[version]
             return acc
           }
           return acc
         }, {})
+
+      // throw if ALL_OLD_CONTRACTS doesn't pass above reducer
+      if (!Object.keys(ALL_OLD_CONTRACT_ADDRESSES).length) throw new Error('No compatible claimable legacy contracts. Current DutchX protocol contracts likely haven\'t been upgraded')
 
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
@@ -151,7 +164,8 @@ const checkENVAndWriteContractAddresses = async () => {
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
       ])
 
-      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 2, 0)) {
+      // check if contract addres to use exists OR if the current version of slow.trade is compatible with the version selected
+      if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 3, 2)) {
         // from networks-old - old versions of DX to grab addresses
         const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
         await Promise.all([
@@ -242,12 +256,18 @@ async function init(provider: Provider) {
     const { address: owlProxyAddress } = deployedContracts.TokenOWLProxy
     deployedContracts.TokenOWL = contractsMap.TokenOWL.at<OWLInterface>(owlProxyAddress)
 
+    // Set TokenFRT @ TokenFRTProxy address
+    const { address: frtProxyAddress } = deployedContracts.TokenFRTProxy
+    // @ts-ignore
+    deployedContracts.TokenMGN = contractsMap.TokenFRT.at<MGNInterface>(frtProxyAddress)
+
     // remove Proxy contracts from obj
     delete deployedContracts.DutchExchangeProxy
     delete deployedContracts.TokenOWLProxy
+    delete deployedContracts.TokenFRTProxy
 
-    if (process.env.FE_CONDITIONAL_ENV === 'development') {
-      console.log(deployedContracts)
+    if (process.env.FE_CONDITIONAL_ENV !== 'production') {
+      console.debug(deployedContracts)
     }
 
     console.warn(`

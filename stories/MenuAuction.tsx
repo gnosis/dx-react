@@ -20,7 +20,7 @@ const constructKnobs = (
 ) => ({
   name: text('title', name),
   ongoingAuctions: auctionsArr.map((item: object, i: number) => object(`Ongoing Auctions ${i}`, item)),
-  claimSellerFundsFromSeveral: () => console.log('Claiming!'),
+  claimAndWithdrawSellerFundsFromSeveral: () => console.log('Claiming and withdrawing!!'),
   claimable: boolean('claimable', true),
   push: () => console.log('Moving to auction') as any,
 })

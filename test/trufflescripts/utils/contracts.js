@@ -44,6 +44,9 @@ module.exports = (artifacts) => {
     PriceOracleInterface,
     PriceFeed,
     Medianizer,
+
+    TokenOMG,
+    TokenRDN,
   }
 
   const shortMap = {
@@ -81,8 +84,8 @@ module.exports = (artifacts) => {
 
     deployedMap[shortMap.TokenOWL] = await TokenOWL.at(TokenOWLProxy.address)
     deployedMap[shortMap.DutchExchange] = await artifacts.require('DutchExchange').at(Proxy.address)
-    deployedMap[shortMap.TokenOMG] = await TokenOMG.new(5000000e18)
-    deployedMap[shortMap.TokenRDN] = await TokenRDN.new(5000000e18)
+    // deployedMap[shortMap.TokenOMG] = await TokenOMG.new(5000000e18)
+    // deployedMap[shortMap.TokenRDN] = await TokenRDN.new(5000000e18)
     // remove extra non-tokens
     // delete deployedMap.owlProxy
     // delete deployedMap.proxy
@@ -171,8 +174,8 @@ module.exports = (artifacts) => {
       dx.balances.call(owl.address, acc),
     ])
 
-    const [ETH, GNO, FRT, OMG, RDN, OWL] = mapToNumber(deposits)
-
+    const [ETH, GNO, FRT, RDN, OMG, OWL] = mapToNumber(deposits)
+    console.log('OMG DEPOSIT = ', OMG)
     return { ETH, GNO, FRT, OMG, RDN, OWL }
   }
 
@@ -185,7 +188,7 @@ module.exports = (artifacts) => {
   const giveTokens = (acc, tokensMap, masterAcc) => handleTokensMap(tokensMap, ({ key, token, amount }) => {
     if (key === 'ETH') {
       return token.deposit({ from: acc, value: amount })
-    } else if (masterAcc) {
+    } if (masterAcc) {
       return token.transfer(acc, amount, { from: masterAcc })
     }
 

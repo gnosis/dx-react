@@ -13,7 +13,7 @@ export const promisedDutchX = async () => {
 }
 
 async function init(): Promise<DutchExchange> {
-  const { DutchExchange: dx } = await promisedContractsMap()
+  const { DutchExchange: dx, DutchExchangeHelper: dxHelper } = await promisedContractsMap()
 
   /* const token2Address = Object.keys(tokens).reduce((acc, key) => {
     const contr = tokens[key]
@@ -144,6 +144,36 @@ async function init(): Promise<DutchExchange> {
     txParams: { from: account },
   }, 'sendTransaction')
 
+  const claimAndWithdrawTokensFromSeveralAuctionsAsSeller: DutchExchange['claimAndWithdrawTokensFromSeveralAuctionsAsSeller'] = (
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
+    account: Account,
+  ) => estimateGas({
+    cb: dx.claimAndWithdrawTokensFromSeveralAuctionsAsSeller,
+    mainParams: [
+      sellTokenAddresses,
+      buyTokenAddresses,
+      indices,
+    ],
+    txParams: { from: account },
+  })
+
+  claimAndWithdrawTokensFromSeveralAuctionsAsSeller.sendTransaction = (
+    sellTokenAddresses: Account[],
+    buyTokenAddresses: Account[],
+    indices: number[],
+    account: Account,
+  ) => estimateGas({
+    cb: dx.claimAndWithdrawTokensFromSeveralAuctionsAsSeller,
+    mainParams: [
+      sellTokenAddresses,
+      buyTokenAddresses,
+      indices,
+    ],
+    txParams: { from: account },
+  }, 'sendTransaction')
+
   const claimBuyerFunds = (
     { sell: { address: t1 }, buy: { address: t2 } }: TokenPair,
     index: Index,
@@ -204,19 +234,19 @@ async function init(): Promise<DutchExchange> {
   const getDXTokenBalance = (tokenAddress: Account, userAccount: Account) =>
     dx.balances.call(tokenAddress, userAccount)
 
-  const getRunningTokenPairs = (tokenList: Account[]) => dx.getRunningTokenPairs.call(tokenList)
+  const getRunningTokenPairs = (tokenList: Account[]) => dxHelper.getRunningTokenPairs.call(tokenList)
 
   const getSellerBalancesOfCurrentAuctions = (
     sellTokenArr: Account[],
     buyTokenArr: Account[],
     userAccount: Account,
-  ) => dx.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, userAccount)
+  ) => dxHelper.getSellerBalancesOfCurrentAuctions.call(sellTokenArr, buyTokenArr, userAccount)
 
   const getIndicesWithClaimableTokensForSellers = (
     { sell: { address: sellToken }, buy: { address: buyToken } }: TokenPair,
     userAccount: Account,
     lastNAuctions: number = 0,
-  ) => dx.getIndicesWithClaimableTokensForSellers.call(sellToken, buyToken, userAccount, lastNAuctions)
+  ) => dxHelper.getIndicesWithClaimableTokensForSellers.call(sellToken, buyToken, userAccount, lastNAuctions)
 
   const getFeeRatio = (userAccount: Account) => dx.getFeeRatio.call(userAccount)
 
@@ -263,6 +293,7 @@ async function init(): Promise<DutchExchange> {
     getIndicesWithClaimableTokensForSellers,
     getClaimedAmounts,
     claimTokensFromSeveralAuctionsAsSeller,
+    claimAndWithdrawTokensFromSeveralAuctionsAsSeller,
     getFeeRatio,
     postSellOrder,
     postBuyOrder,
