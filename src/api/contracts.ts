@@ -156,7 +156,7 @@ const checkENVAndWriteContractAddresses = async () => {
         }, {})
 
       // throw if ALL_OLD_CONTRACTS doesn't pass above reducer
-      if (!Object.keys(ALL_OLD_CONTRACT_ADDRESSES).length) throw new Error('No compatible, legacy, claimable contracts. Are you sure the contracts have been upgraded?')
+      if (!Object.keys(ALL_OLD_CONTRACT_ADDRESSES).length) throw new Error('No compatible claimable legacy contracts. Current DutchX protocol contracts likely haven\'t been upgraded')
 
       // check localForage for saved addresses and default to use
       const [CONTRACT_ADDRESSES_TO_USE] = await Promise.all([
@@ -164,6 +164,7 @@ const checkENVAndWriteContractAddresses = async () => {
         localForage.setItem('ALL_OLD_CONTRACT_ADDRESSES', ALL_OLD_CONTRACT_ADDRESSES),
       ])
 
+      // check if contract addres to use exists OR if the current version of slow.trade is compatible with the version selected
       if (!CONTRACT_ADDRESSES_TO_USE || contractVersionChecker(CONTRACT_ADDRESSES_TO_USE, 3, 2)) {
         // from networks-old - old versions of DX to grab addresses
         const latestVersion = Object.keys(ALL_OLD_CONTRACT_ADDRESSES)[0]
