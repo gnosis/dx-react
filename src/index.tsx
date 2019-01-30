@@ -64,7 +64,7 @@ async function conditionalRender() {
     }
     // Main release Scenarios:
     /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
-    else if (hostname === URLS.APP_URLS_PROD[1]) {
+    else if (URLS.APP_URLS_PROD.RINKEBY.includes(hostname)) {
       ALLOWED_NETWORK = 'Rinkeby Test Network'
       blocked = await isNetBlocked(['4'])
       if (blocked) disabledReason = 'networkblock'
@@ -72,7 +72,7 @@ async function conditionalRender() {
       ReactGA.initialize(GA_CODES.RINKEBY)
     }
     /* Scenario 3: User is using the dx on dutchx.app (MAIN): BLOCK: all networks + geoblock */
-    else if (hostname === URLS.APP_URLS_PROD[0]) {
+    else if (URLS.APP_URLS_PROD.MAIN.includes(hostname)) {
       ALLOWED_NETWORK = 'Ethereum Mainnet'
       const netBlockedPromise = isNetBlocked(['1'])
       // geoblock gets precedence, checked last
