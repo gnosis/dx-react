@@ -77,7 +77,17 @@ deploy:
     on:
       branch: master
       node: '9'
-
+  # Prepare legacy production deployment
+  - provider: s3
+    bucket: $STAGING_LEGACY_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: dist/legacy
+    upload-dir: releases/$TRAVIS_TAG
+    on:
+      tags: true
+      node: '9'
   # Prepare production deployment
   - provider: s3
     bucket: $STAGING_BUCKET_NAME
