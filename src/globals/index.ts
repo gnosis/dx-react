@@ -137,6 +137,8 @@ export const GAS_LIMIT = '200000'
 export const URLS = {
   METAMASK: 'https://metamask.io',
   GNOSIS_SAFE_SITE: 'https://safe.gnosis.io/',
+  STATUS_SITE: 'https://status.im/',
+  COINBASE_WALLET_SITE: 'https://wallet.coinbase.com/',
   HOW_IT_WORKS: '/content/HowItWorks',
   TOKENS: '/content/Tokens',
   LIQUIDITY_CONTRIBUTION: '/content/LiquidityContribution',

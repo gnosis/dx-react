@@ -21,7 +21,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>What is <strong>slow.trade</strong></h3>
       <span>
         <p>
-          <strong>Slow.trade</strong> is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
+          <strong>slow.trade</strong> is a graphical interface and trading platform (the "<strong>Platform</strong>"), that lets you seamlessly interact with the DutchX Decentralized Trading Protocol (the "<strong>DutchX Protocol</strong>").
         </p>
         <img src={dutchXSlowtrade} />
       </span>
@@ -74,7 +74,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>Can I test it first?</h3>
       <span>
         <p>
-          Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URLS_PROD.RINKEBY[0]}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Metamask is set to Rinkeby.
+          Yes, absolutely! We actually recommend that you first familiarize yourself with the auction mechanism on <strong>slow.trade</strong> using the <a href={`https://${URLS.APP_URLS_PROD.RINKEBY[0]}`} target="_blank" rel="noopener noreferrer">Rinkeby Testnet</a>. This allows you to interact with the DutchX Rinkeby Protocol. To do so, make sure your Wallet is set to Rinkeby.
         </p>
       </span>
     </section>
@@ -101,10 +101,10 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>How do I claim my new tokens?</h3>
       <span>
         <p>
-          <strong>Slow.trade</strong> provides you with two options to claim your new tokens:
+          <strong>slow.trade</strong> provides you with two options to claim your new tokens:
         </p>
         <p>
-          The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that specific token pair (please note: you might need to sign two transactions with your Wallet provider).
+          The first option is on <strong>top of the page in <em>Your Auctions</em></strong>. The red claim button shows the auctions for which you can claim tokens. If you claim your tokens via this feature, you will claim this particular token from <em>all</em> prior auctions you have participated in for that specific token pair.
         </p><br />
         <p>
           The second option is <strong>via the specific URL for the auction pair (auction overview page)</strong>. You will automatically be directed to this URL at the end of the order process. From there, you may claim the new token particular to that specific auction. Accordingly, you will only need to sign one transaction with your Wallet provider.
@@ -119,7 +119,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
       <h3>When do auctions start?</h3>
       <span>
         <p>
-          There is no set schedule for the auctions. However, there will never  be more than one auction running for a particular trading pair (e.g. ETH-RDN, RDN-ETH) at any point in time. They start <strong>at least 10 minutes after the last of the auction pair has finished</strong> and only if the sell volume (i.e. deposit) of one of the auction pairs is worth at least 1,000 USD. For this reason, the time of the auction depends on the prior auctions' closing time.
+          There is no set schedule for the auctions. However, there will never  be more than one auction running for a particular trading pair (e.g. ETH-RDN, RDN-ETH) at any point in time. They start <strong>at least 10 minutes after the last of the auction pair has finished</strong> and only if the sell volume (i.e. deposit) of each of the auction pairs is worth at least 1,000 USD. For this reason, the time of the auction depends on the prior auctions' closing time.
         </p>
       </span>
     </section>
@@ -141,15 +141,16 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
     </section>
 
     <section className="drawer" id="what-do-i-need-to-trade-on-slow.trade" onClick={handleClick}>
-      <h3>What do I need to trade a token on the <strong>slow.trade</strong>?</h3>
+      <h3>What do I need to trade a token on <strong>slow.trade</strong>?</h3>
       <span>
         <p>
           You only need three things:
         </p><ol>
 
-          <li>A compatible (and connected) Wallet. Currently only <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">Metamask</a> is supported.</li>
+          <li>A compatible (and connected) Wallet. We currently support <a href="https://safe.gnosis.io/" target="_blank" rel="noopener noreferrer">Gnosis Safe</a>, <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">MetaMask</a>, <a href="https://wallet.coinbase.com/" target="_blank" rel="noopener noreferrer">Coinbase Wallet</a>, and <a href="https://status.im/" target="_blank" rel="noopener noreferrer">Status</a>. Other Web3 injected wallet provider may work, but have not been tested by us.
+          </li>
           <li>An ERC20 token or ETH. To see a list of tokens that you can currently trade on <strong>slow.trade</strong>, click on the <em>deposit</em> or <em>receive</em> token.</li>
-          <li>ETH in your Wallet to pay for transactions fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
+          <li>ETH in your Wallet to pay for gas fees (both to submit a deposit (=order) and to claim your new tokens).</li></ol>
 
         <p>
           No other tokens are needed!
@@ -213,7 +214,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           Once you have submitted your deposit and the auction round you participated in has closed, you may proceed to claim your new tokens. A red claim button will alert you on <strong>slow.trade</strong> that you can claim your <em>Receive</em> token. You should therefore revisit <strong>slow.trade</strong> frequently.
         </p>
         <p>
-          <strong>Slow.trade</strong> provides you with <strong>two different options to claim your new tokens</strong>:
+          <strong>slow.trade</strong> provides you with <strong>two different options to claim your new tokens</strong>:
         </p><ul>
 
           <li>At the top of the page in the section <em>"Your Auctions"</em>. <strong>Clicking the claim button in the <em>Your Auctions </em>section</strong> will claim the tokens from all prior auctions of that particular pair in which you have participated and have not yet claimed. Once you have clicked on the red claim button, you will see your Wallet provider's screens. You may need to confirm twice to claim the tokens (the first confirmation is to claim and the second is to withdraw the tokens back into your Wallet).</li>
@@ -262,22 +263,21 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           Of course, you do not need to hold any MGN to participate on <strong>slow.trade</strong> or the DutchX Protocol!
           </p>
         <p>
-          <em>Note that Magnolia generation is inactive for this version.</em>
         </p>
       </span>
     </section>
 
     <section className="drawer" id="what-is-liquidity-contribution" onClick={handleClick}>
-      <h3>What is liquidity contribution?</h3>
+      <h3>What is the liquidity contribution?</h3>
       <span>
-        <p>On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol. Please read more in the section on <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#liquidity-contribution'}>liquidity contribution</Link>.</p>
+        <p>On the DutchX Protocol, a liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. The liquidity contribution is committed to the next running auction for the respective auction pair and is redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol. Please read more in the section on <Link to={URLS.LIQUIDITY_CONTRIBUTION + '#liquidity-contribution'}>liquidity contribution</Link>.</p>
       </span>
     </section>
 
     <section className="drawer" id="what-is-individual-liquidity-contribution" onClick={handleClick}>
       <h3>What is my individual liquidity contribution?</h3>
       <span>
-        <p>The liquidity contribution on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your individual liquidity contribution can be 0. Without a reduction, the liquidity contribution is 0.5% of your trading volume, and is gradually reduced depending on the amount of MGN you hold.</p>
+        <p>The liquidity contribution on the DutchX Protocol is variable. If you hold enough Magnolia (MGN), your individual liquidity contribution can be 0.1% (or 0.05% if you use OWL). Without a reduction, the liquidity contribution is 0.5% of your trading volume, and is gradually reduced depending on the amount of MGN you hold.</p>
       </span>
     </section>
 
@@ -288,7 +288,7 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           This message is to inform you whether the token you are looking to trade generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
-          <em>Note that Magnolia generation is inactive for this version.</em>
+
         </p>
       </span>
     </section>
@@ -301,13 +301,13 @@ export const HowItWorks = ({ handleClick }: ContentPages) => (
           This message is to inform you about whether the token pair generates Magnolia (which is used for reducing your liquidity contribution) when you trade it. If one token out of the pair does not generate Magnolia, the entire token pair will not generate Magnolia. You can use <strong>slow.trade</strong> in the same manner for tokens that do and do not generate Magnolia.
         </p>
         <p>
-          <em>Note that Magnolia generation is inactive for this version.</em>
+
         </p>
       </span>
     </section>
     <br />
     <p>
-      Want to bid in an auction? This is currently only possible for technical participants on the DutchX Protocol level: read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
+      Want to bid in an auction? Read <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a> to find the link to a graphical bidder interface.
     </p>
 
   </article>
@@ -350,13 +350,13 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are Magnolia (MGN)?</h3>
       <span>
         <p>
-          Magnolia (MGN) tokens lower the default liquidity contributions on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
+          Magnolia (MGN) tokens lower the liquidity contribution on the DutchX Protocol. MGN are <strong>automatically</strong> generated and credited to users: 1 MGN is credited for trading 1 ETH worth of any whitelisted token pair (and of course trading any fraction of ETH generates the same fraction of MGN).
         <br />
-          Note that MGN are locked by default in order to reduce your liquidity contribution. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
+          Note that MGN are locked by default in order to reduce liquidity contribution for you. The locked MGN amount associated with your Wallet is <strong>only visible on slow.trade</strong>.
         <br />
           Of course, you are not required to hold any Magnolia (MGN) to participate on <strong>slow.trade</strong> or interact with the DutchX Protocol.
         <br />
-          <em>Note that Magnolia generation is inactive for this version.</em>
+
         </p>
       </span>
     </section>
@@ -365,9 +365,9 @@ export const Tokens = ({ handleClick }: ContentPages) =>
       <h3>What are whitelisted tokens?</h3>
       <span>
         <p>
-          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from liquidity contribution.
+          Whitelisted tokens are those that generate Magnolia when traded in a whitelisted pair. A whitelisted pair simply means that both tokens that are in the auction are whitelisted tokens. The idea of whitelisted tokens is that no token can be added to the DutchX Protocol with the mere intention to create Magnolia and benefit from lower liquidity contribution.
         <br />
-          <em>Note that Magnolia generation is inactive for this version.</em>
+
         </p>
       </span>
     </section>
@@ -378,7 +378,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
         <p>
           Trades only generate Magnolia if both tokens traded are <Link to="#what-are-whitelisted-tokens">whitelisted</Link>. To see if a token that is tradable on <strong>slow.trade</strong> is whitelisted, check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token. Where a token is not whitelisted, the following message will be displayed: "Any auction with [Token] won't generate MGN". Once you proceed to the next screen, you will see "Note: this token pair won't generate MGN tokens".
         <br />
-          <em>Note that Magnolia generation is inactive for this version.</em>
+
         </p>
       </span>
     </section>
@@ -389,7 +389,7 @@ export const Tokens = ({ handleClick }: ContentPages) =>
         <p>
           To find out whether a token that is tradable on <strong>slow.trade</strong> is whitelisted, <strong>check the token list by clicking on the <em>Deposit</em> or <em>Receive</em> token.</strong> If the token is not whitelisted, you will see the following message displayed: "Any auction with [Token] won't generate MGN".
         <br />
-          <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
+
         </p>
       </span>
     </section>
@@ -401,10 +401,10 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
     <h1>Liquidity contribution</h1>
 
     <section className="drawer" onClick={handleClick} id="what-id-liquid-contrib">
-      <h3>What is liquidity contribution?</h3>
+      <h3>What are liquidity contributions?</h3>
       <span>
         <p>
-          On the DutchX Protocol, liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contribution is committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! It incentivises volume and use of the Protocol.
+          On the DutchX Protocol, a liquidity contribution is levied on users in place of traditional fees. These do not go to us or an operator. Liquidity contributions are committed to the next running auction for the respective auction pair and are thus redistributed to you and all other users of the DutchX Protocol! This incentivises volume and use of the Protocol.
         </p>
       </span>
     </section>
@@ -422,7 +422,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>What liquidity contribution do I have to pay to be active on the DutchX Protocol?</h3>
       <span>
         <p>
-          If you hold enough Magnolia (MGN), your liquidity contribution is 0. The default liquidity contribution is 0.5% of your trading volume, which is and are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributions paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
+          If you hold enough Magnolia (MGN), your liquidity contribution can be as low as 0.1%. The default liquidity contribution is 0.5% of your trading volume, which is and are gradually reduced depending on the amount of MGN you hold. <strong>Liquidity contributions paid are redistributed to all users of the DutchX Protocol!</strong> You pay some, you gain some.
         </p>
       </span>
     </section>
@@ -441,21 +441,10 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
     </section>
 
     <section className="drawer" onClick={handleClick} id="where-to-see-fees">
-      <h3>Where do I see my level of liquidity contribution?</h3>
+      <h3>Where do I see my liquidity contribution level?</h3>
       <span>
         <p>
           <strong>Your liquidity contribution level is displayed on the header bar of slow.trade</strong>. Note that this figure is subject to change as the Magnolia market volume changes. For this reason, this number should be considered an estimate.
-        </p>
-      </span>
-    </section>
-
-    <section className="drawer" onClick={handleClick} id="what-is-magnolia-generation-inactive">
-      <h3>What does it mean that Magnolia generation is inactive for this version?</h3>
-      <span>
-        <p>
-          Currently no token is whitelisted to generate Magnolia and no Magnolia tokens are in circulation. When the DutchX smart contracts are released again by a decentralized autonomous organisation (a DAO), the Magnolia liquidity contribution reduction will be activated. We have kept the explanatory notes for you to learn about this mechanism.
-        <br />
-          Note that the absence of Magnolia does not impact the <strong>liquidity contribution redistribution, which is fully functioning.</strong> All liquidity contributions remain within the DutchX Protocol and go to all its users.
         </p>
       </span>
     </section>
@@ -464,7 +453,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>How do I obtain Magnolia (MGN)?</h3>
       <span>
         <p>
-          You may either generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair),for example via <strong>slow.trade</strong>. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
+          You may generate Magnolia (MGN) by trading on the DutchX Protocol (with a whitelisted trading pair), in this case via <strong>slow.trade</strong>. You will get 1 MGN for every 1ETH worth of volume traded. For more info, see the section on <Link to={URLS.TOKENS + '#what-is-mgn'}>Magnolia</Link> (MGN).
         <br />
           Alternatively, you may purchase MGN as they are freely tradable. This may be particularly useful if you are close to the next lower liquidity contribution level.
       </p>
@@ -475,7 +464,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>How do I trade Magnolia?</h3>
       <span>
         <p>
-          To trade MGN, you must unlock them first. After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the liquidity contribution reduction. Currently, it is not possible to trade MGN on <strong>slow.trade</strong>.
+          To trade MGN, you must unlock them first (it is only possible to unlocked them ALL). After a waiting period of 24 hours, they may be traded. Unlocked MGN may be locked again to immediately make use of the liquidity contribution reduction. Currently, it is not possible to unlock/lock MGN on this interface.
         </p>
       </span>
     </section>
@@ -484,9 +473,9 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Why is it beneficial to hold a lot of Magnolia (MGN)?</h3>
       <span>
         <p>
-          <strong>Magnolia</strong> (MGN) tokens <strong>reduce your liquidity contributions</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your liquidity contribution is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your liquidity contributions is lowered depends on how much MGN you hold relative to the entire MGN market.
+          <strong>Magnolia</strong> (MGN) tokens <strong>reduce your liquidity contribution</strong>.The more MGN you hold as a percentage of the total MGN market volume, the lower your liquidity contribution is (if within the relevant percentages). This provides an incentive to continue trading on the DutchX Protocol. Additionally, it is beneficial to be an active participant on the DutchX Protocol from the beginning, since the amount by which your liquidity contribution is lowered depends on how much MGN you hold relative to the entire MGN market.
         <br /><br />
-          <em>Note that Magnolia generation is inactive for this version and no tokens are whitelisted.</em>
+
         </p>
       </span>
     </section>
@@ -535,7 +524,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>How do I use OWL to partially settle my liquidity contribution?</h3>
       <span>
         <p>
-        <strong>Slow.trade</strong> will prompt you automatically during the trading process and ask if you would like to use OWL to partially settle your liquidity contribution. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to partially settle your liquidity contribution and you will be prompted again the next time.
+        <strong>slow.trade</strong> will prompt you automatically during the trading process and ask if you would like to use OWL to partially settle your liquidity contribution. In case you approve, your selection will be valid for further transactions. If you do not approve, OWL will not be used to partially settle your liquidity contribution and you will be prompted again the next time.
         <br />
         Note that you might not be prompted because you have no OWL in your Wallet! To create a better user experience for you on <strong>slow.trade</strong>, you are only prompted if you have OWL in your connected Wallet.
         </p>
@@ -607,7 +596,7 @@ export const LiquidityContribution = ({ handleClick }: ContentPages) =>
       <h3>Why do the liquidity contributions get transferred into the next auction?</h3>
       <span>
         <p>
-        Users of the DutchX Protocol (and hence of slow.trade) should be its main beneficiaries. For this reason, the contributions  remain in the DutchX ecosystem. This means that users, and especially frequent users, benefit from the mechanism in two ways: it lowers their individual liquidity contribution and they are credited part of others’ liquidity contributions!
+        Users - especially frequent and high-volume users - of the DutchX Protocol (and hence of slow.trade) should be its main and only beneficiaries.
         </p>
       </span>
     </section>
@@ -652,7 +641,9 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Which wallets are compatible with <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          Your wallet needs to be compatible to the <strong>slow.trade</strong> Platform (a "<strong>Wallet</strong>"). Currently, the only Wallet that has been tested is <strong><a href={URLS.METAMASK} target="_blank">Metamask</a></strong>. Thus, using Metamask is highly recommended. However, other wallet providers holding ERC20 tokens might also be compatible but may result in a less smooth user experience.
+          Your wallet needs to be compatible to the <strong>slow.trade</strong> Platform (a "<strong>Wallet</strong>"). Currently, <strong><a href={URLS.GNOSIS_SAFE_SITE} target="_blank">Gnosis Safe (1.3.0 - Chrome + Android 1.1.0-rinkeby)</a></strong>, <strong><a href={URLS.METAMASK} target="_blank">MetaMask (5.3.2 - Chrome/Firefox)</a></strong>, <strong><a href={URLS.COINBASE_WALLET_SITE} target="_blank">Coinbase Wallet (6.3.108 - Android)</a></strong>, and <strong><a href={URLS.STATUS_SITE} target="_blank">Status (0.9.32 - Android)</a></strong> have all been tested. Other Web3 injected wallet providers holding ERC20 tokens may also be compatible, but could result in a less smooth user experience.
+          <br /><br />
+          Please pay attention to wallet versions! Version increases from a previously working wallet provider version may break integration with slow.trade.
         </p>
       </span>
     </section>
@@ -675,9 +666,19 @@ export const FAQ = ({ handleClick }: ContentPages) =>
     <section className="drawer" onClick={handleClick} id="which-wallet-is-linked">
       <h3>What if I have multiple Wallets, which Wallet is linked to <strong>slow.trade</strong>?</h3>
       <span>
-        <p>It depends on which Wallet connects to the browser first. If you want to participate with a different Wallet, simply log out of the ones you do not want to use, and refresh your browser. Check out <Link to="#which-wallets-compatible">"Which wallets are compatible with <strong>slow.trade</strong>?"</Link>.</p>
+        <p>
+          At the moment, usually MetaMask injects into the browser first. For the <strong><a href={URLS.GNOSIS_SAFE_SITE} target="_blank">Gnosis Safe</a></strong> to inject into the browser, you have to disable the MetaMask extension of your browser first (merely signing out is not sufficient).
+        </p>
       </span>
     </section>
+
+    <section className="drawer" onClick={handleClick} id="which-wallet-is-linked">
+      <h3>How can I use the Gnosis Safe with <strong>slow.trade</strong>?</h3>
+      <span>
+        <p>It depends on which Wallet connects to the browser first. If you want to participate with a different Wallet, simply log out of the ones you do not want to use, and refresh your browser (note, that sometimes disabling the extension is required for this to work). Check out <Link to="#which-wallets-compatible">"Which wallets are compatible with <strong>slow.trade</strong>?"</Link>.</p>
+      </span>
+    </section>
+
     <section className="drawer" onClick={handleClick} id="need-to-know-about-wallet">
       <h3>What else do I need to know about my Wallet?</h3>
       <span>
@@ -706,7 +707,30 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>Which browsers are compatible with <strong>slow.trade</strong>?</h3>
       <span>
         <p>
-          Only browsers supported by Metamask have been tested so far. It is highly recommended that you use a browser that is Metamask compatible. <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> is likely the most popular browser that supports Metamask.
+          It is entirely wallet provider dependent. Please see below:
+          <br/><br/>
+          <em>Web Browsers:</em>
+          <ul>
+
+            <li>
+              Google Chrome (v60+): <strong><a href={URLS.GNOSIS_SAFE_SITE} target="_blank">Gnosis Safe (All versions)</a></strong>, <strong><a href={URLS.METAMASK} target="_blank">MetaMask (All versions)</a></strong>
+            </li>
+
+            <li>
+              Firefox (v55+): <strong><a href={URLS.METAMASK} target="_blank">MetaMask (All versions)</a></strong>
+            </li>
+
+            <li>
+              Opera (v50+): <strong><a href={URLS.METAMASK} target="_blank">MetaMask (v3.14.1)</a></strong>
+            </li>
+          </ul>
+          <em>Mobile Apps/Browsers:</em>
+          <ul>
+            <li><strong><a href={URLS.STATUS_SITE} target="_blank">Status (0.9.32 - Android)</a></strong></li>
+            <li><strong><a href={URLS.COINBASE_WALLET_SITE} target="_blank">Coinbase Wallet (6.3.108 - Android)</a></strong></li>
+          </ul>
+          <br/>
+          <em>Note: Other Web3 injected wallet providers holding ERC20 tokens may also be compatible, but could result in a less smooth user experience.</em>
         </p>
       </span>
     </section>
@@ -778,7 +802,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
         <p>
           <strong>Make sure you are connected to the same Wallet you participated with</strong> in the trade that generated those MGN (see section 'whitelisted tokens').
         <br />
-          It is recommended to make all trades from the same Wallet for this reason. The more MGN you have, the less liquidity contribution is levied.
+          It is recommended to make all trades from the same Wallet for this reason. The more MGN you have, the lower your liquidity contribution becomes.
         </p>
       </span>
     </section>
@@ -953,14 +977,14 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       </span>
     </section>
 
-    <section className="drawer" onClick={handleClick} id="what-is-inactive-auction">
+    {/* <section className="drawer" onClick={handleClick} id="what-is-inactive-auction">
       <h3>What is an inactive auction?</h3>
       <span>
         <p>
           You will see the notice about an "inactive" auction only in the auction overview page if you stumble across an auction which has zero volume but for which the opposite auction is currently running.
         </p>
       </span>
-    </section>
+    </section> */}
 
     <section className="drawer" onClick={handleClick} id="which-data-is-collected">
       <h3>Which data do you collect?</h3>
@@ -995,7 +1019,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>How is liquidity provided?</h3>
       <span>
         <p>
-          To ensure that a critical trading mass is reached and markets work well,<strong> there will, at the beginning, be an automated trading service for tokens listed on slow.trade. This ensures that the market price does not drop significantly below the market price of other trading platforms</strong>. When markets on <strong>slow.trade</strong> develop sufficient liquidity, the automated trading service is expected to cease.
+          Liquidity will be provided by automated trading services that will ensure that auctions are running continuously, and that markets do not drop significantly below the market price of the traded tokens on other trading platforms.
         </p>
       </span>
     </section>
@@ -1011,7 +1035,7 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>What is the preselected gas price?</h3>
       <span>
         <p>
-          <strong>Slow.trade</strong> does not override your Wallet provider's suggestion for a gas price. It will be using the default rate of your Wallet provider. <strong>You may change it directly on your Wallet provider's interface. </strong>
+          <strong>slow.trade</strong> does not override your Wallet provider's suggestion for a gas price. It will be using the default rate of your Wallet provider. <strong>You may change it directly on your Wallet provider's interface. </strong>
         </p>
       </span>
     </section>
@@ -1065,9 +1089,9 @@ export const FAQ = ({ handleClick }: ContentPages) =>
       <h3>How do I participate as a bidder?</h3>
       <span>
         <p>
-          There is currently no interface for participating as a bidding. If there is the demand for it, a bidder interface will be created in the future.
+          Another team has built a graphical user bidder interface on top of the DutchX protocol!
           <br />
-          For technical readers, check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
+          Check out the link for <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
         </p>
       </span>
     </section>
@@ -1085,20 +1109,19 @@ export const FAQ = ({ handleClick }: ContentPages) =>
 
   </article >
 
-export const Help = ({ network }: ContentPages) =>
+export const Help = () =>
   <article>
     <h1>Help</h1>
     <section className="content">
       <p>Haven’t found the answer to your question in the <Link to={URLS.FAQ + '#faqs'}>FAQ</Link>?
-      <br />
+        <br />
         For all questions from and for developers, check out the resources available on <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer">Devs &amp; API</a>.
-      {network === 'MAIN' &&
-          <>
-            <br /><br />
-            You may also reach us at <a href="mailTo: support@slow.trade">support@slow.trade</a>
-            <br /><br />
-            For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
-          </>}
+        <br /><br />
+        slow.trade also has a <a href="https://medium.com/@slow_trade" target="_blank" rel="noopener noreferrer">blog</a>.
+        <br /><br />
+        You may also reach us at <a href="mailTo: support@slow.trade">support@slow.trade</a>
+        <br /><br />
+        For press requests, please contact <a href="mailTo: press@slow.trade">press@slow.trade</a>
       </p>
     </section>
   </article>
