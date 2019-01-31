@@ -26,9 +26,24 @@ const { mineCurrentBlock } = require('./utils')(web3)
  */
 
 module.exports = async () => {
-  console.log('HERE')
-  const { accounts } = web3.eth
-  const [master, seller, buyer] = accounts
+  let accounts, master, seller, buyer, toBN
+  if (typeof web3.version === 'string') {
+    console.log('Using Web3 API 1.X.xx')
+
+    accounts = await web3.eth.getAccounts();
+    ([master, seller, buyer] = accounts)
+
+    web3.toWei = n => web3.utils.toWei(web3.utils.toBN(n));
+    ({ toBN } = web3.utils)
+  } else {
+    console.log('Using Web3 API 0.X.xx');
+
+    ({ accounts } = web3.eth);
+    ([master, seller, buyer] = accounts)
+
+    toBN = web3.toBigNumber
+  }
+  console.log('Accounts: ', master, seller, buyer)
 
   let account, accountName
   if (argv.a) account = accountName = argv.a
@@ -42,68 +57,73 @@ module.exports = async () => {
     account = master
     accountName = 'Master'
   }
+  try {
+    const dx = await DutchExchange.at(Proxy.address)
+    const eth = await TokenETH.deployed()
+    const gno = await TokenGNO.deployed()
+    const rdn = await TokenRDN.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
+    const omg = await TokenOMG.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
+    const oracle = await PriceOracle.deployed()
+    const medianizer = await Medianizer.deployed()
 
-  const dx = await DutchExchange.at(Proxy.address)
-  const eth = await TokenETH.deployed()
-  const gno = await TokenGNO.deployed()
-  const rdn = await TokenRDN.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
-  const omg = await TokenOMG.deployed() // TokenGNO.new(web3.toWei(10000, 'ether'), { from: master })
-  const oracle = await PriceOracle.deployed()
-  const medianizer = await Medianizer.deployed()
+    const availableTokens = {
+      eth,
+      gno,
+      rdn,
+      omg,
+    }
+    const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
 
-  const availableTokens = {
-    eth,
-    gno,
-    rdn,
-    omg,
+    const sellToken = availableTokens[sell.toLowerCase()]
+    const buyToken = availableTokens[buy.toLowerCase()]
+
+    const startingETH = argv.t1 || web3.toWei(10, 'ether')
+    const startingGNO = argv.t2 || web3.toWei(10, 'ether')
+    const ethUSDPrice = web3.toWei(5000, 'ether')
+
+    await Promise.all(accounts.map((acct) => {
+      const otherToken = sell === 'eth' ? buyToken : sellToken
+      return Promise.all([
+        eth.deposit({ from: acct, value: startingETH }),
+        eth.approve(dx.address, startingETH, { from: acct }),
+        otherToken.transfer(acct, startingGNO, { from: master }),
+        otherToken.approve(dx.address, startingGNO, { from: acct }),
+      ])
+    }))
+    // Deposit depends on ABOVE finishing first... so run here
+    await Promise.all(accounts.map(acct => Promise.all([
+      dx.deposit(sellToken.address, startingETH, { from: acct }),
+      dx.deposit(buyToken.address, startingGNO, { from: acct }),
+    ])))
+
+    await oracle.post(ethUSDPrice, toBN(1516168838).mul(toBN(2)), medianizer.address, { from: master })
+
+    console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toString() / (10 ** 18))
+
+    console.log('Account', accountName)
+    console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toString() / (10 ** 18))
+    console.log('Buy Token = ', buy, ' @', buyToken.address, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toString() / (10 ** 18))
+
+    console.log('FundingUSD == ', startingETH * ethUSDPrice)
+    console.log('Auction Index BEFORE == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toString())
+
+    const funds = sell === 'eth'
+      ? [web3.toWei(10, 'ether'), 0, 2, 1]
+      : [0, web3.toWei(10, 'ether'), 1, 2]
+
+    await dx.addTokenPair(
+      sellToken.address,                            // -----> SellToken Address
+      buyToken.address,                           // -----> BuyToken Address
+      ...funds,                                    // -----> sellFund, buyFund, closingPriceNum, closingPriceDen
+      { from: account },
+    )
+
+    await mineCurrentBlock()
+    console.log('Auction Index AFTER == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toString())
+  } catch (error) {
+    throw new Error(error)
+  } finally {
+    console.log('Exiting...')
+    process.exit()
   }
-
-  const [sell, buy] = argv.pair ? argv.pair.split(',') : ['eth', 'gno']
-
-  const sellToken = availableTokens[sell.toLowerCase()]
-  const buyToken = availableTokens[buy.toLowerCase()]
-
-  const startingETH = argv.t1 || web3.toWei(10, 'ether')
-  const startingGNO = argv.t2 || web3.toWei(10, 'ether')
-  const ethUSDPrice = web3.toWei(5000, 'ether')
-
-  await Promise.all(accounts.map((acct) => {
-    const otherToken = sell === 'eth' ? buyToken : sellToken
-    return Promise.all([
-      eth.deposit({ from: acct, value: startingETH }),
-      eth.approve(dx.address, startingETH, { from: acct }),
-      otherToken.transfer(acct, startingGNO, { from: master }),
-      otherToken.approve(dx.address, startingGNO, { from: acct }),
-    ])
-  }))
-  // Deposit depends on ABOVE finishing first... so run here
-  await Promise.all(accounts.map(acct => Promise.all([
-    dx.deposit(sellToken.address, startingETH, { from: acct }),
-    dx.deposit(buyToken.address, startingGNO, { from: acct }),
-  ])))
-
-  await oracle.post(ethUSDPrice, 1516168838 * 2, medianizer.address, { from: master })
-
-  console.log('Threshold new token pair == ', (await dx.thresholdNewTokenPair.call()).toNumber() / (10 ** 18))
-
-  console.log('Account', accountName)
-  console.log('Sell Token = ', sell, '|| BAL == ', (await dx.balances.call(sellToken.address, account)).toNumber() / (10 ** 18))
-  console.log('Buy Token = ', buy, ' @', buyToken.address, '|| BAL == ', (await dx.balances.call(buyToken.address, account)).toNumber() / (10 ** 18))
-
-  console.log('FundingUSD == ', startingETH * ethUSDPrice)
-  console.log('Auction Index BEFORE == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
-
-  const funds = sell === 'eth'
-    ? [web3.toWei(10, 'ether'), 0, 2, 1]
-    : [0, web3.toWei(10, 'ether'), 1, 2]
-
-  await dx.addTokenPair(
-    sellToken.address,                            // -----> SellToken Address
-    buyToken.address,                           // -----> BuyToken Address
-    ...funds,                                    // -----> sellFund, buyFund, closingPriceNum, closingPriceDen
-    { from: account },
-  )
-  await mineCurrentBlock()
-  console.log('Auction Index AFTER == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toNumber())
-  process.exit()
 }

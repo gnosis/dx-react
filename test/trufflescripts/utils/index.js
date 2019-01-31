@@ -8,7 +8,7 @@ module.exports = (web3) => {
     method: 'evm_mine',
     params: [],
     id: 0,
-  })
+  }, (err, res) => (!err ? console.log('Success! ', res) : console.error('Error! ', err)))
 
   const increaseTimeBy = (seconds, dontMine) => {
     if (seconds < 0) {
