@@ -167,7 +167,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <TermsText
                 className="disclaimerTextbox"
                 // onScroll={this.handleTermsScroll} <-- Scroll check removed. See handleScroll method.
-                network={network}
+                // network={network}
               />
                 :
               null}
