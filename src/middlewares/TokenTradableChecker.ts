@@ -7,26 +7,24 @@ const TokenTradableChecker = () => (next: Function) => async (action: any) => {
 
   try {
     const { web3CompatibleNetwork } = require('../utils')
-
     const promisedNetwork = web3CompatibleNetwork()
 
     const tokensToBlockArr = Object.values(TRADE_BLOCKED_TOKENS[await promisedNetwork])
-		  console.debug('TokensToBlockArr', tokensToBlockArr)
-    console.debug('PAYLOAD BEFORE: ', payload)
+
     const newPayload = payload.reduce((acc: any, tokenPair: any) => {
       let blocked: boolean
 
         // forEach '0x123-0xabc' loop through => MAIN: ['0x567', '0xabc', ...]
       tokensToBlockArr.forEach((address: string) => {
-          if (tokenPair.includes(address)) blocked = true
-        })
+        if (tokenPair.includes(address)) blocked = true
+      })
 
       if (blocked) return acc
 
       acc.push(tokenPair)
       return acc
     }, [])
-    console.debug('PAYLOAD AFTER: ', newPayload)
+
     const newAction = { type, payload: newPayload }
 
     return next(newAction as Action)
