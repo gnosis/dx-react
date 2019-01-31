@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-react",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "slow.trade - ERC20 Trading Platform",
   "main": "src/index.tsx",
   "scripts": {
