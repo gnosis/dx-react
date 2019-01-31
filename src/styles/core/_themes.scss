@@ -11,6 +11,39 @@
     stroke: #dd3ccd !important;
   }
 
+  .menuWallet {
+    > span {
+      small, code {
+        background: none;
+        color: white;
+      }
+    }
+
+    > div {
+      background-color: #00000de6;
+
+      i {
+        background-color: #74a6ee;
+      }
+
+      > span {
+        background: inherit;
+
+        > p > strong, i, code {
+          color: inherit;
+        }
+      }
+
+      > table tr, tr {
+        color: white;
+
+        > td:first-of-type {
+          color: #74a6ee;
+        }
+      }
+    }
+  }
+
   .menuWallet > div > table tbody td > img, .menuWallet > div > table thead td > img {
     background-color: #ff65e8;
   }
@@ -65,11 +98,19 @@
 
     margin-right: -5px;
   }
-    
+
   header, .menuWallet {
     @media #{$mobile} {
       background: #000000e6 !important;
     }
+  }
+
+  header.solid-background {
+    background-color: #b02fa424;
+  }
+
+  footer {
+    background: #08061bde;
   }
 
   .menuAuctions {
@@ -82,10 +123,15 @@
     }
   }
 
+  a.buttonCTA {
+    background: #8a95e6;
+    color: inherit;
+  }
+
   a.buttonCTA.blue, .home > div.intro ul > li::before, .home > div.intro ol > li::before, header > div > .navParent .navShadow, big[data-status] {
     // background: #dd26b3;
     background: linear-gradient(-45deg, #dd26b3, #28c6ff) !important;
-        
+
     animation: RetroGradient 15s ease infinite;
   }
 
@@ -95,6 +141,7 @@
 
   .home > div > p, .home > div > .textSquareInnerContainer {
     background: #00000aad;
+    color: inherit;
     padding: 14px;
   }
 
@@ -148,7 +195,7 @@
 
     .tokenItem:not(.disabled):hover {
       border: 1px solid #000;
-            
+
       > big {
         color: white;
       }
@@ -217,7 +264,7 @@
 
     .auctionProgress, .auctionFooter {
       background: #22032eb8;
-            
+
       small {
         color: #fff;
       }
@@ -229,7 +276,7 @@
 
     .auctionStatus {
       #claimToken > span {
-        background-color: #ac28a2;;
+        background-color: #ac28a2;
       }
     }
   }
@@ -242,7 +289,7 @@
       background-color: #000;
       color: #fff;
     }
-        
+
     g {
       stroke: #000;
       stroke-width: 0.4;
@@ -268,11 +315,14 @@
       color: #fff !important;
     }
 
-    section.drawer.active h3, section.drawer:hover h3 {
+    h1, section.drawer.active h3, section.drawer:hover h3 {
       color: #2ac6ff !important;
     }
   }
 
+  .walletChooser {
+    background-color: #1a023be6;
+  }
 }
 
 .retroGradient {
