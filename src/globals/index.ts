@@ -116,12 +116,27 @@ export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFH
 export const RINKEBY_TOKEN_LIST_HASH = process.env.FE_CONDITIONAL_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
 
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
-export const MAINNET_TOKEN_LIST_HASH = 'Qmbe4nTY26Gv2qiTqqd1Ax3s94NuCdvwf9UogAH3nTKfPd'
+export const MAINNET_TOKEN_LIST_HASH = 'QmVoyJobifVKCGnwKxq7kHYbWK2XDkxz8Xg1teiqX3XVqr'
 
 export const TokenListHashMap = {
   RINKEBY: RINKEBY_TOKEN_LIST_HASH,
   KOVAN: KOVAN_TOKEN_LIST_HASH,
   MAIN: MAINNET_TOKEN_LIST_HASH,
+}
+
+export const TRADE_BLOCKED_TOKENS = {
+  MAIN: {
+    // DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+    // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
+    // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+    // OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
+    // RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
+  },
+  RINKEBY: {},
+  get noBlock() {
+    console.debug('getter noBlock = ', !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length)
+    return !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length
+  },
 }
 
 // Allowed network
