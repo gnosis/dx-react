@@ -172,7 +172,7 @@ export const URLS = {
   ETHRESEARCH_URL: 'https://ethresear.ch/t/dutchx-fully-decentralized-auction-based-exchange/2443',
   DUTCHX_TWITTER_URL: 'https://twitter.com/DutchX_',
 
-  APP_URLS_LOCAL: ['localhost', '0.0.0.0'],
+  APP_URLS_LOCAL: ['localhost', '0.0.0.0', '127.0.0.1'],
   // APP_URLS_PROD: ['slow.trade', 'rinkeby.slow.trade', 'legacy.slow.trade', 'legacy.rinkeby.slow.trade', 'ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],
   APP_URLS_PROD: {
     ALL: ['slow.trade', 'rinkeby.slow.trade', 'legacy.slow.trade', 'legacy.rinkeby.slow.trade', 'ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'],

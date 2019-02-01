@@ -12,6 +12,7 @@ import {
 } from './types'
 import { Provider } from 'types'
 import { contractVersionChecker } from 'utils'
+import { URLS } from 'globals'
 
 const contractNames = [
   'DutchExchange',
@@ -27,7 +28,7 @@ const contractNames = [
 ]
 
 // breaks in rinkeby, cancel for now
-if (process.env.FE_CONDITIONAL_ENV === 'development') {
+if (process.env.FE_CONDITIONAL_ENV === 'development' && URLS.APP_URLS_LOCAL.includes(window.location.hostname)) {
   contractNames.push(
     'TokenOMG',
     'TokenRDN',
