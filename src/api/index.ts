@@ -521,7 +521,7 @@ interface ClaimSellerFundsFromSeveralAuctions<T = Receipt> {
   sendTransaction?: T extends Hash ? never :  ClaimSellerFundsFromSeveralAuctions<Hash>,
 }
 
-export const claimSellerFundsFromSeveralAuctions: ClaimSellerFundsFromSeveralAuctions = async (
+const preClaimAndWithdrawCheck = async (
   sell: DefaultTokenObject,
   buy: DefaultTokenObject,
   userAccount?: Account,
@@ -548,7 +548,17 @@ export const claimSellerFundsFromSeveralAuctions: ClaimSellerFundsFromSeveralAuc
   const sellArr = Array.from({ length }, () => sell.address)
   const buyArr = Array.from({ length }, () => buy.address)
 
-  console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
+  return { DutchX, sellArr, buyArr, finalIndices }
+}
+
+export const claimSellerFundsFromSeveralAuctions: ClaimSellerFundsFromSeveralAuctions = async (
+  sell: DefaultTokenObject,
+  buy: DefaultTokenObject,
+  userAccount?: Account,
+  indices: number = 0,
+) => {
+  const { DutchX, sellArr, buyArr, finalIndices } = await preClaimAndWithdrawCheck(sell, buy, userAccount, indices)
+
   return DutchX.claimTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
 }
 
@@ -558,30 +568,7 @@ claimSellerFundsFromSeveralAuctions.sendTransaction = async (
   userAccount?: Account,
   indices: number = 0,
 ) => {
-  const { DutchX } = await dxAPI()
-  userAccount = await fillDefaultAccount(userAccount)
-
-  console.log('{ sell, buy }, userAccount, indices: ', { sell, buy }, userAccount, indices)
-  const claimableIndices = (
-    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
-  )[0].map(i => i.toNumber())
-  console.log('claimableIndices: ', claimableIndices)
-
-  if (claimableIndices.length === 0) return
-
-  // getIndicesWithClaimableTokensForSellers returns auctions with sellBalance > 0
-  // this means currentAucIndx may have > 0 sellBalance BUT NOT HAVE CLEARED (only last Index though)
-  const lastIndexCleared = (
-    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
-  )[0].gt(0)
-
-  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
-
-  const finalIndices = claimableIndices.slice(0, length)
-  const sellArr = Array.from({ length }, () => sell.address)
-  const buyArr = Array.from({ length }, () => buy.address)
-
-  console.log('claimTokensFromSeveralAuctionsAsSeller Params = ', sellArr, buyArr, finalIndices, userAccount)
+  const { DutchX, sellArr, buyArr, finalIndices } = await preClaimAndWithdrawCheck(sell, buy, userAccount, indices)
   return DutchX.claimTokensFromSeveralAuctionsAsSeller.sendTransaction(sellArr, buyArr, finalIndices, userAccount)
 }
 
@@ -591,28 +578,7 @@ export const claimAndWithdrawSellerFundsFromSeveralAuctions: ClaimSellerFundsFro
   userAccount?: Account,
   indices: number = 0,
 ) => {
-  const { DutchX } = await dxAPI()
-  userAccount = await fillDefaultAccount(userAccount)
-
-  const claimableIndices = (
-    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
-  )[0].map(i => i.toNumber())
-
-  if (claimableIndices.length === 0) return
-
-  // getIndicesWithClaimableTokensForSellers returns auctions with sellBalance > 0
-  // this means currentAucIndx may have > 0 sellBalance BUT NOT HAVE CLEARED (only last Index though)
-  const lastIndexCleared = (
-    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
-  )[0].gt(0)
-
-  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
-
-  const finalIndices = claimableIndices.slice(0, length)
-  const sellArr = Array.from({ length }, () => sell.address)
-  const buyArr = Array.from({ length }, () => buy.address)
-
-  console.log('Params = ', sellArr, buyArr, finalIndices, userAccount)
+  const { DutchX, sellArr, buyArr, finalIndices } = await preClaimAndWithdrawCheck(sell, buy, userAccount, indices)
   return DutchX.claimAndWithdrawTokensFromSeveralAuctionsAsSeller(sellArr, buyArr, finalIndices, userAccount)
 }
 
@@ -622,30 +588,7 @@ claimAndWithdrawSellerFundsFromSeveralAuctions.sendTransaction = async (
   userAccount?: Account,
   indices: number = 0,
 ) => {
-  const { DutchX } = await dxAPI()
-  userAccount = await fillDefaultAccount(userAccount)
-
-  console.log('{ sell, buy }, userAccount, indices: ', { sell, buy }, userAccount, indices)
-  const claimableIndices = (
-    await DutchX.getIndicesWithClaimableTokensForSellers({ sell, buy }, userAccount, indices)
-  )[0].map(i => i.toNumber())
-  console.log('claimableIndices: ', claimableIndices)
-
-  if (claimableIndices.length === 0) return
-
-  // getIndicesWithClaimableTokensForSellers returns auctions with sellBalance > 0
-  // this means currentAucIndx may have > 0 sellBalance BUT NOT HAVE CLEARED (only last Index though)
-  const lastIndexCleared = (
-    await DutchX.getClosingPrice({ sell, buy }, claimableIndices[claimableIndices.length - 1])
-  )[0].gt(0)
-
-  const length = lastIndexCleared ? claimableIndices.length : claimableIndices.length - 1
-
-  const finalIndices = claimableIndices.slice(0, length)
-  const sellArr = Array.from({ length }, () => sell.address)
-  const buyArr = Array.from({ length }, () => buy.address)
-
-  console.log('claimAndWithdrawTokensFromSeveralAuctionsAsSeller Params = ', sellArr, buyArr, finalIndices, userAccount)
+  const { DutchX, sellArr, buyArr, finalIndices } = await preClaimAndWithdrawCheck(sell, buy, userAccount, indices)
   return DutchX.claimAndWithdrawTokensFromSeveralAuctionsAsSeller.sendTransaction(sellArr, buyArr, finalIndices, userAccount)
 }
 

@@ -550,7 +550,7 @@ interface DutchExchange<T = Receipt> {
   claimAndWithdrawTokensFromSeveralAuctionsAsSeller(
     sellTokenAddresses: Account[],
     buyTokenAddresses: Account[],
-    indices: number[],
+    indices: string[] | number[],
     account: Account,
   ): Promise<T>,
   getFeeRatio(account: Account): Promise<[BigNumber, BigNumber]>,
