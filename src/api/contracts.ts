@@ -27,7 +27,7 @@ const contractNames = [
 ]
 
 // breaks in rinkeby, cancel for now
-if (process.env.NODE_ENV === 'development') {
+if (process.env.FE_CONDITIONAL_ENV === 'development') {
   contractNames.push(
     'TokenOMG',
     'TokenRDN',
