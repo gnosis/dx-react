@@ -6,7 +6,9 @@ const {
   getAccountsStatsForTokenPairAuction,
   getExchangeStatsForTokenPair,
   postBuyOrder,
-} = require('./utils/contracts')(artifacts)
+} = require('./utils/contracts')(artifacts, web3)
+
+const { mergeAPI } = require('./utils')(web3)
 
 /**
  * truffle exec test/trufflescripts/buy_order.js
@@ -45,13 +47,7 @@ module.exports = async () => {
   const sellTokenName = sell ? sell.toUpperCase() : 'ETH'
   const buyTokenName = buy ? buy.toUpperCase() : 'GNO'
 
-  let account
-  if (argv.a) account = argv.a
-  else if (argv.master)[account] = web3.eth.accounts
-  else if (argv.seller)[, account] = web3.eth.accounts
-  else {
-    [, , account] = web3.eth.accounts
-  }
+  const { account } = await mergeAPI(argv)
 
   let { [buyTokenName]: buyTokenDeposit = 0 } = await getTokenDeposits(account)
 

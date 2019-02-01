@@ -9,7 +9,7 @@ const {
   getExchangeStatsForTokenPair,
   addTokenPair,
   updateExchangeParams,
-} = require('./utils/contracts')(artifacts)
+} = require('./utils/contracts')(artifacts, web3)
 
 const { getTime, increaseTimeBy } = require('./utils')(web3)
 const argv = require('minimist')(process.argv.slice(4), { string: 'a' })

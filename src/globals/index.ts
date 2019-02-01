@@ -134,7 +134,6 @@ export const TRADE_BLOCKED_TOKENS = {
   },
   RINKEBY: {},
   get noBlock() {
-    console.debug('getter noBlock = ', !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length)
     return !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length
   },
 }

@@ -8,7 +8,7 @@ const {
   claimSellerFunds,
   getUnclaimedBuyerFunds,
   getUnclaimedSellerFunds,
-} = require('./utils/contracts')(artifacts)
+} = require('./utils/contracts')(artifacts, web3)
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
 /**

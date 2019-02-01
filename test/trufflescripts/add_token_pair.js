@@ -11,7 +11,7 @@ const Proxy = artifacts.require('DutchExchangeProxy')
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
-const { mineCurrentBlock } = require('./utils')(web3)
+const { mineCurrentBlock, mergeAPI } = require('./utils')(web3)
 
 /**
  * truffle exec test/trufflescripts/add_token_pair.js
@@ -26,37 +26,8 @@ const { mineCurrentBlock } = require('./utils')(web3)
  */
 
 module.exports = async () => {
-  let accounts, master, seller, buyer, toBN
-  if (typeof web3.version === 'string') {
-    console.log('Using Web3 API 1.X.xx')
+  const { account, accountName, accounts, master, toBN, toWei } = await mergeAPI(argv)
 
-    accounts = await web3.eth.getAccounts();
-    ([master, seller, buyer] = accounts)
-
-    web3.toWei = n => web3.utils.toWei(web3.utils.toBN(n));
-    ({ toBN } = web3.utils)
-  } else {
-    console.log('Using Web3 API 0.X.xx');
-
-    ({ accounts } = web3.eth);
-    ([master, seller, buyer] = accounts)
-
-    toBN = web3.toBigNumber
-  }
-  console.log('Accounts: ', master, seller, buyer)
-
-  let account, accountName
-  if (argv.a) account = accountName = argv.a
-  else if (argv.seller) {
-    account = seller
-    accountName = 'Seller'
-  } else if (argv.buyer) {
-    account = buyer
-    accountName = 'Buyer'
-  } else {
-    account = master
-    accountName = 'Master'
-  }
   try {
     const dx = await DutchExchange.at(Proxy.address)
     const eth = await TokenETH.deployed()
@@ -77,9 +48,9 @@ module.exports = async () => {
     const sellToken = availableTokens[sell.toLowerCase()]
     const buyToken = availableTokens[buy.toLowerCase()]
 
-    const startingETH = argv.t1 || web3.toWei(10, 'ether')
-    const startingGNO = argv.t2 || web3.toWei(10, 'ether')
-    const ethUSDPrice = web3.toWei(5000, 'ether')
+    const startingETH = argv.t1 || toWei(10, 'ether')
+    const startingGNO = argv.t2 || toWei(10, 'ether')
+    const ethUSDPrice = toWei(5000, 'ether')
 
     await Promise.all(accounts.map((acct) => {
       const otherToken = sell === 'eth' ? buyToken : sellToken
@@ -108,8 +79,8 @@ module.exports = async () => {
     console.log('Auction Index BEFORE == ', (await dx.getAuctionIndex.call(sellToken.address, buyToken.address)).toString())
 
     const funds = sell === 'eth'
-      ? [web3.toWei(10, 'ether'), 0, 2, 1]
-      : [0, web3.toWei(10, 'ether'), 1, 2]
+      ? [toWei(10, 'ether'), 0, 2, 1]
+      : [0, toWei(10, 'ether'), 1, 2]
 
     await dx.addTokenPair(
       sellToken.address,                            // -----> SellToken Address

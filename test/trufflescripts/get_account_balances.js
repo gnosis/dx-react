@@ -1,5 +1,5 @@
 /* eslint no-console:0 */
-const { getTokenBalances } = require('./utils/contracts')(artifacts)
+const { getTokenBalances } = require('./utils/contracts')(artifacts, web3)
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
