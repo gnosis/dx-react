@@ -1,6 +1,7 @@
+/* eslint-disable indent */
 /* eslint no-console:0 */
-const { getTokenDeposits, depositToDX } = require('./utils/contracts')(artifacts)
-const { mineCurrentBlock } = require('./utils')
+const { getTokenDeposits, depositToDX, toBN } = require('./utils/contracts')(artifacts, web3)
+const { mineCurrentBlock, mergeAPI } = require('./utils')(web3)
 
 const argv = require('minimist')(process.argv.slice(2), { string: 'a' })
 
@@ -21,29 +22,32 @@ module.exports = async () => {
     console.warn('No tokens or accounts specified')
     return
   }
+  try {
+    const { account, accountName } = await mergeAPI(argv)
 
-  let account, accountName
-  if (argv.a) account = accountName = argv.a
-  else if (argv.master) {
-    [account] = web3.eth.accounts
-    accountName = 'Master'
-  } else if (argv.seller) {
-    [, account] = web3.eth.accounts
-    accountName = 'Seller'
-  } else {
-    [, , account] = web3.eth.accounts
-    accountName = 'Buyer'
+    console.log(`${accountName}`)
+
+    let { ETH, GNO, OMG, RDN } = await getTokenDeposits(account)
+    console.log(`Deposit was:\tETH: \t${ETH},\tGNO: \t${GNO},\tOMG: \t${OMG},\tRDN: \t${RDN}`)
+
+    const TDP = { ETH: argv.eth, GNO: argv.gno, FRT: argv.frt, OWL: argv.owl, OMG: argv.omg, RDN: argv.rdn }
+
+    const tokensToDeposit = Object.keys(TDP).reduce((acc, key) => {
+      if (!TDP[key]) return acc
+
+      acc[key] = toBN(TDP[key]).mul(toBN(10).pow(toBN(18)))
+      return acc
+    }, {})
+
+    await depositToDX(account, tokensToDeposit)
+
+    await mineCurrentBlock();
+
+    ({ ETH, GNO, OMG, RDN } = await getTokenDeposits(account))
+    console.log(`Deposit is:\tETH: \t${ETH},\tGNO: \t${GNO},\tOMG: \t${OMG},\tRDN: \t${RDN}`)
+  } catch (error) {
+    console.error('TCL: }catch -> error', error)
+  } finally {
+    process.exit()
   }
-
-  console.log(`${accountName}`)
-
-  let { ETH, GNO, OMG, RDN } = await getTokenDeposits(account)
-  console.log(`Deposit was:\tETH: \t${ETH},\tGNO: \t${GNO},\tOMG: \t${OMG},\tRDN: \t${RDN}`)
-
-  const tokensToDeposit = { ETH: argv.eth, GNO: argv.gno, FRT: argv.frt, OWL: argv.owl, OMG: argv.omg, RDN: argv.rdn }
-
-  await depositToDX(account, tokensToDeposit);
-
-  ({ ETH, GNO, OMG, RDN } = await getTokenDeposits(account))
-  console.log(`Deposit is:\tETH: \t${ETH},\tGNO: \t${GNO},\tOMG: \t${OMG},\tRDN: \t${RDN}`)
 }

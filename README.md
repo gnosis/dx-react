@@ -85,7 +85,37 @@
         3. `3_DEV_ONLY_Migrate_Test_Tokens.js`
 
         Where numbers 2 and 3 use conditional network checking logic to only deploy when ganache is set on the `development` (local) network.
+
+# Changing available Token Lists
+1. Under `./test/resources/token-lists/<NETWORK>/` you'' find the available tokens in their respective formats.
+    a. *Adding*: You MUST add new tokens in the exact same format.
+    b. *Removing*: Delete the tokens object.
+2. Open up `./src/globals/index.ts`
+    a. Head to:
+
+    ```bash
+        // Network token list hashes (latest versions)
+        export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
+
+        export const RINKEBY_TOKEN_LIST_HASH = process.env.FE_CONDITIONAL_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
+
+        export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
+        export const MAINNET_TOKEN_LIST_HASH = 'Qmbe4nTY26Gv2qiTqqd1Ax3s94NuCdvwf9UogAH3nTKfPd'
+
+        export const TokenListHashMap = {
+        RINKEBY: RINKEBY_TOKEN_LIST_HASH,
+        KOVAN: KOVAN_TOKEN_LIST_HASH,
+        MAIN: MAINNET_TOKEN_LIST_HASH,
+        }
+    ```
+    
+    b. You will need to update the network token list hash. Right now the lists are local but also updated on IPFS where we get back unique hashes.
         
+        i. Copy the path to the updated token list from step 1
+        ii. In your terminal, run: `node test/scripts/add2ipfs.js <PATH/TO/TOKEN-LIST/HERE>` and copy the returned hash
+            - Test that it worked using the hash and the URL returned
+        iii. Replace the respective network token list hash from step 2 with the newly returned hash
+
 # Submitting an Add Token Request
 
 If you want a Token to be added to Rinkeby token list, please follow instructions in [ADD_TOKEN_REQUEST_TEMPLATE.md](./ADD_TOKEN_REQUEST_TEMPLATE.md).

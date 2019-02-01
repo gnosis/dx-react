@@ -27,12 +27,12 @@ const contractNames = [
 ]
 
 // breaks in rinkeby, cancel for now
-// if (process.env.NODE_ENV === 'development') {
-//   contractNames.push(
-//     'TokenOMG',
-//     'TokenRDN',
-//   )
-// }
+if (process.env.FE_CONDITIONAL_ENV === 'development') {
+  contractNames.push(
+    'TokenOMG',
+    'TokenRDN',
+  )
+}
 
 // fill contractsMap from here if available
 const filename2ContractNameMap = {

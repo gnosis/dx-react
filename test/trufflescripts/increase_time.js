@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
-const { deployed, getExchangeStatsForTokenPair, getAuctionStatsForTokenPair } = require('./utils/contracts')(artifacts)
-const { getTime, increaseTimeBy, setTime } = require('./utils')(web3)
+const { deployed, getExchangeStatsForTokenPair, getAuctionStatsForTokenPair } = require('./utils/contracts')(artifacts, web3)
+const { getTime, getTimeNew, increaseTimeBy, setTime } = require('./utils')(web3)
 
 const argv = require('minimist')(process.argv.slice(2))
 
@@ -33,7 +33,7 @@ module.exports = async () => {
   const { eth, gno } = await deployed
 
   const printAuctionTimes = async () => {
-    const now = getTime()
+    const now = typeof web3.version === 'string' ? await getTimeNew() : getTime()
     const {
       auctionStart,
       latestAuctionIndex,

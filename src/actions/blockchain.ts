@@ -910,7 +910,7 @@ export const claimAndWithdrawSellerFundsFromSeveral = (
       modalName: 'TransactionModal',
       modalProps: {
         header: 'Claiming and withdrawing funds',
-        body: `You are claiming and withdrawing into your wallet ${buyName} from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${name || 'your wallet provider'}.`,
+        body: `You are claiming and withdrawing ${buyName} into your wallet from all your unclaimed ${sellName}/${buyName} auctions. Please confirm with ${name || 'your wallet provider'}.`,
         loader: true,
       },
     }))

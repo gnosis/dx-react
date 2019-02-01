@@ -1,5 +1,5 @@
 /* eslint no-console:0 */
-const { getTokenBalances, giveTokens } = require('./utils/contracts')(artifacts)
+const { getTokenBalances, giveTokens } = require('./utils/contracts')(artifacts, web3)
 
 const initBalances = {
   seller: { ETH: 1000, GNO: 100, FRT: 0, OWL: 100 },

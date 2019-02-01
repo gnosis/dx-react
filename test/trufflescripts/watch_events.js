@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 const { getTime } = require('./utils')(web3)
-const { deployed } = require('./utils/contracts')(artifacts)
+const { deployed } = require('./utils/contracts')(artifacts, web3)
 
 const argv = require('minimist')(process.argv.slice(2), { alias: { v: 'verbose' } })
 

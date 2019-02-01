@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 
-module.exports = (artifacts) => {
+module.exports = (artifacts, web3) => {
   const TokenETH = artifacts.require('EtherToken')
   const TokenGNO = artifacts.require('TokenGNO')
   const TokenFRT = artifacts.require('TokenFRT')
@@ -64,8 +64,8 @@ module.exports = (artifacts) => {
     Medianizer: 'mn',
   }
 
-  const mapToNumber = arr => arr.map(n => (n.toNumber ? n.toNumber() : n))
-
+  const mapToNumber = arr => arr.map(n => (n.toString ? n.toString() : n))
+  const toBN = typeof web3.version === 'string' ? web3.utils.toBN : web3.toBigNumber
   /**
    * returns deployed contract mapping
    * @param {object} contrObj - mapping (Contract name => contract)
@@ -125,10 +125,9 @@ module.exports = (artifacts) => {
 
     const promisedDeposits = Object.keys(tokensMap).map((key) => {
       const token = tokens[key.toLowerCase()]
-      const amount = tokensMap[key]
+      const amount = (tokensMap[key])
       // skip for 0 amounts or falsy tokens
       if (!amount || !token) return null
-
 
       return cb({ key, token, amount })
     })
@@ -175,7 +174,6 @@ module.exports = (artifacts) => {
     ])
 
     const [ETH, GNO, FRT, RDN, OMG, OWL] = mapToNumber(deposits)
-    console.log('OMG DEPOSIT = ', OMG)
     return { ETH, GNO, FRT, OMG, RDN, OWL }
   }
 
@@ -224,6 +222,7 @@ module.exports = (artifacts) => {
     const { dx } = await deployed
 
     return handleTokensMap(tokensMap, async ({ key, token, amount }) => {
+      amount = toBN(amount)
       try {
         await token.approve(dx.address, amount, { from: acc })
         return await dx.deposit(token.address, amount, { from: acc })
@@ -351,8 +350,9 @@ module.exports = (artifacts) => {
     if (index === undefined) index = await dx.getAuctionIndex(t1, t2)
 
     try {
-      const price = await dx.getPriceForJS.call(t1, t2, index)
-      return mapToNumber(price)
+      const { num, den } = await dx.getPriceInPastAuction.call(t1, t2, index)
+      const map = mapToNumber(Object.values([num, den]))
+      return map
     } catch (error) {
       if (silent) return undefined
       console.warn('Error getting price')
@@ -378,10 +378,9 @@ module.exports = (artifacts) => {
     const t2 = buyToken.address || buyToken
 
     const { dx } = await deployed
-
     if (index === undefined) index = await dx.getAuctionIndex(t1, t2)
 
-    const [closingPrice, price, extraTokens] = await Promise.all([
+    const [{ num, den }, price, extraTokens] = await Promise.all([
       dx.closingPrices.call(t1, t2, index),
       getPriceForTokenPairAuction({ sellToken, buyToken, index }, true),
       dx.extraTokens.call(t1, t2, index),
@@ -389,8 +388,8 @@ module.exports = (artifacts) => {
 
     return {
       auctionIndex: index,
-      closingPrice: mapToNumber(closingPrice),
-      extraTokens: extraTokens.toNumber(),
+      closingPrice: mapToNumber([num, den]),
+      extraTokens: extraTokens.toString(),
       price,
     }
   }
@@ -685,7 +684,7 @@ module.exports = (artifacts) => {
     const { dx } = await deployed
 
     try {
-      return await dx.postBuyOrder(t1, t2, index, amount, { from: account })
+      return await dx.postBuyOrder(t1, t2, toBN(index), toBN(amount), { from: account })
     } catch (error) {
       console.warn('Error posting buy order')
       console.warn(error.message || error)
@@ -824,5 +823,6 @@ module.exports = (artifacts) => {
     claimBuyerFunds,
     getUnclaimedBuyerFunds,
     getUnclaimedSellerFunds,
+    toBN,
   }
 }

@@ -42,7 +42,7 @@
     "storybook": "start-storybook -s ./ -p 6006",
     "build-storybook": "build-storybook",
     "add2ipfs": "node ./test/scripts/add2ipfs.js",
-    "simulateAuction": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js --master --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js --master -n 100e18 && truffle exec test/trufflescripts/increase_time.js -h 1",
+    "simulateAuction": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js --master --gno 20000 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js --master -n 100e18 && truffle exec test/trufflescripts/increase_time.js -h 1",
     "simulateTheoreticallyClosedAuction": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js --master --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 50 && truffle exec test/trufflescripts/increase_time.js -h 1",
     "simulateTheoreticallyClosedAuctionWithBuyVolume": "truffle exec test/trufflescripts/add_token_pair.js --pair eth,gno && truffle exec test/trufflescripts/deposit.js --master --gno 20000e18 && truffle exec test/trufflescripts/increase_time.js -h 8 && truffle exec test/trufflescripts/buy_order.js --master -n 1e17 && truffle exec test/trufflescripts/increase_time.js -h 50"
   },
@@ -83,7 +83,7 @@
     ]
   },
   "dependencies": {
-    "@gnosis.pm/dx-contracts": "2.0.0-RC15",
+    "@gnosis.pm/dx-contracts": "2.0.0-RC15-NetworksProd",
     "@gnosis.pm/gno-token": "2.0.0-RC3",
     "@gnosis.pm/util-contracts": "2.0.0-RC4",
     "bignumber.js": "5.0.0",
