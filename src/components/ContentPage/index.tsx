@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import 'assets/pdf/PrivacyPolicy.pdf'
 
 import stepByStepFeeCalc from 'assets/content/step_by_step_fee_calculation.png'
-import feeReductionModel from 'assets/content/fee_reduction_model_dutchX.png'
+import feeReductionModel from 'assets/content/LC_reduction_model_bg.png'
 import dutchXSlowtrade from 'assets/content/dutchX_slowtrade.png'
 
 interface ContentPages {

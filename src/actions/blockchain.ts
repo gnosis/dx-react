@@ -480,7 +480,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
               },
             },
             footer: {
-              msg: `If you are unsure, select “Approve ${sellName} for this trade only”.`,
+              msg: `If the contract owner, the dxDAO, makes a malicious update to the contract, you must revoke this allowance within 30 days, otherwise your funds are at risk. If you are unsure, select “Approve ${sellName} for this trade only”.`,
               url: '#/content/FAQ',
               urlMsg: 'FAQ',
             },
@@ -514,6 +514,7 @@ export const checkUserStateAndSell = () => async (dispatch: Function, getState: 
                 },
               },
               footer: {
+                msg: 'If the contract owner, the dxDAO, makes a malicious update to the contract, you must revoke this allowance within 30 days, otherwise your funds are at risk.',
                 url: '#/content/LiquidityContribution',
                 urlMsg: 'Liquidity Contribution',
               },
