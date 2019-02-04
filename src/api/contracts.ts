@@ -29,10 +29,12 @@ const contractNames = [
 
 // breaks in rinkeby, cancel for now
 if (process.env.FE_CONDITIONAL_ENV === 'development' && URLS.APP_URLS_LOCAL.includes(window.location.hostname)) {
-  contractNames.push(
-    'TokenOMG',
-    'TokenRDN',
-  )
+  if (window.web3 && window.web3.version.network > 5000) {
+    contractNames.push(
+      'TokenOMG',
+      'TokenRDN',
+    )
+  }
 }
 
 // fill contractsMap from here if available
