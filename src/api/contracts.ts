@@ -29,7 +29,7 @@ const contractNames = [
 
 // breaks in rinkeby, cancel for now
 if (process.env.FE_CONDITIONAL_ENV === 'development' && URLS.APP_URLS_LOCAL.includes(window.location.hostname)) {
-  if (window.web3 && window.web3.version.network > 5000) {
+  if (prompt('Use TokenOMG and RDN? Local network only.', 'USE TEST TOKEN CONTRACTS')) {
     contractNames.push(
       'TokenOMG',
       'TokenRDN',
