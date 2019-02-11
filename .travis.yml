@@ -3,7 +3,8 @@ sudo: required
 dist: trusty
 language: node_js
 before_install:
-  - npm install -g truffle@4.1.14 ganache-cli@6.2.3 npm@^6.0.0
+  # old: npm install -g truffle@4.1.14 ganache-cli@6.2.3 npm@^6.0.0
+  - npm install -g ganache-cli@6.2.3 npm@^6.0.0
   # Needed to deploy pull request and releases
   - sudo apt-get -y install python-pip python-dev
   - pip install awscli --upgrade --user
@@ -27,7 +28,7 @@ matrix:
     env: NODE_ENV=development
     node_js: '8'
 before_script:
-  - truffle compile
+  - npx truffle@4.1.14 compile
   - npm run build:all
 
 script:
