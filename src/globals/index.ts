@@ -3,6 +3,10 @@ import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
 
+export const APP_BANNER_MESSAGES = {
+  CLAIM_ONLY: 'Withdraw from previous versions of the DutchX protocol here',
+}
+
 export enum ETHEREUM_NETWORKS {
   MAIN = 'MAIN',
   MORDEN = 'MORDEN',
