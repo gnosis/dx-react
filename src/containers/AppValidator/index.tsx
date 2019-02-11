@@ -178,6 +178,8 @@ class AppValidator extends React.Component<any> {
         {process.env.CLAIM_ONLY && <div className="offlineBanner"><span>ATTENTION: This is a deprecated version of slow.trade. CLAIM ONLY mode is active - for trading on the latest version, please click <a href={`https://${URLS.APP_URLS_PROD.MAIN[0]}`}>here</a>. </span></div>}
         { !online && <div className="offlineBanner"><span>App is currently offline - please your check internet connection and refresh the page </span></div> }
         { (!set_up_complete || !this.props.unlocked) && online && <div className="offlineBanner"><span>{ error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </span></div> }
+        {/* TEMPORARY - TODO: REMOVE */}
+        <div className="offlineBanner"><span>Withdraw and claim funds from previous versions <a href={`https://${URLS.APP_URLS_PROD.MAIN[1]}`}>here</a></span></div>
       </>
     )
   }
