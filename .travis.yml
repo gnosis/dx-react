@@ -28,7 +28,7 @@ matrix:
     env: NODE_ENV=development
     node_js: '8'
 before_script:
-  - npx truffle@latest compile
+  - npx truffle@4.1.15 compile
   - npm run build:all
 
 script:
