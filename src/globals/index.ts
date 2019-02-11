@@ -149,7 +149,7 @@ export const TRADE_BLOCKED_TOKENS = {
 export const FIXED_DECIMALS = 4
 
 export const GAS_PRICE = 5e9
-export const GAS_LIMIT = '200000'
+export const GAS_LIMIT = '250000'
 
 // Content page URLS
 export const URLS = {
