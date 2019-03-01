@@ -2,6 +2,7 @@ import React, { ComponentClass } from 'react'
 
 import MenuWallet from 'containers/MenuWallet'
 import MenuAuctions from 'containers/MenuAuctions'
+import MenuOneClickToggle from 'containers/MenuOneClickToggle'
 import Hamburger from 'components/Hamburger'
 import MenuFeeBalance from 'containers/MenuFeeBalance'
 import { Link } from 'react-router-dom'
@@ -34,6 +35,7 @@ export const Header = ({ content, dumb, network, noMenu }: HeaderProps & HeaderS
         <MenuWallet />
         <MenuAuctions />
         <MenuFeeBalance />
+        <MenuOneClickToggle />
       </>}
       {!noMenu && <Hamburger />}
     </div>

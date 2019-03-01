@@ -296,4 +296,5 @@ export interface State {
   tokenOverlay: TokenOverlay,
   approvedTokens: AccountsSet,
   settings: Settings & CookieSettings,
+  oneClickMode?: false,
 }
