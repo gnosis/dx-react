@@ -94,13 +94,13 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   } */
 
   render() {
-    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount, network } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount/*, network */ } = this.props
 
     return (
       <div className="auctionAmounts">
-        {MAX_SELL_USD && network === 'MAIN' && <span className="message">
+        {/* {MAX_SELL_USD && network === 'MAIN' && <span className="message">
           You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of 500USD
-        </span>}
+        </span>} */}
         <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
