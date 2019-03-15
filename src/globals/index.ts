@@ -229,7 +229,7 @@ export const BLOCKED_COUNTRIES = {
 }
 
 // temporary for MAINNET, 0 == no limit
-export const MAX_SELL_USD = 0
+export const MAX_SELL_USD = 10000
 // export const MAX_SELL_USD = 500
 // export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
 
