@@ -186,6 +186,7 @@ export const URLS = {
   },
   APP_URLS_STAGING: ['dx.staging.gnosisdev.com', 'dx.legacy.staging.gnosisdev.com'],
   APP_URLS_DEV: ['dx.dev.gnosisdev.com', 'dx.legacy.dev.gnosisdev.com'],
+  APP_URLS_PR_REVIEW_TEST: (hostname: string) => /^\w+--dxreact.review.gnosisdev.com$/.test(hostname),
   APP_IPFS_OBJECT: { ipfs: 'ipfs', hostnames: ['ipfs.io', 'gateway.ipfs.io', 'ipfs.infura.io'], pathname: '/ipfs/QmUy4jh5mGNZvLkjies1RWM4YuvJh5o2FYopNPVYwrRVGV' },
   FOOTER_LOGO_URL: 'https://gnosis.pm',
   MAIN_GAS_STATION: 'https://safe-relay.gnosis.pm/api/v1/gas-station/',
@@ -229,7 +230,7 @@ export const BLOCKED_COUNTRIES = {
 }
 
 // temporary for MAINNET, 0 == no limit
-export const MAX_SELL_USD = 0
+export const MAX_SELL_USD = 10000
 // export const MAX_SELL_USD = 500
 // export const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
 

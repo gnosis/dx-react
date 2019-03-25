@@ -4,6 +4,12 @@ import { Balance, BigNumber } from 'types'
 import { getTokenPriceInUSD } from 'api'
 import { MAX_SELL_USD } from 'globals'
 
+function numberWithCommas(x: number) {
+  const parts = x.toString().split('.')
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return parts.join('.')
+}
+
 /* CONSIDER ADDING GAS_COST */
 export interface AuctionSellingGettingProps {
   maxSellAmount: BigNumber,
@@ -67,7 +73,7 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
       if (maxSellAmount.lessThanOrEqualTo(value)) {
         validityMessage = `Amount available for sale is ${maxSellAmount.toString()}`
       } else if (MAX_SELL_USD && network === 'MAIN' && sellTokenInUSD && sellTokenInUSD.mul(value).gt(MAX_SELL_USD)) {
-        validityMessage = `Amount is limited to an equivalent of ${MAX_SELL_USD}USD (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
+        validityMessage = `Please enter an amount equal to or lower than USD ${numberWithCommas(MAX_SELL_USD)} (${sellTokenInUSD.toPower(-1).mul(MAX_SELL_USD).toFixed(4).toString()}${sellTokenSymbol})`
       } else {
         validityMessage = ''
       }
@@ -94,13 +100,13 @@ class AuctionSellingGetting extends Component<AuctionSellingGettingProps, Auctio
   } */
 
   render() {
-    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount, network } = this.props
+    const { sellTokenSymbol, buyTokenSymbol, buyAmount/* , maxSellAmount */, sellAmount/*, network */ } = this.props
 
     return (
       <div className="auctionAmounts">
-        {MAX_SELL_USD && network === 'MAIN' && <span className="message">
+        {/* {MAX_SELL_USD && network === 'MAIN' && <span className="message">
           You are trading on Mainnet - for the moment, we limit your deposit to an equivalent of 500USD
-        </span>}
+        </span>} */}
         <label htmlFor="sellingAmount">Amount Depositing:</label>
         {/* <a href="#max" onClick={this.onClick}>MAX</a> */}
         <input
