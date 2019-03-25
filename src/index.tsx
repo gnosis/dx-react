@@ -62,6 +62,10 @@ async function conditionalRender() {
       blocked && (disabledReason = 'geoblock')
 
       !URLS.APP_URLS_STAGING.includes(hostname) && ReactGA.initialize(GA_CODES.IPFS)
+    /* Scenario 1b: User is a developer on a PR-review URL */
+    } else if (URLS.APP_URLS_PR_REVIEW_TEST(hostname)) {
+      blocked = await isGeoBlocked()
+      blocked && (disabledReason = 'geoblock')
     }
     // Main release Scenarios:
     /* Scenario 2: User is using the dx on dutchx-rinkeby (RINKEBY): BLOCK: networks */
