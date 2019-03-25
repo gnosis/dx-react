@@ -50,6 +50,7 @@ async function conditionalRender() {
       FE_CONDITIONAL_ENV !== 'production' ||
       URLS.APP_URLS_DEV.includes(hostname) ||
       URLS.APP_URLS_LOCAL.includes(hostname) ||
+      URLS.APP_URLS_PR_REVIEW_TEST(hostname) ||
       hostname.startsWith('10')
   ) return preAppRender().catch(console.error)
 
