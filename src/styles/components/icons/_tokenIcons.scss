@@ -22,7 +22,7 @@ $defaultTokenSize_mobile: 36px 70px;
 }
 
 [data-coin="GNO"] {
-  background: url('#{$images}tokens/GNO.svg') no-repeat center / $defaultTokenSize;
+  background: url('#{$images}tokens/GNO.svg') no-repeat center / 118px 138px;
 }
 
 [data-coin="RDN"] {
@@ -67,11 +67,17 @@ $defaultTokenSize_mobile: 36px 70px;
 
 
 // Mobile, placing it here to override, until code is re-structured:
-[data-coin] { 
+[data-coin] {
   @media #{$mobile} {
     border-radius: 90px;
     height: 90px;
     width: 90px;
     background-size: $defaultTokenSize_mobile;
+  }
+}
+
+[data-coin="GNO"] {
+  @media #{$mobile} {
+    background-size: 66px 100px;
   }
 }
