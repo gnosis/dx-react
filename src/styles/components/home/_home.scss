@@ -170,7 +170,7 @@
       }
     }
 
-    > p, 
+    > p,
     > .textSquareInnerContainer {
       font-family: inherit;
       font-size: 1.5em;
@@ -640,6 +640,13 @@
       height: 80px;
       width: 80px;
       background-size: 35px auto;
+    }
+  }
+
+  > [data-coin="GNO"] {
+    .tokenOverlay &,
+    .auctionContainer & {
+      background-size: 60px auto;
     }
   }
 }
