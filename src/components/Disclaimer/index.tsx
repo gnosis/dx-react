@@ -33,7 +33,7 @@ const GEO_BLOCKED_COUNTRIES_LIST = geoBlockedCitiesToString()
 export default class Disclaimer extends React.Component<DisclaimerProps, DisclaimerState> {
   state = {
     formInvalid: !this.props.accepted,
-    cookies_analytics_accepted: undefined as boolean,
+    cookies_analytics_accepted: true,
     loading: true,
     network: undefined as any,
     // termsOfUseScrolled: this.props.accepted, <-- Scroll check removed. See handleScroll method.
@@ -50,7 +50,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
       ])
 
       return this.setState({
-        cookies_analytics_accepted: cookieData ? cookieData.analytics : null,
+        cookies_analytics_accepted: cookieData ? cookieData.analytics : this.state.cookies_analytics_accepted,
         loading: false,
         network,
       })
