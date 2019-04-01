@@ -27,7 +27,7 @@ class Cookies extends React.Component<CookiesProps, CookiesState> {
     settingsOpen: false,
     cookieSettings: {
       necessary: true,
-      analytics: false,
+      analytics: true,
     },
     loading: true,
     error: '',

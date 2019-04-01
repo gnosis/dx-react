@@ -17,15 +17,9 @@ matrix:
   - if: branch =~ /^master$/ OR tag IS present
     env: NODE_ENV=production
     node_js: '9'
-  - if: branch =~ /^master$/ OR tag IS present
-    env: NODE_ENV=production
-    node_js: '8'
   - if: NOT (branch =~ /^master$/) AND NOT (tag IS present)
     env: NODE_ENV=development
     node_js: '9'
-  - if: NOT (branch =~ /^master$/) AND NOT (tag IS present)
-    env: NODE_ENV=development
-    node_js: '8'
 before_script:
   - truffle compile
   - npm run build:all
