@@ -14,15 +14,21 @@
       "decimals": 18
     },
     {
-      "symbol": "RDN",
-      "name": "Raiden Token",
-      "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
-      "decimals": 18
-    },
-    {
       "symbol": "DAI",
       "name": "Dai Token",
       "address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      "decimals": 18
+    },
+    {
+      "symbol": "GEN",
+      "name": "DAOstack",
+      "address": "0x543ff227f64aa17ea132bf9886cab5db55dcaddf",
+      "decimals": 18
+    },
+    {
+      "symbol": "GNO",
+      "name": "Gnosis",
+      "address": "0x543ff227f64aa17ea132bf9886cab5db55dcaddf",
       "decimals": 18
     },
     {
@@ -38,9 +44,9 @@
       "decimals": 18
     },
     {
-      "symbol": "GEN",
-      "name": "DAOstack",
-      "address": "0x543ff227f64aa17ea132bf9886cab5db55dcaddf",
+      "symbol": "RDN",
+      "name": "Raiden Token",
+      "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
       "decimals": 18
     }
   ],
