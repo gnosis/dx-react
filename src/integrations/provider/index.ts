@@ -6,6 +6,10 @@
 // import RpcSubprovider from 'web3-provider-engine/subproviders/rpc.js'
 // import Eth from '@ledgerhq/hw-app-eth'
 
+// @ts-ignore
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import Web3 from 'web3'
+
 import { getTime } from 'api'
 import { setupWeb3 } from 'api/web3Provider'
 
@@ -84,6 +88,46 @@ const Providers = {
     async initialize() {
       if (!this.checkAvailability()) return
       this.web3 = await setupWeb3() // new Web3(window.web3.currentProvider)
+      this.state = {}
+
+      return this.web3
+    },
+  },
+  WALLET_CONNECT: {
+    priority: 80,
+    providerName: 'WALLET CONNECT',
+    providerType: 'INJECTED_WALLET',
+    keyName: 'WALLET_CONNECT',
+
+    async checkAvailability() {
+      console.log('checkAvailability')
+      return this.walletAvailable = true
+    },
+
+    async initialize() {
+
+      const provider = WalletConnectProvider({
+        bridge: 'https://bridge.walletconnect.org',
+      })
+      provider._providers[6] = {
+        // @ts-ignore
+        setEngine: _ => _,
+        // @ts-ignore
+        handleRequest: async (payload, next, end) => {
+          const walletConnector = await provider.getWalletConnector()
+          try {
+            const resp = await walletConnector.sendCustomRequest(payload)
+            console.log('Request', payload, resp)
+            end(null, resp)
+          } catch (e) {
+            end(e)
+          }
+        },
+      }
+      console.log(await provider.getWalletConnector())
+      console.log(provider._providers)
+      this.web3 = new Web3(provider)
+      console.log('WALLET CONNECT PROVIDER:', this.web3)
       this.state = {}
 
       return this.web3

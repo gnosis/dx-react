@@ -86,6 +86,7 @@
     "@gnosis.pm/dx-contracts": "2.0.0",
     "@gnosis.pm/gno-token": "2.0.0",
     "@gnosis.pm/util-contracts": "2.0.0",
+    "@walletconnect/web3-provider": "^1.0.0-beta.10",
     "bignumber.js": "5.0.0",
     "connected-react-router": "4.4.1",
     "cross-env": "5.1.6",
