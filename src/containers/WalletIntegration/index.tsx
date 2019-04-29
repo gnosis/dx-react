@@ -101,6 +101,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
               <div className={!this.state.initialising ? 'ready' : ''}>
                 {Object.keys(Providers).map((provider: 'INJECTED_WALLET' | 'LEDGER', i: number) => {
                   const providerInfo = Providers[provider].providerName || provider
+                  const isBeta = Providers[provider].beta
                   return (
                     <div className="providerItem"
                       key={i}
@@ -110,6 +111,7 @@ class WalletIntegration extends React.Component<WalletIntegrationProps, WalletIn
                         src={provider2SVG(providerInfo)}
                       />}
                       <h4>{providerInfo}</h4>
+                      {isBeta && <small>BETA</small>}
                     </div>
                   )
                 })}

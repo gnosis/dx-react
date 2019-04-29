@@ -63,6 +63,7 @@ export const grabProviderState = async (provider: WalletProvider) => {
 const Providers = {
   // runtime providers (METAMASK/MIST/PARITY)
   INJECTED_WALLET: {
+    beta: false,
     priority: 90,
     providerType: 'INJECTED_WALLET',
     keyName: 'INJECTED_WALLET',
@@ -94,17 +95,18 @@ const Providers = {
     },
   },
   WALLET_CONNECT: {
+    beta: true,
     priority: 80,
     providerName: 'WALLET CONNECT',
     providerType: 'INJECTED_WALLET',
     keyName: 'WALLET_CONNECT',
 
     async checkAvailability() {
-      console.log('checkAvailability')
       return this.walletAvailable = true
     },
 
     async initialize() {
+      if (!this.checkAvailability()) return
 
       const provider = WalletConnectProvider({
         bridge: 'https://bridge.walletconnect.org',
@@ -117,17 +119,13 @@ const Providers = {
           const walletConnector = await provider.getWalletConnector()
           try {
             const resp = await walletConnector.sendCustomRequest(payload)
-            console.log('Request', payload, resp)
             end(null, resp)
           } catch (e) {
             end(e)
           }
         },
       }
-      console.log(await provider.getWalletConnector())
-      console.log(provider._providers)
       this.web3 = new Web3(provider)
-      console.log('WALLET CONNECT PROVIDER:', this.web3)
       this.state = {}
 
       return this.web3
