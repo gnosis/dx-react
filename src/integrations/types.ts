@@ -13,7 +13,7 @@ export interface ProviderState {
 export interface WalletProvider {
   keyName: ProviderName | ProviderType,
   providerName: WALLET_PROVIDER,
-  providerType: 'HARDWARE_WALLET' | 'INJECTED_WALLET',
+  providerType: 'HARDWARE_WALLET' | 'INJECTED_WALLET' | 'WALLET_CONNECT',
   // controls which provider is considered default
   priority: number,
   // internal flag determining if rovider was even injected
