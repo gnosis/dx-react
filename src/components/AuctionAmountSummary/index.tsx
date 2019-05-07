@@ -1,6 +1,6 @@
 import React from 'react'
 import { Balance } from 'types'
-import { tokenSVG } from 'globals'
+import { tokenSVG } from 'tokens'
 
 export interface AuctionAmountSummaryProps {
   sellTokenSymbol: string,

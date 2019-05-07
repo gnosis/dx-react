@@ -66,16 +66,22 @@ import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } fro
 
 import { waitForTx } from 'integrations/filterChain'
 
-import { ETH_ADDRESS,
-    FIXED_DECIMALS,
-    NETWORK_TIMEOUT,
-    RINKEBY_TOKEN_LIST_HASH,
-    KOVAN_TOKEN_LIST_HASH,
-    MAINNET_TOKEN_LIST_HASH,
-    TokenListHashMap,
-    ETHEREUM_NETWORKS,
-    COMPANY_NAME,
-  } from 'globals'
+import {
+  FIXED_DECIMALS,
+  NETWORK_TIMEOUT,
+  ETHEREUM_NETWORKS,
+  COMPANY_NAME,
+} from 'globals'
+
+import {
+  ETH_ADDRESS,
+  RINKEBY_TOKEN_LIST_HASH,
+  KOVAN_TOKEN_LIST_HASH,
+  MAINNET_TOKEN_LIST_HASH,
+  TokenListHashMap,
+
+} from 'tokens'
+
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 import { promisedWeb3 } from 'api/web3Provider'
 

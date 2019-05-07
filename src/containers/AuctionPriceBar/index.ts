@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { State } from 'types'
 
 import AuctionPriceBar from 'components/AuctionPriceBar'
-import { EMPTY_TOKEN } from 'globals'
+import { EMPTY_TOKEN } from 'tokens'
 
 // TODO: create state for lastAuctionPrice for each token
 const mapState = (state: State) => {

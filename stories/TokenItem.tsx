@@ -7,7 +7,7 @@ import { decorateAction } from '@storybook/addon-actions'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 
 import TokenItem, { TokenItemProps } from 'components/TokenItem'
-import { code2tokenMap, codeList } from 'globals'
+import { code2tokenMap, codeList } from 'tokens'
 import { TokenMod, Balance, TokenCode, TokenName } from 'types'
 import { makeCenterDecorator } from './helpers'
 

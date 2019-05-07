@@ -6,7 +6,7 @@ import { RedirectHomeIfNoAccountHOC } from 'components/RedirectIf'
 import { getSellTokenBalance } from 'selectors'
 
 import { State, BigNumber } from 'types'
-import { EMPTY_TOKEN } from 'globals'
+import { EMPTY_TOKEN } from 'tokens'
 
 const isPairApproved = ({ approvedTokens, tokenPair: { sell = EMPTY_TOKEN, buy = EMPTY_TOKEN } }: State) =>
   (approvedTokens.has(sell.address) && approvedTokens.has(buy.address))

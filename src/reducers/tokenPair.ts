@@ -10,7 +10,7 @@ import {
   resetTokenPairAndCloseOverlay,
 } from 'actions'
 import { TokenPair, DefaultTokenObject, TokenMod } from 'types'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS } from 'tokens'
 
 const initialState: TokenPair = {
   sell: {

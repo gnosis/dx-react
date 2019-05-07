@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 import { setSellTokenAmount } from 'actions'
 import { getSellTokenBalance } from 'selectors'
-import { EMPTY_TOKEN, FIXED_DECIMALS } from 'globals'
+import { FIXED_DECIMALS } from 'globals'
+import { EMPTY_TOKEN } from 'tokens'
 
 import { State } from 'types'
 import AuctionSellingGetting, { AuctionSellingGettingProps } from 'components/AuctionSellingGetting'

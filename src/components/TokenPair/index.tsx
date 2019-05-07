@@ -1,6 +1,6 @@
 import React from 'react'
 import TokenItem, { NoTokenItem } from '../TokenItem'
-import { code2tokenMap } from 'globals'
+import { code2tokenMap } from 'tokens'
 import { BigNumber, DefaultTokenObject } from 'types'
 
 export interface TokenPairProps {

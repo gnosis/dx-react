@@ -8,7 +8,8 @@ import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { TokenCode, TokenPair, Account, Balance, BigNumber, AuctionObject, Provider } from 'types'
 import { dxAPI as dutchXAPI, Index, DefaultTokenList, DefaultTokenObject, DutchExchange, Receipt, Hash } from './types'
 import { promisedContractsMap } from './contracts'
-import { AuctionStatus, ETH_ADDRESS, FIXED_DECIMALS } from 'globals'
+import { AuctionStatus, FIXED_DECIMALS } from 'globals'
+import { ETH_ADDRESS } from 'tokens'
 import { lastArrVal } from 'utils'
 
 let API: dutchXAPI

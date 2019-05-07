@@ -2,7 +2,7 @@ import { HumanFriendlyToken, promisedContractsMap } from 'api/contracts'
 
 import { TokensInterface, TransactionObject } from './types'
 import { Account, Balance } from 'types'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS } from 'tokens'
 import { estimateGas } from 'utils'
 
 let tokensAPI: TokensInterface

@@ -1,6 +1,7 @@
 import React from 'react'
 import { TokenMod, BigNumber, DefaultTokenObject, TokenName } from 'types'
-import { FIXED_DECIMALS, tokenSVG } from 'globals'
+import { FIXED_DECIMALS } from 'globals'
+import { tokenSVG } from 'tokens'
 
 export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,

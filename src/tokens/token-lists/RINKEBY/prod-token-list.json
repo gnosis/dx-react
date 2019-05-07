@@ -10,13 +10,13 @@
     {
       "symbol": "WETH",
       "name": "Wrapped Ether",
-      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
       "decimals": 18
     },
     {
       "symbol": "DAI",
       "name": "Dai Token",
-      "address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      "address": "0x62f25065ba60ca3a2044344955a3b2530e355111",
       "decimals": 18
     },
     {
@@ -27,32 +27,26 @@
     },
     {
       "symbol": "GNO",
-      "name": "Gnosis",
-      "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
-      "decimals": 18
-    },
-    {
-      "symbol": "KNC",
-      "name": "Kyber",
-      "address": "0xdd974d5c2e2928dea5f71b9825b8b646686bd200",
+      "name": "Gnosis Token",
+      "address": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
       "decimals": 18
     },
     {
       "symbol": "MKR",
-      "name": "Maker",
-      "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+      "name": "Maker Token",
+      "address": "0x2D9585690A724BfA29a212295a9E8C714ca694aA",
       "decimals": 18
     },
     {
       "symbol": "OMG",
-      "name": "OMGToken",
-      "address": "0xd26114cd6ee289accf82350c8d8487fedb8a0c07",
+      "name": "OmiseGO",
+      "address": "0x00df91984582e6e96288307e9c2f20b38c8fece9",
       "decimals": 18
     },
     {
       "symbol": "RDN",
       "name": "Raiden Token",
-      "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
+      "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     }
   ],
@@ -69,6 +63,6 @@
     "previousUri": null,
     "nextUri": null
   },
-  "network": "MAIN",
-  "version": "1.7.7"
+  "network": "RINKEBY-PROD",
+  "version": "1.1.1"
 }

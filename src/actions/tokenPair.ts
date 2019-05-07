@@ -5,7 +5,7 @@ import { setClosingPrice, getClosingPrice } from 'actions'
 
 import { TokenPair, Balance, State, DefaultTokenObject } from 'types'
 import { getTokenByFields } from 'selectors'
-import { WETH_TEMPLATE } from 'globals'
+import { WETH_TEMPLATE } from 'tokens'
 
 export const selectTokenPair = createAction<Partial<TokenPair>>('SELECT_TOKEN_PAIR')
 export const setSellTokenAmount = createAction<{ sellAmount: Balance }>('SET_SELL_TOKEN_AMOUNT')
