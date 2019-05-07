@@ -1,7 +1,7 @@
 $defaultTokenSize: 70px 90px;
 $defaultTokenSize_mobile: 36px 70px;
 
-[data-coin] {
+[data-coin], .dataCoin {
   border: 1px solid $greyBorder;
   will-change: border;
   transition: border .2s ease-in-out;
