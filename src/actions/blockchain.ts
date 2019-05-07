@@ -283,9 +283,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
           hash: RINKEBY_TOKEN_LIST_HASH,
           tokens: process.env.FE_CONDITIONAL_ENV === 'production'
             ?
-            require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
+            require('../tokens/token-lists/RINKEBY/prod-token-list.json') as any
             :
-            require('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
+            require('../tokens/token-lists/RINKEBY/dev-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -295,7 +295,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
         defaultTokens = {
           hash: KOVAN_TOKEN_LIST_HASH,
-          tokens: require('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
+          tokens: require('../tokens/token-lists/KOVAN/prod-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -306,7 +306,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
-          tokens: require('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
+          tokens: require('../tokens/token-lists/MAINNET/prod-token-list.json') as any,
         }
         console.log('Mainnet Token List:', defaultTokens.tokens.elements)
         break
