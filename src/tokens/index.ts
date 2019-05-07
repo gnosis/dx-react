@@ -15,6 +15,7 @@ export const tokenSVG = new Set([
   'GEN',
   'GNO',
   'GNT',
+  'KNC',
   'MKR',
   'OMG',
   'RDN',
@@ -31,11 +32,11 @@ export const TRADE_BLOCKED_TOKENS = {
         // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
         // OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
         // RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
-    },
+  },
   RINKEBY: {},
   get noBlock() {
-      return !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length
-    },
+    return !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length
+  },
 }
 
 export const EMPTY_TOKEN: DefaultTokenObject = {
@@ -59,6 +60,7 @@ export const code2tokenMap: Code2Name = {
   GEN: 'DAOSTACK',
   GNO: 'GNOSIS',
   GNT: 'GOLEM',
+  KNC: 'KYBER',
   MGN: 'MAGNOLIA',
   MKR: 'MAKER',
   OMG: 'OMISEGO',
@@ -71,9 +73,7 @@ export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 // Network token list hashes (latest versions)
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
-
 export const RINKEBY_TOKEN_LIST_HASH = process.env.FE_CONDITIONAL_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
-
 export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
 export const MAINNET_TOKEN_LIST_HASH = 'QmVoyJobifVKCGnwKxq7kHYbWK2XDkxz8Xg1teiqX3XVqr'
 

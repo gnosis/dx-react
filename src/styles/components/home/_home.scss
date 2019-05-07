@@ -649,6 +649,13 @@
       background-size: 60px auto;
     }
   }
+
+  > [data-coin="KNC"] {
+    .tokenOverlay &,
+    .auctionContainer & {
+      background-size: 80px auto;
+    }
+  }
 }
 
 .pair-noMGN {

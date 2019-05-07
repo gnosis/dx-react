@@ -53,6 +53,10 @@ $defaultTokenSize_mobile: 36px 70px;
   background: url('#{$images}tokens/GEN.svg') no-repeat center / $defaultTokenSize;
 }
 
+[data-coin="KNC"] {
+  background: url('#{$images}tokens/KNC.svg') no-repeat center / 150px 138px;
+}
+
 [data-coin="MKR"] {
   background: url('#{$images}tokens/MKR.svg') no-repeat center / $defaultTokenSize;
 }
