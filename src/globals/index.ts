@@ -117,6 +117,7 @@ export const URLS = {
   RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
 
   DXDAO: 'https://dxdao.daostack.io/',
+  MGN_POOL: 'https://mgn-pool.slow.trade/',
 }
 
 export const GA_CODES = {
