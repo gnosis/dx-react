@@ -183,7 +183,7 @@ class AppValidator extends React.Component<any> {
         {/* ERROR BANNER */}
         { (!set_up_complete || !this.props.unlocked) && online && <div className="offlineBanner"><span>{ error ? `App problems detected: ${error}` : 'App problems detected. Please check your provider and refresh the page.' } </span></div> }
         {/* CLAIM ONLY LINK BANNER */}
-        <div className="offlineBanner"><span>Withdraw and claim funds from previous versions <a href={`https://${URLS.APP_URLS_PROD.MAIN[1]}`}>here</a></span></div>
+        {/* <div className="offlineBanner"><span>Withdraw and claim funds from previous versions <a href={`https://${URLS.APP_URLS_PROD.MAIN[1]}`}>here</a></span></div> */}
       </>
     )
   }
