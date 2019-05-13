@@ -54,7 +54,7 @@ $defaultTokenSize_mobile: 36px 70px;
 }
 
 [data-coin="KNC"] {
-  background: url('#{$images}tokens/KNC.svg') no-repeat center / 150px 138px;
+  background: url('#{$images}tokens/KNC.svg') no-repeat center / $defaultTokenSize;
 }
 
 [data-coin="MKR"] {
