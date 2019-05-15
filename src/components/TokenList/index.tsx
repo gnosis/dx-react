@@ -1,6 +1,6 @@
 import React from 'react'
 import TokenItem from '../TokenItem'
-import { code2tokenMap } from 'globals'
+import { code2tokenMap } from 'tokens'
 import { TokenBalances, DefaultTokenObject, AccountsSet } from 'types'
 
 interface TokenListProps {

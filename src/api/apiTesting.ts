@@ -1,7 +1,7 @@
 import { promisedContractsMap } from 'api/contracts'
 
 import { DefaultTokens } from 'api/types'
-import { ETH_ADDRESS } from 'globals'
+import { ETH_ADDRESS } from 'tokens'
 
 export default async (version?: string | number) => {
   const {

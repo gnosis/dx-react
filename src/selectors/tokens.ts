@@ -1,5 +1,5 @@
 import { DefaultTokenObject, State } from 'types'
-import { ETH_ADDRESS, EMPTY_TOKEN } from 'globals'
+import { ETH_ADDRESS, EMPTY_TOKEN } from 'tokens'
 import { toBigNumber } from 'web3/lib/utils/utils.js'
 import { createSelector } from 'reselect'
 

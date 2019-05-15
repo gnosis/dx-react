@@ -1,4 +1,4 @@
-import { Code2Name, TokenCode, Network2URL, DefaultTokenObject, TokenName } from 'types'
+import { Network2URL } from 'types'
 
 export const COMPANY_NAME = 'slow.trade'
 export const COMPANY_SLOGAN = 'Decentralised ERC20 Token Trading'
@@ -31,36 +31,6 @@ export const networkById = {
   42: ETHEREUM_NETWORKS.KOVAN,
 }
 
-export const code2tokenMap: Code2Name = {
-  ETH: 'ETHER',
-  WETH: 'WRAPPED ETHER',
-  GNO: 'GNOSIS',
-  OWL: 'OWL',
-  MGN: 'MAGNOLIA',
-  '1ST': 'FIRST BLOOD',
-  GNT: 'GOLEM',
-  OMG: 'OMISEGO',
-  RDN: 'RAIDEN',
-  REP: 'AUGUR',
-  GEN: 'DAOSTACK',
-  DAI: 'DAI',
-  MKR: 'MAKER',
-}
-
-export const tokenSVG = new Set([
-  'ETH',
-  'WETH',
-  'GNO',
-  '1ST',
-  'GNT',
-  'OMG',
-  'RDN',
-  'REP',
-  'GEN',
-  'DAI',
-  'MKR',
-])
-
 export const network2URL: Network2URL = {
   RINKEBY: 'https://rinkeby.etherscan.io/',
   MAIN: 'https://etherscan.io/',
@@ -72,8 +42,6 @@ export const network2RPCURL = {
   RINKEBY: 'https://rinkeby.infura.io/',
   UNKNOWN: 'http://127.0.0.1:8545',
 }
-
-export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 export enum AuctionStatus {
   INIT = 'initialising',
@@ -97,50 +65,6 @@ export enum ProviderName {
 export const supportedProviders = new Set(Object.keys(ProviderName)) as Set<ProviderName | ProviderType>
 
 export const NETWORK_TIMEOUT = process.env.NODE_ENV === 'development' ? 200000 : 600000 // 3.33 min dev vs 10 min prod
-
-export const ETH_ADDRESS = '0x0'
-export const WETH_ADDRESS_RINKEBY = '0xc778417e063141139fce010982780140aa0cd5ab'
-
-export const WETH_TEMPLATE: Pick<DefaultTokenObject, Exclude<keyof DefaultTokenObject, 'address'>> = {
-  name: 'WRAPPED ETHER',
-  symbol: 'WETH',
-  decimals: 18,
-}
-
-export const EMPTY_TOKEN: DefaultTokenObject = {
-  name: '' as TokenName,
-  symbol: '' as TokenCode,
-  decimals: 18,
-  address: '',
-}
-
-// Network token list hashes (latest versions)
-export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'
-
-export const RINKEBY_TOKEN_LIST_HASH = process.env.FE_CONDITIONAL_ENV === 'production' ? 'QmW4NCDDZRexP5FVpMQXxNWwFHTQjCGeb5d8ywLs2XRJxR' : 'QmfB3fRGacBseNiBMhKFaYoEGDyiWnUCBPsE7Xo3sKqSyi'
-
-export const KOVAN_TOKEN_LIST_HASH = 'QmVk68VH1D2uGx2LUGXsrfvKHQiA1R4sjw8cw4so33DPsw'
-export const MAINNET_TOKEN_LIST_HASH = 'QmVoyJobifVKCGnwKxq7kHYbWK2XDkxz8Xg1teiqX3XVqr'
-
-export const TokenListHashMap = {
-  RINKEBY: RINKEBY_TOKEN_LIST_HASH,
-  KOVAN: KOVAN_TOKEN_LIST_HASH,
-  MAIN: MAINNET_TOKEN_LIST_HASH,
-}
-
-export const TRADE_BLOCKED_TOKENS = {
-  MAIN: {
-    // DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-    // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
-    // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
-    // OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
-    // RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
-  },
-  RINKEBY: {},
-  get noBlock() {
-    return !Object.keys(this.MAIN).length && !Object.keys(this.RINKEBY).length
-  },
-}
 
 // Allowed network
 // export const ALLOWED_NETWORK = 'Rinkeby Test Network'
@@ -193,6 +117,7 @@ export const URLS = {
   RINKEBY_GAS_STATION: 'https://safe-relay.staging.gnosisdev.com/api/v1/gas-station/',
 
   DXDAO: 'https://dxdao.daostack.io/',
+  MGN_POOL: 'https://mgn-pool.slow.trade/',
 }
 
 export const GA_CODES = {

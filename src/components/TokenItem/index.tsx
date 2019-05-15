@@ -1,6 +1,9 @@
 import React from 'react'
 import { TokenMod, BigNumber, DefaultTokenObject, TokenName } from 'types'
-import { FIXED_DECIMALS, tokenSVG } from 'globals'
+import { FIXED_DECIMALS } from 'globals'
+import { tokenSVG } from 'tokens'
+
+// import TOKEN_SVGS from 'assets/tokens'
 
 export interface TokenItemProps extends DefaultTokenObject {
   onClick?(props: TokenItemProps): any,
@@ -34,6 +37,7 @@ const TokenItem: React.SFC<TokenItemProps> = ({ onClick, generatesMGN = true, ..
       {mod && <strong>{mod2Title[mod] || mod}</strong>}
 
       {/* Token image / icon */}
+      {/* <img className="dataCoin" src={tokenSVG.has(symbol) ? TOKEN_SVGS[symbol] : TOKEN_SVGS['DEFAULT_TOKEN']}/> */}
       <i data-coin={tokenSVG.has(symbol) ? symbol : 'DEFAULT_TOKEN'}></i>
 
       <big>{name}</big><code title={address}>{symbol}</code>

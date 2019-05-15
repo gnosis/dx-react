@@ -12,6 +12,7 @@ export interface Code2Name {
   '1ST': 'FIRST BLOOD',
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
+  KNC: 'KYBER',
   MGN: 'MAGNOLIA',
   OWL: 'OWL',
   RDN: 'RAIDEN',

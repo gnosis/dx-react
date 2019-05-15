@@ -5,7 +5,7 @@ import TokenOverlayHeader from 'components/TokenOverlayHeader'
 import TokenList from 'components/TokenList'
 import Loader from 'components/Loader'
 
-import { code2tokenMap } from 'globals'
+import { code2tokenMap } from 'tokens'
 import { DefaultTokenObject, TokenBalances, TokenMod, AccountsSet, AvailableAuctions, TokenPair, Account } from 'types'
 import { handleKeyDown } from 'utils'
 

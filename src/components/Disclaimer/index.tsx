@@ -173,8 +173,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               null}
 
               <div className="disclaimerBox md-checkbox">
-                <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-                <label htmlFor="disclaimer5">
+                <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+                <label htmlFor="disclaimer4">
                   I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
                 </label>
               </div>
@@ -189,7 +189,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                         <label htmlFor="disclaimer5">Necessary</label>
                       </div>
                       <div className="disclaimerBoxCookie md-checkbox">
-                        <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked={cookies_analytics_accepted} disabled={accepted}/>
+                        <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !cookies_analytics_accepted })} defaultChecked disabled={accepted}/>
                         <label htmlFor="disclaimer6">Analytics</label>
                       </div>
                   </div>

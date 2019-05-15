@@ -1,5 +1,5 @@
 import { Middleware, Action } from 'redux'
-import { TRADE_BLOCKED_TOKENS } from 'globals'
+import { TRADE_BLOCKED_TOKENS } from 'tokens'
 
 const TokenTradableChecker = () => (next: Function) => async (action: any) => {
   const { payload, type }: any = action as Action

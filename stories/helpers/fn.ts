@@ -1,4 +1,4 @@
-import { codeList } from 'globals'
+import { codeList } from 'tokens'
 import { TokenBalances, RatioPairs, TokenPair } from 'types'
 
 export const getRandomInt = (min: number, max: number): number => {

@@ -66,16 +66,22 @@ import { DefaultTokenObject, Web3EventLog, DefaultTokens, DefaultTokenList } fro
 
 import { waitForTx } from 'integrations/filterChain'
 
-import { ETH_ADDRESS,
-    FIXED_DECIMALS,
-    NETWORK_TIMEOUT,
-    RINKEBY_TOKEN_LIST_HASH,
-    KOVAN_TOKEN_LIST_HASH,
-    MAINNET_TOKEN_LIST_HASH,
-    TokenListHashMap,
-    ETHEREUM_NETWORKS,
-    COMPANY_NAME,
-  } from 'globals'
+import {
+  FIXED_DECIMALS,
+  NETWORK_TIMEOUT,
+  ETHEREUM_NETWORKS,
+  COMPANY_NAME,
+} from 'globals'
+
+import {
+  ETH_ADDRESS,
+  RINKEBY_TOKEN_LIST_HASH,
+  KOVAN_TOKEN_LIST_HASH,
+  MAINNET_TOKEN_LIST_HASH,
+  TokenListHashMap,
+
+} from 'tokens'
+
 import { setDxBalances, getAllDXTokenInfo } from 'actions/dxBalances'
 import { promisedWeb3 } from 'api/web3Provider'
 
@@ -277,9 +283,9 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
           hash: RINKEBY_TOKEN_LIST_HASH,
           tokens: process.env.FE_CONDITIONAL_ENV === 'production'
             ?
-            require('../../test/resources/token-lists/RINKEBY/prod-token-list.json') as any
+            require('../tokens/token-lists/RINKEBY/prod-token-list.json') as any
             :
-            require('../../test/resources/token-lists/RINKEBY/dev-token-list.json') as any,
+            require('../tokens/token-lists/RINKEBY/dev-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -289,7 +295,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
         console.log(`Detected connection to ${ETHEREUM_NETWORKS.KOVAN}`)
         defaultTokens = {
           hash: KOVAN_TOKEN_LIST_HASH,
-          tokens: require('../../test/resources/token-lists/KOVAN/prod-token-list.json') as any,
+          tokens: require('../tokens/token-lists/KOVAN/prod-token-list.json') as any,
         }
         console.log('Rinkeby Token List:', defaultTokens.tokens.elements)
         break
@@ -300,7 +306,7 @@ export const getTokenList = (network?: number | string) => async (dispatch: Func
 
         defaultTokens = {
           hash: MAINNET_TOKEN_LIST_HASH,
-          tokens: require('../../test/resources/token-lists/MAINNET/prod-token-list.json') as any,
+          tokens: require('../tokens/token-lists/MAINNET/prod-token-list.json') as any,
         }
         console.log('Mainnet Token List:', defaultTokens.tokens.elements)
         break
