@@ -173,8 +173,8 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               null}
 
               <div className="disclaimerBox md-checkbox">
-                <input id="disclaimer5" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
-                <label htmlFor="disclaimer5">
+                <input id="disclaimer4" type="checkbox" required defaultChecked={accepted} disabled={accepted} />
+                <label htmlFor="disclaimer4">
                   I have read and understood the <a href="./PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
                 </label>
               </div>
