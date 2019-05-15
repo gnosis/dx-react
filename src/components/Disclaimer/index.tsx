@@ -189,7 +189,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
                         <label htmlFor="disclaimer5">Necessary</label>
                       </div>
                       <div className="disclaimerBoxCookie md-checkbox">
-                        <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked={cookies_analytics_accepted} disabled={accepted}/>
+                        <input id="disclaimer6" type="checkbox" onChange={() => this.setState({ cookies_analytics_accepted: !this.state.cookies_analytics_accepted })} defaultChecked disabled={accepted}/>
                         <label htmlFor="disclaimer6">Analytics</label>
                       </div>
                   </div>
