@@ -15,7 +15,7 @@
     },
     {
       "symbol": "DAI",
-      "name": "Dai Token",
+      "name": "Dai",
       "address": "0x62f25065ba60ca3a2044344955a3b2530e355111",
       "decimals": 18
     },
@@ -27,13 +27,13 @@
     },
     {
       "symbol": "GNO",
-      "name": "Gnosis Token",
+      "name": "Gnosis",
       "address": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
       "decimals": 18
     },
     {
       "symbol": "MKR",
-      "name": "Maker Token",
+      "name": "Maker",
       "address": "0x2D9585690A724BfA29a212295a9E8C714ca694aA",
       "decimals": 18
     },
@@ -45,7 +45,7 @@
     },
     {
       "symbol": "RDN",
-      "name": "Raiden Token",
+      "name": "Raiden",
       "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
     }
