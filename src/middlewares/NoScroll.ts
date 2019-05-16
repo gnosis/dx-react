@@ -16,6 +16,7 @@ const NoScroll = () => (next: Function) => async (action: any) => {
 
     return next(action as Action)
   } catch (e) {
+    console.error('Error occurred in noScroll middleware: ', e)
     // Unable to load or parse stored state, proceed as usual
   }
 }

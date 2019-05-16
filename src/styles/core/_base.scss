@@ -106,6 +106,10 @@ section.auction {
   overflow-y: scroll;
 }
 
+.noScrollAll {
+  overflow: hidden;
+}
+
 .pointer {
   cursor: pointer;
 }
