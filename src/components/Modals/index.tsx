@@ -58,7 +58,7 @@ export const TransactionModal: React.SFC<TransactionModalProps> = ({
         <span>Liquidity contribution in OWL:
           <hr />
           <strong>
-            {`${txData.feeReductionFromOWL.adjustment.div(txData.feeReductionFromOWL.ethUSDPrice).toFixed(9)} OWL (=${txData.feeReductionFromOWL.adjustment.toFixed(9)} ${txData.tokenA.symbol || txData.tokenA.name})`}
+            {`${txData.feeReductionFromOWL.adjustment.mul(txData.feeReductionFromOWL.ethUSDPrice).toFixed(9)} OWL (=${txData.feeReductionFromOWL.adjustment.toFixed(9)} ${txData.tokenA.symbol || txData.tokenA.name})`}
           </strong>
         </span>}
         <span>Liquidity contribution in {`${txData.tokenA.symbol || txData.tokenA.name}`}:
