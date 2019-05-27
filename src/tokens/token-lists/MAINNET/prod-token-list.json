@@ -54,6 +54,36 @@
       "name": "Raiden",
       "address": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
       "decimals": 18
+    },
+    {
+      "symbol": "LRC",
+      "name": "Loopring",
+      "address": "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
+      "decimals": 18
+    },
+    {
+      "symbol": "OCEAN",
+      "name": "OCEAN",
+      "address": "0x985dd3d42de1e256d09e1c10f112bccb8015ad41",
+      "decimals": 18
+    },
+    {
+      "symbol": "OST",
+      "name": "OST",
+      "address": "0x2c4e8f2d746113d0696ce89b35f0d8bf88e0aeca",
+      "decimals": 18
+    },
+    {
+      "symbol": "REQ",
+      "name": "Request Network",
+      "address": "0x8f8221afbb33998d8584a2b05749ba73c37a938a",
+      "decimals": 18
+    },
+    {
+      "symbol": "SNT",
+      "name": "Status",
+      "address": "0x744d70fdbe2ba4cf95131626614a1763df805b9e",
+      "decimals": 18
     }
   ],
   "pagination": {
@@ -70,5 +100,5 @@
     "nextUri": null
   },
   "network": "MAIN",
-  "version": "1.7.7"
+  "version": "2.4.2"
 }
