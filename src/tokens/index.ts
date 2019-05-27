@@ -16,11 +16,40 @@ export const tokenSVG = new Set([
   'GNO',
   'GNT',
   'KNC',
+  'LRC',
   'MKR',
+  'OCEAN',
   'OMG',
+  'OST',
+  'REQ',
   'RDN',
   'REP',
+  'SNT',
 ])
+
+export const code2tokenMap: Code2Name = {
+  ETH: 'ETHER',
+  WETH: 'WRAPPED ETHER',
+  '1ST': 'FIRST BLOOD',
+  DAI: 'DAI',
+  GEN: 'DAOSTACK',
+  GNO: 'GNOSIS',
+  GNT: 'GOLEM',
+  KNC: 'KYBER',
+  LRC: 'LOOPRING',
+  MGN: 'MAGNOLIA',
+  MKR: 'MAKER',
+  OCEAN: 'OCEAN',
+  OMG: 'OMISEGO',
+  OST: 'OST',
+  OWL: 'OWL',
+  RDN: 'RAIDEN',
+  REQ: 'REQUEST NETWORK',
+  REP: 'AUGUR',
+  SNT: 'STATUS',
+}
+
+export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 /*
  * TRADE BLOCKED TOKENS
@@ -51,25 +80,6 @@ export const WETH_TEMPLATE: Pick<DefaultTokenObject, Exclude<keyof DefaultTokenO
   symbol: 'WETH',
   decimals: 18,
 }
-
-export const code2tokenMap: Code2Name = {
-  ETH: 'ETHER',
-  WETH: 'WRAPPED ETHER',
-  '1ST': 'FIRST BLOOD',
-  DAI: 'DAI',
-  GEN: 'DAOSTACK',
-  GNO: 'GNOSIS',
-  GNT: 'GOLEM',
-  KNC: 'KYBER',
-  MGN: 'MAGNOLIA',
-  MKR: 'MAKER',
-  OMG: 'OMISEGO',
-  OWL: 'OWL',
-  RDN: 'RAIDEN',
-  REP: 'AUGUR',
-}
-
-export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 
 // Network token list hashes (latest versions)
 export const TESTING_TOKEN_LIST_HASH = 'QmXgUiWTumXghNuLk3vAypVeL4ycVkNKhrtWfvFHoQTJAM'

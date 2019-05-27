@@ -13,12 +13,17 @@ export interface Code2Name {
   OMG: 'OMISEGO',
   GNT: 'GOLEM',
   KNC: 'KYBER',
+  LRC: 'LOOPRING',
   MGN: 'MAGNOLIA',
+  OCEAN: 'OCEAN',
+  OST: 'OST',
   OWL: 'OWL',
   RDN: 'RAIDEN',
+  REQ: 'REQUEST NETWORK',
   GEN: 'DAOSTACK',
   DAI: 'DAI',
   MKR: 'MAKER',
+  SNT: 'STATUS',
 }
 
 export type TokenCode = keyof Code2Name
