@@ -1,4 +1,5 @@
 $defaultTokenSize: 70px 90px;
+$largerTokenSize: 100px 120px;
 $defaultTokenSize_mobile: 36px 70px;
 
 [data-coin], .dataCoin {
@@ -11,6 +12,14 @@ $defaultTokenSize_mobile: 36px 70px;
   border-radius: 150px;
   margin: 20px auto;
   background-size: $defaultTokenSize;
+}
+
+[data-coin="DEFAULT_TOKEN"] {
+  background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="TOKEN_LIST"] {
+  background: $greyBorder url('#{$images}tokens/TOKEN_LIST.svg') no-repeat center / $defaultTokenSize;
 }
 
 [data-coin="ETH"] {
@@ -61,13 +70,26 @@ $defaultTokenSize_mobile: 36px 70px;
   background: url('#{$images}tokens/MKR.svg') no-repeat center / $defaultTokenSize;
 }
 
-[data-coin="DEFAULT_TOKEN"] {
-  background: url('#{$images}tokens/DEFAULT_TOKEN.svg') no-repeat center / $defaultTokenSize;
+[data-coin="LRC"] {
+  background: url('#{$images}tokens/LRC.svg') no-repeat center / $largerTokenSize;
 }
 
-[data-coin="TOKEN_LIST"] {
-  background: $greyBorder url('#{$images}tokens/TOKEN_LIST.svg') no-repeat center / $defaultTokenSize;
+[data-coin="OCEAN"] {
+  background: url('#{$images}tokens/OCEAN.svg') no-repeat center / $defaultTokenSize;
 }
+
+[data-coin="OST"] {
+  background: url('#{$images}tokens/OST.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="REQ"] {
+  background: url('#{$images}tokens/REQ.svg') no-repeat center / $defaultTokenSize;
+}
+
+[data-coin="SNT"] {
+  background: url('#{$images}tokens/SNT.svg') no-repeat center / $defaultTokenSize;
+}
+
 
 
 // Mobile, placing it here to override, until code is re-structured:
