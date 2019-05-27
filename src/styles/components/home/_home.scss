@@ -649,6 +649,13 @@
       background-size: 60px auto;
     }
   }
+
+  > [data-coin="OCEAN"], [data-coin="SNT"], [data-coin="MKR"], [data-coin="LRC"] {
+    .tokenOverlay &,
+    .auctionContainer & {
+      background-size: 45px auto;
+    }
+  }
 }
 
 .pair-noMGN {

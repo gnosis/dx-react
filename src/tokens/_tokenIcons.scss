@@ -1,5 +1,5 @@
 $defaultTokenSize: 70px 90px;
-$largerTokenSize: 100px 120px;
+$largerTokenSize: 85px 100px;
 $defaultTokenSize_mobile: 36px 70px;
 
 [data-coin], .dataCoin {
@@ -75,7 +75,7 @@ $defaultTokenSize_mobile: 36px 70px;
 }
 
 [data-coin="OCEAN"] {
-  background: url('#{$images}tokens/OCEAN.svg') no-repeat center / $defaultTokenSize;
+  background: url('#{$images}tokens/OCEAN.svg') no-repeat center / $largerTokenSize;
 }
 
 [data-coin="OST"] {
