@@ -15,10 +15,10 @@ import STATUS_SVG from 'assets/img/icons/icon_status.svg'
 import LEDGER_SVG from 'assets/img/icons/icon_ledger.svg'
 import METAMASK_SVG from 'assets/img/icons/icon_metamask3.svg'
 import COINBASE_PNG from 'assets/img/icons/icon_coinbase.png'
+import WALLET_CONNECT_SVG from 'assets/img/icons/icon_walletconnect.svg'
 import DEFAULT_PROVIDER_SVG from 'assets/img/icons/icon_defaultWallet.svg'
 
 export const getDutchXOptions = (provider: any) => {
-  console.log('FIRING getDutchXOptions')
   const opts: any = {}
 
   if (provider && provider.name === WALLET_PROVIDER.METAMASK) {
@@ -198,6 +198,9 @@ export const provider2SVG = (providerName: ProviderName | ProviderType) => {
 
     case 'COINBASE':
       return COINBASE_PNG
+
+    case 'WALLET CONNECT':
+      return WALLET_CONNECT_SVG
 
     default:
       return DEFAULT_PROVIDER_SVG
