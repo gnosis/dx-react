@@ -28,7 +28,7 @@ const YourBalance: React.SFC<AccountBalanceProps> = ({ balances, now }) => {
         <Countdown now={now} then={whenUnlocked.toNumber()} />
       </span>}
       <span>Your unlocked (tradable) MGN: {toMGNnumber(unlocked)}</span>
-      <span>To see this amount in your wallet, add the MGN token address)</span>
+      <span>To see this amount in your wallet, add the MGN token address</span>
     </div>
   )
 }
