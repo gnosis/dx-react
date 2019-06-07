@@ -24,9 +24,9 @@ const YourBalance: React.SFC<AccountBalanceProps> = ({ balances, now }) => {
       <span>
         Your unlocking* MGN: {toMGNnumber(unlocking)}
       </span>
-      {whenUnlocked && <span>
+      {whenUnlocked &&
         <Countdown now={now} then={whenUnlocked.toNumber()} />
-      </span>}
+      }
       <span>Your unlocked (tradable) MGN: {toMGNnumber(unlocked)}</span>
       <span>To see this amount in your wallet, add the MGN token address</span>
     </div>
@@ -46,7 +46,6 @@ const AccountBalance: React.SFC<AccountBalancePropsEx> = ({
   const changeAccount = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement
     if (input.checkValidity()) {
-      console.log(input.value)
       setAccount(input.value)
     }
   }
@@ -72,9 +71,9 @@ const AccountBalance: React.SFC<AccountBalancePropsEx> = ({
       <span>
         Unlocking* MGN: {toMGNnumber(unlocking)}
       </span>
-      {whenUnlocked && <span>
+      {whenUnlocked &&
         <Countdown now={now} then={whenUnlocked.toNumber()} />
-      </span>}
+      }
       <span>Unlocked (tradable) MGN: {toMGNnumber(unlocked)}</span>
     </div>
   )
