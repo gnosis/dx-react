@@ -7,6 +7,7 @@ import { hot } from 'react-hot-loader'
 import Header from 'components/Header'
 import Footer from 'components/Footer'
 import Home from 'containers/Home'
+import MGN from 'containers/MGN'
 import PageNotFound from 'components/PageNotFound'
 import OrderPanel from 'containers/OrderPanel'
 import WalletPanel from 'containers/WalletPanel'
@@ -43,6 +44,7 @@ const HomeWHF = withHeaderAndFooter(Home)
 const OrderPanelWHF = withHeaderAndFooter(OrderPanel)
 const WalletPanelWHF = withHeaderAndFooter(WalletPanel)
 const AuctionPanelWHF = withHeaderAndFooter(AuctionPanel)
+const MGN_WHF = withHeaderAndFooter(MGN)
 // true passed in to show different, solidBackgorund Header
 const ContentPageContainerWHF =
   withHeaderAndFooter(ContentPageContainer, { content: true, dumb: true }, SHOW_FOOTER_CONTENT)
@@ -122,6 +124,8 @@ const AppRouter: React.SFC<AppRouterProps> = ({ analytics, history, disabled }) 
 
                 <Route path="/imprint" component={ImprintWHF}/>
                 <Route path="/terms" component={TermsWHF}/>
+
+                <Route path="/mgn" component={MGN_WHF}/>
 
                 <Route path="/404" component={FourOhFourWHF} />
                 <Redirect to="/404" />
