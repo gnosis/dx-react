@@ -60,15 +60,11 @@ export type Wrap = <
 export const getConditions = ({ balances, txInProgress, now }: UseMGNbalancesForCondsAndApi): Conditions => {
   const { locked, unlocked, unlocking, whenUnlocked } = balances
 
-  console.log('!txInProgress.name: ', !txInProgress.name)
   const canUnlock = !txInProgress.name && locked && locked.greaterThan(0)
-  console.log('canUnlock: ', canUnlock)
   const canLock = !txInProgress.name && unlocked && unlocked.greaterThan(0)
-  console.log('canLock: ', canLock)
   const canWithdraw =
   !txInProgress.name && whenUnlocked && unlocking &&
   (whenUnlocked.lessThan(now) && unlocking.greaterThan(0))
-  console.log('canWithdraw: ', canWithdraw)
 
   return {
     canUnlock,
