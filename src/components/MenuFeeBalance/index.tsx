@@ -1,7 +1,7 @@
 import React from 'react'
 import { Balance } from 'types'
 import { Link } from 'react-router-dom'
-import { URLS } from 'globals'
+import { URLS, FIXED_DECIMALS } from 'globals'
 // Hook in props:
 // MGN amount found via TokenMGN.balanceOf(user.address)
 // Fee level should be estimated in DX via MGN.totalSupply() vs Users supply
@@ -21,7 +21,7 @@ const MenuFeeBalance = ({ feeRatio, mgnSupply, showFeeRatio }: MenuFeeBalancePro
         target="_blank"
         title="MAGNOLIA - click for more info"
       >
-      MGN <strong>{showFeeRatio ? mgnSupply : 'N/A'}</strong>
+      MGN <strong>{showFeeRatio ? Number(mgnSupply).toFixed(FIXED_DECIMALS) : 'N/A'}</strong>
       </a>
     </p>
     <p>

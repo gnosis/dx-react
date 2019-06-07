@@ -205,7 +205,7 @@ export default class Disclaimer extends React.Component<DisclaimerProps, Disclai
               <button
                 id="disclaimer-submit"
                 form="disclaimer"
-                type="confirm"
+                type="submit"
                 className={disclaimerConfirmClasses}
               >
                 Continue

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-export const TermsText_May2019 = ({ className }: any) => (
+export const TermsText = ({ className }: any) => (
   <div className={className}>
         <p>
             <strong>
@@ -516,7 +516,7 @@ export const TermsText_May2019 = ({ className }: any) => (
     </div>
 )
 
-export const TermsText = ({ className }: any) => (
+export const TermsText_OLD = ({ className }: any) => (
   <div className={className}>
     <p>
       <strong>

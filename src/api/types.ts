@@ -264,9 +264,9 @@ export interface MGNInterface extends ERC20Interface {
   updateOwner(_owner: Account, tx: TransactionObject): Promise<Receipt>,
   updateMinter(_minter: Account, tx: TransactionObject): Promise<Receipt>,
   mintTokens(user: Account, amount: Balance, tx: TransactionObject): Promise<Receipt>,
-  lockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
-  unlockTokens(amount: Balance, tx: TransactionObject): Promise<Receipt>,
-  withdrawUnlockedTokens(tx: TransactionObject): Promise<Receipt>,
+  lockTokens(amount: Balance, tx?: TransactionObject): Promise<Receipt>,
+  unlockTokens(tx?: TransactionObject): Promise<Receipt>,
+  withdrawUnlockedTokens(tx?: TransactionObject): Promise<Receipt>,
 }
 
 export interface Receipt {
