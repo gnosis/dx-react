@@ -39,8 +39,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
     btnClass + (canWithdraw ? 'blue' : 'buttonCTA-disabled')
 
   return (
-    <>
-      <div className="mgn-controls">
+      <>
         <div className="element">
           <div className="control-wrap">
             <h3 className="control-main">UNLOCK</h3>
@@ -100,8 +99,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
           transfer the amount of MGN you do not want locked to another wallet
           address.
         </p>
-      </div>
-    </>
+      </>
   )
 }
 

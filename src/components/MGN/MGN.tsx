@@ -158,7 +158,7 @@ class MGN extends React.Component<MGNprops, MGNstate> {
               now={now}
             />
           </div>
-          <div>
+          <div className="mgn-controls">
             <Controls
               api={this.api}
               conditions={conditions}

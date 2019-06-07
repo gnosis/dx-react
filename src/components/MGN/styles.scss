@@ -90,6 +90,7 @@
     padding: 0;
     counter-reset: step;
     box-shadow: $sides-shadow;
+    align-self: stretch;
 
     $bottom-shadow: inset 0 0 0 2px #80808021;
 
