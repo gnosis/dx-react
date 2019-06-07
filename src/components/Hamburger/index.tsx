@@ -45,6 +45,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
           <NavLink to="/content/FAQ" onClick={this.handleClick}> FAQ </NavLink>
           <NavLink to="/content/Help" onClick={this.handleClick}> Help </NavLink>
           <a href={URLS.MGN_POOL} target="_blank">POOL</a>
+          <NavLink to="/mgn" onClick={this.handleClick}> MGN integration </NavLink>
           {/* Market Makers and Listing a Token */}
           <p>For <i>Market Makers & Listing a Token</i> visit: <a href={URLS.DUTCHX_DEVS_AND_API} target="_blank" rel="noopener noreferrer" onClick={this.handleClick}> Devs & API </a></p>
 
