@@ -105,6 +105,7 @@ header {
     will-change: transform, opacity;
     padding: 75px 0 0;
     overflow-y: auto;
+    box-sizing: border-box;
 
     @media #{$tablet} {
       // box-shadow: 0 999px 0 999px rgba(26,73,119,.9);
