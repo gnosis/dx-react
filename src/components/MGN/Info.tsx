@@ -27,8 +27,8 @@ const Info: React.SFC<InfoProps> = ({ mgnhref }) => (
     </p>
     <p className="info-text">
       MGN tokens must be locked in the MGN contract to count toward Liquidity Contributions on the
-      DutchX. They <u>must</u> be locked in the MGN contract to be registered for the dxDAO Vote Staking Period.
-      They do not have to and cannot be locked on the dxDAO Vote Staking Interface.
+      DutchX. They <u>must</u> be locked in the MGN contract to be registered for the <a href="https://dxdao.daostack.io/" target="_blank">dxDAO</a> Vote Staking Period.
+      They do not have to and cannot be locked on the <a href="https://dxdao.daostack.io/" target="_blank">dxDAO Vote Staking Interface</a>.
     </p>
   </>
 )
