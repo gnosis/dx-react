@@ -149,5 +149,13 @@
       align-self: stretch;
       font-size: 1.2em;
     }
+
+    .control-info {
+      line-height: 1.1;
+
+      > p {
+        margin: 0;
+      }
+    }
   }
 }
