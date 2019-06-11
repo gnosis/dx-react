@@ -72,7 +72,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
         </div>
       </div>
       <div className="element">
-        <p className="control-info">
+        <div className="control-info">
           <p>
             Add the <a href={mgnhref} target="_blank">MGN token address</a> to your wallet. Immediately after the
             third step you can transfer the token like any ERC20 token.
@@ -80,7 +80,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
           <p>
             Then proceed to Step 5 with the other wallet address.
           </p>
-        </p>
+        </div>
       </div>
       <div className="element">
         <div className="control-wrap">
