@@ -28,8 +28,14 @@ const initBal: MGNbalances = {
   whenUnlocked: null,
 }
 
-const getEtherscanURL = ({ network, address }: {network: string, address: string}) =>
+const getEtherscanURL = ({ network, address }: { network: string, address: string }) =>
   `${network2URL[network]}token/${address}`
+
+const ALL_DISABLED_CONDITIONS = {
+  canLock: false,
+  canUnlock: false,
+  canWithdraw: false,
+}
 
 class MGN extends React.Component<MGNprops, MGNstate> {
   setTxInProgress = (tx: MGNstate['txInProgress']) => {
@@ -89,7 +95,6 @@ class MGN extends React.Component<MGNprops, MGNstate> {
     const conditions = await getConditions({
       balances: this.state.yourBalances,
       now: this.props.now,
-      txInProgress: this.state.txInProgress,
     })
 
     this.setState({ conditions })
@@ -125,7 +130,6 @@ class MGN extends React.Component<MGNprops, MGNstate> {
     return this.mgnAPI.lockTokens(this.state.yourBalances.unlocked, tx)
   }
   unlockTokens = (tx: TransactionObject) => {
-    console.log('Unlocking')
     return this.mgnAPI.unlockTokens(tx)
   }
   withdrawUnlockedTokens = (tx: TransactionObject) => {
@@ -140,7 +144,9 @@ class MGN extends React.Component<MGNprops, MGNstate> {
 
   render() {
     const { currentAccount, now, mgn, network } = this.props
-    const { conditions, yourBalances, otherBalances } = this.state
+    const { conditions, yourBalances, otherBalances, txInProgress } = this.state
+
+    const conditionsAccountingForTx = txInProgress.name ? ALL_DISABLED_CONDITIONS : conditions
 
     const mgnhref = getEtherscanURL({ network, address: mgn.address })
 
@@ -161,7 +167,7 @@ class MGN extends React.Component<MGNprops, MGNstate> {
           <div className="mgn-controls">
             <Controls
               api={this.api}
-              conditions={conditions}
+              conditions={conditionsAccountingForTx}
               now={now}
               then={yourBalances.whenUnlocked && yourBalances.whenUnlocked.toNumber()}
               mgnhref={mgnhref}

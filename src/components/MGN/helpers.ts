@@ -34,7 +34,6 @@ export type TxName = 'lockTokens' | 'unlockTokens' | 'withdrawUnlockedTokens'
 export interface UseMGNbalancesForCondsAndApi {
   balances: MGNbalances;
   now: number;
-  txInProgress?: { name: string | null, error: Error | null };
 }
 export type MGN_API = Pick<MGNInterface, TxName>
 
@@ -57,14 +56,14 @@ export type Wrap = <
   name: TxName,
 ) => API[keyof API]
 
-export const getConditions = ({ balances, txInProgress, now }: UseMGNbalancesForCondsAndApi): Conditions => {
+export const getConditions = ({ balances, now }: UseMGNbalancesForCondsAndApi): Conditions => {
   const { locked, unlocked, unlocking, whenUnlocked } = balances
 
-  const canUnlock = !txInProgress.name && locked && locked.greaterThan(0)
-  const canLock = !txInProgress.name && unlocked && unlocked.greaterThan(0)
+  const canUnlock = locked && locked.greaterThan(0)
+  const canLock = unlocked && unlocked.greaterThan(0)
   const canWithdraw =
-  !txInProgress.name && whenUnlocked && unlocking &&
-  (whenUnlocked.lessThan(now) && unlocking.greaterThan(0))
+    whenUnlocked && unlocking &&
+    (whenUnlocked.lessThan(now) && unlocking.greaterThan(0))
 
   return {
     canUnlock,
