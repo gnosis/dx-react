@@ -84,6 +84,7 @@ export const URLS = {
   HOW_IT_WORKS: '/content/HowItWorks',
   TOKENS: '/content/Tokens',
   LIQUIDITY_CONTRIBUTION: '/content/LiquidityContribution',
+  MGN_LOCK_UNLOCK: '/mgn',
   FAQ: '/content/FAQ',
   MARKET_MAKERS: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Market_Makers.pdf',
   LISTING_A_TOKEN: 'http://dutchx.readthedocs.io/en/latest/_static/docs/DutchX_Handbook_New_Tokens.pdf',
