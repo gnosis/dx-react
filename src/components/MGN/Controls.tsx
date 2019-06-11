@@ -89,8 +89,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
               LOCK
             </button>
             <span className="control-desc">
-              (locks entire balance; if you want to lock less, only transfer the
-              lesser amount)
+              (locks entire balance)
             </span>
           </div>
         </div>
