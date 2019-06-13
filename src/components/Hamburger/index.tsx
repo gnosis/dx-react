@@ -38,6 +38,7 @@ export default class Hamburger extends Component<HamburgerProps, HamburgerState>
             onClick={this.handleClick}>
           </button>
           <Route path="/(.+)" render={() => <Link to="/" onClick={this.handleClick}> Home </Link>}/>
+          <NavLink to="/mgn" onClick={this.handleClick}> Lock / Unlock MGN </NavLink>
           <NavLink to="/content/HowItWorks" onClick={this.handleClick}> How it Works </NavLink>
           <a href={URLS.STEP_BY_STEP_GUIDE} target="_blank" rel="noopener noreferrer" onClick={this.handleClick}>Step By Step Guide</a>
           <NavLink to="/content/Tokens" onClick={this.handleClick}> Tokens </NavLink>

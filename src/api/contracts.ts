@@ -127,7 +127,7 @@ const checkENVAndWriteContractAddresses = async () => {
   }
 
   // in development use different contract addresses
-  if (process.env.FE_CONDITIONAL_ENV === 'development' || process.env.USE_DEV_NETWORKS) {
+  if (process.env.USE_DEV_NETWORKS) {
     // from networks-%ENV%.json
     const networksDX    = require('@gnosis.pm/dx-contracts/networks-dev.json')
 

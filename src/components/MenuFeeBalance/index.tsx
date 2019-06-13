@@ -16,13 +16,12 @@ export interface MenuFeeBalanceProps {
 const MenuFeeBalance = ({ feeRatio, mgnSupply, showFeeRatio }: MenuFeeBalanceProps) =>
   <div className="menuFeeBalance">
     <p>
-      <a
-        href={URLS.DXDAO}
-        target="_blank"
+      <Link
+        to={URLS.MGN_LOCK_UNLOCK}
         title="MAGNOLIA - click for more info"
       >
       MGN <strong>{showFeeRatio ? Number(mgnSupply).toFixed(FIXED_DECIMALS) : 'N/A'}</strong>
-      </a>
+      </Link>
     </p>
     <p>
       <Link title="Liquidity Contribution - click for more info" to={URLS.LIQUIDITY_CONTRIBUTION}>
