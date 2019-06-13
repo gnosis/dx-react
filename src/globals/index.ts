@@ -91,6 +91,7 @@ export const URLS = {
   DUTCHX_DEVS_AND_API: 'http://dutchx.readthedocs.io/',
   HELP: '/content/Help',
   STEP_BY_STEP_GUIDE: 'https://medium.com/@slow_trade/slow-trade-frontend-walkthrough-ff8fa1e514cf',
+  MGN_FAQ: 'https://medium.com/@gnosisPM/a2a873cdce9a',
 
   GNO_TOKEN_ETHERSCAN_URL: 'https://etherscan.io/token/0x6810e776880c02933d47db1b9fc05908e5386b96',
   WETH_TOKEN_URL: 'https://weth.io/',

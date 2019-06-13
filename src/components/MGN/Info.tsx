@@ -1,4 +1,5 @@
 import React from 'react'
+import { URLS } from 'globals'
 
 interface InfoProps {
   mgnhref: string
@@ -44,4 +45,14 @@ const Misc: React.SFC<MiscProps> = ({ className }) => (
   </p>
 )
 
-export { Info, Misc }
+const Title: React.SFC = () => (
+  <>
+    <h1 className="mgn-title">LOCK / UNLOCK MGN</h1>
+    <p className="mgn-title-info">
+      Find more information provided by Gnosis Ltd <a
+      href={URLS.MGN_FAQ} target="_blank">here</a>
+    </p>
+  </>
+)
+
+export { Info, Misc, Title }

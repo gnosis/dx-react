@@ -1,5 +1,5 @@
 import React from 'react'
-import { Info, Misc } from './Info'
+import { Info, Misc, Title } from './Info'
 import { YourBalance, AccountBalance } from './BalanceDisplays'
 import Controls from './Controls'
 import { MGNInterface, TransactionObject } from 'api/types'
@@ -152,6 +152,7 @@ class MGN extends React.Component<MGNprops, MGNstate> {
 
     return (
       <section className="mgn-section">
+        <Title/>
         <div className="MGN">
           <div className="info">
             <Info mgnhref={mgnhref} />

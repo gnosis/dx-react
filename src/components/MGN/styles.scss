@@ -10,6 +10,26 @@
   $sides-shadow: inset 15px -2px 16px -19px grey, inset -15px -2px 16px -19px grey;
   $secondary-shadow-color: #cfbbbb6e;
 
+  .mgn-title {
+    font-size: 3.2em;
+    font-weight: 500;
+    color: #00447b;
+    font-family: "SpaceMono", verdana;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1;
+
+    @media only screen and (max-width: 736px) {
+      margin-top: 50px;
+    }
+
+    &-info {
+      font-size: 2.3em;
+      text-align: center;
+      line-height: 1.1;
+    }
+  }
+
   .MGN {
     border-radius: 10px;
     min-width: $sec-width;
@@ -153,6 +173,7 @@
     .control-info {
       line-height: 1.1;
       margin: 1em 0;
+      padding-right: 0.5em;
 
       > p {
         margin: 0;
