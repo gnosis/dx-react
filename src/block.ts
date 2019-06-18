@@ -6,7 +6,7 @@ export const geoBlockedCountryCodes = new Set(blocked_codes)
 const unblockDateCheck = async () => {
   const lockPeriod = {
     start: Date.UTC(2019, 1, 10, -1),
-    end: Date.UTC(2019, 5, 17, 21, 59),
+    end: Date.UTC(2019, 6, 10, 21, 59),
   }
 
   const { headers } = await fetch(window.location.origin, { mode:'same-origin', method:'HEAD' })
