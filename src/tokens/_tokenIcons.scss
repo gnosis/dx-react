@@ -90,7 +90,13 @@ $defaultTokenSize_mobile: 36px 70px;
   background: url('#{$images}tokens/SNT.svg') no-repeat center / $defaultTokenSize;
 }
 
+[data-coin="CVC"] {
+  background: url('#{$images}tokens/CVC.svg') no-repeat center / $defaultTokenSize;
+}
 
+[data-coin="GRID"] {
+  background: url('#{$images}tokens/GRID.svg') no-repeat center / $defaultTokenSize;
+}
 
 // Mobile, placing it here to override, until code is re-structured:
 [data-coin] {
