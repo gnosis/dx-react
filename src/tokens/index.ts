@@ -25,6 +25,8 @@ export const tokenSVG = new Set([
   'RDN',
   'REP',
   'SNT',
+  'CVC',
+  'GRID',
 ])
 
 export const code2tokenMap: Code2Name = {
@@ -47,6 +49,8 @@ export const code2tokenMap: Code2Name = {
   REQ: 'REQUEST NETWORK',
   REP: 'AUGUR',
   SNT: 'STATUS',
+  CVC: 'CIVIC',
+  GRID: 'GRID',
 }
 
 export const codeList = Object.keys(code2tokenMap) as TokenCode[]

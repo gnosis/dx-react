@@ -48,6 +48,18 @@
       "name": "Raiden",
       "address": "0x3615757011112560521536258c1e7325ae3b48ae",
       "decimals": 18
+    },
+    {
+      "symbol": "CVC",
+      "name": "Civic",
+      "address": "0x67fe0fdf579043de35d9cb2f10c81b63aa8aeef9",
+      "decimals": 8
+    },
+    {
+      "symbol": "GRID",
+      "name": "GRID Token",
+      "address": "0xb35e3e3e7a87c2b04dec49a7b5da7c1a23a09e64",
+      "decimals": 12
     }
   ],
   "pagination": {

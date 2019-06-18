@@ -24,6 +24,8 @@ export interface Code2Name {
   DAI: 'DAI',
   MKR: 'MAKER',
   SNT: 'STATUS',
+  CVC: 'CIVIC',
+  GRID: 'GRID',
 }
 
 export type TokenCode = keyof Code2Name
