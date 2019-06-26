@@ -61,11 +61,11 @@ export const codeList = Object.keys(code2tokenMap) as TokenCode[]
 export const TRADE_BLOCKED_TOKENS = {
   MAIN: {
     REQ: '0x8f8221afbb33998d8584a2b05749ba73c37a938a',
+    RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
         // DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
         // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
         // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
         // OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
-        // RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
   },
   RINKEBY: {},
   get noBlock() {
