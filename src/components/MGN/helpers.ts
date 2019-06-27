@@ -47,6 +47,7 @@ export interface Conditions {
   canLock: boolean;
   canUnlock: boolean;
   canWithdraw: boolean;
+  canReUnlock: boolean;
 }
 
 export type Wrap = <
@@ -65,10 +66,13 @@ export const getConditions = ({ balances, now }: UseMGNbalancesForCondsAndApi): 
     whenUnlocked && unlocking &&
     (whenUnlocked.lessThan(now) && unlocking.greaterThan(0))
 
+  const canReUnlock = canUnlock && unlocking && unlocking.greaterThan(0)
+
   return {
     canUnlock,
     canLock,
     canWithdraw,
+    canReUnlock,
   }
 }
 

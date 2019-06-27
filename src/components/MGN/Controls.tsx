@@ -1,16 +1,11 @@
 import React from 'react'
 import Countdown from './Countdown'
+import { Conditions } from './helpers'
 
 interface API {
   lockTokens: () => any;
   unlockTokens: () => any;
   withdrawUnlockedTokens: () => any;
-}
-
-interface Conditions {
-  canLock: boolean;
-  canUnlock: boolean;
-  canWithdraw: boolean;
 }
 
 interface ControlsProps {
@@ -23,7 +18,7 @@ interface ControlsProps {
 
 const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhref }) => {
   const { lockTokens, unlockTokens, withdrawUnlockedTokens } = api
-  const { canUnlock, canLock, canWithdraw } = conditions
+  const { canUnlock, canLock, canWithdraw, canReUnlock } = conditions
 
   const btnClass = 'control-btn buttonCTA '
 
@@ -40,6 +35,11 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
 
   return (
     <>
+      {canReUnlock && <p className="control-warning">
+        Unlocking will reset the 24 hour waiting period for any Magnolia associated with your account that is still in the unlocking period and not withdrawn.
+        <br/>
+        Consult the <a href="https://blog.gnosis.pm/magnolia-mgn-tokens-faq-a2a873cdce9a" target="_blank">Magnolia FAQ</a> for further details.
+      </p>}
       <div className="element">
         <div className="control-wrap">
           <h3 className="control-main">UNLOCK</h3>
