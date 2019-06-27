@@ -1,6 +1,7 @@
 import React from 'react'
 import Countdown from './Countdown'
 import { Conditions } from './helpers'
+import { URLS } from 'globals'
 
 interface API {
   lockTokens: () => any;
@@ -38,7 +39,7 @@ const Controls: React.SFC<ControlsProps> = ({ api, conditions, now, then, mgnhre
       {canReUnlock && <p className="control-warning">
         Unlocking will reset the 24 hour waiting period for any Magnolia associated with your account that is still in the unlocking period and not withdrawn.
         <br/>
-        Consult the <a href="https://blog.gnosis.pm/magnolia-mgn-tokens-faq-a2a873cdce9a" target="_blank">Magnolia FAQ</a> for further details.
+        Consult the <a href={URLS.MGN_FAQ} target="_blank">Magnolia FAQ</a> for further details.
       </p>}
       <div className="element">
         <div className="control-wrap">
