@@ -8,7 +8,7 @@ import Imprint from 'components/Imprint'
 
 import { displayUserFriendlyError, geoBlockedCitiesToString } from 'utils'
 
-const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString({ DE: 'Germany' })
+const GEO_BLOCKED_COUNTIES_LIST = geoBlockedCitiesToString()
 
 interface TransactionModalProps {
    activeProvider?: string,
