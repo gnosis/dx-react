@@ -57,7 +57,10 @@ async function conditionalRender() {
   /* PRODUCTION builds should be geoBlocked */
   if (FE_CONDITIONAL_ENV === 'production') {
     /* Scenario 1a: User is a developer on any of the STAGING URLS OR ipfs */
-    if (URLS.APP_URLS_STAGING.includes(hostname) || hostname.includes('ipfs')) {
+    if (
+      URLS.APP_URLS_STAGING.includes(hostname) ||
+      hostname.includes('ipfs')
+    ) {
       blocked = await isGeoBlocked()
       blocked && (disabledReason = 'geoblock')
 
