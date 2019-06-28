@@ -35,6 +35,7 @@ const ALL_DISABLED_CONDITIONS = {
   canLock: false,
   canUnlock: false,
   canWithdraw: false,
+  canReUnlock: false,
 }
 
 class MGN extends React.Component<MGNprops, MGNstate> {
@@ -50,15 +51,17 @@ class MGN extends React.Component<MGNprops, MGNstate> {
     // don't pass tx unless need to set gas or something
   ) => async () => {
     const tx = { from: this.props.currentAccount }
-    let res
+    let res, error = null
     try {
       this.setTxInProgress({ name, error: null })
       res = await cb(tx)
-    } catch (error) {
-      if (!error.message.includes('User denied transaction signature')) console.error(`Error calling ${name}`, error.message)
-      this.setTxInProgress({ error, name: null })
+    } catch (err) {
+      if (!err.message.includes('User denied transaction signature')) console.error(`Error calling ${name}`, err.message)
+      error = err
     } finally {
-      this.setTxInProgress({ error: null, name: null })
+      await this.setMGNBalances()
+      await this.setConditions()
+      this.setTxInProgress({ error, name: null })
     }
     return res
   }
@@ -70,6 +73,7 @@ class MGN extends React.Component<MGNprops, MGNstate> {
       canLock: false,
       canUnlock: false,
       canWithdraw: false,
+      canReUnlock: false,
     },
     yourBalances: initBal,
     otherBalances: initBal,
