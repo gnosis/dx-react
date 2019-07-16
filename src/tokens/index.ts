@@ -63,6 +63,7 @@ export const TRADE_BLOCKED_TOKENS = {
     REQ: '0x8f8221afbb33998d8584a2b05749ba73c37a938a',
     RDN: '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6',
     OCEAN: '0x985dd3d42de1e256d09e1c10f112bccb8015ad41',
+    SNT: '0x744d70fdbe2ba4cf95131626614a1763df805b9e',
         // DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
         // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
         // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
