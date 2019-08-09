@@ -10,7 +10,9 @@
 
 <span style="background-color:#ffa07a; color:#000;">**The rest of this guide assumes you are using up-to-date versions of Node, NPM, Chrome and MetaMask, respectively.**</span>
 
-# Running locally
+# Running the app
+
+### Connected to a test network
 1. Install `ganache-cli` & `truffle` globally - we recommend `truffle@4.1.5` right now for stability
     > `npm i -g ganache-cli truffle@4.1.5`
 2. Grab the `dx-react` project
@@ -24,6 +26,14 @@
     
     > **Step 3**: `npm start`
 5. Head to `localhost:5000` in Chrome
+
+### Connected to Mainnet
+1. Grab the `dx-react` project
+    > `git clone git@github.com:gnosis/dx-react.git`
+2. Install deps - please be patient as this _may_ take a little while.
+    > `npm install`
+3. Launch the server: `npm run start:localProd`
+4. Head to `localhost:5000` in Chrome
 
 # Adding and deploying a test token
 > Please refer to the [Truffle Docs][truffle-suite] for much more in-depth info on migrations/deployment
