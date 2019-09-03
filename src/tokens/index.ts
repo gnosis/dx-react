@@ -66,6 +66,7 @@ export const TRADE_BLOCKED_TOKENS = {
     SNT: '0x744d70fdbe2ba4cf95131626614a1763df805b9e',
     LRC: '0xbbbbca6a901c926f240b89eacb641d8aec7aeafd',
     OST: '0x2c4e8f2d746113d0696ce89b35f0d8bf88e0aeca',
+    OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
         // DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
         // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
         // MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
