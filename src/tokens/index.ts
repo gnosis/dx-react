@@ -69,6 +69,7 @@ export const TRADE_BLOCKED_TOKENS = {
     OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
     DAI: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
     MKR: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+    GNO: '0x6810e776880C02933D47DB1b9fc05908e5386b96',
         // GEN: '0x543ff227f64aa17ea132bf9886cab5db55dcaddf',
         // OMG: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
   },
