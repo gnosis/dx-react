@@ -94,7 +94,7 @@
     "history": "4.7.2",
     "html-webpack-plugin": "3.2.0",
     "localforage": "1.7.2",
-    "lodash": "4.17.10",
+    "lodash": "4.17.13",
     "name-all-modules-plugin": "1.0.1",
     "react": "16.4.2",
     "react-dom": "16.4.2",
